@@ -98,7 +98,7 @@ done
 COLOR_RED=$(tput setaf 1 2>/dev/null || true)
 COLOR_ORANGE=$(tput setaf 3 2>/dev/null || true)
 COLOR_MAGENTA=$(tput setaf 5 2>/dev/null || true)
-#COLOR_BLUE=$(tput setaf 6 2>/dev/null || true)
+COLOR_BLUE=$(tput setaf 6 2>/dev/null || true)
 COLOR_CLEAR=$(tput sgr0 2>/dev/null || true)
 COLOR_RESET=uniquesearchablestring
 function fail () {
@@ -440,7 +440,10 @@ function check_specific_xcode () {
 }
 
 function check_xcode () {
-	if ! test -z $IGNORE_XCODE; then return; fi
+	if ! test -z $IGNORE_XCODE; then
+		warn "Ignoring the Xcode dependency because the ${COLOR_BLUE}IGNORE_XCODE${COLOR_RESET} variable is set."
+		return;
+	fi
 
 	# must have latest Xcode in /Applications/Xcode<version>.app
 	check_specific_xcode
@@ -500,7 +503,10 @@ function check_versioned_product () {
 	local provision_var=PROVISION_$INFIX
 	PROVISION_PRODUCT=${!provision_var}
 
-	if ! test -z "$IGNORE_PRODUCT"; then return; fi
+	if ! test -z "$IGNORE_PRODUCT"; then
+		warn "Ignoring the ${PRODUCT_NAME} dependency because the ${COLOR_BLUE}IGNORE_${INFIX}${COLOR_RESET} variable is set."
+		return;
+	fi
 
 	local min_var=MIN_${INFIX}_VERSION
 	MIN_PRODUCT_VERSION=$(grep "^${min_var}=" Make.config | sed 's/.*=//')
@@ -535,7 +541,8 @@ function check_versioned_product () {
 			ACTUAL_PRODUCT_VERSION=$(cat "$VERSION_FILE")
 		else
 			fail "Your $PRODUCT_NAME version is too new, max version is $MAX_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION."
-			warn "You may edit Make.config and change MAX_${INFIX}_VERSION to your actual version to continue the"
+			warn "You can execute ${COLOR_MAGENTA}./system-dependencies.sh --provision-$(echo "${INFIX}" | tr '[:upper:]' '[:lower:]')${COLOR_RESET} to automatically install ${PRODUCT_NAME}."
+			warn "You may also edit Make.config and change MAX_${INFIX}_VERSION to your actual version to continue the"
 			warn "build (unless you're on a release branch). Once the build completes successfully, please"
 			warn "commit the new MAX_${INFIX}_VERSION value."
 			warn "Alternatively you can ${COLOR_MAGENTA}export IGNORE_${INFIX}=1${COLOR_RESET} to skip this check."
