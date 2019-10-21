@@ -64,7 +64,7 @@ if test -z "$FORCE_SWIFT_BUILD"; then
 fi
 
 # Get & build swift
-cd "$WORKSPACE/../../.."
+cd "$WORKSPACE/.."
 mkdir -p swift
 cd swift
 

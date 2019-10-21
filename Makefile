@@ -1,5 +1,5 @@
 TOP=.
-GIT_DIR=$(TOP)/../../.git
+GIT_DIR=$(TOP)/.git
 
 all: check-system
 	./jenkins/build-swift.sh
