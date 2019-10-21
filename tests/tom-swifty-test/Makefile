@@ -18,7 +18,7 @@ run-tests: bin/Debug/tom-swifty-test.dll
 	rm -f .failed-stamp
 	rm -Rf bin/devicetests # remove any existing device test output
 	DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):$(SWIFTLIB)/macosx:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
-	mono --debug --runtime=v4.0 ../../../../packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=4 --framework=mono-4.0 --nocolor --labels=All --shadowcopy $(FIXTURES) || touch .failed-stamp
+	mono --debug --runtime=v4.0 $(TOP)/packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=4 --framework=mono-4.0 --nocolor --labels=All --shadowcopy $(FIXTURES) || touch .failed-stamp
 	@# Create an html file and tell MonkeyWrench to upload it (if we're running there)
 	@[[ -z "$$BUILD_REPOSITORY" ]] || \
 		( xsltproc ../HtmlTransform.xslt TestResult.xml  > index.html && \
@@ -30,7 +30,7 @@ build: bin/Debug/tom-swifty-test.dll
 run-runtime-library-tests: bin/Debug/tom-swifty-test.dll
 	rm -f .$@-failed-stamp
 	LEAKTEST_DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):$(SWIFTLIB)/macosx:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
-	$(TOP)/leaktest/bin/Debug/leaktest mono --debug --runtime=v4.0 ../../../../packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=1 --framework=mono-4.0 --nocolor --labels=All --shadowcopy --where=namespace=SwiftRuntimeLibraryTests --inprocess || touch .failed-stamp
+	$(TOP)/leaktest/bin/Debug/leaktest mono --debug --runtime=v4.0 $(TOP)/packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=1 --framework=mono-4.0 --nocolor --labels=All --shadowcopy --where=namespace=SwiftRuntimeLibraryTests --inprocess || touch .failed-stamp
 
 bin/Debug/tom-swifty-test.dll: $(shell git ls-files . | grep '[.]cs$$') tom-swifty-test.csproj SwiftRuntimeLibrary.Mac.dll.config
 	nuget restore ../..
