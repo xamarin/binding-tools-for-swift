@@ -7,7 +7,7 @@ WORKSPACE=$(pwd)
 # shellcheck disable=SC1091
 source SwiftVersion.mk
 
-STAMPDIR="$WORKSPACE/../apple"
+STAMPDIR="$WORKSPACE/apple"
 STAMPFILE="$STAMPDIR/swift-$SWIFT_HASH.stamp"
 PACKAGED_STAMPFILE="$STAMPDIR/packaged-$SWIFT_HASH.stamp"
 
@@ -50,10 +50,10 @@ if test -z "$FORCE_SWIFT_BUILD"; then
 	fi
 
 	if test -d "$SWIFT_TOOLCHAIN_NAME"; then
-		rm -f "$WORKSPACE/../apple"
-		ln -s "$WORKSPACE/$SWIFT_TOOLCHAIN_NAME" "$WORKSPACE/../apple"
+		rm -f "$WORKSPACE/apple"
+		ln -s "$WORKSPACE/$SWIFT_TOOLCHAIN_NAME" "$WORKSPACE/apple"
 		echo "✅ Swift build completed using packaged toolchain"
-		find "$WORKSPACE/../apple"
+		find "$WORKSPACE/apple"
 		touch "$PACKAGED_STAMPFILE"
 		exit 0
 	fi
@@ -67,8 +67,8 @@ cd swift
 function complete_swift_build ()
 {
 	echo "Creating swift symlink..."
-	rm -Rf "$WORKSPACE/../apple"
-	ln -s "$WORKSPACE/../../../swift" "$WORKSPACE/../apple"
+	rm -Rf "$WORKSPACE/apple"
+	ln -s "$WORKSPACE/../swift" "$WORKSPACE/apple"
 
 	if test -n "$PUBLISH"; then
 		echo "Packaging toolchain..."

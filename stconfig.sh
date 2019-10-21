@@ -19,9 +19,9 @@ if [[ ! -z "${SOM_PATH}" ]] ; then
     SWIFTBINDINGS="${SOM_PATH}/bindings"
     TOMSWIFTY="${SOM_PATH}/lib/binding-tools-for-swift/tom-swifty.exe"
 else
-    SWIFTBIN="$SCRIPT_DIR/../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin"
-    SWIFTLIB="$SCRIPT_DIR/../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift"
-    SWIFTC="$SCRIPT_DIR/../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc"
+    SWIFTBIN="$SCRIPT_DIR/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin"
+    SWIFTLIB="$SCRIPT_DIR/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift"
+    SWIFTC="$SCRIPT_DIR/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc"
     SWIFTGLUE="${PLATFORM}"
     SWIFTGLUEPREFIX="$SCRIPT_DIR/../tom-swifty/swiftglue/bin/Debug/"
     SWIFTGLUESUFFIX="/FinalProduct/XamGlue.framework"

@@ -17,7 +17,7 @@ public class BuildInfo {
 
 		BaseDir = ctx.MakeAbsolute (ctx.Directory ("../"));
 		Ninja = $"Ninja-ReleaseAssert";
-		SwiftBaseDir = ctx.MakeAbsolute (ctx.Directory ($"../../apple/build/{Ninja}/swift-macosx-x86_64/"));
+		SwiftBaseDir = ctx.MakeAbsolute (ctx.Directory ($"../apple/build/{Ninja}/swift-macosx-x86_64/"));
 		SwiftRuntimeiOS = BaseDir.Combine ($"SwiftRuntimeLibrary.iOS/bin/{configuration}");
 		SwiftRuntimeMac = BaseDir.Combine ($"SwiftRuntimeLibrary.Mac/bin/{configuration}");
 		TomSwifty = BaseDir.Combine ($"tom-swifty/bin/{configuration}");

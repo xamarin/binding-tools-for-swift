@@ -7,8 +7,8 @@ $(TOP)/stconfig.inc: $(TOP)/stconfig.sh
 
 # This will never point to the swiftc compiler in our packaged directory (where SWIFTC may point to if SOM_PATH is set)
 # We need this if we need swiftc before the package is created (because that's where SOM_PATH points to)
-UNPACKAGED_SWIFTC=$(abspath $(TOP)/../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc)
-UNPACKAGED_SWIFTLIB=$(abspath $(TOP)/../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift)
+UNPACKAGED_SWIFTC=$(abspath $(TOP)/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc)
+UNPACKAGED_SWIFTLIB=$(abspath $(TOP)/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift)
 
 PLIST_SWIFTY:=mono --debug $(abspath $(TOP)/plist-swifty/bin/Debug/plist-swifty.exe)
 TYPE_O_MATIC:=mono --debug $(abspath $(TOP)/type-o-matic/bin/Debug/type-o-matic.exe)

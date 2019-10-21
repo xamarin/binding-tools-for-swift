@@ -270,7 +270,7 @@
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.MacOS.cs">
     <Exec Command="mkdir -p GeneratedCode" />
-    <Exec Command="/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono $(MSBuildProjectDirectory)\..\type-o-matic\bin\Debug\type-o-matic.exe --swift-lib-path=$(MSBuildProjectDirectory)/../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/ --platform=mac --xamglue-framework=$(MSBuildProjectDirectory)/../swiftglue/bin/$(Configuration)/mac/FinalProduct/XamGlue.framework --output=GeneratedCode\BindingMetadata.MacOS.cs" />
+    <Exec Command="/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono $(MSBuildProjectDirectory)\..\type-o-matic\bin\Debug\type-o-matic.exe --swift-lib-path=$(MSBuildProjectDirectory)/../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/ --platform=mac --xamglue-framework=$(MSBuildProjectDirectory)/../swiftglue/bin/$(Configuration)/mac/FinalProduct/XamGlue.framework --output=GeneratedCode\BindingMetadata.MacOS.cs" />
   </Target>
   <ItemGroup>
     <Compile Include="GeneratedCode\BindingMetadata.MacOS.cs" />

@@ -19,7 +19,7 @@ BuildInfo buildInfo;
 
 // Executed before the first task.
 Setup (ctx => {
-	if (!DirectoryExists (DirectoryPath.FromString ("../../apple")))
+	if (!DirectoryExists (DirectoryPath.FromString ("../apple")))
 		throw new InvalidOperationException ("You must setup 'apple' directory first.");
 	
 	if (configuration == "Debug" || configuration == "Release") {

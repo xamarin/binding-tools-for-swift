@@ -25,7 +25,7 @@ namespace tomwiftytest {
 	public class Compiler {
 		// Enviroment var that can be used to test binding-tools-for-swift from a package
 		static string SOM_PATH = Environment.GetEnvironmentVariable ("SOM_PATH");
-		public const string kSwiftCustomDirectoryRel = "../../../../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64";
+		public const string kSwiftCustomDirectoryRel = "../../../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64";
 #if DEBUG
 		public const string kSwiftRuntimeGlueDirectoryRel = "../../../../swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework";
 #endif
