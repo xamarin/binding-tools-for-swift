@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Mono.Options">
-      <HintPath>..\..\..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
+      <HintPath>..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

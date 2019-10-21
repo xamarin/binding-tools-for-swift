@@ -14,7 +14,7 @@ FILENAME=binding-tools-for-swift-v$(make -C .. print-variable VARIABLE=SOM_PACKA
 mv "binding-tools-for-swift.zip" "$FILENAME.zip"
 echo "Created Pack-Man/$FILENAME.zip"
 
-PACKAGE_DIR=$WORKSPACE/../../../package
+PACKAGE_DIR=$WORKSPACE/../package
 rm -Rf "$PACKAGE_DIR"
 mkdir -p "$PACKAGE_DIR"
 cp -- *.zip "$PACKAGE_DIR"

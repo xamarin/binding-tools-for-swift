@@ -4,3 +4,4 @@ Constants.cs
 *.csproj.user
 stconfig.inc
 devicetests-build
+packages
