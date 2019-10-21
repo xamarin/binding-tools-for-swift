@@ -1,0 +1,31 @@
+#!/bin/bash -e
+
+# usage:
+# metadatafordylib pathname
+
+if [ "$#" -ne 1 ]; then
+	echo "Usage: $0 /path/to/file.dylib"
+	exit 1
+fi
+
+if [ ! -f "$1" ]; then
+	echo  "Unable to find file $1"
+	exit 1
+fi
+
+# libname=libswiftCore.dylib
+libname=$(basename "$1")
+# substitute=libswiftCore
+substitute="${libname%.*}"
+#substitute=Core
+substitute="${substitute#libswift}"
+
+echo "<TypeMetaMap file=\"$libname\" module=\"$substitute\">"
+nm "$1" | grep "__T0" | \
+	awk '{p=$(NF) ; gsub ("__T", "++T", p) ; print $(NF) " " p}' | \
+	xcrun swift-demangle | grep "_type metadata for" | \
+	awk '{print "    <TypeAndMeta type=\"" $(NF-1) "\" meta=\"" $(NF) "\"/>"}' | \
+	sed 's/\+\+T/__T/' | \
+	sed s/__C/"$substitute"/ | \
+	sed s/__ObjC/"$substitute"/
+echo "</TypeMetaMap>"

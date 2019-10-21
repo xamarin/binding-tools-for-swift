@@ -1,0 +1,105 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tom-swifty", "tom-swifty\tom-swifty.csproj", "{8CAC7366-9650-440D-A3C5-36D880285DD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftReflector", "SwiftReflector\SwiftReflector.csproj", "{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary", "SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj", "{B7E6CF5A-B836-41CF-988C-A83607AF5445}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plist-swifty", "plist-swifty\plist-swifty.csproj", "{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary.Mac", "SwiftRuntimeLibrary.Mac\SwiftRuntimeLibrary.Mac.csproj", "{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary.iOS", "SwiftRuntimeLibrary.iOS\SwiftRuntimeLibrary.iOS.csproj", "{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo", "Dynamo\Dynamo.csproj", "{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tom-swifty-test", "tests\tom-swifty-test\tom-swifty-test.csproj", "{F565616E-274E-44FA-9F6E-8095308FD80A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "swift-copy-libs", "swift-copy-libs\swift-copy-libs.csproj", "{11F5D3B2-AC30-47A9-A4FF-998835C5CF9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "leaktest", "leaktest\leaktest.csproj", "{33D1E7E3-A123-43F0-B047-163C6E75D3BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "type-o-matic", "type-o-matic\type-o-matic.csproj", "{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}.Debug|x86.Build.0 = Debug|Any CPU
+		{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}.Release|x86.Build.0 = Release|Any CPU
+		{8CAC7366-9650-440D-A3C5-36D880285DD5}.Debug|x86.ActiveCfg = Debug|x86
+		{8CAC7366-9650-440D-A3C5-36D880285DD5}.Debug|x86.Build.0 = Debug|x86
+		{8CAC7366-9650-440D-A3C5-36D880285DD5}.Release|x86.ActiveCfg = Release|x86
+		{8CAC7366-9650-440D-A3C5-36D880285DD5}.Release|x86.Build.0 = Release|x86
+		{B7E6CF5A-B836-41CF-988C-A83607AF5445}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B7E6CF5A-B836-41CF-988C-A83607AF5445}.Debug|x86.Build.0 = Debug|Any CPU
+		{B7E6CF5A-B836-41CF-988C-A83607AF5445}.Release|x86.ActiveCfg = Release|Any CPU
+		{B7E6CF5A-B836-41CF-988C-A83607AF5445}.Release|x86.Build.0 = Release|Any CPU
+		{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}.Debug|x86.ActiveCfg = Debug|x86
+		{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}.Debug|x86.Build.0 = Debug|x86
+		{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}.Release|x86.ActiveCfg = Release|x86
+		{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}.Release|x86.Build.0 = Release|x86
+		{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}.Debug|x86.Build.0 = Debug|Any CPU
+		{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}.Release|x86.ActiveCfg = Release|Any CPU
+		{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}.Release|x86.Build.0 = Release|Any CPU
+		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Debug|x86.Build.0 = Debug|Any CPU
+		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Release|x86.ActiveCfg = Release|Any CPU
+		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Release|x86.Build.0 = Release|Any CPU
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Debug|x86.Build.0 = Debug|Any CPU
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Release|x86.Build.0 = Release|Any CPU
+		{F565616E-274E-44FA-9F6E-8095308FD80A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F565616E-274E-44FA-9F6E-8095308FD80A}.Debug|x86.Build.0 = Debug|Any CPU
+		{F565616E-274E-44FA-9F6E-8095308FD80A}.Release|x86.ActiveCfg = Release|Any CPU
+		{F565616E-274E-44FA-9F6E-8095308FD80A}.Release|x86.Build.0 = Release|Any CPU
+		{11F5D3B2-AC30-47A9-A4FF-998835C5CF9D}.Debug|x86.ActiveCfg = Debug|x86
+		{11F5D3B2-AC30-47A9-A4FF-998835C5CF9D}.Debug|x86.Build.0 = Debug|x86
+		{11F5D3B2-AC30-47A9-A4FF-998835C5CF9D}.Release|x86.ActiveCfg = Release|x86
+		{11F5D3B2-AC30-47A9-A4FF-998835C5CF9D}.Release|x86.Build.0 = Release|x86
+		{33D1E7E3-A123-43F0-B047-163C6E75D3BF}.Debug|x86.ActiveCfg = Debug|x86
+		{33D1E7E3-A123-43F0-B047-163C6E75D3BF}.Debug|x86.Build.0 = Debug|x86
+		{33D1E7E3-A123-43F0-B047-163C6E75D3BF}.Release|x86.ActiveCfg = Release|x86
+		{33D1E7E3-A123-43F0-B047-163C6E75D3BF}.Release|x86.Build.0 = Release|x86
+		{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}.Debug|x86.ActiveCfg = Debug|x86
+		{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}.Debug|x86.Build.0 = Debug|x86
+		{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}.Release|x86.ActiveCfg = Release|x86
+		{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 80
+		$1.TabWidth = 8
+		$1.IndentWidth = 8
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.IndentSwitchSection = False
+		$2.NewLinesForBracesInTypes = False
+		$2.NewLinesForBracesInProperties = False
+		$2.NewLinesForBracesInAccessors = False
+		$2.NewLinesForBracesInAnonymousMethods = False
+		$2.NewLinesForBracesInControlBlocks = False
+		$2.NewLinesForBracesInAnonymousTypes = False
+		$2.NewLinesForBracesInObjectCollectionArrayInitializers = False
+		$2.NewLinesForBracesInLambdaExpressionBody = False
+		$2.NewLineForElse = False
+		$2.NewLineForCatch = False
+		$2.NewLineForFinally = False
+		$2.NewLineForMembersInObjectInit = False
+		$2.NewLineForMembersInAnonymousTypes = False
+		$2.NewLineForClausesInQuery = False
+		$2.SpacingAfterMethodDeclarationName = True
+		$2.SpaceAfterMethodCallName = True
+		$2.SpaceBeforeOpenSquareBracket = True
+		$2.scope = text/x-csharp
+	EndGlobalSection
+EndGlobal

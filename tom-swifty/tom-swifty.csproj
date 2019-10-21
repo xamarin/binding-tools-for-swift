@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{8CAC7366-9650-440D-A3C5-36D880285DD5}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>tomswifty</RootNamespace>
+    <AssemblyName>tom-swifty</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;SWIFT4</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+    <Commandlineparameters>--swift-bin-path /Users/steveh/xamroot/maccore/tools/apple/build/Xcode-DebugAssert/swift-macosx-x86_64/Debug/bin --swift-lib-path /Users/steveh/xamroot/maccore/tools/apple/build/Xcode-DebugAssert/swift-macosx-x86_64/Debug/lib -C /Users/steveh/hacking/unithelp -o /Users/steveh/hacking/unithelp/swiftwrapping --retain-swift-wrappers --retain-xml-reflection None1</Commandlineparameters>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType></DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>SWIFT4</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SwiftyOptions.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="..\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\SwiftReflector\SwiftReflector.csproj">
+      <Project>{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}</Project>
+      <Name>SwiftReflector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo\Dynamo.csproj">
+      <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
+      <Name>Dynamo</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Options">
+      <HintPath>..\..\..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Target Name="BeforeBuild" Inputs="..\Constants.cs.in" Outputs="..\Constants.cs">
+    <Exec Command="make -C .. Constants.cs" />
+  </Target>
+</Project>

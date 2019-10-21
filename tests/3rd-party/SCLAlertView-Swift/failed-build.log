@@ -1,0 +1,17 @@
+../Makefile.inc:17: This test (SCLAlertView-Swift) will build/run, but the result is ignored because it's a known failure
+Building SCLAlertView-Swift
+Cloning https://github.com/vikmeup/SCLAlertView-Swift into ./repository...
+Checking out 17f7c90dfc9c7f15564e84621d48441d403323ee for https://github.com/vikmeup/SCLAlertView-Swift...
+HEAD is now at 17f7c90 Release 0.8.1
+Updating submodules for https://github.com/vikmeup/SCLAlertView-Swift...
+Successfully checked out 17f7c90dfc9c7f15564e84621d48441d403323ee for https://github.com/vikmeup/SCLAlertView-Swift in ./repository.
+[XCODEBUILD/iphoneos] SCLAlertView-Swift
+[XCODEBUILD/iphonesimulator] SCLAlertView-Swift
+=== BUILD TARGET SCLAlertViewTests OF PROJECT SCLAlertView WITH CONFIGURATION Debug ===
+Code Signing Error: Signing for "SCLAlertViewTests" requires a development team. Select a development team in the project editor.
+Code Signing Error: Code signing is required for product type 'Unit Test Bundle' in SDK 'iOS 11.2'
+** BUILD FAILED **
+
+make[3]: *** [build-sdk-iphoneos.stamp] Error 65
+make[3]: *** Waiting for unfinished jobs....
+make[2]: [build] Error 2 (ignored)

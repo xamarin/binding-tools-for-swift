@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>typeomatic</RootNamespace>
+    <AssemblyName>type-o-matic</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;BINDING_TOOLS_FOR_SWIFT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Mono.Options">
+      <HintPath>..\..\..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="..\SwiftReflector\Importing\TypeAggregator.cs">
+      <Link>TypeAggregator.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Importing\PatternMatch.cs">
+      <Link>PatternMatch.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Enums.cs">
+      <Link>Enums.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Ex.cs">
+      <Link>Ex.cs</Link>
+    </Compile>
+    <Compile Include="TypeOMaticOptions.cs" />
+    <Compile Include="..\SwiftReflector\IOUtils\ExecAndCollect.cs">
+      <Link>ExecAndCollect.cs</Link>
+    </Compile>
+    <Compile Include="FileSymbolPair.cs" />
+    <Compile Include="..\SwiftReflector\Importing\TypeAggregator.iOS.cs">
+      <Link>TypeAggregator.iOS.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\Swift4NodeToTLDefinition.cs">
+      <Link>Demangling\Swift4NodeToTLDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\Swift4Demangler.cs">
+      <Link>Demangling\Swift4Demangler.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\Node.cs">
+      <Link>Demangling\Node.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\Decomposer.cs">
+      <Link>Demangling\Decomposer.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\TLDefinition.cs">
+      <Link>Demangling\TLDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\MatchRule.cs">
+      <Link>Demangling\MatchRule.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\RuleRunner.cs">
+      <Link>Demangling\RuleRunner.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\ContextAttribute.cs">
+      <Link>Demangling\ContextAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\Enums.cs">
+      <Link>Demangling\Enums.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\StringSlice.cs">
+      <Link>SwiftType\StringSlice.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\SwiftClassName.cs">
+      <Link>SwiftType\SwiftClassName.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\SwiftType.cs">
+      <Link>SwiftType\SwiftType.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\SwiftName.cs">
+      <Link>SwiftType\SwiftName.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Exceptions\ErrorHelper.cs">
+      <Link>SwiftType\ErrorHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Exceptions\RuntimeException.cs">
+      <Link>SwiftType\RuntimeException.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Extensions.cs">
+      <Link>SwiftType\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\MachOHawley.cs">
+      <Link>MachOHawley.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\MachOHelpers.cs">
+      <Link>MachOHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\ReflectorError.cs">
+      <Link>SwiftType\ReflectorError.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\PunyCode.cs">
+      <Link>SwiftType\PunyCode.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Importing\TypeAggregator.MacOS.cs">
+      <Link>TypeAggregator.MacOS.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\Swift5Demangler.cs">
+      <Link>Demangling\Swift5Demangler.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\Demangling\Swift5NodeToTLDefinition.cs">
+      <Link>Demangling\Swift5NodeToTLDefinition.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dynamo\Dynamo.csproj">
+      <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
+      <Name>Dynamo</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+    <Folder Include="Demangling\" />
+    <Folder Include="SwiftType\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

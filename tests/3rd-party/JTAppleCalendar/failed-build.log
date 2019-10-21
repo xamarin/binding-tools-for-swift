@@ -1,0 +1,438 @@
+Building JTAppleCalendar
+Cloning https://github.com/patchthecode/JTAppleCalendar into ./repository...
+Successfully checked out c649e67662d709ff3108feff4f345abc813b8812 for https://github.com/patchthecode/JTAppleCalendar in ./repository.
+XCODEBUILD/iphoneos JTAppleCalendar
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator JTAppleCalendar
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:198:16: warning: unnecessary check for 'iOSApplicationExtension'; enclosing scope ensures guard will always be true
+            if #available(iOS 10.0, tvOS 10.0, *) {
+               ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/JTAppleCalendar/repository/Sources/JTAppleCalendarView.swift:194:1: note: enclosing scope here
+extension JTAppleCalendarView {
+^
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    JTAppleCalendar.framework
+SWIFT-O-MATIC JTAppleCalendar
+
+367 warnings and 6 errors
+
+warning SM3000: unexpected error handling _$s10Foundation8CalendarV07JTAppleB0E9formatterSo15NSDateFormatterCvau: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$s10Foundation8CalendarV07JTAppleB0E9formatterSo15NSDateFormatterCvau uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s10Foundation8CalendarV07JTAppleB0E9formatterSo15NSDateFormatterCvpZ: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$s10Foundation8CalendarV07JTAppleB0E9formatterSo15NSDateFormatterCvpZ uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0A4CellC10isSelectedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0B4DataV13totalSectionsSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0B4DataV17sectionToMonthMapSDyS2iGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0B4DataV6monthsSayAA5MonthVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0B4DataV9totalDaysSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB12ViewDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB14LayoutProtocolTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB14ViewDataSourceTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB16DelegateProtocolTL uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s15JTAppleCalendar0aB4ViewC0020theDatastorage_mdAJd33_70DF286E0E62C56975265F8CF5A8FF56LLAA0B4DataVSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC0020theDatastorage_mdAJd33_70DF286E0E62C56975265F8CF5A8FF56LLAA0B4DataVSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC02ibB10DataSourceyXlSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC02ibB8DelegateyXlSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC08calendarC6LayoutAA0abE0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC10anchorDate10Foundation0E0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC10anchorDate10Foundation0E0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC10anchorDate10Foundation0E0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC10anchorDate10Foundation0E0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC10dataSourceSo012UICollectionc4DataE0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC12endDateCache10Foundation0E0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC12sectionInsetSo12UIEdgeInsetsVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC12sectionInsetSo12UIEdgeInsetsVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC12sectionInsetSo12UIEdgeInsetsVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC12sectionInsetSo12UIEdgeInsetsVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13dateGeneratorAA0a10DateConfigE0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13lastMonthSizeSDys11AnyHashableV12CoreGraphics7CGFloatVGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13lastMonthSizeSDys11AnyHashableV12CoreGraphics7CGFloatVGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13lastMonthSizeSDys11AnyHashableV12CoreGraphics7CGFloatVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13lastMonthSizeSDys11AnyHashableV12CoreGraphics7CGFloatVGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13pathsToReloadShy10Foundation9IndexPathVGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13pathsToReloadShy10Foundation9IndexPathVGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13pathsToReloadShy10Foundation9IndexPathVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13pathsToReloadShy10Foundation9IndexPathVGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13scrollingModeAA09ScrollingE0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13scrollingModeAA09ScrollingE0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13scrollingModeAA09ScrollingE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13scrollingModeAA09ScrollingE0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC13selectedDatesSay10Foundation4DateVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC14numberOfMonthsSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC14startDateCache10Foundation0E0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15endOfMonthCache10Foundation4DateVSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15endOfMonthCache10Foundation4DateVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15endOfMonthCache10Foundation4DateVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15endOfMonthCache10Foundation4DateVSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15scrollDirectionSo012UICollectionc6ScrollE0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15scrollDirectionSo012UICollectionc6ScrollE0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15scrollDirectionSo012UICollectionc6ScrollE0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC15scrollDirectionSo012UICollectionc6ScrollE0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16calendarDelegateAA0abcE0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16calendarDelegateAA0abcE0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16calendarDelegateAA0abcE0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16calendarDelegateAA0abcE0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16didEndScollCountSivMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16didEndScollCountSivgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16didEndScollCountSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16didEndScollCountSivsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16selectedCellDataSDy10Foundation9IndexPathVAA08SelectedeF0VGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16selectedCellDataSDy10Foundation9IndexPathVAA08SelectedeF0VGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16selectedCellDataSDy10Foundation9IndexPathVAA08SelectedeF0VGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16selectedCellDataSDy10Foundation9IndexPathVAA08SelectedeF0VGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC16selectedDatesSetShy10Foundation4DateVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC17startOfMonthCache10Foundation4DateVSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC17startOfMonthCache10Foundation4DateVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC17startOfMonthCache10Foundation4DateVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC17startOfMonthCache10Foundation4DateVSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18calendarDataSourceAA0abceF0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18calendarDataSourceAA0abceF0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18calendarDataSourceAA0abceF0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18calendarDataSourceAA0abceF0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18isScrollInProgressSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18isScrollInProgressSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18isScrollInProgressSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18isScrollInProgressSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18minimumLineSpacing12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18minimumLineSpacing12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18minimumLineSpacing12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC18minimumLineSpacing12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC19cachedConfigurationAA0E10ParametersVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC19cachedConfigurationAA0E10ParametersVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20_cachedConfigurationAA0E10ParametersVSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20_cachedConfigurationAA0E10ParametersVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20_cachedConfigurationAA0E10ParametersVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20_cachedConfigurationAA0E10ParametersVSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20isRangeSelectionUsedSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20isRangeSelectionUsedSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20isRangeSelectionUsedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC20isRangeSelectionUsedSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22calendarLayoutIsLoadedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22isReloadDataInProgressSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22isReloadDataInProgressSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22isReloadDataInProgressSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22isReloadDataInProgressSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22lastSavedContentOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22lastSavedContentOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22lastSavedContentOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22lastSavedContentOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22requestedContentOffsetSo7CGPointVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC22requestedContentOffsetSo7CGPointVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23endScrollTargetLocation12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23endScrollTargetLocation12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23endScrollTargetLocation12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23endScrollTargetLocation12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23minimumInteritemSpacing12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23minimumInteritemSpacing12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23minimumInteritemSpacing12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC23minimumInteritemSpacing12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC24allowsDateCellStretchingSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC24allowsDateCellStretchingSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC24allowsDateCellStretchingSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC24allowsDateCellStretchingSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC24semanticContentAttributeSo010UISemanticeF0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC25functionIsUnsafeSafeToRunSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC27triggerScrollToDateDelegateSbSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC27triggerScrollToDateDelegateSbSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC27triggerScrollToDateDelegateSbSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC27triggerScrollToDateDelegateSbSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC29scrollDelayedExecutionClosureSayyycGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC29scrollDelayedExecutionClosureSayyycGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC29scrollDelayedExecutionClosureSayyycGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC29scrollDelayedExecutionClosureSayyycGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC30generalDelayedExecutionClosureSayyycGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC30generalDelayedExecutionClosureSayyycGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC30generalDelayedExecutionClosureSayyycGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC30generalDelayedExecutionClosureSayyycGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC37decelerationRateMatchingScrollingMode12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC37decelerationRateMatchingScrollingMode12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC7theDataAA0bE0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC7theDataAA0bE0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC7theDataAA0bE0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC7theDataAA0bE0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8calendar10Foundation0B0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8cellSize12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8cellSize12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8cellSize12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8cellSize12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8delegateSo012UICollectionC8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8monthMapSDyS2iGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8monthMapSDyS2iGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8monthMapSDyS2iGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC8monthMapSDyS2iGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC9monthInfoSayAA5MonthVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB4ViewC9totalDaysSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC017configureVerticalC0yyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC019configureHorizontalC0yyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC02isbC6LoadedSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC02isbC6LoadedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC07updatedC8CellSizeSo6CGSizeVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC07updatedC8CellSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC10clearCacheyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11cachedValue3for7sectionSi_Si12CoreGraphics7CGFloatVA3ItSgSi_SitFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11currentCellSi7section_12CoreGraphics7CGFloatV5widthAH6heighttSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11currentCellSi7section_12CoreGraphics7CGFloatV5widthAH6heighttSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11currentCellSi7section_12CoreGraphics7CGFloatV5widthAH6heighttSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11currentCellSi7section_12CoreGraphics7CGFloatV5widthAH6heighttSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerCacheSDyS2i_Si12CoreGraphics7CGFloatVA3GtGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerCacheSDyS2i_Si12CoreGraphics7CGFloatVA3GtGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerCacheSDyS2i_Si12CoreGraphics7CGFloatVA3GtGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerCacheSDyS2i_Si12CoreGraphics7CGFloatVA3GtGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerSizesSDys11AnyHashableV12CoreGraphics7CGFloatVGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerSizesSDys11AnyHashableV12CoreGraphics7CGFloatVGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerSizesSDys11AnyHashableV12CoreGraphics7CGFloatVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11headerSizesSDys11AnyHashableV12CoreGraphics7CGFloatVGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11sectionSizeSay12CoreGraphics7CGFloatVGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11sectionSizeSay12CoreGraphics7CGFloatVGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11sectionSizeSay12CoreGraphics7CGFloatVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11sectionSizeSay12CoreGraphics7CGFloatVGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11xCellOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11xCellOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11xCellOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11xCellOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11yCellOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11yCellOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11yCellOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC11yCellOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12contentWidth12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12contentWidth12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12contentWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12contentWidth12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12endSeparator12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12endSeparator12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12endSeparator12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12endSeparator12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12maxMissCountSivMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12maxMissCountSivgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12maxMissCountSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12maxMissCountSivsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12numberOfRowsSivMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12numberOfRowsSivgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12numberOfRowsSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12numberOfRowsSivsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12sectionInsetSo12UIEdgeInsetsVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12sectionInsetSo12UIEdgeInsetsVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12sectionInsetSo12UIEdgeInsetsVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12sectionInsetSo12UIEdgeInsetsVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC12withDelegateAcA0abE8Protocol_p_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13contentHeight12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13contentHeight12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13contentHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13contentHeight12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13currentHeaderSi7section_So6CGSizeV4sizetSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13currentHeaderSi7section_So6CGSizeV4sizetSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13currentHeaderSi7section_So6CGSizeV4sizetSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13currentHeaderSi7section_So6CGSizeV4sizetSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13daysInSectionSDyS2iGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13daysInSectionSDyS2iGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13daysInSectionSDyS2iGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC13daysInSectionSDyS2iGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC14elementsAtRect14excludeHeaders4fromSaySo016UICollectionViewC10AttributesCGSbSg_So6CGRectVSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC14focusIndexPath10Foundation0eF0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC14focusIndexPath10Foundation0eF0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC14focusIndexPath10Foundation0eF0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC14focusIndexPath10Foundation0eF0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC14startIndexFrom10rectOriginSiSo7CGPointV_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15decorationCacheSDy10Foundation9IndexPathVSo016UICollectionViewC10AttributesCGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15decorationCacheSDy10Foundation9IndexPathVSo016UICollectionViewC10AttributesCGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15decorationCacheSDy10Foundation9IndexPathVSo016UICollectionViewC10AttributesCGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15decorationCacheSDy10Foundation9IndexPathVSo016UICollectionViewC10AttributesCGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15scrollDirectionSo022UICollectionViewScrollE0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15scrollDirectionSo022UICollectionViewScrollE0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15scrollDirectionSo022UICollectionViewScrollE0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15scrollDirectionSo022UICollectionViewScrollE0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15thereAreHeadersSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC15thereAreHeadersSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC16cellAttributeFor_7sectionSo016UICollectionViewC10AttributesCSgSi_SitFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC17sectionFromOffsetySi12CoreGraphics7CGFloatVFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18minimumLineSpacing12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18minimumLineSpacing12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18minimumLineSpacing12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18minimumLineSpacing12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18reloadWasTriggeredSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18reloadWasTriggeredSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18reloadWasTriggeredSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC18reloadWasTriggeredSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC19executeDelayedTasksyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC20numberOfRowsForMonthyS2iFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC21numberOfDaysInSectionyS2iFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC21setupDataFromDelegateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC22sizeForitemAtIndexPath_7section12CoreGraphics7CGFloatV5width_AH6heighttSi_SitFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC22startIndexBinarySearch_6offsetSiSayxG_xtSLRzlFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23delayedExecutionClosureSayyycGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23delayedExecutionClosureSayyycGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23delayedExecutionClosureSayyycGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23delayedExecutionClosureSayyycGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23determineToApplyAttribs_7sectionSi4item_SiAE12CoreGraphics7CGFloatV7xOffsetAI01yM0AI5widthAI6heighttSgSi_SitFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23minimumInteritemSpacing12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23minimumInteritemSpacing12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23minimumInteritemSpacing12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23minimumInteritemSpacing12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23sizeOfContentForSectiony12CoreGraphics7CGFloatVSiFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23thereAreDecorationViewsSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23thereAreDecorationViewsSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23thereAreDecorationViewsSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC23thereAreDecorationViewsSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24allowsDateCellStretchingSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24allowsDateCellStretchingSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24allowsDateCellStretchingSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24allowsDateCellStretchingSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24firstContentOffsetWasSetSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24firstContentOffsetWasSetSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24firstContentOffsetWasSetSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24firstContentOffsetWasSetSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24lastWrittenCellAttributeSi_Si12CoreGraphics7CGFloatVA3GtSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24lastWrittenCellAttributeSi_Si12CoreGraphics7CGFloatVA3GtSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24lastWrittenCellAttributeSi_Si12CoreGraphics7CGFloatVA3GtSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24lastWrittenCellAttributeSi_Si12CoreGraphics7CGFloatVA3GtSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC24minimumVisibleIndexPaths10Foundation0F4PathVSg04cellF0_AH06headerF0tyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25collectionViewContentSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25lastSetCollectionViewSizeSo6CGRectVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25lastSetCollectionViewSizeSo6CGRectVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25lastSetCollectionViewSizeSo6CGRectVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25lastSetCollectionViewSizeSo6CGRectVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25layoutIsReadyToBePreparedSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25layoutIsReadyToBePreparedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC25supplementaryAttributeFor4item7section11elementKindSo016UICollectionViewC10AttributesCSgSi_SiSStFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC28cachedHeaderHeightForSectiony12CoreGraphics7CGFloatVSiFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC30strictBoundaryRulesShouldApplySbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC30strictBoundaryRulesShouldApplySbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC30strictBoundaryRulesShouldApplySbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC30strictBoundaryRulesShouldApplySbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC36determineToApplySupplementaryAttribs_7sectionSi_Si12CoreGraphics7CGFloatVA3HtSgSi_SitFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC37shouldUseUserItemSizeInsteadOfDefaultSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC37shouldUseUserItemSizeInsteadOfDefaultSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC7isDirtySbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC7isDirtySbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC7xStride12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC7xStride12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC7xStride12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC7xStride12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8cellSizeSo6CGSizeVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8cellSizeSo6CGSizeVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8cellSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8cellSizeSo6CGSizeVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8delegateAA0aB16DelegateProtocol_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8delegateAA0aB16DelegateProtocol_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8delegateAA0aB16DelegateProtocol_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8delegateAA0aB16DelegateProtocol_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8monthMapSDyS2iGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8monthMapSDyS2iGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8monthMapSDyS2iGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC8monthMapSDyS2iGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9cellCacheSDySiSaySi_Si12CoreGraphics7CGFloatVA3GtGGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9cellCacheSDySiSaySi_Si12CoreGraphics7CGFloatVA3GtGGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9cellCacheSDySiSaySi_Si12CoreGraphics7CGFloatVA3GtGGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9cellCacheSDySiSaySi_Si12CoreGraphics7CGFloatVA3GtGGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9indexPath9direction2of4item10Foundation05IndexE0VSgAA18SegmentDestinationO_S2itFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9monthInfoSayAA5MonthVGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9monthInfoSayAA5MonthVGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9monthInfoSayAA5MonthVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar0aB6LayoutC9monthInfoSayAA5MonthVGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar10DaysOfWeekO8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar12MonthsOfYearO8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar13SelectionTypeO8rawValueSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar15DateSegmentInfoV10monthDatesSay10Foundation0C0V4date_AE9IndexPathV05indexK0tGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar15DateSegmentInfoV7indatesSay10Foundation0C0V4date_AE9IndexPathV05indexJ0tGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar15DateSegmentInfoV8outdatesSay10Foundation0C0V4date_AE9IndexPathV05indexJ0tGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar15DelayedTaskTypeO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar15SelectionActionO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar16SelectedCellDataV13dateBelongsToAC17DateOwnerCategoryOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar16SelectedCellDataV16counterIndexPath10Foundation0gH0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar16SelectedCellDataV17DateOwnerCategoryO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar16SelectedCellDataV4date10Foundation4DateVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar16SelectedCellDataV9cellStateAA0dG0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar16SelectedCellDataV9indexPath10Foundation05IndexG0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar18ReadingOrientationO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar18SegmentDestinationO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar20InDateCellGenerationO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar21OutDateCellGenerationO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar21ShouldSelectionActionO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar22SelectionRangePositionO8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV12numberOfRowsSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV14firstDayOfWeekAA04DaysgH0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV15generateInDatesAA0F18DateCellGenerationOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV16generateOutDatesAA0F18DateCellGenerationOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV19hasStrictBoundariesSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV7endDate10Foundation0F0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV8calendar10Foundation0B0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar23ConfigurationParametersV9startDate10Foundation0F0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV014numberOfDaysInC0SivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV014numberOfDaysInC4GridSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV12startSectionSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV13startDayIndexSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV14startCellIndexSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV16sectionIndexMapsSDyS2iGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV4nameAA12MonthsOfYearOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV4rowsSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV7inDatesSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV8outDatesSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar5MonthV8sectionsSaySiGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV10isSelectedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV11dateSection10Foundation4DateV5start_AG3endt5range_Si5monthSi8rowCounttycvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV13dateBelongsToAA9DateOwnerOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV13selectionTypeAA09SelectionF0OSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV16selectedPositionAA014SelectionRangeF0OycvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV3dayAA10DaysOfWeekOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV3rowSiycvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV4cellAA0aC0CSgycvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV4date10Foundation4DateVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV4textSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9CellStateV6columnSiycvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9DateOwnerO8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9MonthSizeV07defaultD012CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9MonthSizeV5datesSDy12CoreGraphics7CGFloatVSay10Foundation4DateVGGSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s15JTAppleCalendar9MonthSizeV6monthsSDy12CoreGraphics7CGFloatVSayAA12MonthsOfYearOGGSgvpMV uses an unsupported swift feature, skipping.
+error SM2011: JTAppleCalendar.xam_sub_JTAppleCalendarView..ctor is unavailable or obsolete, skipping.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM0554: can't handle closures types bound in generics
+error SM0566: Failed to compile the generated swift wrapper code.
+error SM2000: Failed to wrap module JTAppleCalendar.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

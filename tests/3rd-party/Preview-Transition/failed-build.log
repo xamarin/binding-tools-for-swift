@@ -1,0 +1,85 @@
+Building Preview-Transition
+Cloning https://github.com/Ramotion/Preview-Transition into ./repository...
+Successfully checked out 74f93c36d54067dd44f6f419fea855945ace05b0 for https://github.com/Ramotion/Preview-Transition in ./repository.
+XCODEBUILD/iphoneos Preview-Transition
+XCODEBUILD/iphonesimulator Preview-Transition
+GEN    Preview-Transition.framework
+SWIFT-O-MATIC Preview-Transition
+
+69 warnings and 4 errors
+
+warning SM4018: entry _$s17PreviewTransition10MovingViewC16defaultYPosition12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition10MovingViewC16defaultYPosition12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition10MovingViewC16defaultYPosition12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition10MovingViewC16defaultYPosition12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition10MovingViewC4move_9direction8distance10completionySd_AA0C9DirectionO12CoreGraphics7CGFloatVySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition11MovingLabelC16defaultYPosition12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition11MovingLabelC16defaultYPosition12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition11MovingLabelC16defaultYPosition12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition11MovingLabelC16defaultYPosition12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC10difference12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC10difference12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC10difference12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC10difference12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC12topSeparatorSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC12topSeparatorSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC12topSeparatorSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC12topSeparatorSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13isMovedHiddenSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13isMovedHiddenSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13isMovedHiddenSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13isMovedHiddenSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13parallaxTitleSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13parallaxTitleSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13parallaxTitleSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13parallaxTitleSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13separatorViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13separatorViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13separatorViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC13separatorViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC14foregroundViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC14foregroundViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC14foregroundViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC14foregroundViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundAlpha12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundAlpha12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundAlpha12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundAlpha12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC15foregroundColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC7bgImageSo11UIImageViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC7bgImageSo11UIImageViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC7bgImageSo11UIImageViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC7bgImageSo11UIImageViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition12ParallaxCellC9DirectionO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition14ConstraintInfoV10identifierSSSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition14ConstraintInfoV15secondAttributeSo08NSLayoutF0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition14ConstraintInfoV8constant12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition14ConstraintInfoV8relationSo16NSLayoutRelationVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition14ConstraintInfoV9attributeSo17NSLayoutAttributeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition15MovingDirectionO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition21PTTableViewControllerC11currentCellAA08ParallaxG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition21PTTableViewControllerC11currentCellAA08ParallaxG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition21PTTableViewControllerC11currentCellAA08ParallaxG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition21PTTableViewControllerC11currentCellAA08ParallaxG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC7bgImageSo7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC7bgImageSo7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC7bgImageSo7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC7bgImageSo7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC9titleTextSSSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC9titleTextSSSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC9titleTextSSSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition22PTDetailViewControllerC9titleTextSSSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s17PreviewTransition6MovingTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping20xam_sub_ParallaxCellC10difference12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping20xam_sub_ParallaxCellC13separatorViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping20xam_sub_ParallaxCellC15foregroundAlpha12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping20xam_sub_ParallaxCellC15foregroundColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+error SM1559: Unable to find constructor in class $XamWrapping.xam_sub_PTDetailViewController with 2 parameters.
+error SM1559: Unable to find constructor in class $XamWrapping.xam_sub_PTTableViewController with 1 parameters.
+error SM1559: Unable to find constructor in class $XamWrapping.xam_sub_PTTableViewController with 2 parameters.
+error SM7010: Unable to find swift struct 'Foundation.IndexPath'.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

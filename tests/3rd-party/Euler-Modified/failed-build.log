@@ -1,0 +1,21 @@
+../Makefile.inc:17: This test (Euler) will build/run, but the result is ignored because it's a known failure
+Building Euler
+Cloning https://github.com/stephen-hawley/Euler into ./repository...
+Checking out 41786b1b45b62986d9b727543a7439017488c7ba for https://github.com/stephen-hawley/Euler...
+HEAD is now at 41786b1 Organizing for framework.
+Updating submodules for https://github.com/stephen-hawley/Euler...
+Successfully checked out 41786b1b45b62986d9b727543a7439017488c7ba for https://github.com/stephen-hawley/Euler in ./repository.
+[XCODEBUILD/iphoneos] Euler
+[XCODEBUILD/iphonesimulator] Euler
+[GEN]  Euler.framework
+[SWIFT-O-MATIC] Euler
+
+3 warnings and 2 errors
+
+warning SM4018: entry __T05Euler003BxaSdfau uses an unsupported swift feature, skipping.
+warning SM4018: entry __T05Euler004BABhSdfau uses an unsupported swift feature, skipping.
+warning SM4018: entry __T05Euler004qnChSdfau uses an unsupported swift feature, skipping.
+error SM0554: Object reference not set to an instance of an object
+error SM2000: Failed to wrap module Euler.
+make[3]: *** [run-swift-o-matic] Error 1
+make[2]: [build] Error 2 (ignored)

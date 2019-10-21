@@ -1,0 +1,143 @@
+../Makefile.inc:17: This test (Scrollable-GraphView) will build/run, but the result is ignored because it's a known failure
+Building Scrollable-GraphView
+Successfully checked out aa0948b2fce02b1607c4b6855387e114ffcc447a for https://github.com/philackm/Scrollable-GraphView in ./repository.
+[XCODEBUILD/iphoneos] Scrollable-GraphView
+[XCODEBUILD/iphonesimulator] Scrollable-GraphView
+=== BUILD TARGET GraphViewCode OF PROJECT GraphView WITH CONFIGURATION Debug ===
+Code Signing Error: Signing for "GraphViewCode" requires a development team. Select a development team in the project editor.
+Code Signing Error: Code signing is required for product type 'Application' in SDK 'iOS 11.2'
+** BUILD FAILED **
+
+make[2]: *** [build-sdk-iphoneos.stamp] Error 65
+make[2]: *** Waiting for unfinished jobs....
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphView/AppDelegate.swift:17:112: error: 'LaunchOptionsKey' is not a member type of 'UIApplication'
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+                                                                                                 ~~~~~~~~~~~~~ ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphView/AppDelegate.swift:17:10: warning: instance method 'application(_:didFinishLaunchingWithOptions:)' nearly matches optional requirement 'application(_:didFinishLaunchingWithOptions:)' of protocol 'UIApplicationDelegate'
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+         ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphView/AppDelegate.swift:17:10: note: move 'application(_:didFinishLaunchingWithOptions:)' to an extension to silence this warning
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+         ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphView/AppDelegate.swift:17:10: note: make 'application(_:didFinishLaunchingWithOptions:)' private to silence this warning
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+         ^
+    private 
+UIKit.UIApplicationDelegate:7:26: note: requirement 'application(_:didFinishLaunchingWithOptions:)' declared here
+    optional public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool
+                         ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:46:81: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let topConstraint = NSLayoutConstraint(item: self.graphView, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0)
+                                                                                ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:47:83: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let rightConstraint = NSLayoutConstraint(item: self.graphView, attribute: NSLayoutConstraint.Attribute.right, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.right, multiplier: 1, constant: 0)
+                                                                                  ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:48:84: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let bottomConstraint = NSLayoutConstraint(item: self.graphView, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1, constant: 0)
+                                                                                   ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:49:82: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let leftConstraint = NSLayoutConstraint(item: self.graphView, attribute: NSLayoutConstraint.Attribute.left, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.left, multiplier: 1, constant: 0)
+                                                                                 ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:70:74: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let rightConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutConstraint.Attribute.right, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.right, multiplier: 1, constant: -20)
+                                                                         ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:72:72: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let topConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 20)
+                                                                       ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:74:75: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let heightConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 40)
+                                                                          ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:75:74: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let widthConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: label.frame.width * 1.5)
+                                                                         ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:90:79: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let leftConstraint = NSLayoutConstraint(item: reloadLabel, attribute: NSLayoutConstraint.Attribute.left, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.left, multiplier: 1, constant: 20)
+                                                                              ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:92:78: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let topConstraint = NSLayoutConstraint(item: reloadLabel, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self.view, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 20)
+                                                                             ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+UIKit.NSLayoutConstraint:13:14: note: did you mean 'firstAttribute'?
+    open var firstAttribute: NSLayoutAttribute { get }
+             ^
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:94:81: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let heightConstraint = NSLayoutConstraint(item: reloadLabel, attribute: NSLayoutConstraint.Attribute.height, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: 40)
+                                                                                ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/GraphView/GraphViewCode/ViewController.swift:95:80: error: type 'NSLayoutConstraint' has no member 'Attribute'
+        let widthConstraint = NSLayoutConstraint(item: reloadLabel, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: nil, attribute: NSLayoutConstraint.Attribute.notAnAttribute, multiplier: 1, constant: reloadLabel.frame.width * 1.5)
+                                                                               ^~~~~~~~~~~~~~~~~~ ~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Plots/Plot.swift:212:52: error: type 'RunLoop' has no member 'Mode'
+        displayLink.add(to: RunLoop.main, forMode: RunLoop.Mode.common)
+                                                   ^~~~~~~ ~~~~
+ObjectiveC.NSObject:160:15: note: did you mean 'zone'?
+    open func zone() -> NSZone!
+              ^
+ObjectiveC.NSObject:162:21: note: did you mean 'zone'?
+    open class func zone() -> NSZone!
+                    ^
+Foundation.RunLoop:8:15: note: did you mean 'runMode'?
+    open func runMode(_ mode: RunLoopMode, beforeDate limitDate: Date) -> Bool
+              ^
+=== BUILD TARGET GraphViewCode OF PROJECT GraphView WITH CONFIGURATION Debug ===
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Plots/LinePlot.swift:136:59: error: use of undeclared type 'CAShapeLayerLineJoin'
+fileprivate func convertFromCAShapeLayerLineJoin(_ input: CAShapeLayerLineJoin) -> String {
+                                                          ^~~~~~~~~~~~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Plots/LinePlot.swift:141:58: error: use of undeclared type 'CAShapeLayerLineCap'
+fileprivate func convertFromCAShapeLayerLineCap(_ input: CAShapeLayerLineCap) -> String {
+                                                         ^~~~~~~~~~~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Plots/LinePlot.swift:29:65: error: use of unresolved identifier 'CAShapeLayerLineJoin'
+    open var lineJoin: String = convertFromCAShapeLayerLineJoin(CAShapeLayerLineJoin.round)
+                                                                ^~~~~~~~~~~~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Plots/LinePlot.swift:32:63: error: use of unresolved identifier 'CAShapeLayerLineCap'
+    open var lineCap: String = convertFromCAShapeLayerLineCap(CAShapeLayerLineCap.round)
+                                                              ^~~~~~~~~~~~~~~~~~~
+=== BUILD TARGET GraphViewCode OF PROJECT GraphView WITH CONFIGURATION Debug ===
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Drawing/LineDrawingLayer.swift:131:68: error: use of undeclared type 'CAShapeLayerLineJoin'
+fileprivate func convertToCAShapeLayerLineJoin(_ input: String) -> CAShapeLayerLineJoin {
+                                                                   ^~~~~~~~~~~~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Drawing/LineDrawingLayer.swift:136:67: error: use of undeclared type 'CAShapeLayerLineCap'
+fileprivate func convertToCAShapeLayerLineCap(_ input: String) -> CAShapeLayerLineCap {
+                                                                  ^~~~~~~~~~~~~~~~~~~
+=== BUILD TARGET GraphViewCode OF PROJECT GraphView WITH CONFIGURATION Debug ===
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Drawing/GradientDrawingLayer.swift:73:59: error: use of undeclared type 'CAShapeLayerLineJoin'
+fileprivate func convertFromCAShapeLayerLineJoin(_ input: CAShapeLayerLineJoin) -> String {
+                                                          ^~~~~~~~~~~~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Drawing/GradientDrawingLayer.swift:18:25: error: use of unresolved identifier 'CAShapeLayerFillRule'
+        mask.fillRule = CAShapeLayerFillRule.evenOdd
+                        ^~~~~~~~~~~~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Drawing/GradientDrawingLayer.swift:24:163: error: use of unresolved identifier 'CAShapeLayerLineJoin'
+    init(frame: CGRect, startColor: UIColor, endColor: UIColor, gradientType: ScrollableGraphViewGradientType, lineJoin: String = convertFromCAShapeLayerLineJoin(CAShapeLayerLineJoin.round), lineDrawingLayer: LineDrawingLayer) {
+                                                                                                                                                                  ^~~~~~~~~~~~~~~~~~~~
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Scrollable-GraphView/repository/Classes/Drawing/ReferenceLineDrawingView.swift:270:14: error: type 'NSAttributedString' has no member 'Key'
+            [NSAttributedString.Key.font:self.settings.referenceLineLabelFont])
+             ^~~~~~~~~~~~~~~~~~ ~~~
+** BUILD FAILED **
+
+make[2]: *** [build-sdk-iphonesimulator.stamp] Error 65
+make[1]: [build] Error 2 (ignored)

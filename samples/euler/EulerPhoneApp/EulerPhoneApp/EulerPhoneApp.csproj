@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectGuid>{6C52242F-5645-41AB-9C51-4ACDD16A5192}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>EulerPhoneApp</RootNamespace>
+    <AssemblyName>EulerPhoneApp</AssemblyName>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer: Steve Hawley (765QS4H7XE)</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <IOSDebuggerPort>17365</IOSDebuggerPort>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodesignProvision>VS: org.plinth.EulerPhoneApp Development</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer: Steve Hawley (765QS4H7XE)</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodesignProvision>VS: org.plinth.EulerPhoneApp Development</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer: Steve Hawley (765QS4H7XE)</CodesignKey>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodesignProvision>VS: org.plinth.EulerPhoneApp Development</CodesignProvision>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer: Steve Hawley (765QS4H7XE)</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>29372</IOSDebuggerPort>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodesignProvision>VS: org.plinth.EulerPhoneApp Development</CodesignProvision>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="SwiftRuntimeLibrary.iOS">
+      <HintPath>..\..\..\..\SwiftRuntimeLibrary.iOS\bin\Debug\SwiftRuntimeLibrary.iOS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Contents.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <InterfaceDefinition Include="Main.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="ViewController.cs" />
+    <Compile Include="ViewController.designer.cs">
+      <DependentUpon>ViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\tsout\TopLevelEntitiesEulerPhone.cs">
+      <Link>TopLevelEntitiesEulerPhone.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="..\..\tsout\XamWrapping.framework">
+      <Kind>Framework</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\EulerPhone.framework">
+      <Kind>Framework</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\..\..\swiftglue\bin\Debug\iphone\FinalProduct\XamGlue.framework">
+      <Kind>Framework</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftCore.dylib">
+      <Link>Resources\libswiftCore.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftCoreFoundation.dylib">
+      <Link>Resources\libswiftCoreFoundation.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftCoreGraphics.dylib">
+      <Link>Resources\libswiftCoreGraphics.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftCoreImage.dylib">
+      <Link>Resources\libswiftCoreImage.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftDarwin.dylib">
+      <Link>Resources\libswiftDarwin.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftDispatch.dylib">
+      <Link>Resources\libswiftDispatch.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftFoundation.dylib">
+      <Link>Resources\libswiftFoundation.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftMetal.dylib">
+      <Link>Resources\libswiftMetal.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftObjectiveC.dylib">
+      <Link>Resources\libswiftObjectiveC.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftos.dylib">
+      <Link>Resources\libswiftos.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftQuartzCore.dylib">
+      <Link>Resources\libswiftQuartzCore.dylib</Link>
+    </BundleResource>
+    <BundleResource Include="..\..\..\..\..\..\..\..\..\..\Applications\Xcode92.app\Contents\Developer\Toolchains\XcodeDefault.xctoolchain\usr\lib\swift\iphonesimulator\libswiftSwiftOnoneSupport.dylib">
+      <Link>Resources\libswiftSwiftOnoneSupport.dylib</Link>
+    </BundleResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy TabsToSpaces="False" RemoveTrailingWhitespace="True" NoTabsAfterNonTabs="False" EolMarker="Native" FileWidth="80" TabWidth="8" IndentWidth="8" scope="text/x-csharp" />
+          <CSharpFormattingPolicy IndentBlock="True" IndentBraces="False" IndentSwitchCaseSection="True" LabelPositioning="OneLess" NewLinesForBracesInMethods="True" SpaceWithinMethodDeclarationParenthesis="False" SpaceBetweenEmptyMethodDeclarationParentheses="False" SpaceWithinMethodCallParentheses="False" SpaceBetweenEmptyMethodCallParentheses="False" SpaceAfterControlFlowStatementKeyword="True" SpaceWithinExpressionParentheses="False" SpaceWithinCastParentheses="False" SpaceWithinOtherParentheses="False" SpaceAfterCast="False" SpacesIgnoreAroundVariableDeclaration="False" SpaceBetweenEmptySquareBrackets="False" SpaceWithinSquareBrackets="False" SpaceAfterColonInBaseTypeDeclaration="True" SpaceAfterComma="True" SpaceAfterDot="False" SpaceAfterSemicolonsInForStatement="True" SpaceBeforeColonInBaseTypeDeclaration="True" SpaceBeforeComma="False" SpaceBeforeDot="False" SpaceBeforeSemicolonsInForStatement="False" SpacingAroundBinaryOperator="Single" WrappingPreserveSingleLine="True" WrappingKeepStatementsOnSingleLine="True" PlaceSystemDirectiveFirst="True" IndentSwitchSection="False" NewLinesForBracesInTypes="False" NewLinesForBracesInProperties="False" NewLinesForBracesInAccessors="False" NewLinesForBracesInAnonymousMethods="False" NewLinesForBracesInControlBlocks="False" NewLinesForBracesInAnonymousTypes="False" NewLinesForBracesInObjectCollectionArrayInitializers="False" NewLinesForBracesInLambdaExpressionBody="False" NewLineForElse="False" NewLineForCatch="False" NewLineForFinally="False" NewLineForMembersInObjectInit="False" NewLineForMembersInAnonymousTypes="False" NewLineForClausesInQuery="False" SpacingAfterMethodDeclarationName="True" SpaceAfterMethodCallName="True" SpaceBeforeOpenSquareBracket="True" scope="text/x-csharp" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

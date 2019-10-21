@@ -1,0 +1,553 @@
+Building Instructions
+# This repo requires git-lfs
+test -f /usr/local/bin/git-lfs || brew install git-lfs || true
+Successfully checked out 7c5d301ea94b6c33ac7f074fdd0a9d2565e20e10 for https://github.com/ephread/Instructions in ./repository.
+XCODEBUILD/iphoneos Instructions
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:61:19: warning: 'coachMarksController(_:willShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:willShow:afterChanging:at:)
+        delegate?.coachMarksController(self, willShow: &coachMark,
+                  ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:66:19: warning: 'coachMarksController(_:didShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:didShow:afterChanging:at:)
+        delegate?.coachMarksController(self, didShow: coachMark,
+                  ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:61:19: warning: 'coachMarksController(_:willShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:willShow:afterChanging:at:)
+        delegate?.coachMarksController(self, willShow: &coachMark,
+                  ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:66:19: warning: 'coachMarksController(_:didShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:didShow:afterChanging:at:)
+        delegate?.coachMarksController(self, didShow: coachMark,
+                  ^
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator Instructions
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:61:19: warning: 'coachMarksController(_:willShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:willShow:afterChanging:at:)
+        delegate?.coachMarksController(self, willShow: &coachMark,
+                  ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:66:19: warning: 'coachMarksController(_:didShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:didShow:afterChanging:at:)
+        delegate?.coachMarksController(self, didShow: coachMark,
+                  ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Internal/CoachMarksViewController.swift:155:60: warning: 'windowLevel' was deprecated in iOS 1.2.1: specify the window level using CoachMarkController.start(in: ) instead
+        window.windowLevel = windowLevel ?? overlayManager.windowLevel
+                                                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:96:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Managers/Internal/CoachMarkDisplayManager.swift:169:59: warning: 'animationDuration' was deprecated in iOS 1.2.1: use the custom coach mark animation API instead.
+        transitionManager.parameters.duration = coachMark.animationDuration
+                                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:61:19: warning: 'coachMarksController(_:willShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:willShow:afterChanging:at:)
+        delegate?.coachMarksController(self, willShow: &coachMark,
+                  ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Instructions/repository/Sources/Instructions/Core/Public/Extensions/CoachMarksController+Proxy.swift:66:19: warning: 'coachMarksController(_:didShow:afterSizeTransition:at:)' was deprecated in iOS 1.2.1: use coachMarksController(_:didShow:afterChanging:at:)
+        delegate?.coachMarksController(self, didShow: coachMark,
+                  ^
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    Instructions.framework
+SWIFT-O-MATIC Instructions
+
+418 warnings and 14 errors
+
+warning SM4018: entry _$s12Instructions0A8RootViewC11passthroughSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions0A8RootViewC11passthroughSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions0A8RootViewC11passthroughSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions0A8RootViewC11passthroughSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions10PauseStyleO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC04stopB011immediately11userDidSkip18shouldCallDelegate10completionySb_S2byycSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC05startB022withNumberOfCoachMarksySi_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC10dataSourceAA029CoachMarksControllerProxyDataE0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC10dataSourceAA029CoachMarksControllerProxyDataE0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC10dataSourceAA029CoachMarksControllerProxyDataE0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC10dataSourceAA029CoachMarksControllerProxyDataE0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC10showOrStopyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC12currentIndexSivMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC12currentIndexSivgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC12currentIndexSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC12currentIndexSivsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC12showPrevious24numberOfCoachMarksToSkipySi_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC16currentCoachMarkAA0eF0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC16currentCoachMarkAA0eF0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC16currentCoachMarkAA0eF0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC16currentCoachMarkAA0eF0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC17showNextCoachMark12hidePreviousySb_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC21showPreviousCoachMark04hideE0ySb_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC22createAndShowCoachMark13afterResuming8changingySb_AA19ConfigurationChangeOtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC24coachMarksViewControllerAA05CoachefG0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC24coachMarksViewControllerAcA05CoachefG0C_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC5pause3andyAA10PauseStyleO_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC5resetyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC6pausedSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC6pausedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC6resumeyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC7startedSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC7startedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC8delegateAA33CoachMarksControllerProxyDelegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC8delegateAA33CoachMarksControllerProxyDelegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC8delegateAA33CoachMarksControllerProxyDelegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC8delegateAA33CoachMarksControllerProxyDelegate_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11FlowManagerC8showNext24numberOfCoachMarksToSkipySi_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC10cutoutPathSo08UIBezierE0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC10cutoutPathSo08UIBezierE0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC10cutoutPathSo08UIBezierE0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC10cutoutPathSo08UIBezierE0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC26allowTouchInsideCutoutPathSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC26allowTouchInsideCutoutPathSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC26allowTouchInsideCutoutPathSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC26allowTouchInsideCutoutPathSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC6holderSo6UIViewCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions11OverlayViewC9ornamentsSo6UIViewCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13AnimationTypeO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC04bodyD005arrowD00F11Orientation0F6Offset05coachC17InnerLayoutHelperAcA0bc4BodyD0_p_AA0bc5ArrowD0_pSgAA0bcnG0OSg12CoreGraphics7CGFloatVSgAA0bcjkL0CtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC04bodyD0AA0bc4BodyD0_pvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC05arrowD0AA0bc5ArrowD0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC05arrowD0AA0bc5ArrowD0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC11arrowOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC11arrowOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC11arrowOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC11arrowOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC11nextControlSo9UIControlCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC11nextControlSo9UIControlCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC16arrowOrientationAA0bc5ArrowF0OSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC16arrowOrientationAA0bc5ArrowF0OSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13CoachMarkViewC19changeArrowPosition2to6offsetyAA0bcG0O_12CoreGraphics7CGFloatVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13RotationStyleO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions13SnapshottableTL uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions14OverlayManagerC0024overlayViewstorage_wnAHf33_15BBDBC63757F4C89F6B2A28963D173FLLAA0B4ViewCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC0024overlayViewstorage_wnAHf33_15BBDBC63757F4C89F6B2A28963D173FLLAA0B4ViewCSgvpfi uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions14OverlayManagerC0032overlayStyleManagerstorage_hIADj33_15BBDBC63757F4C89F6B2A28963D173FLLAA0b5StyleC0_pSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC0032overlayStyleManagerstorage_hIADj33_15BBDBC63757F4C89F6B2A28963D173FLLAA0b5StyleC0_pSgvpfi uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions14OverlayManagerC0039singleTapGestureRecognizerstorage_hrGEm33_15BBDBC63757F4C89F6B2A28963D173FLLSo22UITapGestureRecognizerCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC0039singleTapGestureRecognizerstorage_hrGEm33_15BBDBC63757F4C89F6B2A28963D173FLLSo22UITapGestureRecognizerCSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC02isB9InvisibleSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC02isB9InvisibleSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC04showB0_10completionySb_ySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC10cutoutPathSo08UIBezierE0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC10cutoutPathSo08UIBezierE0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC10cutoutPathSo08UIBezierE0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC10cutoutPathSo08UIBezierE0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC10showWindow_10completionySb_ySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11overlayViewAA0bE0CvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11overlayViewAA0bE0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11overlayViewAA0bE0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11overlayViewAA0bE0CvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11windowLevelSo08UIWindowE0avMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11windowLevelSo08UIWindowE0avgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11windowLevelSo08UIWindowE0avpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC11windowLevelSo08UIWindowE0avsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC14isWindowHiddenSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC14isWindowHiddenSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC14showCutoutPath_12withDurationySb_SdtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC14statusBarStyleSo08UIStatuseF0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC14statusBarStyleSo08UIStatuseF0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15blurEffectStyleSo06UIBlureF0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15blurEffectStyleSo06UIBlureF0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15blurEffectStyleSo06UIBlureF0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15blurEffectStyleSo06UIBlureF0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15overlayDelegateAA0bcE0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15overlayDelegateAA0bcE0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15overlayDelegateAA0bcE0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC15overlayDelegateAA0bcE0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC17viewDidTransitionyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC18viewWillTransitionyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC21fadeAnimationDurationSdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC21fadeAnimationDurationSdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC21fadeAnimationDurationSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC21fadeAnimationDurationSdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC26allowTouchInsideCutoutPathSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC26allowTouchInsideCutoutPathSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC26allowTouchInsideCutoutPathSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC26allowTouchInsideCutoutPathSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC5colorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC5colorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC5colorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC5colorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC8allowTapSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC8allowTapSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC8allowTapSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC8allowTapSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC9enableTapSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC9enableTapSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC9enableTapSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerC9enableTapSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions14OverlayManagerCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC011makeDefaultB5Views9withArrow0H8NextText16arrowOrientationAA0bc4BodyF4ViewC04bodyO0_AA0bcifO0CSg0lO0tSb_SbAA0bciM0OSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC011makeDefaultB5Views9withArrow16arrowOrientation8hintText04nextM0AA0bc4BodyF4ViewC04bodyP0_AA0bcifP0CSg0jP0tSb_AA0bciK0OSgS2SSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC013updateCurrentbC09usingView15pointOfInterest15cutoutPathMakerySo6UIViewCSg_So7CGPointVSgSo08UIBezierM0CSo6CGRectVcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC04makebC03for15pointOfInterest15cutoutPathMakerAA0bC0VSo6UIViewCSg_So7CGPointVSgSo08UIBezierK0CSo6CGRectVcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC11flowManagerAA04FlowF0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC16makeDefaultArrow15withOrientationAA0bcgF4ViewCAA0bcgI0OSg_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC20instructionsRootView11flowManagerAcA0afG0C_AA04FlowI0CtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC20instructionsRootViewAA0afG0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions15CoachMarkHelperC6update05coachC09usingView15pointOfInterest15cutoutPathMakeryAA0bC0Vz_So6UIViewCSgSo7CGPointVSgSo08UIBezierM0CSo6CGRectVcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions17CoachMarkBodyViewTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions17CoachMarkPositionO15layoutAttributeSo08NSLayoutF0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions17CoachMarkPositionO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions17CoachMarkSkipViewPAAE11skipControlSo9UIControlCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions17CoachMarkSkipViewPAASo6UIViewCRbzrlE02asE0AESgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions17CoachMarkSkipViewTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions18CoachMarkArrowViewTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19AnimationParametersV15keyframeOptionsSo014UIViewKeyframebE0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19AnimationParametersV5delaySdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19AnimationParametersV7optionsSo06UIViewB7OptionsVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19AnimationParametersV8durationSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19ConfigurationChangeO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC010backgroundD0So6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC010backgroundD0So6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC010backgroundD0So6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC010backgroundD0So6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC012visualEffectD0So08UIVisualfD0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC012visualEffectD0So08UIVisualfD0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC012visualEffectD0So08UIVisualfD0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlaySnapshotViewC012visualEffectD0So08UIVisualfD0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19OverlayStyleManagerTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19PresentationFashionO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions19StatusBarVisibilityO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions20CoachMarksControllerC0017flowstorage_wEEFc33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA11FlowManagerCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC0017flowstorage_wEEFc33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA11FlowManagerCSgvpfi uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions20CoachMarksControllerC0019helperstorage_BJEEd33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA0B10MarkHelperCSgSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC0019helperstorage_BJEEd33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA0B10MarkHelperCSgSgvpfi uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions20CoachMarksControllerC0020overlaystorage_mdAJd33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA14OverlayManagerCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC0020overlaystorage_mdAJd33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA14OverlayManagerCSgvpfi uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions20CoachMarksControllerC0037coachMarksViewControllerstorage_cmGFl33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA0bc4ViewD0CSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC0037coachMarksViewControllerstorage_cmGFl33_BC66BB5D8A069CE78924A87F8EC01AC4LLAA0bc4ViewD0CSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC10dataSourceAA0bcd4DataF0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC10dataSourceAA0bcd4DataF0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC10dataSourceAA0bcd4DataF0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC10dataSourceAA0bcd4DataF0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC13rotationStyleAA08RotationF0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC13rotationStyleAA08RotationF0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC13rotationStyleAA08RotationF0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC13rotationStyleAA08RotationF0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC14statusBarStyleSo08UIStatusfG0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC14statusBarStyleSo08UIStatusfG0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC14statusBarStyleSo08UIStatusfG0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC14statusBarStyleSo08UIStatusfG0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC17animationDelegateAA0bcd9AnimationF0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC17animationDelegateAA0bcd9AnimationF0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC17animationDelegateAA0bcd9AnimationF0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC17animationDelegateAA0bcd9AnimationF0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC19statusBarVisibilityAA06StatusfG0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC19statusBarVisibilityAA06StatusfG0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC19statusBarVisibilityAA06StatusfG0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC19statusBarVisibilityAA06StatusfG0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC21interfaceOrientationsAA09InterfaceF0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC21interfaceOrientationsAA09InterfaceF0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC21interfaceOrientationsAA09InterfaceF0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC21interfaceOrientationsAA09InterfaceF0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC4flowAA11FlowManagerCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC4flowAA11FlowManagerCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC6helperAA0B10MarkHelperCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC6helperAA0B10MarkHelperCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC7overlayAA14OverlayManagerCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC7overlayAA14OverlayManagerCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC8delegateAA0bcD8Delegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC8delegateAA0bcD8Delegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC8delegateAA0bcD8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC8delegateAA0bcD8Delegate_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerC8skipViewAA0b8MarkSkipF0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions20CoachMarksControllerCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions21CoachMarkLayoutHelperC11constraints3for05coachC010parentView15layoutDirection10passNumberSaySo18NSLayoutConstraintCGAA0bcJ0C_AA0bC0VSo6UIViewCSo015UIUserInterfacedL0VSgSitFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions21CoachMarkLayoutHelperC15layoutDirectionSo015UIUserInterfacedG0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions21CoachMarkLayoutHelperC15layoutDirectionSo015UIUserInterfacedG0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions21CoachMarkLayoutHelperC15layoutDirectionSo015UIUserInterfacedG0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions21CoachMarkLayoutHelperC15layoutDirectionSo015UIUserInterfacedG0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions21CoachMarkLayoutHelperCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22OverlayManagerDelegatePAA13SnapshottableTb uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22OverlayManagerDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC10dataSourceAA029CoachMarksControllerProxyDataG0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC10dataSourceAA029CoachMarksControllerProxyDataG0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC10dataSourceAA029CoachMarksControllerProxyDataG0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC10dataSourceAA029CoachMarksControllerProxyDataG0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC17updateTopConstant4from12CoreGraphics7CGFloatVAH_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC19presentationFashionAA012PresentationG0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC19presentationFashionAA012PresentationG0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC19presentationFashionAA012PresentationG0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC19presentationFashionAA012PresentationG0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC4hide04skipC08durationyAA09CoachMarkbC0_p_SdtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC4show04skipC08durationyAA09CoachMarkbC0_p_SdtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerC6update04skipC015withConstraintsyAA09CoachMarkbC0_p_SaySo18NSLayoutConstraintCGSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions22SkipViewDisplayManagerCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC05coachC12LayoutHelperAcA0bcgH0C_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC06createbC4View4from2atAA0bcG0CAA0bC0V_SitFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC07overlayE0AA07OverlayE0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC07overlayE0AA07OverlayE0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC07overlayE0AA07OverlayE0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC07overlayE0AA07OverlayE0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC10dataSourceAA0b24MarksControllerProxyDataG0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC10dataSourceAA0b24MarksControllerProxyDataG0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC10dataSourceAA0b24MarksControllerProxyDataG0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC10dataSourceAA0b24MarksControllerProxyDataG0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC17animationDelegateAA0b29MarksControllerAnimationProxyG0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC17animationDelegateAA0b29MarksControllerAnimationProxyG0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC17animationDelegateAA0b29MarksControllerAnimationProxyG0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC17animationDelegateAA0b29MarksControllerAnimationProxyG0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC4hide05coachC4View4from2at8animated16beforeTransition10completionySo6UIViewC_AA0bC0VSiS2byycSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions23CoachMarkDisplayManagerC7showNew05coachC4View4from2at8animated10completionyAA0bcI0C_AA0bC0VSiSbyycSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC11nextControlSo9UIControlCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC11nextControlSo9UIControlCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC13isHighlightedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC22highlightArrowDelegateAA0bcd9HighlighthI0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC22highlightArrowDelegateAA0bcd9HighlighthI0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC22highlightArrowDelegateAA0bcd9HighlighthI0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC22highlightArrowDelegateAA0bcd9HighlighthI0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC5frame8hintText04nextI0ACSo6CGRectV_S2SSgtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC9hintLabelSo06UITextF0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC9hintLabelSo06UITextF0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC9nextLabelSo7UILabelCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkBodyDefaultViewC9nextLabelSo7UILabelCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkSkipDefaultViewC11skipControlSo9UIControlCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarkSkipDefaultViewC11skipControlSo9UIControlCSgvpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions24CoachMarksViewControllerC0033instructionsRootViewstorage_BbGHj33_2DED80EC4BDC61AE1930F1E46E9E56C7LLAA0a4RootD0CSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC0033instructionsRootViewstorage_BbGHj33_2DED80EC4BDC61AE1930F1E46E9E56C7LLAA0a4RootD0CSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC016instructionsRootD0AA0agD0CvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC016instructionsRootD0AA0agD0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC016instructionsRootD0AA0agD0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC016instructionsRootD0AA0agD0CvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD0AA0b8MarkSkipD0_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD0AA0b8MarkSkipD0_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD0AA0b8MarkSkipD0_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD0AA0b8MarkSkipD0_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD14DisplayManagerAA04SkipdgH0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD14DisplayManagerAA04SkipdgH0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD14DisplayManagerAA04SkipdgH0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC04skipD14DisplayManagerAA04SkipdgH0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC07addRootD02toySo8UIWindowC_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC07currentb4MarkD0AA0bgD0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC07currentb4MarkD0AA0bgD0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC07currentb4MarkD0AA0bgD0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC07currentb4MarkD0AA0bgD0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC13rotationStyleAA08RotationG0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC13rotationStyleAA08RotationG0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC13rotationStyleAA08RotationG0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC13rotationStyleAA08RotationG0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC14attachToWindow2ofySo06UIViewE0C_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC14overlayManagerAA07OverlayG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC14overlayManagerAA07OverlayG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC14overlayManagerAA07OverlayG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC14overlayManagerAA07OverlayG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC16detachFromWindowyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC16shouldAutorotateSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC19statusBarVisibilityAA06StatusgH0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC19statusBarVisibilityAA06StatusgH0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC19statusBarVisibilityAA06StatusgH0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC19statusBarVisibilityAA06StatusgH0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC20customStatusBarStyleSo08UIStatushI0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC20customStatusBarStyleSo08UIStatushI0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC20customStatusBarStyleSo08UIStatushI0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC20customStatusBarStyleSo08UIStatushI0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC21interfaceOrientationsAA09InterfaceG0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC21interfaceOrientationsAA09InterfaceG0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC21interfaceOrientationsAA09InterfaceG0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC21interfaceOrientationsAA09InterfaceG0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC22prefersStatusBarHiddenSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC23coachMarkDisplayManagerAA0bghI0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC23coachMarkDisplayManagerAA0bghI0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC23coachMarkDisplayManagerAA0bghI0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC23coachMarkDisplayManagerAA0bghI0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC23preferredStatusBarStyleSo08UIStatushI0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC30supportedInterfaceOrientationsSo26UIInterfaceOrientationMaskVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC6attach2to4over2atySo8UIWindowC_So06UIViewE0CSo0J5LevelaSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC6attach2toySo06UIViewE0C_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC8delegateAA0bcdE8Delegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC8delegateAA0bcdE8Delegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC8delegateAA0bcdE8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions24CoachMarksViewControllerC8delegateAA0bcdE8Delegate_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC05coachC0AA0bC0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC05coachC0AcA0bC0V_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10animationsyAA0bcD17ManagementContext_pcSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10animationsyAA0bcD17ManagementContext_pcSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10animationsyAA0bcD17ManagementContext_pcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10animationsyAA0bcD17ManagementContext_pcSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10completionySbcSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10completionySbcSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10completionySbcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10completionySbcSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10parametersAA0D10ParametersVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10parametersAA0D10ParametersVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10parametersAA0D10ParametersVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC10parametersAA0D10ParametersVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC13animationTypeAA0dG0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC13animationTypeAA0dG0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC13animationTypeAA0dG0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC13animationTypeAA0dG0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC13createContextAA0bcd10ManagementG0_pyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkAnimationManagerC7animate_10animations10completionyAA0D4TypeO_yAA0bcD17ManagementContext_pcySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkArrowDefaultViewC11orientationAcA0bcD11OrientationO_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions25CoachMarkArrowOrientationO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkInnerLayoutHelperC19verticalConstraints3for2in14withPropertiesSaySo18NSLayoutConstraintCGSo6UIViewC8bodyView_AL05arrowQ0t_AlA0bC16ArrowOrientationO11orientation_12CoreGraphics7CGFloatV0gS6OffsetttFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkInnerLayoutHelperC26horizontalArrowConstraints3for12withPosition0G6OffsetSo18NSLayoutConstraintCSo6UIViewC8bodyView_AK05arrowR0t_AA0bcL0O12CoreGraphics7CGFloatVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkInnerLayoutHelperCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC05coachC0AA0bC0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC05coachC0AcA0bC0V_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10animationsyAA0bC26AnimationManagementContext_pcSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10animationsyAA0bC26AnimationManagementContext_pcSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10animationsyAA0bC26AnimationManagementContext_pcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10animationsyAA0bC26AnimationManagementContext_pcSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10completionySbcSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10completionySbcSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10completionySbcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10completionySbcSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10parametersAA19AnimationParametersVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10parametersAA19AnimationParametersVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10parametersAA19AnimationParametersVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC10parametersAA19AnimationParametersVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC12initialStateyycSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC12initialStateyycSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC12initialStateyycSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC12initialStateyycSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC13animationTypeAA09AnimationG0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC13animationTypeAA09AnimationG0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC13animationTypeAA09AnimationG0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC13animationTypeAA09AnimationG0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC13createContextAA0bc19AnimationManagementG0_pyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions26CoachMarkTransitionManagerC7animate_10animations16fromInitialState10completionyAA13AnimationTypeO_yAA0bcL17ManagementContext_pcyycSgySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC04showC0_12withDuration10completionySb_SdySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC10showCutout_12withDuration10completionySb_SdySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC11overlayViewAA0cG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC11overlayViewAA0cG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC11overlayViewAA0cG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC11overlayViewAA0cG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC16snapshotDelegateAA13Snapshottable_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC16snapshotDelegateAA13Snapshottable_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC16snapshotDelegateAA13Snapshottable_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC16snapshotDelegateAA13Snapshottable_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC17viewDidTransitionyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC18viewWillTransitionyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27BlurringOverlayStyleManagerC5styleACSo012UIBlurEffectD0V_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27CoachMarkComputedPropertiesV15layoutDirectionSo021UIUserInterfaceLayoutG0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27CoachMarkComputedPropertiesV18horizontalAligmentAA0bc10HorizontalG0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions27CoachMarkHorizontalAligmentO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions28CoachMarkAnimationManagementPAA0bcdE7ContextTb uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions28CoachMarkAnimationManagementTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions28CoachMarksControllerDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperC13configureHint_5addToySo06UITextF0C_So6UIViewCtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperC13configureNext_5addToySo7UILabelC_So6UIViewCtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperC18configureSeparator_5addToySo6UIViewC_AGtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperC19configureBackground_5addToySo6UIViewC_AGtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperC19configureSimpleHint_5addToySo06UITextF0C_So6UIViewCtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperC23makeVerticalConstraints3forSaySo18NSLayoutConstraintCGSo06UITextF0C_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperC25makeHorizontalConstraints3forSaySo18NSLayoutConstraintCGSo06UITextF0C9hintLabel_So7UILabelC04nextP0So6UIViewC9separatort_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarkBodyDefaultViewHelperCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30CoachMarksControllerDataSourceTL uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions30TranslucentOverlayStyleManagerC0025overlayLayerstorage_hqFBg33_1C276259CBF9E3C5483B128836DE1179LLSo7CALayerCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC0025overlayLayerstorage_hqFBg33_1C276259CBF9E3C5483B128836DE1179LLSo7CALayerCSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC04showC0_12withDuration10completionySb_SdySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC10showCutout_12withDuration10completionySb_SdySbcSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC11overlayViewAA0cG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC11overlayViewAA0cG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC11overlayViewAA0cG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC11overlayViewAA0cG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC17viewDidTransitionyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC18viewWillTransitionyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions30TranslucentOverlayStyleManagerC5colorACSo7UIColorC_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions32CoachMarkAnimationManagerContextV05coachC0AA0bC0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions32CoachMarkAnimationManagerContextV10parametersAA0D10ParametersVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions32CoachMarksViewControllerDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions33CoachMarksControllerProxyDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions35CoachMarkAnimationManagementContextTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions35CoachMarkBodyHighlightArrowDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions35CoachMarksControllerProxyDataSourceTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions37CoachMarksControllerAnimationDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions42CoachMarksControllerAnimationProxyDelegateTL uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s12Instructions8MaskViewC10layerClassyXlXpvgZ:
+Parameter name: ret, skipping.
+warning SM4018: entry _$s12Instructions8MaskViewC10layerClassyXlXpvgZ uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions8MaskViewC10shapeLayerSo07CAShapeE0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions8MaskViewC10shapeLayerSo07CAShapeE0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV010gapBetweenbC13AndCutoutPath12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV10cutoutPathSo08UIBezierE0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV15pointOfInterestSo7CGPointVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV16arrowOrientationAA0bc5ArrowE0OSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV16horizontalMargin12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV17animationDurationSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV17disableOverlayTapSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV21displayOverCutoutPathSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV22gapBetweenBodyAndArrow12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV26allowTouchInsideCutoutPathSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12Instructions9CoachMarkV8maxWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo6UIViewC12InstructionsE16isOutOfSuperviewSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIImageC12InstructionsE07namedInB0ABSgSS_tcfC uses an unsupported swift feature, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM2011: Instructions.OverlayManager.materializeforset_ is deprecated, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM0554: can't handle closures types bound in generics
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM2011: Instructions.CoachMarksController.start is deprecated, skipping.
+error SM0566: Failed to compile the generated swift wrapper code.
+error SM2000: Failed to wrap module Instructions.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

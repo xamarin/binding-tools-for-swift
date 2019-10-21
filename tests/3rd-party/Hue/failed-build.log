@@ -1,0 +1,335 @@
+Building Hue
+Cloning https://github.com/hyperoslo/Hue into ./repository...
+Successfully checked out 49c81b73b0d6e98db0ce8cfff50ca9f19ee9e54c for https://github.com/hyperoslo/Hue in ./repository.
+XCODEBUILD/iphoneos Hue
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:52:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func alpha(_ value: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:61:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func hex(hashPrefix: Bool = true) -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:77:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isDark: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlackOrWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:87:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlack: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:92:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func gradient(_ transform: ((_ gradient: inout CAGradientLayer) -> CAGradientLayer)? = nil) -> CAGradientLayer {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:199:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:216:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:228:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:233:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:237:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:244:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:52:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func alpha(_ value: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:61:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func hex(hashPrefix: Bool = true) -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:77:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isDark: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlackOrWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:87:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlack: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:92:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func gradient(_ transform: ((_ gradient: inout CAGradientLayer) -> CAGradientLayer)? = nil) -> CAGradientLayer {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:199:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:216:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:228:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:233:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:237:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:244:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator Hue
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:52:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func alpha(_ value: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:61:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func hex(hashPrefix: Bool = true) -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:77:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isDark: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlackOrWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:87:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlack: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:92:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func gradient(_ transform: ((_ gradient: inout CAGradientLayer) -> CAGradientLayer)? = nil) -> CAGradientLayer {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:199:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:216:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:228:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:233:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:237:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:244:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:39:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func color(minSaturation: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:52:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func alpha(_ value: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:61:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func hex(hashPrefix: Bool = true) -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:77:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isDark: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlackOrWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:87:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isBlack: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:92:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var isWhite: Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:97:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isDistinct(from color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:115:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with color: UIColor) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func gradient(_ transform: ((_ gradient: inout CAGradientLayer) -> CAGradientLayer)? = nil) -> CAGradientLayer {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:199:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:216:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:228:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:233:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgb color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:237:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(hsba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Hue/repository/Source/iOS+tvOS/UIColor+Hue.swift:244:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func add(rgba color: UIColor) -> UIColor {
+  ^~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    Hue.framework
+SWIFT-O-MATIC Hue
+
+15 warnings and 2 errors
+
+warning SM4018: entry _$s3Hue12CountedColorC5color5countACSo7UIColorC_SitcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s3Hue12CountedColorC5colorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s3Hue12CountedColorC5countSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE12hueComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE12redComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE13blueComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE14alphaComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE14greenComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE14isBlackOrWhiteSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE19brightnessComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE19saturationComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE3hexABSS_tcfC uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE6isDarkSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE7isBlackSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC3HueE7isWhiteSbvpMV uses an unsupported swift feature, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM2000: Failed to wrap module Hue.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

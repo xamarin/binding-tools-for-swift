@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask TaskName="Binding.Tools.For.Swift.Tasks.SwiftTask" AssemblyFile="Binding.Tools.For.Swift.Tasks.dll" />
+	<UsingTask TaskName="Binding.Tools.For.Swift.Tasks.PostProcessSwiftTask" AssemblyFile="Binding.Tools.For.Swift.Tasks.dll" />
+
+	<Target Name="BindingToolsForSwift" BeforeTargets="IncludeGeneratedSwiftFiles" DependsOnTargets="FindSwiftLibraries">
+  		<Error Condition="'$(TargetFrameworkName)' == 'Unknown'" Text="Binding Tools for Swift only supports Xamarin.iOS or Xamarin.Mac Modern/Full Target Framework" />
+
+		<PropertyGroup>
+			<SwiftVerbose Condition="'$(SwiftVerbose)' == ''">false</SwiftVerbose>
+			<SwiftRetainReflectionXML Condition="'$(SwiftRetainReflectionXML)' == ''">false</SwiftRetainReflectionXML>
+			<SwiftRetainWrappers Condition="'$(SwiftRetainWrappers)' == ''">false</SwiftRetainWrappers>
+			<SwiftBindingSuffix Condition="'$(SwiftBindingSuffix)' == ''">Binding</SwiftBindingSuffix>
+			<SwiftOutputDirectory Condition="'$(SwiftOutputDirectory)' == ''">$(IntermediateOutputPath)/swift</SwiftOutputDirectory>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<AllSwiftFrameworks Include="@(SwiftFrameworks)"/>
+		</ItemGroup>
+
+		<SwiftTask 
+			SwiftFramework="%(SwiftFrameworks.Identity)"
+			AdditionalArguments="%(SwiftFrameworks.AdditionalArguments)"
+			WrappingName="@(SwiftFrameworks -> '%(Filename)$(SwiftBindingSuffix)')"
+			OutputDirectory="$(SwiftOutputDirectory)"
+			SwiftToolPath="$(BindingToolsForSwiftPath)/binding-tools-for-swift"
+			AllSwiftFrameworks="@(AllSwiftFrameworks)"
+			Verbose="$(SwiftVerbose)"
+			UnicodeMapFile="$(SwiftUnicodeMapFile)"
+			RetainReflectionXML="$(SwiftRetainReflectionXML)"
+			RetainWrappers="$(SwiftRetainWrappers)"
+			AdditionalTypeDatabases="@(SwiftAdditionalTypeDatabases)"
+		/>
+
+		<PostProcessSwiftTask 
+			OutputDirectory="$(SwiftOutputDirectory)"
+			ToolPath="$(BindingToolsForSwiftPath)/binding-tools-for-swift"
+			WrappingName="%(SwiftFrameworks.Filename)$(SwiftBindingSuffix)"
+		/>
+	</Target>
+
+	<!-- Must be ResolveAssemblyReferences and not CoreCompile as we are adding references -->
+	<Target Name="IncludeGeneratedSwiftFiles" BeforeTargets="ResolveNativeReferences">
+		<ItemGroup>
+			<GeneratedSwiftBindings Include="$(SwiftOutputDirectory)/*.cs"/>
+			<Reference Include="$(SwiftRuntimeLibrary)" />
+			<Compile Include="@(GeneratedSwiftBindings)" />
+			<NativeReference Include="@(SwiftFrameworks)">
+				<Kind>Framework</Kind>
+				<SmartLink>False</SmartLink>
+			</NativeReference>
+			<NativeReference Include="@(SwiftFrameworks -> '$(SwiftOutputDirectory)/%(Filename)$(SwiftBindingSuffix).framework')">
+				<Kind>Framework</Kind>
+				<SmartLink>False</SmartLink>
+			</NativeReference>
+		</ItemGroup>
+	</Target>
+</Project>

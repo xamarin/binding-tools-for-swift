@@ -1,0 +1,935 @@
+../Makefile.inc:22: This test (DynamicColor) will build/run, but the result is ignored because it's a known failure
+Building DynamicColor
+Cloning https://github.com/yannickl/DynamicColor into ./repository...
+Successfully checked out df00efcdae5c2bef394c77e0e0b86830811fa8d5 for https://github.com/yannickl/DynamicColor in ./repository.
+XCODEBUILD/iphoneos DynamicColor
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/Array.swift:36:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var gradient: DynamicGradient {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 255) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var redComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:89:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var greenComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:96:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var blueComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:103:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var alphaComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedAlpha(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(X: CGFloat, Y: CGFloat, Z: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:42:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedHue(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:54:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func complemented() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:64:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func lighter(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:74:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func darkened(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:85:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func saturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:95:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func desaturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:107:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func grayscaled() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func inverted() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(L: CGFloat, a: CGFloat, b: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/Array.swift:36:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var gradient: DynamicGradient {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 255) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var redComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:89:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var greenComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:96:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var blueComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:103:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var alphaComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedAlpha(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(X: CGFloat, Y: CGFloat, Z: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:42:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedHue(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:54:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func complemented() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:64:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func lighter(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:74:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func darkened(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:85:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func saturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:95:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func desaturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:107:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func grayscaled() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func inverted() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(L: CGFloat, a: CGFloat, b: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator DynamicColor
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/Array.swift:36:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var gradient: DynamicGradient {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 255) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var redComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:89:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var greenComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:96:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var blueComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:103:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var alphaComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedAlpha(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(X: CGFloat, Y: CGFloat, Z: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:42:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedHue(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:54:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func complemented() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:64:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func lighter(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:74:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func darkened(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:85:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func saturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:95:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func desaturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:107:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func grayscaled() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func inverted() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(L: CGFloat, a: CGFloat, b: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/Array.swift:36:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var gradient: DynamicGradient {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:69:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func tinted(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:79:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func shaded(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:57:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hexString: String) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:81:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(hex: UInt32, useAlpha alphaChannel: Bool = false) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:103:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHexString() -> String {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:112:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toHex() -> UInt32 {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:134:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHexString hexString: String) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:144:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isEqual(toHex hex: UInt32) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:157:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isLight() -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:169:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public var luminance: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:189:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func contrastRatio(with otherColor: DynamicColor) -> CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor.swift:212:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public func isContrasting(with otherColor: DynamicColor, inContext context: ContrastDisplayContext = .standard) -> Bool {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat = 255) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:82:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var redComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:89:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var greenComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:96:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var blueComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:103:3: warning: 'public' modifier is redundant for property declared in a public extension
+  public final var alphaComponent: CGFloat {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedAlpha(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Mixing.swift:48:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func mixed(withColor color: DynamicColor, weight: CGFloat = 0.5, inColorSpace colorspace: DynamicColorSpace = .rgb) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(X: CGFloat, Y: CGFloat, Z: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:42:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func adjustedHue(amount: CGFloat) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:54:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func complemented() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:64:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func lighter(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:74:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func darkened(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:85:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func saturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:95:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func desaturated(amount: CGFloat = 0.2) -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:107:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func grayscaled() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Deriving.swift:116:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func inverted() -> DynamicColor {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+RGBA.swift:57:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toRGBAComponents() -> (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:46:3: warning: 'public' modifier is redundant for initializer declared in a public extension
+  public convenience init(L: CGFloat, a: CGFloat, b: CGFloat, alpha: CGFloat = 1) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+Lab.swift:76:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toLabComponents() -> (L: CGFloat, a: CGFloat, b: CGFloat) {
+  ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/DynamicColor/repository/Sources/DynamicColor+XYZ.swift:73:3: warning: 'public' modifier is redundant for instance method declared in a public extension
+  public final func toXYZComponents() -> (X: CGFloat, Y: CGFloat, Z: CGFloat) {
+  ^~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    DynamicColor.framework
+SWIFT-O-MATIC DynamicColor
+
+44 warnings and 2 errors
+
+warning SM4018: entry _$s12DynamicColor0A8GradientC6colorsACSaySo7UIColorCG_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12DynamicColor0A8GradientC6colorsSaySo7UIColorCGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12DynamicColor0aB5SpaceO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12DynamicColor3HSLV1a12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12DynamicColor3HSLV1h12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12DynamicColor3HSLV1l12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s12DynamicColor3HSLV1s12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSa12DynamicColorSo7UIColorCRbzlE8gradientAA0A8GradientCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE12hueComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE12redComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE13blueComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE13isContrasting4with9inContextSbAB_AbCE015ContrastDisplayH0OtF: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE13isContrasting4with9inContextSbAB_AbCE015ContrastDisplayH0OtF uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE14alphaComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE14greenComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE19brightnessComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE19saturationComponent12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE1L1a1b5alphaAB12CoreGraphics7CGFloatV_A3JtcfC uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE1X1Y1Z5alphaAB12CoreGraphics7CGFloatV_A3JtcfC uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE1r1g1b1aAB12CoreGraphics7CGFloatV_A3JtcfC uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO07minimumD5Ratio12CoreGraphics7CGFloatVvg: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO07minimumD5Ratio12CoreGraphics7CGFloatVvg uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO07minimumD5Ratio12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO21__derived_enum_equalsySbAE_AEtFZ: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO21__derived_enum_equalsySbAE_AEtFZ uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO4hash4intoys6HasherVz_tF: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO4hash4intoys6HasherVz_tF uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO9hashValueSivg: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO9hashValueSivg uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOMa: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOMa uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOMn: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOMn uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextON: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextON uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOSHACMc: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOSHACMc uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOSQACMc: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE22ContrastDisplayContextOSQACMc uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE3hex8useAlphaABs6UInt32V_SbtcfC uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE3hue10saturation9lightness5alphaAB12CoreGraphics7CGFloatV_A3JtcfC uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE9hexStringABSS_tcfC uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC12DynamicColorE9luminance12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+error SM0566: Failed to compile the generated swift wrapper code.
+error SM2000: Failed to wrap module DynamicColor.
+make[1]: *** [run-swift-o-matic] Error 1
+make: [build] Error 2 (ignored)

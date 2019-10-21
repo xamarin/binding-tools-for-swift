@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectGuid>{1CC6FC3F-678C-4590-A829-46A5CC014CCB}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PigLatin</RootNamespace>
+    <AssemblyName>PigLatin</AssemblyName>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer: Steve Hawley (765QS4H7XE)</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>false</MtouchFastDev>
+    <IOSDebuggerPort>49831</IOSDebuggerPort>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodesignProvision></CodesignProvision>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>x86_64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <IOSDebuggerPort>11825</IOSDebuggerPort>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchArch>ARM64</MtouchArch>
+    <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="SwiftRuntimeLibrary.iOS">
+      <HintPath>..\..\..\..\lib\SwiftInterop\SwiftRuntimeLibrary.iOS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Contents.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="LaunchScreen.storyboard" />
+    <InterfaceDefinition Include="Main.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="ViewController.cs" />
+    <Compile Include="ViewController.designer.cs">
+      <DependentUpon>ViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="..\..\tsout\IgPaySwiftIgPay.cs">
+      <Link>IgPaySwiftIgPay.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="..\..\SwiftIgPay\build\Debug-universal\SwiftIgPay.framework">
+      <Kind>Framework</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\tsout\XamWrapping.framework">
+      <Kind>Framework</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\..\..\lib\SwiftInterop\iphone\XamGlue.framework">
+      <Kind>Framework</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+    <NativeReference Include="..\..\..\..\bin\swift\lib\swift\iphonesimulator\libswiftCore.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+	<PropertyGroup>
+		<_SwiftySwiftMasterAfterTargets>_CodesignNativeLibraries</_SwiftySwiftMasterAfterTargets>
+		<_SwiftySwiftMasterDependsOnTargets>_SwiftySwiftCopySwiftDependencies</_SwiftySwiftMasterDependsOnTargets>
+		<_XcodeToolChain>/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/</_XcodeToolChain>
+		<_TargetPlatform Condition=" '$(Platform)' == 'iPhoneSimulator' ">iphonesimulator</_TargetPlatform>
+		<_TargetPlatform Condition=" '$(Platform)' == 'iPhone' ">iphoneos</_TargetPlatform>
+	</PropertyGroup>
+	<Target Name="_SwiftySwiftMasterTarget" Condition="'$(_SwiftySwiftMasterDependsOnTargets)'!=''" AfterTargets="$(_SwiftySwiftMasterAfterTargets)" DependsOnTargets="$(_SwiftySwiftMasterDependsOnTargets)" />
+	<Target Name="_SwiftySwiftCopySwiftDependencies" Condition="!Exists('$(_AppBundlePath)Frameworks/libswiftCore.dylib')">
+		<Message Text="Copying Swift Frameworks dependencies for %(_Frameworks.Identity) to $(_AppBundlePath)Frameworks folder" />
+		<Exec Command="$(_XcodeToolChain)usr/bin/swift-stdlib-tool --copy --verbose --sign $(_CodeSigningKey) --scan-executable %(_Frameworks.Identity) --scan-folder $(_AppBundlePath)Frameworks/ --scan-folder $(_AppBundlePath)PlugIns/ --platform $(_TargetPlatform) --toolchain $(_XcodeToolChain) --destination $(_AppBundlePath)Frameworks/ --strip-bitcode --resource-destination $(_AppBundlePath) --resource-library libswiftRemoteMirror.dylib" />
+	</Target>
+</Project>

@@ -1,0 +1,6 @@
+SwiftToolchain-*
+Constants.cs
+Pack-Man/*
+*.csproj.user
+stconfig.inc
+devicetests-build

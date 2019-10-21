@@ -1,0 +1,3 @@
+# steve sez: the files and directories herein are automatically generated
+# by running the macos unit tests and should not be checked in
+*/**/*

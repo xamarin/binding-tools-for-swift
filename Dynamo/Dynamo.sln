@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo", "Dynamo.csproj", "{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

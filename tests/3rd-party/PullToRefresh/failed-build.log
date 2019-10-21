@@ -1,0 +1,42 @@
+../Makefile.inc:17: This test (PullToRefresh) will build/run, but the result is ignored because it's a known failure
+Building PullToRefresh
+[XCODEBUILD/iphoneos] PullToRefresh
+[XCODEBUILD/iphonesimulator] PullToRefresh
+[GEN]  PullToRefresh.framework
+[SWIFT-O-MATIC] PullToRefresh
+
+1 warnings and 2 errors
+
+warning SM4018: entry __T0So12UIScrollViewC13PullToRefreshE21effectiveContentInsetSC12UIEdgeInsetsVfm uses an unsupported swift feature, skipping.
+error SM0554: /work/swift-o-matic/maccore2/tools/tom-swifty/SwiftToolchain-v2-aa3159e3c2395b3f62136e16beed3b4d965f8498/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc -emit-library -target i386-apple-ios10.3 -sdk /Applications/Xcode92.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk -I /var/folders/3d/m3cj039j7yg55lj4hrmfk9nw0000gn/T/2e96229c-c42c-4951-b349-6c5e851c7f84 -I /var/folders/3d/m3cj039j7yg55lj4hrmfk9nw0000gn/T/c5b58b01-feac-43e2-beb8-ce8ebf16e810 -F /work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/PullToRefresh/bin -F /work/swift-o-matic/maccore2/tools/tom-swifty/swiftglue/bin/Debug/iphone/FinalProduct -L /work/swift-o-matic/maccore2/tools/tom-swifty/SwiftToolchain-v2-aa3159e3c2395b3f62136e16beed3b4d965f8498/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphonesimulator -framework PullToRefresh -framework XamGlue -emit-module -module-name XamWrapping -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @rpath -Xlinker -final_output -Xlinker XamWrapping -Xlinker -install_name -Xlinker @rpath/XamWrapping.framework/XamWrapping PullToRefresh-PullToRefresh.swift PullToRefresh-State.swift PullToRefresh-Position.swift PullToRefresh-RefreshViewAnimator.swift PullToRefresh-UIScrollView-Extension0.swift PullToRefresh-UIScrollView-Extension1.swift PullToRefresh-DefaultRefreshView-Extension2.swift PullToRefresh-PullToRefresh-Extension3.swift PullToRefresh-PullToRefresh-Extension4.swift PullToRefresh-PullToRefresh-Extension5.swift PullToRefresh-PullToRefresh-Extension6.swift PullToRefreshFuncs.swift
+PullToRefresh-PullToRefresh.swift:25:21: error: initializer does not override a designated initializer from its superclass
+    public override init(height: CGFloat, position: Position)
+           ~~~~~~~~ ^
+PullToRefresh.PullToRefresh:12:24: note: attempt to override convenience initializer here
+    public convenience init(height: CGFloat = default, position: PullToRefresh.Position = default)
+                       ^
+PullToRefresh-PullToRefresh.swift:29:21: error: initializer does not override a designated initializer from its superclass
+    public override init()
+           ~~~~~~~~ ^
+PullToRefresh-PullToRefresh.swift:375:31: error: '(UnsafeRawPointer) -> Position' is not representable in Objective-C, so it cannot be used with '@convention(c)'
+        func0: (@convention(c)(UnsafeRawPointer) 
+                              ^
+PullToRefresh-PullToRefresh.swift:53:21: error: extra argument in call
+                    toIntPtr(value: self));
+                    ^~~~~~~~~~~~~~~~~~~~~
+PullToRefresh-PullToRefresh.swift:27:9: error: must call a designated initializer of the superclass 'PullToRefresh'
+        super.init(height: height, position: position);
+        ^
+PullToRefresh.PullToRefresh:12:24: note: convenience initializer is declared here
+    public convenience init(height: CGFloat = default, position: PullToRefresh.Position = default)
+                       ^
+PullToRefresh-PullToRefresh.swift:31:9: error: must call a designated initializer of the superclass 'PullToRefresh'
+        super.init();
+        ^
+PullToRefresh.PullToRefresh:12:24: note: convenience initializer is declared here
+    public convenience init(height: CGFloat = default, position: PullToRefresh.Position = default)
+                       ^
+
+error SM2000: Failed to wrap module PullToRefresh.
+make[2]: *** [run-swift-o-matic] Error 1
+make[1]: [build] Error 2 (ignored)

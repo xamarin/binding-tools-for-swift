@@ -1,0 +1,25 @@
+#!/usr/bin/env /Library/Frameworks/Mono.framework/Commands/csharp
+
+// This script reads 'devices.xml', which is the output from 'mlaunch --listdev=<tmpfile> --output-format=xml', and parses it to find any applicable and usable devices.
+// The device classes to search for are passed in as arguments.
+// Example: './find-device.csharp iPad iPhone'
+
+using System.Xml;
+
+var args = new List<string> (Environment.GetCommandLineArgs ());
+// two first arguments are 'csharp' and this script.
+args.RemoveAt (0);
+args.RemoveAt (0);
+
+var deviceClassQuery = string.Join (" or ", args.Select ((v) => $"DeviceClass='{v}'"));
+
+var doc = new XmlDocument ();
+doc.Load ("devices.xml");
+var nodes = doc.SelectNodes ($"MTouch/Device[IsUsableForDebugging='True' and ({deviceClassQuery})]/UDID");
+
+foreach (XmlNode n in nodes) {
+	Console.WriteLine (n.InnerText);
+	break; // Only need one
+}
+
+Environment.Exit (0);

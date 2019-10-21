@@ -1,0 +1,3 @@
+#!/bin/bash -e
+
+exec mono --debug "$(dirname "${BASH_SOURCE[0]}")"/../lib/swift-copy-libs/swift-copy-libs.exe "$@"

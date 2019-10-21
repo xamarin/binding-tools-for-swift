@@ -1,0 +1,171 @@
+Building ComplimentaryGradientView
+Cloning https://github.com/gkye/ComplimentaryGradientView into ./repository...
+Successfully checked out 8c1933fbf24f12706cb3d149a65fcdd0f48c244a for https://github.com/gkye/ComplimentaryGradientView in ./repository.
+XCODEBUILD/iphoneos ComplimentaryGradientView
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:59:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isDarkColor: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:63:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isBlackOrWhite: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:67:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isDistinct(_ other: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:79:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func with(minSaturation: Double) -> Double {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:154:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isContrasting(_ color: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:164:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var uicolor: UIColor {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:168:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var pretty: String {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:59:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isDarkColor: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:63:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isBlackOrWhite: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:67:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isDistinct(_ other: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:79:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func with(minSaturation: Double) -> Double {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:154:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isContrasting(_ color: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:164:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var uicolor: UIColor {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:168:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var pretty: String {
+  ^~~~~~~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator ComplimentaryGradientView
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:59:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isDarkColor: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:63:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isBlackOrWhite: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:67:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isDistinct(_ other: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:79:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func with(minSaturation: Double) -> Double {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:154:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isContrasting(_ color: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:164:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var uicolor: UIColor {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:168:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var pretty: String {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:59:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isDarkColor: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:63:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var isBlackOrWhite: Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:67:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isDistinct(_ other: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:79:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func with(minSaturation: Double) -> Double {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:154:3: warning: 'fileprivate' modifier is redundant for instance method declared in a fileprivate extension
+  fileprivate func isContrasting(_ color: Double) -> Bool {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:164:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var uicolor: UIColor {
+  ^~~~~~~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/ComplimentaryGradientView/repository/Source/UIImageColors.swift:168:3: warning: 'fileprivate' modifier is redundant for property declared in a fileprivate extension
+  fileprivate var pretty: String {
+  ^~~~~~~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    ComplimentaryGradientView.framework
+SWIFT-O-MATIC ComplimentaryGradientView
+
+43 warnings and 2 errors
+
+warning SM4018: entry _$s25ComplimentaryGradientView0B10StartPointO8rawValueSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientView0B7VariantO8rawValueSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientView13UIImageColorsV10backgroundSo7UIColorCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientView13UIImageColorsV6detailSo7UIColorCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientView13UIImageColorsV7primarySo7UIColorCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientView13UIImageColorsV9secondarySo7UIColorCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientView20UIImageColorsQualityO8rawValue12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC10startPointSSSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC10startPointSSSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC10startPointSSSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC10startPointSSSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC11customPointSo7CGPointV05startE0_AE03endE0tSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC11customPointSo7CGPointV05startE0_AE03endE0tSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC11customPointSo7CGPointV05startE0_AE03endE0tSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC11customPointSo7CGPointV05startE0_AE03endE0tSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC12gradientTypeAA0bE0OSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC12gradientTypeAA0bE0OSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC12gradientTypeAA0bE0OSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC12gradientTypeAA0bE0OSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC13gradient_typeSSSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC13gradient_typeSSSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC13gradient_typeSSSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC13gradient_typeSSSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC15gradientQualityAA013UIImageColorsE0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC15gradientQualityAA013UIImageColorsE0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC15gradientQualityAA013UIImageColorsE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC15gradientQualityAA013UIImageColorsE0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC18gradientStartPointAA0beF0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC18gradientStartPointAA0beF0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC18gradientStartPointAA0beF0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC18gradientStartPointAA0beF0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC19backgroundExecutionSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC19backgroundExecutionSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC19backgroundExecutionSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC19backgroundExecutionSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC5imageSo7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC5imageSo7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC5imageSo7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC5imageSo7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC8delegateAA0abC8Delegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC8delegateAA0abC8Delegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC8delegateAA0abC8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s25ComplimentaryGradientViewAAC8delegateAA0abC8Delegate_pSgvsTq uses an unsupported swift feature, skipping.
+error SM0566: Failed to compile the generated swift wrapper code.
+error SM2000: Failed to wrap module ComplimentaryGradientView.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

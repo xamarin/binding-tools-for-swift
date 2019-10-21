@@ -1,0 +1,119 @@
+#!/usr/bin/env /Library/Frameworks/Mono.framework/Commands/csharp
+
+using System.IO;
+using System.Text;
+
+public class UpdateTool
+{
+	static void Die (string error)
+	{
+		Console.Error.WriteLine (error);
+		System.Environment.Exit (1);
+	}
+
+	enum Platform
+	{
+		macOS,
+		iOS,
+		TV,
+		Watch
+	}
+
+	static Dictionary<Platform, string> ModulePaths = new Dictionary <Platform, string> ()
+	{
+		{ Platform.macOS, "build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/macosx/x86_64" },
+		{ Platform.iOS, "build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphoneos/armv7" },
+		{ Platform.TV, "build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/appletvos/arm64" },
+		{ Platform.Watch, "build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/watchos/armv7k" }
+	};
+
+	static bool Skip (string name)
+	{
+		switch (name) {
+		case "StdlibUnittest":
+		case "StdlibUnittestFoundationExtras":
+		case "Swift":
+		case "SwiftExperimental":
+		case "SwiftOnoneSupport":
+		case "SwiftPrivate":
+		case "SwiftPrivateLibcExtras":
+		case "SwiftPrivatePthreadExtras":
+		case "SwiftReflectionTest":
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	static IEnumerable<string> GenerateModuleList (Platform platform, string modulePath, string root)
+	{
+		string fullPath = Path.Combine (root, modulePath);
+		var allModules = Directory.EnumerateFiles (fullPath, "*.swiftmodule").Select (x => Path.GetFileNameWithoutExtension (x));
+		return allModules.Where (x => !Skip (x));
+	}
+
+	static string GetVariableName (Platform platform)
+	{
+		switch (platform)
+		{
+		case Platform.macOS:
+			return "systemModuleNamesMac";
+		case Platform.iOS:
+			return "systemModuleNamesIPhone";
+		case Platform.TV:
+			return "systemModuleNamesTV";
+		case Platform.Watch:
+			return "systemModuleNamesWatch";
+		default:
+			throw new NotImplementedException ();
+		}
+	}
+
+	static string GenerateSourceCode (Platform platform, IEnumerable<string> modules)
+	{
+		string prefix = $"\t\tstatic string [] {GetVariableName (platform)} = {{\n";
+		string list = String.Join ("\n", modules.Select (x => "\t\t\t\"" + x + "\","));
+		const string suffix = "\n\t\t};\n";
+		return prefix + list + suffix;
+	}
+
+	static string GenerateSourceFile (string code)
+	{
+		return $@"namespace SwiftReflector.IOUtils {{
+	public partial class SwiftModuleFinder {{
+{code}
+	}}
+}}";
+	}
+
+	public static void Main ()
+	{
+		var args = Environment.GetCommandLineArgs ();
+
+		// /Library/Frameworks/Mono.framework/Commands/csharp update_module_list.csharp PATH
+		if (args.Length != 3)
+			Die ("update_module_list.csharp PATH");
+
+		var root = args [2];
+		if (!Directory.Exists (root))
+			Die ($"Unable to find {root}");
+
+		StringBuilder source = new StringBuilder ();
+		foreach (var entry in ModulePaths)
+		{
+			Platform platform = entry.Key;
+			string modulePath = entry.Value;
+			var moduleList = GenerateModuleList (platform, modulePath, root);
+			source.Append (GenerateSourceCode (platform, moduleList));
+			source.Append ("\n");
+		}
+		var file = GenerateSourceFile (source.ToString ());
+		File.WriteAllText ("SwiftReflector/IOUtils/SwiftModuleList.g.cs", file);
+	}
+}
+
+
+UpdateTool.Main ();
+
+// So we don't try to "run" the PATH arg as a script next
+System.Environment.Exit (0);

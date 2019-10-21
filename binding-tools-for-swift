@@ -1,0 +1,3 @@
+#!/bin/bash -e
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+exec mono "$DIR/lib/binding-tools-for-swift/tom-swifty.exe" "$@"

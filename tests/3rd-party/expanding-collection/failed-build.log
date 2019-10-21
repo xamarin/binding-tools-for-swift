@@ -1,0 +1,116 @@
+Building expanding-collection
+Cloning https://github.com/Ramotion/expanding-collection into ./repository...
+Successfully checked out 63c89a9f05543ae58c95a2398c917ad2093f1b25 for https://github.com/Ramotion/expanding-collection in ./repository.
+XCODEBUILD/iphoneos expanding-collection
+XCODEBUILD/iphonesimulator expanding-collection
+GEN    expanding-collection.framework
+SWIFT-O-MATIC expanding-collection
+
+101 warnings and 3 errors
+
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC10scaleItemsSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC10scaleItemsSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC10scaleItemsSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC10scaleItemsSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC13scalingOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC13scalingOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC13scalingOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC13scalingOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumAlphaFactor12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumAlphaFactor12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumAlphaFactor12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumAlphaFactor12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumScaleFactor12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumScaleFactor12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumScaleFactor12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC18minimumScaleFactor12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection04PageB6LayoutC8itemSizeACSo6CGSizeV_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10dropShadowSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10dropShadowSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10dropShadowSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10dropShadowSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10shadowViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10shadowViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10shadowViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC10shadowViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15additionalWidth12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15additionalWidth12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15additionalWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15additionalWidth12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15backConstraintYSo08NSLayoutG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15backConstraintYSo08NSLayoutG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15backConstraintYSo08NSLayoutG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC15backConstraintYSo08NSLayoutG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16additionalHeight12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16additionalHeight12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16additionalHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16additionalHeight12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16frontConstraintYSo08NSLayoutG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16frontConstraintYSo08NSLayoutG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16frontConstraintYSo08NSLayoutG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC16frontConstraintYSo08NSLayoutG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC17backContainerViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC17backContainerViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC17backContainerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC17backContainerViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC18frontContainerViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC18frontContainerViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC18frontContainerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC18frontContainerViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC7yOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC7yOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC7yOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC7yOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8isOpenedSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8isOpenedSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8isOpenedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8isOpenedSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8ySpacing12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8ySpacing12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8ySpacing12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection08BasePageB4CellC8ySpacing12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC010collectionC0So012UICollectionC0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC010collectionC0So012UICollectionC0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC010collectionC0So012UICollectionC0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC010collectionC0So012UICollectionC0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC12currentIndexSivgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC12currentIndexSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC8itemSizeSo6CGSizeVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC8itemSizeSo6CGSizeVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC8itemSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A14ViewControllerC8itemSizeSo6CGSizeVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC12headerHeight12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC12headerHeight12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC12headerHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC12headerHeight12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC16transitionDriverAA010TransitionG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC16transitionDriverAA010TransitionG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC16transitionDriverAA010TransitionG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection0A19TableViewControllerC16transitionDriverAA010TransitionG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection14ConstraintInfoV10identifierSSSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection14ConstraintInfoV15secondAttributeSo08NSLayoutF0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection14ConstraintInfoV8constant12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection14ConstraintInfoV8relationSo16NSLayoutRelationVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection14ConstraintInfoV9attributeSo17NSLayoutAttributeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection15SubviewsForEachTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection16CornerAnimatableTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s19ExpandingCollection16TransitionDriverC4viewACSo6UIViewC_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC10dropShadowSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC15additionalWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC15backConstraintYSo08NSLayoutJ0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC16additionalHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC16frontConstraintYSo08NSLayoutJ0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC17backContainerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC18frontContainerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC7yOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC8isOpenedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping30xam_sub_BasePageCollectionCellC8ySpacing12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping31xam_sub_ExpandingViewControllerC010collectionF0So012UICollectionF0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping31xam_sub_ExpandingViewControllerC12currentIndexSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping31xam_sub_ExpandingViewControllerC8itemSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping36xam_sub_ExpandingTableViewControllerC12headerHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+error SM1559: Unable to find constructor in class $XamWrapping.xam_sub_ExpandingViewController with 2 parameters.
+error SM1559: Unable to find constructor in class $XamWrapping.xam_sub_ExpandingTableViewController with 1 parameters.
+error SM1559: Unable to find constructor in class $XamWrapping.xam_sub_ExpandingTableViewController with 2 parameters.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

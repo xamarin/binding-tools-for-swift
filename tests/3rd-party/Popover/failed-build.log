@@ -1,0 +1,112 @@
+Building Popover
+Cloning https://github.com/corin8823/Popover into ./repository...
+Successfully checked out 213f9cf80436ab32b5b1d644aff9dd02408d5551 for https://github.com/corin8823/Popover in ./repository.
+XCODEBUILD/iphoneos Popover
+warning: The use of Swift 3 @objc inference in Swift 4 mode is deprecated. Please address deprecated @objc inference warnings, test your code with “Use of deprecated Swift 3 @objc inference” logging enabled, and then disable inference by changing the "Swift 3 @objc Inference" build setting to "Default" for the "Popover" target. (in target 'Popover')
+warning: The use of Swift 3 @objc inference in Swift 4 mode is deprecated. Please address deprecated @objc inference warnings, test your code with “Use of deprecated Swift 3 @objc inference” logging enabled, and then disable inference by changing the "Swift 3 @objc Inference" build setting to "Default" for the "Popover" target. (in target 'Popover')
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator Popover
+warning: The use of Swift 3 @objc inference in Swift 4 mode is deprecated. Please address deprecated @objc inference warnings, test your code with “Use of deprecated Swift 3 @objc inference” logging enabled, and then disable inference by changing the "Swift 3 @objc Inference" build setting to "Default" for the "Popover" target. (in target 'Popover')
+warning: The use of Swift 3 @objc inference in Swift 4 mode is deprecated. Please address deprecated @objc inference warnings, test your code with “Use of deprecated Swift 3 @objc inference” logging enabled, and then disable inference by changing the "Swift 3 @objc Inference" build setting to "Default" for the "Popover" target. (in target 'Popover')
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    Popover.framework
+SWIFT-O-MATIC Popover
+
+92 warnings and 2 errors
+
+warning SM4018: entry _$s7Popover0A4TypeO8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC10sideOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC10sideOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC10sideOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC10sideOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11animationInSdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11animationInSdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11animationInSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11animationInSdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11overlayBlurSo12UIBlurEffectCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11overlayBlurSo12UIBlurEffectCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11overlayBlurSo12UIBlurEffectCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11overlayBlurSo12UIBlurEffectCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11popoverTypeAA0aC0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11popoverTypeAA0aC0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11popoverTypeAA0aC0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11popoverTypeAA0aC0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC11showHandler07dismissC0AByycSg_AEtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12animationOutSdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12animationOutSdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12animationOutSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12animationOutSdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12blackOverlaySo9UIControlCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12blackOverlaySo9UIControlCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12cornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12cornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12cornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12cornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12popoverColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12popoverColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12popoverColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12popoverColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12showAsDialog_6inViewySo6UIViewC_AFtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC12showAsDialogyySo6UIViewCFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC13springDamping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC13springDamping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC13springDamping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC13springDamping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC14didShowHandleryycSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC14didShowHandleryycSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC14didShowHandleryycSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC14didShowHandleryycSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC15willShowHandleryycSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC15willShowHandleryycSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC15willShowHandleryycSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC15willShowHandleryycSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC16showBlackOverlaySbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC16showBlackOverlaySbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC16showBlackOverlaySbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC16showBlackOverlaySbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17blackOverlayColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17blackOverlayColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17blackOverlayColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17blackOverlayColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17didDismissHandleryycSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17didDismissHandleryycSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17didDismissHandleryycSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17didDismissHandleryycSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17highlightFromViewSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17highlightFromViewSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17highlightFromViewSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC17highlightFromViewSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC18willDismissHandleryycSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC18willDismissHandleryycSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC18willDismissHandleryycSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC18willDismissHandleryycSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21highlightCornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21highlightCornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21highlightCornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21highlightCornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21initialSpringVelocity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21initialSpringVelocity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21initialSpringVelocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC21initialSpringVelocity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC24dismissOnBlackOverlayTapSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC24dismissOnBlackOverlayTapSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC24dismissOnBlackOverlayTapSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC24dismissOnBlackOverlayTapSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC4show_5point6inViewySo6UIViewC_So7CGPointVAGtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC4show_5pointySo6UIViewC_So7CGPointVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC4show_8fromView02inD0ySo6UIViewC_A2GtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC4show_8fromViewySo6UIViewC_AFtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC7dismissyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC7options11showHandler07dismissD0ABSayAA0A6OptionOGSg_yycSgAJtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC8sideEdge12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC8sideEdge12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC8sideEdge12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC8sideEdge12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC9arrowSizeSo6CGSizeVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC9arrowSizeSo6CGSizeVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC9arrowSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s7PopoverAAC9arrowSizeSo6CGSizeVvsTq uses an unsupported swift feature, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM2000: Failed to wrap module Popover.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

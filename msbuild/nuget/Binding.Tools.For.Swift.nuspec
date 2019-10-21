@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>binding-tools-for-swift</id>
+    <version>0.1.2</version>
+    <description>msbuild support for Binding Tools for Swift</description>
+    <authors>chamons</authors>
+    <owners>chamons</owners>
+    <copyright></copyright>
+    <projectUrl>https://github.com/xamarin/xamarin-macios</projectUrl>
+    <licenseUrl>https://github.com/xamarin/xamarin-macios/blob/master/LICENSE</licenseUrl>
+    <tags></tags>
+  </metadata>
+  <files>
+    <file src="build\**" target="build" />
+    <file src="Tasks/bin/Debug/Binding.Tools.For.Swift.Tasks.dll" target="build" />
+  </files>
+</package>

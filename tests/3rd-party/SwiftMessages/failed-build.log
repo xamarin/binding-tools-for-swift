@@ -1,0 +1,532 @@
+Building SwiftMessages
+Cloning https://github.com/SwiftKickMobile/SwiftMessages into ./repository...
+Successfully checked out 6b348edcc4b1a167f2961f3f921d274792272c77 for https://github.com/SwiftKickMobile/SwiftMessages in ./repository.
+XCODEBUILD/iphoneos SwiftMessages
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:17: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:43: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:72: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:73:24: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+                top += safeAreaTopOffset
+                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:77:28: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+                    top += statusBarOffset
+                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:98:27: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+                bottom += safeAreaBottomOffset
+                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:17: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:43: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:72: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:73:24: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+                top += safeAreaTopOffset
+                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:77:28: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+                    top += statusBarOffset
+                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:98:27: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+                bottom += safeAreaBottomOffset
+                          ^
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/TabView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/StatusLine.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/MessageView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/CenteredView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/CardView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator SwiftMessages
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:17: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:43: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:72: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:73:24: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+                top += safeAreaTopOffset
+                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:77:28: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+                    top += statusBarOffset
+                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:98:27: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+                bottom += safeAreaBottomOffset
+                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:17: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:43: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                          ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:15:72: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+            || (safeAreaTopOffset == 0 && safeAreaBottomOffset == 0 && statusBarOffset == 0) {
+                                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:73:24: warning: 'safeAreaTopOffset' is deprecated: Use the `topLayoutMarginAddition` instead.
+                top += safeAreaTopOffset
+                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:77:28: warning: 'statusBarOffset' is deprecated: Now handled by `collapseLayoutMarginAdditions`
+                    top += statusBarOffset
+                           ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/MarginAdjustable+Animation.swift:98:27: warning: 'safeAreaBottomOffset' is deprecated: Use the `bottomLayoutMarginAddition` instead.
+                bottom += safeAreaBottomOffset
+                          ^
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/TabView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/StatusLine.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/MessageView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/CenteredView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+/* com.apple.ibtool.document.warnings */
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/SwiftMessages/repository/SwiftMessages/Resources/CardView.xib:global: warning: This file is set to build for a version older than the deployment target. Functionality may be limited. [9]
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    SwiftMessages.framework
+SWIFT-O-MATIC SwiftMessages
+
+405 warnings and 15 errors
+
+warning SM4018: entry _$s13SwiftMessages023ViewControllerContainerC0C04viewD0So06UIViewD0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages023ViewControllerContainerC0C04viewD0So06UIViewD0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages023ViewControllerContainerC0C04viewD0So06UIViewD0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages023ViewControllerContainerC0C04viewD0So06UIViewD0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages023ViewControllerContainerC0C20intrinsicContentSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s13SwiftMessages0aB5SegueC0018hiderstorage_hHJJc33_A6CE197BE1AB85292F59F1BC54C64655LLAC22TransitioningDismisserAELLCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC0018hiderstorage_hHJJc33_A6CE197BE1AB85292F59F1BC54C64655LLAC22TransitioningDismisserAELLCSgvpfi uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s13SwiftMessages0aB5SegueC0022presenterstorage_riAIe33_A6CE197BE1AB85292F59F1BC54C64655LLAA9PresenterCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC0022presenterstorage_riAIe33_A6CE197BE1AB85292F59F1BC54C64655LLAA9PresenterCSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11ContainmentO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11containmentAC11ContainmentOvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11containmentAC11ContainmentOvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11containmentAC11ContainmentOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11containmentAC11ContainmentOvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11messageViewAA04BaseE0CvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11messageViewAA04BaseE0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11messageViewAA04BaseE0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC11messageViewAA04BaseE0CvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC13containerViewAA0e19ControllerContainerE0CvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC13containerViewAA0e19ControllerContainerE0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC13containerViewAA0e19ControllerContainerE0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC13containerViewAA0e19ControllerContainerE0CvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC14eventListenersSayyA2AC5EventOcGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC14eventListenersSayyA2AC5EventOcGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC14eventListenersSayyA2AC5EventOcGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC14eventListenersSayyA2AC5EventOcGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC15interactiveHideSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC15interactiveHideSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC15interactiveHideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC15interactiveHideSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC17presentationStyleA2AC012PresentationE0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC17presentationStyleA2AC012PresentationE0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC17presentationStyleA2AC012PresentationE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC17presentationStyleA2AC012PresentationE0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC6LayoutO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC7dimModeA2AC03DimE0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC7dimModeA2AC03DimE0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC7dimModeA2AC03DimE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC7dimModeA2AC03DimE0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC8durationA2AC8DurationOvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC8durationA2AC8DurationOvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC8durationA2AC8DurationOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages0aB5SegueC8durationA2AC8DurationOvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC010backgroundD0So6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC010backgroundD0So6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC010backgroundD0So6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC010backgroundD0So6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC18accessibleElementsSaySo8NSObjectCGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC18accessibleElementsSaySo8NSObjectCGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC18accessibleElementsSaySo8NSObjectCGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MaskingViewC18accessibleElementsSaySo8NSObjectCGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC013accessibilityC0SSSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC013accessibilityC0SSSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC09iconImageD0So07UIImageD0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC09iconImageD0So07UIImageD0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC09iconImageD0So07UIImageD0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC09iconImageD0So07UIImageD0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC10titleLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC10titleLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC10titleLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC10titleLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC12buttonTappedyySo8UIButtonCFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC16buttonTapHandlerySo8UIButtonCcSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC16buttonTapHandlerySo8UIButtonCcSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC16buttonTapHandlerySo8UIButtonCcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC16buttonTapHandlerySo8UIButtonCcSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC19accessibilityPrefixSSSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC19accessibilityPrefixSSSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC19accessibilityPrefixSSSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC19accessibilityPrefixSSSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC20accessibilityElementSo8NSObjectCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC20accessibilityElementSo8NSObjectCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC2idSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC2idSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC2idSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC2idSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC30additonalAccessibilityElementsSaySo8NSObjectCGSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC30additonalAccessibilityElementsSaySo8NSObjectCGSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC6LayoutO8rawValueSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC6buttonSo8UIButtonCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC6buttonSo8UIButtonCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC6buttonSo8UIButtonCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC6buttonSo8UIButtonCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9bodyLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9bodyLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9bodyLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9bodyLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9iconLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9iconLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9iconLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages11MessageViewC9iconLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages12IdentifiableTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages15PassthroughViewC12tappedHanderyycSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages15PassthroughViewC12tappedHanderyycSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages15PassthroughViewC12tappedHanderyycSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages15PassthroughViewC12tappedHanderyycSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages15PassthroughViewC6tappedyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16AnimationContextC11messageView09containerF017safeZoneConflicts15interactiveHideACSo6UIViewC_AiA04SafeiJ0VSbtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16AnimationContextC11messageViewSo6UIViewCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16AnimationContextC13containerViewSo6UIViewCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16AnimationContextC15interactiveHideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16AnimationContextC17safeZoneConflictsAA04SafefG0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16MarginAdjustableTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC04showD07context10completionyAA0D7ContextC_ySbctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC10panHandlerAA0c3PanF0CvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC10panHandlerAA0c3PanF0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC10panHandlerAA0c3PanF0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC10panHandlerAA0c3PanF0CvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC11messageViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC11messageViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC11messageViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC11messageViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC12hideDurationSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC12hideDurationSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC12showDurationSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC12showDurationSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC13adjustMarginsyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC13containerViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC13containerViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC13containerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC13containerViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC18installInteractive7contextyAA0D7ContextC_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC4hide7context10completionyAA0D7ContextC_ySbctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC4show7context10completionyAA0D7ContextC_ySbctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC7contextAA0D7ContextCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC7contextAA0D7ContextCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC7contextAA0D7ContextCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC7contextAA0D7ContextCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC7install7contextyAA0D7ContextC_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC8delegateAA0D8Delegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC8delegateAA0D8Delegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC8delegateAA0D8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC8delegateAA0D8Delegate_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC8delegateAcA0D8Delegate_p_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC9PlacementO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC9placementAC9PlacementOvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC9placementAC9PlacementOvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC9placementAC9PlacementOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages16PhysicsAnimationC9placementAC9PlacementOvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17AccessibleMessageTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17AnimationDelegateTL uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s13SwiftMessages17PhysicsPanHandlerC0016panstorage_cCJAc33_6ADDAAB6A4F70C21FC1484AAF40769ABLLSo22UIPanGestureRecognizerCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC0016panstorage_cCJAc33_6ADDAAB6A4F70C21FC1484AAF40769ABLLSo22UIPanGestureRecognizerCSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC11isOffScreenSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC11isOffScreenSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC11messageViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC11messageViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC11messageViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC11messageViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC13containerViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC13containerViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC13containerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC13containerViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC14MotionSnapshotV4timeSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC14MotionSnapshotV5angle12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC3panSo22UIPanGestureRecognizerCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC3panSo22UIPanGestureRecognizerCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC3panyySo22UIPanGestureRecognizerCFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC11messageView09containerH0AESo6UIViewC_AItcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC11messageViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC12itemBehaviorSo013UIDynamicItemH0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC13containerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC15angularVelocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC15dynamicAnimatorSo09UIDynamicH0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC18attachmentBehaviorSo012UIAttachmentH0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5StateC9snapshotsSayAC14MotionSnapshotVGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5stateAC5StateCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC5stateAC5StateCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC8animatorAA8Animator_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC8animatorAA8Animator_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC8animatorAA8Animator_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC8animatorAA8Animator_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC9configure7context8animatoryAA16AnimationContextC_AA8Animator_ptFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC9hideDelaySdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC9hideDelaySdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC9hideDelaySdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerC9hideDelaySdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PhysicsPanHandlerCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PresenterDelegatePAA09AnimationD0Tb uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17PresenterDelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages17SafeZoneConflictsV8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18BackgroundViewableTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC12cornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC12cornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC12cornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC12cornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC14roundedCornersSo06UIRectC0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC14roundedCornersSo06UIRectC0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC14roundedCornersSo06UIRectC0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC14roundedCornersSo06UIRectC0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC20roundsLeadingCornersSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC20roundsLeadingCornersSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC20roundsLeadingCornersSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18CornerRoundingViewC20roundsLeadingCornersSbvsTq uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s13SwiftMessages18TopBottomAnimationC0033panGestureRecognizerstorage_BbGHj33_4D1D33BD617FAE4B78ABC8E8800A2F1DLLSo22UIPanGestureRecognizerCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC0033panGestureRecognizerstorage_BbGHj33_4D1D33BD617FAE4B78ABC8E8800A2F1DLLSo22UIPanGestureRecognizerCSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC04showE010completionyySbc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC11messageViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC11messageViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC11messageViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC11messageViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC12hideDurationSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC12hideDurationSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC12showDurationSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC12showDurationSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13adjustMarginsyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13containerViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13containerViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13containerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13containerViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13springDamping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13springDamping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13springDamping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC13springDamping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC19closeSpeedThreshold12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC19closeSpeedThreshold12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC19closeSpeedThreshold12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC19closeSpeedThreshold12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC20panGestureRecognizerSo05UIPangH0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC20panGestureRecognizerSo05UIPangH0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC21closePercentThreshold12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC21closePercentThreshold12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC21closePercentThreshold12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC21closePercentThreshold12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC22closeAbsoluteThreshold12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC22closeAbsoluteThreshold12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC22closeAbsoluteThreshold12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC22closeAbsoluteThreshold12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC3panyySo22UIPanGestureRecognizerCFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC4hide7context10completionyAA0E7ContextC_ySbctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC4show7context10completionyAA0E7ContextC_ySbctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC5StyleO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC5style8delegateA2C5StyleO_AA0E8Delegate_ptcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC5styleA2C5StyleO_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC5styleAC5StyleOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC7contextAA0E7ContextCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC7contextAA0E7ContextCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC7contextAA0E7ContextCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC7contextAA0E7ContextCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC7install7contextyAA0E7ContextC_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC8delegateAA0E8Delegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC8delegateAA0E8Delegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC8delegateAA0E8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages18TopBottomAnimationC8delegateAA0E8Delegate_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages20WindowViewControllerC11windowLevel6configACSo08UIWindowG0aSg_A2AC6ConfigVtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages20WindowViewControllerC11windowLevelSo08UIWindowG0avpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages20WindowViewControllerC16shouldAutorotateSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages20WindowViewControllerC23preferredStatusBarStyleSo08UIStatushI0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages20WindowViewControllerC6configA2AC6ConfigVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages20WindowViewControllerC7install9becomeKeyySb_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages20WindowViewControllerC9uninstallyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages4IconO5imageSo7UIImageCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages4IconO8rawValueSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages4WeakC5valueACyxGxSg_tcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages4WeakC5valuexSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages4WeakC5valuexSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages4WeakC5valuexSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages4WeakC5valuexSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages5ThemeO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8AnimatorPAAE12hideDurationSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8AnimatorPAAE12showDurationSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8AnimatorTL uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s13SwiftMessages8BaseViewC0026tapRecognizerstorage_BsAGg33_2C5436EEFE43D2770EDC85D3168F973ALLSo22UITapGestureRecognizerCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC0026tapRecognizerstorage_BsAGg33_2C5436EEFE43D2770EDC85D3168F973ALLSo22UITapGestureRecognizerCSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC010backgroundD0So6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC010backgroundD0So6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC010backgroundD0So6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC010backgroundD0So6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC014installContentD0_6insetsySo6UIViewC_So12UIEdgeInsetsVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC017installBackgroundD0_6insetsySo6UIViewC_So12UIEdgeInsetsVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC025installBackgroundVerticalD0_6insetsySo6UIViewC_So12UIEdgeInsetsVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC10tapHandleryACcSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC10tapHandleryACcSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC10tapHandleryACcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC10tapHandleryACcSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15preferredHeight12CoreGraphics7CGFloatVSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15preferredHeight12CoreGraphics7CGFloatVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15preferredHeight12CoreGraphics7CGFloatVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15preferredHeight12CoreGraphics7CGFloatVSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15statusBarOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15statusBarOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15statusBarOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC15statusBarOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC16backgroundHeight12CoreGraphics7CGFloatVSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC16backgroundHeight12CoreGraphics7CGFloatVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC16backgroundHeight12CoreGraphics7CGFloatVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC16backgroundHeight12CoreGraphics7CGFloatVSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC17safeAreaTopOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC17safeAreaTopOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC17safeAreaTopOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC17safeAreaTopOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC20intrinsicContentSizeSo6CGSizeVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC20safeAreaBottomOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC20safeAreaBottomOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC20safeAreaBottomOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC20safeAreaBottomOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21bounceAnimationOffset12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21bounceAnimationOffset12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21bounceAnimationOffset12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21bounceAnimationOffset12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21layoutMarginAdditionsSo12UIEdgeInsetsVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21layoutMarginAdditionsSo12UIEdgeInsetsVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21layoutMarginAdditionsSo12UIEdgeInsetsVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC21layoutMarginAdditionsSo12UIEdgeInsetsVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC23topLayoutMarginAddition12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC23topLayoutMarginAddition12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC23topLayoutMarginAddition12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC23topLayoutMarginAddition12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC24leftLayoutMarginAddition12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC24leftLayoutMarginAddition12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC24leftLayoutMarginAddition12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC24leftLayoutMarginAddition12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC25rightLayoutMarginAddition12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC25rightLayoutMarginAddition12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC25rightLayoutMarginAddition12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC25rightLayoutMarginAddition12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC26bottomLayoutMarginAddition12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC26bottomLayoutMarginAddition12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC26bottomLayoutMarginAddition12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC26bottomLayoutMarginAddition12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC29collapseLayoutMarginAdditionsSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC29collapseLayoutMarginAdditionsSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC29collapseLayoutMarginAdditionsSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC29collapseLayoutMarginAdditionsSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages8BaseViewC6tappedyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9IconStyleO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s13SwiftMessages9PresenterC0024maskingViewstorage_wnAHf33_9240CA0FAD7C4E3A99020B5AAC45D767LLAA11MaskingViewCSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC0024maskingViewstorage_wnAHf33_9240CA0FAD7C4E3A99020B5AAC45D767LLAA11MaskingViewCSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC11maskingViewAA07MaskingE0CvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC11maskingViewAA07MaskingE0CvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC11maskingViewAA07MaskingE0CvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC11maskingViewAA07MaskingE0CvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC13pauseDurationSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC13pauseDurationSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC19presentationContextAC012PresentationE0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC19presentationContextAC012PresentationE0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC19presentationContextAC012PresentationE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC19presentationContextAC012PresentationE0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC2idSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC2idSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC2idSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC2idSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC4hide8animated10completionySb_ySbctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC4show10completionyySbc_tKFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC4viewSo6UIViewCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC6config4view8delegateAc2AC6ConfigV_So6UIViewCAA0C8Delegate_ptcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC6configA2AC6ConfigVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC6configA2AC6ConfigVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC6configA2AC6ConfigVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC6configA2AC6ConfigVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC7installyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8animatorAA8Animator_pvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8delegateAA0C8Delegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8delegateAA0C8Delegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8delegateAA0C8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8delegateAA0C8Delegate_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8isHidingSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8isHidingSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8isHidingSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8isHidingSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8showDateSdSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8showDateSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8showDateSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC8showDateSdSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC9delayHideSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC9delayHideSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC9delayShowSdSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessages9PresenterC9delayShowSdSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC012pauseBetweenB0SdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC012pauseBetweenB0SdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC012pauseBetweenB0SdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC012pauseBetweenB0SdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC11hideCounted2idySS_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC13defaultConfigAB0D0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC13defaultConfigAB0D0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC13defaultConfigAB0D0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC13defaultConfigAB0D0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC17PresentationStyleO09topBottomD0AA03TopF9AnimationC0D0OSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC3set5count3forySi_SStFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC4hide2idySS_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC4hide8animatedySb_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC4show12viewProviderySo6UIViewCyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC4show4viewySo6UIViewC_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC4show6config12viewProvideryAB6ConfigV_So6UIViewCyctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC4show6config4viewyAB6ConfigV_So6UIViewCtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC4show9presenteryAA9PresenterC_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC5EventO9hashValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC5count2idSiSS_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV14eventListenersSayyAB5EventOcGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV15becomeKeyWindowSbSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV15interactiveHideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV16ignoreDuplicatesSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV16shouldAutorotateSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV17presentationStyleAB012PresentationE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV19presentationContextAB012PresentationE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV20windowViewControllerAA06WindoweF0CSo13UIWindowLevelaSg_ADtcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV23preferredStatusBarStyleSo08UIStatusfG0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV25dimModeAccessibilityLabelSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV7dimModeAB03DimE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC6ConfigV8durationAB8DurationOvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC7DimModeO11interactiveSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC7DimModeO5modalSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAAC7hideAllyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s13SwiftMessagesAACABycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo6UIViewC13SwiftMessagesE5angle12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+error SM0554: Unable to wrap function SwiftMessages.xam_sub_MessageView.get_backgroundView, require a normal instance method not a partially applicable function.
+error SM0554: Unable to wrap function SwiftMessages.xam_sub_ViewControllerContainerView.get_cornerRadius, require a normal instance method not a partially applicable function.
+error SM0554: can't handle closures types bound in generics
+error SM0554: can't handle closures types bound in generics
+error SM0554: can't handle closures types bound in generics
+error SM7001: Swift name 'Animator' needs to have a module.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM2011: SwiftMessages.MarginAdjustable.materializeforset_ is deprecated, skipping.
+error SM2011: SwiftMessages.MarginAdjustable.materializeforset_ is deprecated, skipping.
+error SM2011: SwiftMessages.MarginAdjustable.materializeforset_ is deprecated, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM2011: SwiftMessages.Array.sm_random is deprecated, skipping.
+error SM0566: Failed to compile the generated swift wrapper code.
+error SM2000: Failed to wrap module SwiftMessages.
+make[1]: *** [run-swift-o-matic] Error 1
+make: [build] Error 2 (ignored)

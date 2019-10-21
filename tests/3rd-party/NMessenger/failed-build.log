@@ -1,0 +1,10 @@
+../Makefile.inc:17: This test (NMessenger) will build/run, but the result is ignored because it's a known failure
+Building NMessenger
+test -f /usr/local/bin/carthage || brew install carthage || true
+cd repository && carthage bootstrap --platform iOS
+Successfully checked out a6e9547554fbf9b66c3f67eff6c550bee0529ea1 for https://github.com/eBay/NMessenger in ./repository.
+*** No Cartfile.resolved found, updating dependencies
+*** Fetching PINCache
+No available version for github "pinterest/PINCache" satisfies the requirement: >= 3.0.0
+make[2]: *** [prebuild.stamp] Error 1
+make[1]: [build] Error 2 (ignored)

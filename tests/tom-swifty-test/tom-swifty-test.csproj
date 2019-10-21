@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F565616E-274E-44FA-9F6E-8095308FD80A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>tomwiftytest</RootNamespace>
+    <AssemblyName>tom-swifty-test</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;SWIFT4</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType></DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>SWIFT4</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Serialization" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\..\..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Options">
+      <HintPath>..\..\..\..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Mac">
+      <HintPath>..\..\SwiftRuntimeLibrary.Mac\bin\Debug\Xamarin.Mac.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DisposableTempFile.cs" />
+    <Compile Include="Compiler.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="MachOTests.cs" />
+    <Compile Include="dynamo\Utils.cs" />
+    <Compile Include="dynamo\SimpleClassTests.cs" />
+    <Compile Include="SwiftReflector\DecomposerTests.cs" />
+    <Compile Include="SwiftReflector\Utils.cs" />
+    <Compile Include="dynamo\SwiftLangTests.cs" />
+    <Compile Include="SwiftReflector\ConstructorTests.cs" />
+    <Compile Include="SwiftReflector\SwiftMethodWrapTests.cs" />
+    <Compile Include="SwiftReflector\ClassWrapTests.cs" />
+    <Compile Include="SwiftReflector\SwiftNameTests.cs" />
+    <Compile Include="SwiftReflector\PropertyWrapTests.cs" />
+    <Compile Include="XmlReflectionTests\StaticXmlTests.cs" />
+    <Compile Include="XmlReflectionTests\DynamicXmlTests.cs" />
+    <Compile Include="XmlReflectionTests\TypeSpecParserTests.cs" />
+    <Compile Include="XmlReflectionTests\XmlToTLFMappingTests.cs" />
+    <Compile Include="SwiftReflector\NewClassCompilerTests.cs" />
+    <Compile Include="XmlReflectionTests\GenerativeTests.cs" />
+    <Compile Include="SwiftReflector\OverrideTests.cs" />
+    <Compile Include="SwiftReflector\ProtocolTests.cs" />
+    <Compile Include="SwiftReflector\TupleTests.cs" />
+    <Compile Include="SwiftReflector\SwiftOptionalTypeTests.cs" />
+    <Compile Include="SwiftReflector\MetatypeTests.cs" />
+    <Compile Include="SwiftReflector\GenericFunctionTests.cs" />
+    <Compile Include="SwiftReflector\GenericStructTests.cs" />
+    <Compile Include="SwiftReflector\ExceptionTests.cs" />
+    <Compile Include="SwiftReflector\ArrayTests.cs" />
+    <Compile Include="SwiftReflector\DictionaryTests.cs" />
+    <Compile Include="SwiftReflector\ARCTests.cs" />
+    <Compile Include="SwiftReflector\ClosureTests.cs" />
+    <Compile Include="TestRunning.cs" />
+    <Compile Include="SwiftReflector\Swift4DemanglerTests.cs" />
+    <Compile Include="SwiftReflector\HomonymTests.cs" />
+    <Compile Include="SwiftReflector\LinkageTests.cs" />
+    <Compile Include="SwiftReflector\OperatorTests.cs" />
+    <Compile Include="SwiftReflector\ExtensionTests.cs" />
+    <Compile Include="CommandLineTests\SwiftyOptionsTests.cs" />
+    <Compile Include="SwiftReflector\UnicodeTests.cs" />
+    <Compile Include="SwiftReflector\UnicodeMappingTests.cs" />
+    <Compile Include="SwiftReflector\SetTests.cs" />
+    <Compile Include="SwiftReflector\EquatableTests.cs" />
+    <Compile Include="SwiftReflector\ComparableTests.cs" />
+    <Compile Include="PosixUtilsTests.cs" />
+    <Compile Include="SwiftReflector\NSObjectTests.cs" />
+    <Compile Include="SwiftReflector\InnerEnumTests.cs" />
+    <Compile Include="SwiftReflector\SwiftModuleFinderTests.cs" />
+    <Compile Include="SwiftReflector\CharacterTests.cs" />
+    <Compile Include="..\..\SwiftReflector\Downloaded\StringUtils.cs">
+      <Link>StringUtils.cs</Link>
+    </Compile>
+    <Compile Include="SwiftReflector\BindingImportTests.cs" />
+    <Compile Include="CommandLineTests\OutputTests.cs" />
+    <Compile Include="SwiftReflector\TypeDatabaseTests.cs" />
+    <Compile Include="SwiftRuntimeLibraryTests\SwiftObjectRegistryTests.cs" />
+    <Compile Include="SwiftRuntimeLibraryTests\SwiftArrayTests.cs" />
+    <Compile Include="SwiftReflector\BufferPointerTests.cs" />
+    <Compile Include="SwiftReflector\SwiftHasherTests.cs" />
+    <Compile Include="SwiftRuntimeLibraryTests\SwiftDateTests.cs" />
+    <Compile Include="SwiftReflector\ProtocolListTests.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="SwiftReflector\" />
+    <Folder Include="dynamo\" />
+    <Folder Include="XmlReflectionTests\" />
+    <Folder Include="CommandLineTests\" />
+    <Folder Include="SwiftRuntimeLibraryTests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Dynamo\Dynamo.csproj">
+      <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
+      <Name>Dynamo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SwiftReflector\SwiftReflector.csproj">
+      <Project>{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}</Project>
+      <Name>SwiftReflector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tom-swifty\tom-swifty.csproj">
+      <Project>{8CAC7366-9650-440D-A3C5-36D880285DD5}</Project>
+      <Name>tom-swifty</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SwiftRuntimeLibrary.Mac\SwiftRuntimeLibrary.Mac.csproj">
+      <Project>{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}</Project>
+      <Name>SwiftRuntimeLibrary.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\leaktest\leaktest.csproj">
+      <Project>{33D1E7E3-A123-43F0-B047-163C6E75D3BF}</Project>
+      <Name>leaktest</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SwiftRuntimeLibrary.Mac.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="BeforeBuild" Inputs="SwiftRuntimeLibrary.Mac.dll.config.in;Makefile;" Outputs="SwiftRuntimeLibrary.Mac.dll.config">
+    <Exec Command="make SwiftRuntimeLibrary.Mac.dll.config" />
+  </Target>
+</Project>

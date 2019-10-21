@@ -1,0 +1,113 @@
+../Makefile.inc:17: This test (Euler) will build/run, but the result is ignored because it's a known failure
+Building Euler
+Cloning https://github.com/mattt/Euler into ./repository...
+Successfully checked out 64cebc34c856638296878804308dbf6a457f89f6 for https://github.com/mattt/Euler in ./repository.
+[XCODEBUILD/iphoneos] Euler
+[XCODEBUILD/iphonesimulator] Euler
+[GEN]  Euler.framework
+[SWIFT-O-MATIC] Euler
+
+3 warnings and 8 errors
+
+warning SM4018: entry __T05Euler003BxaSdfau uses an unsupported swift feature, skipping.
+warning SM4018: entry __T05Euler004BABhSdfau uses an unsupported swift feature, skipping.
+warning SM4018: entry __T05Euler004qnChSdfau uses an unsupported swift feature, skipping.
+error SM1005: Can't get generic depth from a TupleTypeSpec.
+error SM1005: Can't get generic depth from a TupleTypeSpec.
+error SM0554: Object reference not set to an instance of an object
+error SM0554: Object reference not set to an instance of an object
+error SM1005: Can't get generic depth from a TupleTypeSpec.
+error SM1005: Can't get generic depth from a TupleTypeSpec.
+error SM0554: /work/swift-o-matic/maccore2/tools/tom-swifty/SwiftToolchain-v2-aa3159e3c2395b3f62136e16beed3b4d965f8498/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc -emit-library -target i386-apple-ios10.3 -sdk /Applications/Xcode92.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk -I /var/folders/3d/m3cj039j7yg55lj4hrmfk9nw0000gn/T/67f49243-3fd1-4852-88b7-4fb30f6bccdd -I /var/folders/3d/m3cj039j7yg55lj4hrmfk9nw0000gn/T/d61081cd-0e2d-44e9-b174-32079866bfbe -F /work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/Euler/bin -F /work/swift-o-matic/maccore2/tools/tom-swifty/swiftglue/bin/Debug/iphone/FinalProduct -L /work/swift-o-matic/maccore2/tools/tom-swifty/SwiftToolchain-v2-aa3159e3c2395b3f62136e16beed3b4d965f8498/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphonesimulator -framework Euler -framework XamGlue -emit-module -module-name XamWrapping -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @rpath -Xlinker -final_output -Xlinker XamWrapping -Xlinker -install_name -Xlinker @rpath/XamWrapping.framework/XamWrapping EulerFuncs.swift EulerProps.swift
+EulerFuncs.swift:173:58: warning: redundant conformance constraint 'T0': 'Hashable'
+    _ rhs: UnsafeMutablePointer<Swift.Set<T0>>) where T0 : Swift.Hashable
+                                                         ^
+EulerFuncs.swift:172:5: note: conformance constraint 'T0': 'Hashable' inferred from type here
+    UnsafeMutablePointer<Set<T0>>, _ lhs: UnsafeMutablePointer<Swift.Set<T0>>, 
+    ^
+EulerFuncs.swift:227:49: error: @escaping attribute may only be used in function parameter position
+public func xamarin_EulerOInU2032(_ lhs: inout @escaping (UnsafeMutablePointer<Double>, 
+                                               ~^~~~~~~~~
+                                               
+EulerFuncs.swift:264:14: warning: redundant conformance constraint 'T0': 'Hashable'
+    where T0 : Swift.Hashable
+             ^
+EulerFuncs.swift:262:55: note: conformance constraint 'T0': 'Hashable' inferred from type here
+public func xamarin_EulerOInUnion00000009<T0>(retval: UnsafeMutablePointer<Set<T0>>, 
+                                                      ^
+EulerFuncs.swift:417:22: warning: redundant conformance constraint 'T0': 'Hashable'
+    -> Bool where T0 : Swift.Hashable
+                     ^
+EulerFuncs.swift:416:5: note: conformance constraint 'T0': 'Hashable' inferred from type here
+    UnsafeMutablePointer<Swift.Set<T0>>, _ rhs: UnsafeMutablePointer<Swift.Set<T0>>) 
+    ^
+EulerFuncs.swift:438:22: warning: redundant conformance constraint 'T0': 'Hashable'
+    -> Bool where T0 : Swift.Hashable
+                     ^
+EulerFuncs.swift:437:5: note: conformance constraint 'T0': 'Hashable' inferred from type here
+    UnsafeMutablePointer<Swift.Set<T0>>, _ rhs: UnsafeMutablePointer<Swift.Set<T0>>) 
+    ^
+EulerFuncs.swift:455:8: warning: redundant conformance constraint 'T0': 'Hashable'
+    T0 : Swift.Hashable
+       ^
+EulerFuncs.swift:453:58: note: conformance constraint 'T0': 'Hashable' inferred from type here
+public func xamarin_EulerOInNotSubset00000018<T0>(_ lhs: UnsafeMutablePointer<Swift.Set<T0>>, 
+                                                         ^
+EulerFuncs.swift:467:8: warning: redundant conformance constraint 'T0': 'Hashable'
+    T0 : Swift.Hashable
+       ^
+EulerFuncs.swift:465:60: note: conformance constraint 'T0': 'Hashable' inferred from type here
+public func xamarin_EulerOInNotSuperset00000020<T0>(_ lhs: UnsafeMutablePointer<Swift.Set<T0>>, 
+                                                           ^
+EulerFuncs.swift:479:8: warning: redundant conformance constraint 'T0': 'Hashable'
+    T0 : Swift.Hashable
+       ^
+EulerFuncs.swift:477:55: note: conformance constraint 'T0': 'Hashable' inferred from type here
+public func xamarin_EulerOInSubset00000022<T0>(_ lhs: UnsafeMutablePointer<Swift.Set<T0>>, 
+                                                      ^
+EulerFuncs.swift:496:8: warning: redundant conformance constraint 'T0': 'Hashable'
+    T0 : Swift.Hashable
+       ^
+EulerFuncs.swift:494:57: note: conformance constraint 'T0': 'Hashable' inferred from type here
+public func xamarin_EulerOInSuperset00000025<T0>(_ lhs: UnsafeMutablePointer<Swift.Set<T0>>, 
+                                                        ^
+EulerFuncs.swift:807:8: warning: redundant conformance constraint 'T0': 'Hashable'
+    T0 : Swift.Hashable
+       ^
+EulerFuncs.swift:806:12: note: conformance constraint 'T0': 'Hashable' inferred from type here
+    _ rhs: UnsafeMutablePointer<Swift.Set<T0>>) -> Bool where 
+           ^
+EulerFuncs.swift:818:59: warning: redundant conformance constraint 'T0': 'Hashable'
+    UnsafeMutablePointer<Swift.Set<T0>>) -> Bool where T0 : Swift.Hashable
+                                                          ^
+EulerFuncs.swift:818:5: note: conformance constraint 'T0': 'Hashable' inferred from type here
+    UnsafeMutablePointer<Swift.Set<T0>>) -> Bool where T0 : Swift.Hashable
+    ^
+EulerFuncs.swift:828:33: warning: redundant conformance constraint 'T0': 'Hashable'
+    _ rhs: T0) -> Bool where T0 : Swift.Hashable
+                                ^
+EulerFuncs.swift:827:54: note: conformance constraint 'T0': 'Hashable' inferred from type here
+public func xamarin_EulerOInU220B00000039<T0>(_ lhs: UnsafeMutablePointer<Swift.Set<T0>>, 
+                                                     ^
+EulerFuncs.swift:840:8: warning: redundant conformance constraint 'T0': 'Hashable'
+    T0 : Swift.Hashable
+       ^
+EulerFuncs.swift:839:5: note: conformance constraint 'T0': 'Hashable' inferred from type here
+    UnsafeMutablePointer<Swift.Set<T0>>, _ rhs: T0) -> Bool where 
+    ^
+EulerFuncs.swift:260:33: error: cannot pass immutable value as inout argument: 'clos' is a 'let' constant
+    return swiftFuncWrapper(f1: clos ′ rhs);
+EulerFuncs.swift:232:6: note: change 'let' to 'var' to make it mutable
+     let 
+     ^~~
+     var
+EulerFuncs.swift:240:31: error: escaping closures can only capture inout parameters explicitly by value
+        lhsPtr.initialize(to: lhs);
+                              ^
+EulerFuncs.swift:249:9: error: escaping closures can only capture inout parameters explicitly by value
+        lhs(retvalPtr, argsPtr, OpaquePointer(lhsPtr));
+        ^
+
+error SM2000: Failed to wrap module Euler.
+make[3]: *** [run-swift-o-matic] Error 1
+make[2]: [build] Error 2 (ignored)

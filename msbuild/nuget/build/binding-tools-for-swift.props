@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks> <!-- Needed by generated bindings -->
+		<NoBindingEmbedding>true</NoBindingEmbedding>
+		<IsBindingLibrary Condition="'$(OutputType)' == 'Library'">true</IsBindingLibrary> 
+	</PropertyGroup>
+
+	<Choose>
+		<When Condition=" '$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+			<PropertyGroup>
+				<TargetFrameworkName>iOS</TargetFrameworkName>
+			</PropertyGroup>
+		</When>
+		<When Condition=" '$(TargetFrameworkIdentifier)' == 'Xamarin.Mac'">
+			<PropertyGroup>
+				<TargetFrameworkName>ModernXM</TargetFrameworkName>
+			</PropertyGroup>
+		</When>
+		<When Condition=" '$(TargetFrameworkIdentifier)' != 'Xamarin.Mac' And '$(UseXamMacFullFramework)' == 'true'">
+			<PropertyGroup>
+				<TargetFrameworkName>FullXM</TargetFrameworkName>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<TargetFrameworkName>Unknown</TargetFrameworkName> <!-- If we care about System Mono we have to distinguish between that and not XM/XI here -->
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
+</Project>

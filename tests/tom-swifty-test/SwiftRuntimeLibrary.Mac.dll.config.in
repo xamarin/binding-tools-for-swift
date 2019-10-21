@@ -1,0 +1,4 @@
+<configuration>
+  <dllmap dll="@rpath/XamGlue.framework/XamGlue" target="@SWIFTGLUEPREFIX@mac@SWIFTGLUESUFFIX@/XamGlue"/>
+  <dllmap dll="libswiftCore.dylib" target="@SWIFTLIB@/macosx/libswiftCore.dylib"/>
+</configuration>

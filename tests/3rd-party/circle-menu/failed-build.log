@@ -1,0 +1,96 @@
+Building circle-menu
+Cloning https://github.com/Ramotion/circle-menu into ./repository...
+Successfully checked out c57851627008f763fdcf1dddd98f7f23e5898e01 for https://github.com/Ramotion/circle-menu in ./repository.
+XCODEBUILD/iphoneos circle-menu
+XCODEBUILD/iphonesimulator circle-menu
+GEN    circle-menu.framework
+SWIFT-O-MATIC circle-menu
+
+83 warnings and 1 errors
+
+warning SM4018: entry _$s10CircleMenu0aB6ButtonC4size8platform8distance5angleACSo6CGSizeV_So6UIViewCS2ftcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6ButtonC8rotatedZ5angle8animated8duration5delayySf_SbS2dtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6ButtonC9containerSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6ButtonC9containerSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6ButtonC9containerSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6ButtonC9containerSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC13fillAnimation_10startAngle10completionySd_SfyyctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC13hideAnimation_5delay10completiony12CoreGraphics7CGFloatV_SdyyctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC15createRoundView_5colorySo6CGRectV_So7UIColorCSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC6circleSo12CAShapeLayerCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC6circleSo12CAShapeLayerCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC6circleSo12CAShapeLayerCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC6circleSo12CAShapeLayerCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenu0aB6LoaderC6radius11strokeWidth8platform5colorAC12CoreGraphics7CGFloatV_AJSo6UIViewCSo7UIColorCSgtcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC10startAngleSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC10startAngleSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC10startAngleSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC10startAngleSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC11hideButtons_0C5DelayySd_SdtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC12buttonsCountSivMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC12buttonsCountSivgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC12buttonsCountSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC12buttonsCountSivsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC13buttonHandleryyAA0aB6ButtonCFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC14buttonsIsShownSbyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16showButtonsEventSo15UIControlEventsVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16showButtonsEventSo15UIControlEventsVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16showButtonsEventSo15UIControlEventsVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16showButtonsEventSo15UIControlEventsVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16subButtonsRadius12CoreGraphics7CGFloatVSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16subButtonsRadius12CoreGraphics7CGFloatVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16subButtonsRadius12CoreGraphics7CGFloatVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC16subButtonsRadius12CoreGraphics7CGFloatVSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC20customNormalIconViewSo07UIImageF0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC20customNormalIconViewSo07UIImageF0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC20customNormalIconViewSo07UIImageF0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC20customNormalIconViewSo07UIImageF0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC22customSelectedIconViewSo07UIImageF0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC22customSelectedIconViewSo07UIImageF0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC22customSelectedIconViewSo07UIImageF0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC22customSelectedIconViewSo07UIImageF0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC5frame10normalIcon08selectedE012buttonsCount8duration8distanceABSo6CGRectV_SSSgAKSiSdSftcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC5onTapyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC7buttonsSaySo8UIButtonCGSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC7buttonsSaySo8UIButtonCGSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC7buttonsSaySo8UIButtonCGSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC7buttonsSaySo8UIButtonCGSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8delegateyXlSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8delegateyXlSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8delegateyXlSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8delegateyXlSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8distanceSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8distanceSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8distanceSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8distanceSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8durationSdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8durationSdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8durationSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8durationSdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8endAngleSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8endAngleSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8endAngleSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8endAngleSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8platformSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8platformSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8platformSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC8platformSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC9showDelaySdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC9showDelaySdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC9showDelaySdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s10CircleMenuAAC9showDelaySdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSf10CircleMenuE7degreesSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSf10CircleMenuE7radiansSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo6UIViewC10CircleMenuE6angleZSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC0D13ButtonsRadius12CoreGraphics7CGFloatVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC10startAngleSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC12buttonsCountSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC16showButtonsEventSo15UIControlEventsVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC8delegateyXlSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC8distanceSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC8durationSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC8endAngleSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11XamWrapping18xam_sub_CircleMenuC9showDelaySdvpMV uses an unsupported swift feature, skipping.
+error SM0554: Object reference not set to an instance of an object
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

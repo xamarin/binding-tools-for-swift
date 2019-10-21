@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask TaskName="Binding.Tools.For.Swift.Tasks.SwiftStdLibTool" AssemblyFile="Binding.Tools.For.Swift.Tasks.dll" />
+
+	<Target Name="IncludeSwiftRuntimeLibrary" BeforeTargets="ResolveNativeReferences" DependsOnTargets="FindSwiftLibraries">
+		<PropertyGroup>
+			<!-- 
+				SwiftRuntimeLibrary.iOS depends upon the glue library but can not easily be a binding project
+				due to SwiftRuntimeLibrary.Mac being used in many test cases without Xamarin.Mac.dll.
+				However, FastDev requires assemblies that p/invoke into native libraries to bring them along themself.
+				HACK: Disable that for applications using binding-tools-for-swift
+			-->
+			<MtouchFastDev>false</MtouchFastDev>
+		</PropertyGroup>
+		<ItemGroup>
+			<Reference Include="$(SwiftRuntimeLibrary)" />
+			<NativeReference Include="$(XamGlueLibrary)">
+				<Kind>Framework</Kind>
+				<SmartLink>False</SmartLink>
+			</NativeReference>
+		</ItemGroup>
+
+	</Target>
+
+	<Target Name="IncludeSwiftStdLibraries" AfterTargets="_CompileToNative">
+		<SwiftStdLibTool Platform="$(PlatformNameToSTDTool)" BundlePath="$(AppBundleDir)" AppName="$(AssemblyName)" />
+	</Target>
+</Project>

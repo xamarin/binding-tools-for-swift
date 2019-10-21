@@ -1,0 +1,24 @@
+#!/bin/bash -e
+
+# this scripts finds all .cs files and .framework directories in the devicetests
+# directories and edits a template .csproj file to inject the correct
+# XML to refer to all the files and frameworks.
+
+PLATFORM=$1
+SWIFT_TOOLCHAIN=$2
+SWIFT_COPY_LIBS=$3
+
+cd "$(dirname "${BASH_SOURCE[0]}")"/../tomswiftydevicetests/"$PLATFORM"
+
+find ../../devicetests "../../bin/devicetests/$PLATFORM" -name "*.cs" -print | awk 'BEGIN { FS="/" } /cs$/ {link=$4; for(i=5;i<=NF;i++){link=link"\\"$i}; print "    <Compile Include=\"" $0 "\">" " <Link>TestClasses\\" link "</Link></Compile>"  }' > tomswiftydevicetestfiles.txt
+find ../../bin/devicetests -name "*.framework" -print | awk '/framework/ { print "    <NativeReference Include=\"" $0 "\"><Kind>Framework</Kind><SmartLink>False</SmartLink></NativeReference>"}' > tomswiftydevicetestframeworks.txt
+
+awk 'NR==FNR { a[n++]=$0; next } /REPLACEMECSFILES/ { for (i=0;i<n;++i) print a[i]; next } 1' tomswiftydevicetestfiles.txt tomswiftydeviceteststemplate.csproj > needsframeworks.txt
+awk 'NR==FNR { a[n++]=$0; next } /REPLACEMENATIVEREFERENCES/ { for (i=0;i<n;++i) print a[i]; next } 1' tomswiftydevicetestframeworks.txt needsframeworks.txt > tomswiftydevicetests.csproj.tmp
+
+sed -i '' "s|SWIFT_TOOLCHAIN|$SWIFT_TOOLCHAIN|" tomswiftydevicetests.csproj.tmp
+sed -i '' "s|SWIFT_COPY_LIBS|$SWIFT_COPY_LIBS|" tomswiftydevicetests.csproj.tmp
+
+rm -f tomswiftydevicetestfiles.txt tomswiftydevicetestframeworks.txt needsframeworks.txt
+
+mv tomswiftydevicetests.csproj.tmp tomswiftydevicetests.csproj

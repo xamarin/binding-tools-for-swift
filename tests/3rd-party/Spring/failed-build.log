@@ -1,0 +1,892 @@
+Building Spring
+Cloning https://github.com/MengTo/Spring into ./repository...
+Successfully checked out fafd0b2e8d4d46405bd86fa7ba84bb7f73a20b13 for https://github.com/MengTo/Spring in ./repository.
+XCODEBUILD/iphoneos Spring
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:53:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func showLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:71:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func hideLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:5: warning: 'public' modifier is redundant for property declared in a public extension
+    public var length: Int { return self.characters.count }
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:28:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func toURL() -> NSURL? {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:42: warning: 'characters' is deprecated: Please use String directly
+    public var length: Int { return self.characters.count }
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:76:25: warning: 'characters' is deprecated: Please use String directly
+            switch (hex.characters.count) {
+                        ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:50:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:59:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:68:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:77:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:86:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:95:42: warning: using '!' here is deprecated and will be removed in a future release
+        for item in self.tabBar.items as [UITabBarItem]! {
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/UnwindSegue.swift:26:15: warning: 'public' modifier is redundant for instance method declared in a public extension
+    @IBAction public func unwindToViewController (_ segue: UIStoryboardSegue){}
+              ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:53:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func showLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:71:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func hideLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:5: warning: 'public' modifier is redundant for property declared in a public extension
+    public var length: Int { return self.characters.count }
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:28:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func toURL() -> NSURL? {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:42: warning: 'characters' is deprecated: Please use String directly
+    public var length: Int { return self.characters.count }
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:76:25: warning: 'characters' is deprecated: Please use String directly
+            switch (hex.characters.count) {
+                        ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:50:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:59:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:68:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:77:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:86:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:95:42: warning: using '!' here is deprecated and will be removed in a future release
+        for item in self.tabBar.items as [UITabBarItem]! {
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/UnwindSegue.swift:26:15: warning: 'public' modifier is redundant for instance method declared in a public extension
+    @IBAction public func unwindToViewController (_ segue: UIStoryboardSegue){}
+              ^~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+XCODEBUILD/iphonesimulator Spring
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:53:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func showLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:71:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func hideLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:5: warning: 'public' modifier is redundant for property declared in a public extension
+    public var length: Int { return self.characters.count }
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:28:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func toURL() -> NSURL? {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:42: warning: 'characters' is deprecated: Please use String directly
+    public var length: Int { return self.characters.count }
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:76:25: warning: 'characters' is deprecated: Please use String directly
+            switch (hex.characters.count) {
+                        ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:50:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:59:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:68:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:77:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:86:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:95:42: warning: using '!' here is deprecated and will be removed in a future release
+        for item in self.tabBar.items as [UITabBarItem]! {
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/UnwindSegue.swift:26:15: warning: 'public' modifier is redundant for instance method declared in a public extension
+    @IBAction public func unwindToViewController (_ segue: UIStoryboardSegue){}
+              ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:53:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func showLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/LoadingView.swift:71:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func hideLoading() {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:5: warning: 'public' modifier is redundant for property declared in a public extension
+    public var length: Int { return self.characters.count }
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:28:5: warning: 'public' modifier is redundant for instance method declared in a public extension
+    public func toURL() -> NSURL? {
+    ^~~~~~~
+
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:26:42: warning: 'characters' is deprecated: Please use String directly
+    public var length: Int { return self.characters.count }
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/Misc.swift:76:25: warning: 'characters' is deprecated: Please use String directly
+            switch (hex.characters.count) {
+                        ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:50:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:59:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:68:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:77:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:86:56: warning: using '!' here is deprecated and will be removed in a future release
+                var tabBarItems = self.tabBar.items as [UITabBarItem]!
+                                                       ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/DesignableTabBarController.swift:95:42: warning: using '!' here is deprecated and will be removed in a future release
+        for item in self.tabBar.items as [UITabBarItem]! {
+                                         ^
+/Users/alex/Projects/Git/swiftomatic/maccore/tools/tom-swifty/tests/3rd-party/Spring/repository/Spring/UnwindSegue.swift:26:15: warning: 'public' modifier is redundant for instance method declared in a public extension
+    @IBAction public func unwindToViewController (_ segue: UIStoryboardSegue){}
+              ^~~~~~~
+
+note: Using new build systemnote: Planning buildnote: Constructing build description
+GEN    Spring.framework
+SWIFT-O-MATIC Spring
+
+685 warnings and 4 errors
+
+warning SM3000: unexpected error handling _$s6Spring0A4ViewC0019springstorage_BJEEd33_D18555F0B10A8B49AA88CC31DFE09092LLA2ACSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC0019springstorage_BJEEd33_D18555F0B10A8B49AA88CC31DFE09092LLA2ACSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11animateFromSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11animateFromSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11animateFromSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11animateFromSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11animateNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11repeatCountSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11repeatCountSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11repeatCountSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC11repeatCountSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC13animateToNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1x12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1x12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1x12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1x12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1y12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1y12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1y12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC1y12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5curveSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5curveSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5curveSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5curveSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5delay12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5delay12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5delay12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5delay12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5force12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5force12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5force12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC5force12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6rotate12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6rotate12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6rotate12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6rotate12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleX12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleX12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleX12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleX12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC6scaleY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7animateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7damping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7damping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7damping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7damping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7opacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7opacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7opacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC7opacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8autohideSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8autohideSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8autohideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8autohideSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8duration12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8duration12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8duration12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8duration12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8velocity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8velocity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8velocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC8velocity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9animateToyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9animationSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9animationSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9animationSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9animationSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9autostartSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9autostartSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9autostartSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A4ViewC9autostartSbvsTq uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s6Spring0A5LabelC0019springstorage_BJEEd33_8489C3D9AFAC36039FBCFA3D60D43AD2LLA2ACSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC0019springstorage_BJEEd33_8489C3D9AFAC36039FBCFA3D60D43AD2LLA2ACSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11animateFromSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11animateFromSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11animateFromSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11animateFromSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11animateNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11repeatCountSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11repeatCountSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11repeatCountSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC11repeatCountSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC13animateToNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1x12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1x12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1x12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1x12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1y12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1y12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1y12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC1y12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5curveSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5curveSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5curveSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5curveSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5delay12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5delay12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5delay12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5delay12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5force12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5force12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5force12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC5force12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6rotate12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6rotate12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6rotate12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6rotate12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleX12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleX12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleX12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleX12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC6scaleY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7animateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7damping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7damping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7damping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7damping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7opacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7opacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7opacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC7opacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8autohideSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8autohideSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8autohideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8autohideSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8duration12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8duration12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8duration12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8duration12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8velocity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8velocity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8velocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC8velocity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9animateToyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9animationSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9animationSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9animationSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9animationSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9autostartSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9autostartSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9autostartSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A5LabelC9autostartSbvsTq uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s6Spring0A6ButtonC0019springstorage_BJEEd018_0F5B93B3FB858F595E13DE3AA17E49467LLA2ACSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC0019springstorage_BJEEd018_0F5B93B3FB858F595E13DE3AA17E49467LLA2ACSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11animateFromSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11animateFromSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11animateFromSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11animateFromSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11animateNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11repeatCountSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11repeatCountSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11repeatCountSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC11repeatCountSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC13animateToNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1x12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1x12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1x12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1x12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1y12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1y12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1y12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC1y12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5curveSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5curveSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5curveSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5curveSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5delay12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5delay12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5delay12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5delay12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5force12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5force12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5force12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC5force12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6rotate12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6rotate12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6rotate12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6rotate12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleX12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleX12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleX12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleX12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC6scaleY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7animateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7damping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7damping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7damping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7damping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7opacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7opacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7opacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC7opacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8autohideSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8autohideSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8autohideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8autohideSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8duration12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8duration12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8duration12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8duration12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8velocity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8velocity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8velocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC8velocity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9animateToyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9animationSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9animationSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9animationSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9animationSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9autostartSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9autostartSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9autostartSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A6ButtonC9autostartSbvsTq uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s6Spring0A8TextViewC0019springstorage_BJEEd33_B33F8CFFF501A55DDEE751C87069D606LLA2ACSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC0019springstorage_BJEEd33_B33F8CFFF501A55DDEE751C87069D606LLA2ACSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11animateFromSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11animateFromSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11animateFromSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11animateFromSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11animateNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11repeatCountSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11repeatCountSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11repeatCountSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC11repeatCountSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC13animateToNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1x12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1x12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1x12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1x12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1y12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1y12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1y12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC1y12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5curveSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5curveSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5curveSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5curveSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5delay12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5delay12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5delay12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5delay12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5force12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5force12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5force12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC5force12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6rotate12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6rotate12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6rotate12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6rotate12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleX12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleX12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleX12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleX12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC6scaleY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7animateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7damping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7damping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7damping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7damping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7opacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7opacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7opacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC7opacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8autohideSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8autohideSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8autohideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8autohideSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8duration12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8duration12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8duration12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8duration12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8velocity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8velocity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8velocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC8velocity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9animateToyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9animationSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9animationSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9animationSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9animationSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9autostartSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9autostartSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9autostartSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A8TextViewC9autostartSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9AnimationC12springEaseIn8duration10animationsySd_yycSgtFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9AnimationC12springLinear8duration10animationsySd_yycSgtFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9AnimationC13springEaseOut8duration10animationsySd_yycSgtFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9AnimationC15springEaseInOut8duration10animationsySd_yycSgtFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9AnimationC15springWithDelay8duration5delay10animationsySd_SdyycSgtFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9AnimationC20springWithCompletion8duration10animations10completionySd_yycSgySbcSgtFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9AnimationC6spring8duration10animationsySd_yyctFZTq uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s6Spring0A9ImageViewC0019springstorage_BJEEd33_038D48E5B7A78EA90B0CAA7BD749816ALLA2ACSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC0019springstorage_BJEEd33_038D48E5B7A78EA90B0CAA7BD749816ALLA2ACSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11animateFromSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11animateFromSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11animateFromSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11animateFromSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11animateNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11repeatCountSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11repeatCountSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11repeatCountSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC11repeatCountSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC13animateToNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1x12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1x12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1x12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1x12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1y12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1y12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1y12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC1y12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5curveSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5curveSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5curveSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5curveSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5delay12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5delay12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5delay12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5delay12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5force12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5force12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5force12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC5force12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6rotate12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6rotate12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6rotate12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6rotate12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleX12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleX12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleX12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleX12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC6scaleY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7animateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7damping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7damping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7damping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7damping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7opacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7opacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7opacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC7opacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8autohideSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8autohideSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8autohideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8autohideSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8duration12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8duration12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8duration12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8duration12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8velocity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8velocity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8velocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC8velocity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9animateToyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9animationSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9animationSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9animationSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9animationSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9autostartSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9autostartSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9autostartSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9ImageViewC9autostartSbvsTq uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s6Spring0A9TextFieldC0019springstorage_BJEEd014_2E81D0C95A342E17EAFDEF84B3846B07FLLA2ACSgvpfi: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+Parameter name: utf32, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC0019springstorage_BJEEd014_2E81D0C95A342E17EAFDEF84B3846B07FLLA2ACSgvpfi uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11animateFromSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11animateFromSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11animateFromSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11animateFromSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11animateNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11repeatCountSfvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11repeatCountSfvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11repeatCountSfvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC11repeatCountSfvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC13animateToNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1x12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1x12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1x12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1x12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1y12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1y12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1y12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC1y12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5curveSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5curveSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5curveSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5curveSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5delay12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5delay12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5delay12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5delay12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5force12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5force12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5force12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC5force12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6rotate12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6rotate12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6rotate12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6rotate12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleX12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleX12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleX12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleX12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC6scaleY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7animateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7damping12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7damping12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7damping12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7damping12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7opacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7opacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7opacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC7opacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8autohideSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8autohideSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8autohideSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8autohideSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8duration12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8duration12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8duration12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8duration12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8velocity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8velocity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8velocity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC8velocity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9animateToyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9animationSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9animationSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9animationSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9animationSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9autostartSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9autostartSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9autostartSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring0A9TextFieldC9autostartSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11AsyncButtonC11setImageURL3url011placeholderE08forStateySo5NSURLCSg_So7UIImageCSgSo09UIControlJ0VtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11ImageLoaderC06sharedC0ACvgZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11ImageLoaderC11imageForUrl9urlString17completionHandlerySS_ySo7UIImageCSg_SStctFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11ImageLoaderC5cacheSo7NSCacheCySo8NSStringCSo6NSDataCGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11ImageLoaderC5cacheSo7NSCacheCySo8NSStringCSo6NSDataCGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11ImageLoaderC5cacheSo7NSCacheCySo8NSStringCSo6NSDataCGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11ImageLoaderC5cacheSo7NSCacheCySo8NSStringCSo6NSDataCGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11ImageLoaderCACycfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11LoadingViewC010designCodebC0So6UIViewCyFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11LoadingViewC09indicatorC0AA0aC0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11LoadingViewC09indicatorC0AA0aC0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11LoadingViewC09indicatorC0AA0aC0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring11LoadingViewC09indicatorC0AA0aC0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC011placeholderC0So7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC011placeholderC0So7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC011placeholderC0So7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC011placeholderC0So7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC3urlSo5NSURLCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC3urlSo5NSURLCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC3urlSo5NSURLCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC3urlSo5NSURLCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14AsyncImageViewC6setURL3url011placeholderC0ySo5NSURLCSg_So7UIImageCSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderWidth12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderWidth12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11borderWidth12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11shadowColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11shadowColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11shadowColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC11shadowColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12cornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12cornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12cornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12cornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12shadowRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12shadowRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12shadowRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC12shadowRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOffsetY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOffsetY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOffsetY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOffsetY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOpacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOpacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOpacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14DesignableViewC13shadowOpacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC07animateB05usingySo36UIViewControllerContextTransitioning_p_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC12isPresentingSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC12isPresentingSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC12isPresentingSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC12isPresentingSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC18transitionDuration5usingSdSo36UIViewControllerContextTransitioning_pSg_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC19animationController012forPresentedE010presenting06sourceE0So06UIViewE21AnimatedTransitioning_pSgSo0jE0C_A2KtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC19animationController12forDismissedSo06UIViewE21AnimatedTransitioning_pSgSo0hE0C_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC8durationSdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC8durationSdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC8durationSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring14TransitionZoomC8durationSdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring15DesignableLabelC10lineHeight12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring15DesignableLabelC10lineHeight12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring15DesignableLabelC10lineHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring15DesignableLabelC10lineHeight12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderWidth12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderWidth12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11borderWidth12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11shadowColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11shadowColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11shadowColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC11shadowColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12cornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12cornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12cornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12cornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12shadowRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12shadowRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12shadowRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC12shadowRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOffsetY12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOffsetY12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOffsetY12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOffsetY12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOpacity12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOpacity12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOpacity12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring16DesignableButtonC13shadowOpacity12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC07animateB05usingySo36UIViewControllerContextTransitioning_p_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC12isPresentingSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC12isPresentingSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC12isPresentingSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC12isPresentingSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC18transitionDuration5usingSdSo36UIViewControllerContextTransitioning_pSg_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC19animationController012forPresentedE010presenting06sourceE0So06UIViewE21AnimatedTransitioning_pSgSo0jE0C_A2KtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC19animationController12forDismissedSo06UIViewE21AnimatedTransitioning_pSgSo0hE0C_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC8durationSdvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC8durationSdvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC8durationSdvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring17TransitionManagerC8durationSdvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC10lineHeight12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC10lineHeight12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC10lineHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC10lineHeight12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderWidth12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderWidth12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC11borderWidth12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC12cornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC12cornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC12cornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring18DesignableTextViewC12cornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderWidth12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderWidth12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC11borderWidth12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC12cornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC12cornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC12cornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableImageViewC12cornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC10lineHeight12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC10lineHeight12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC10lineHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC10lineHeight12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderWidth12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderWidth12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderWidth12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11borderWidth12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11leftPadding12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11leftPadding12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11leftPadding12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11leftPadding12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11sidePadding12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11sidePadding12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11sidePadding12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC11sidePadding12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12cornerRadius12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12cornerRadius12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12cornerRadius12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12cornerRadius12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12rightPadding12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12rightPadding12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12rightPadding12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC12rightPadding12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC16placeholderColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC16placeholderColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC16placeholderColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring19DesignableTextFieldC16placeholderColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring24KeyboardLayoutConstraintC14updateConstantyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring24KeyboardLayoutConstraintC28keyboardWillHideNotificationyySo14NSNotificationCFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring24KeyboardLayoutConstraintC28keyboardWillShowNotificationyy10Foundation0H0VFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC10normalTintSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC10normalTintSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC10normalTintSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC10normalTintSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC12selectedTintSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC12selectedTintSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC12selectedTintSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC12selectedTintSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18fifthSelectedImageSo7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18fifthSelectedImageSo7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18fifthSelectedImageSo7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18fifthSelectedImageSo7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18firstSelectedImageSo7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18firstSelectedImageSo7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18firstSelectedImageSo7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18firstSelectedImageSo7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18thirdSelectedImageSo7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18thirdSelectedImageSo7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18thirdSelectedImageSo7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC18thirdSelectedImageSo7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19fourthSelectedImageSo7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19fourthSelectedImageSo7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19fourthSelectedImageSo7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19fourthSelectedImageSo7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19secondSelectedImageSo7UIImageCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19secondSelectedImageSo7UIImageCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19secondSelectedImageSo7UIImageCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC19secondSelectedImageSo7UIImageCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC8fontNameSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC8fontNameSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC8fontNameSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6Spring26DesignableTabBarControllerC8fontNameSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC10commonInityyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC11animateNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC13animatePresetyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC13animateToNext10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC14AnimationCurveO8rawValueSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC15AnimationPresetO8rawValueSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC17getTimingFunction5curveSo07CAMediacD0CSS_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC18customAwakeFromNibyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC19getAnimationOptions5curveSo06UIViewcD0VSS_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC20customLayoutSubviewsyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC27didBecomeActiveNotificationyySo14NSNotificationCFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC5resetyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC7animateyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC7setView10completionyyyc_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC8resetAllyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAAC9animateToyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s6SpringAACyAbA10Springable_pcfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSS6SpringE6lengthSivpMV uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo6UIViewC6SpringE20LoadingViewConstantsV3TagSivau: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo6UIViewC6SpringE20LoadingViewConstantsV3TagSivau uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo6UIViewC6SpringE20LoadingViewConstantsV3TagSivgZ: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo6UIViewC6SpringE20LoadingViewConstantsV3TagSivgZ uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo6UIViewC6SpringE20LoadingViewConstantsV3TagSivpZ: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo6UIViewC6SpringE20LoadingViewConstantsV3TagSivpZ uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo6UIViewC6SpringE20LoadingViewConstantsVAEycfC: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo6UIViewC6SpringE20LoadingViewConstantsVAEycfC uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo6UIViewC6SpringE20LoadingViewConstantsVMa: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo6UIViewC6SpringE20LoadingViewConstantsVMa uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo6UIViewC6SpringE20LoadingViewConstantsVMn: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo6UIViewC6SpringE20LoadingViewConstantsVMn uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$sSo6UIViewC6SpringE20LoadingViewConstantsVN: Expected a nominal type node kind but got Extension
+Parameter name: node, skipping.
+warning SM4018: entry _$sSo6UIViewC6SpringE20LoadingViewConstantsVN uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo7UIColorC6SpringE3hexABSS_tcfC uses an unsupported swift feature, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM1500: In wrapping function Spring.insertBlurView, unable to find matching top level function.
+error SM0566: Failed to compile the generated swift wrapper code.
+error SM2000: Failed to wrap module Spring.
+make[1]: *** [run-swift-o-matic] Error 1
+make: [build] Error 2 (ignored)

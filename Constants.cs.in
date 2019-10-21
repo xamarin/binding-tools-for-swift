@@ -1,0 +1,5 @@
+static class Constants {
+	public const string Version = "@VERSION@";
+	public const string Branch = "@BRANCH@";
+	public const string Hash = "@HASH@";
+}

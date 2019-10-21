@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask TaskName="Binding.Tools.For.Swift.Tasks.FindBindingToolsForSwift" AssemblyFile="Binding.Tools.For.Swift.Tasks.dll" />
+
+	<Target Name="FindBindingToolsForSwift" Condition="'$(BindingToolsForSwiftPath)' == ''">
+		<FindBindingToolsForSwift ProjectDirectory="$(ProjectDir)">
+			<Output TaskParameter="FoundDirectory" PropertyName="_SoMFoundDirectory"/>  
+		</FindBindingToolsForSwift>
+		<PropertyGroup>
+			<BindingToolsForSwiftPath>$(_SoMFoundDirectory)</BindingToolsForSwiftPath>
+		</PropertyGroup>
+		<Message Text="Using found $(BindingToolsForSwiftPath) as explict BindingToolsForSwiftPath was not set." />
+	</Target>
+
+	<!-- These depend upon $(BindingToolsForSwiftPath) which may only be set after FindBindingToolsForSwift target. -->
+	<Target Name="FindSwiftLibraries" DependsOnTargets="FindBindingToolsForSwift">
+		<PropertyGroup Condition="'$(TargetFrameworkName)' != 'iOS'">
+			<SwiftRuntimeLibrary>$(BindingToolsForSwiftPath)/lib/SwiftInterop/SwiftRuntimeLibrary.Mac.dll</SwiftRuntimeLibrary>
+			<PlatformNameToSTDTool>macosx</PlatformNameToSTDTool>
+			<XamGlueLibrary>$(BindingToolsForSwiftPath)/lib/SwiftInterop/mac/XamGlue.framework</XamGlueLibrary>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="'$(TargetFrameworkName)' == 'iOS'">
+			<SwiftRuntimeLibrary>$(BindingToolsForSwiftPath)/lib/SwiftInterop/SwiftRuntimeLibrary.iOS.dll</SwiftRuntimeLibrary>
+			<PlatformNameToSTDTool Condition="'$(Platform)' != 'iPhone'">iphonesimulator</PlatformNameToSTDTool>
+			<PlatformNameToSTDTool Condition="'$(Platform)' == 'iPhone'">iphoneos</PlatformNameToSTDTool>
+			<XamGlueLibrary>$(BindingToolsForSwiftPath)/lib/SwiftInterop/iphone/XamGlue.framework</XamGlueLibrary>
+		</PropertyGroup>
+	</Target>
+
+	<Import Project="$(MSBuildThisFileDirectory)/binding-tools-for-swift-app.targets" Condition="'$(IsBindingLibrary)' != 'true'" />
+	<Import Project="$(MSBuildThisFileDirectory)/binding-tools-for-swift-lib.targets" Condition="'$(IsBindingLibrary)' == 'true'" />
+</Project>

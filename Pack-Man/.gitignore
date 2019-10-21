@@ -1,0 +1,7 @@
+# VSCode folder
+.vscode/*
+!.vscode/launch.json
+
+# Build related
+tools/**
+!tools/packages.config

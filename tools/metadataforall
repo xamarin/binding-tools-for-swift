@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+#usage: metadataforall /path/to/directory/of/dylibs
+
+if [ $# -ne 1 ]; then
+	echo "Usage: $0 /path/to/directory/of/dylibs"
+	exit 1
+fi
+
+if [ ! -d "$1" ]; then
+	echo "$1: no such directory"
+	exit 1
+fi
+
+#make the trailing slash optional
+path=${1%/}
+platform=$(basename "$path")
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+echo "<TypeMetadataSet platform=\"$platform\">"
+for filename in "$path"/*.dylib; do
+	./metadatafordylib "$filename"
+done
+echo "</TypeMetadataSet>"

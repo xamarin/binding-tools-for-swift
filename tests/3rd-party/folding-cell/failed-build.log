@@ -1,0 +1,78 @@
+Building folding-cell
+Cloning https://github.com/Ramotion/folding-cell into ./repository...
+Successfully checked out 2187548e048984b0d74db7d8149b840d99292b63 for https://github.com/Ramotion/folding-cell in ./repository.
+XCODEBUILD/iphoneos folding-cell
+XCODEBUILD/iphonesimulator folding-cell
+GEN    folding-cell.framework
+SWIFT-O-MATIC folding-cell
+
+63 warnings and 3 errors
+
+warning SM4018: entry _$s11FoldingCell11RotatedViewC04backD0ACSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC04backD0ACSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC04backD0ACSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC04backD0ACSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC07addBackD0_5colory12CoreGraphics7CGFloatV_So7UIColorCtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC20hiddenAfterAnimationSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC20hiddenAfterAnimationSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC20hiddenAfterAnimationSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCell11RotatedViewC20hiddenAfterAnimationSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC10commonInityyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC10isUnfoldedSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC10isUnfoldedSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC10isUnfoldedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC10isUnfoldedSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC11isAnimatingSbyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13AnimationTypeO8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13animationViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13animationViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13animationViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13animationViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13backViewColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13backViewColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13backViewColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13backViewColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13containerViewSo6UIViewCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13containerViewSo6UIViewCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13containerViewSo6UIViewCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13containerViewSo6UIViewCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC13openAnimationyyyycSgFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC14closeAnimationyyyycSgFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC14foregroundViewAA07RotatedD0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC14foregroundViewAA07RotatedD0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC14foregroundViewAA07RotatedD0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC14foregroundViewAA07RotatedD0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC16containerViewTopSo18NSLayoutConstraintCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC16containerViewTopSo18NSLayoutConstraintCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC16containerViewTopSo18NSLayoutConstraintCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC16containerViewTopSo18NSLayoutConstraintCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC16durationSequenceySaySdGAB13AnimationTypeOFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC17foregroundViewTopSo18NSLayoutConstraintCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC17foregroundViewTopSo18NSLayoutConstraintCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC17foregroundViewTopSo18NSLayoutConstraintCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC17foregroundViewTopSo18NSLayoutConstraintCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC18animationItemViewsSayAA11RotatedViewCGSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC18animationItemViewsSayAA11RotatedViewCGSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC18animationItemViewsSayAA11RotatedViewCGSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC18animationItemViewsSayAA11RotatedViewCGSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC19createAnimationViewyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC23configureAnimationItemsyyAB0D4TypeOFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC25durationsForExpandedStateSaySdGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC25durationsForExpandedStateSaySdGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC25durationsForExpandedStateSaySdGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC25durationsForExpandedStateSaySdGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC26durationsForCollapsedStateSaySdGvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC26durationsForCollapsedStateSaySdGvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC26durationsForCollapsedStateSaySdGvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC26durationsForCollapsedStateSaySdGvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC28addImageItemsToAnimationViewyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC6unfold_8animated10completionySb_SbyycSgtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC9itemCountSivMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC9itemCountSivgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC9itemCountSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s11FoldingCellAAC9itemCountSivsTq uses an unsupported swift feature, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM0566: Failed to compile the generated swift wrapper code.
+error SM2000: Failed to wrap module FoldingCell.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

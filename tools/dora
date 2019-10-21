@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Convert Binding Tools for Swift error codes to the form found in the source.
+
+if [ "$#" -ne 1 ]; then
+	echo "Usage: $0 binding-tools-for-swift error number"
+	echo "Accepts either nnnn or BTnnnn, where nnnn is a number."
+	exit 1
+fi
+
+ERROR=$1
+if [[ $ERROR == BT* ]] ; then
+    ERROR=${ERROR:2}
+fi
+
+# probably never more than 1 zero
+if [[ $ERROR == 0* ]] ; then
+    ERROR=${ERROR:1}
+fi
+
+if [[ $number =~ ^[0-9]+$ ]] ; then
+	echo "$ERROR is not a number"
+	exit 1
+fi
+
+if [ "$ERROR" -ge 500 ] && [ "$ERROR" -le 999 ] ; then
+    let DELTA=$ERROR-500
+    echo "kCantHappenBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 1000 ] && [ "$ERROR" -le 1499 ] ; then
+    let DELTA=$ERROR-1000
+    echo "kCompilerBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 1500 ] && [ "$ERROR" -le 1999 ] ; then
+    let DELTA=$ERROR-1500
+    echo "kCompilerReferenceBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 2000 ] && [ "$ERROR" -le 2499 ] ; then
+    let DELTA=$ERROR-2000
+    echo "kWrappingBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 2500 ] && [ "$ERROR" -le 2999 ] ; then
+    let DELTA=$ERROR-2500
+    echo "kImportingBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 3000 ] && [ "$ERROR" -le 3999 ] ; then
+    let DELTA=$ERROR-3000
+    echo "kDecomposeBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 4000 ] && [ "$ERROR" -le 4999 ] ; then
+    let DELTA=$ERROR-4000
+    echo "kInventoryBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 5000 ] && [ "$ERROR" -le 5999 ] ; then
+    let DELTA=$ERROR-5000
+    echo "kReflectionErrorBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 6000 ] && [ "$ERROR" -le 6999 ] ; then
+    let DELTA=$ERROR-6000
+    echo "kTypeParseBase +" $DELTA
+    exit 0
+fi
+
+if [ "$ERROR" -ge 7000 ] && [ "$ERROR" -le 7999 ] ; then
+    let DELTA=$ERROR-7000
+    echo "kTypeMapBase +" $DELTA
+    exit 0
+fi
+
+echo unknown error code.

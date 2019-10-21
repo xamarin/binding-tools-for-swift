@@ -1,0 +1,27 @@
+../Makefile.inc:17: This test (youtube-iOS) will build/run, but the result is ignored because it's a known failure
+Building youtube-iOS
+Cloning https://github.com/aslanyanhaik/youtube-iOS into ./repository...
+Successfully checked out be0627889a5bd61e6f89f1e161f3e830f80d1599 for https://github.com/aslanyanhaik/youtube-iOS in ./repository.
+[XCODEBUILD/iphoneos] youtube-iOS
+[XCODEBUILD/iphonesimulator] youtube-iOS
+=== BUILD TARGET YouTube OF PROJECT YouTube WITH CONFIGURATION Debug ===
+Code Signing Error: No profiles for 'com.haik.YouTube' were found:  Xcode couldn't find any iOS App Development provisioning profiles matching 'com.haik.YouTube'. Automatic signing is disabled and unable to generate a profile. To enable automatic signing, pass -allowProvisioningUpdates to xcodebuild.
+Code Signing Error: Code signing is required for product type 'Application' in SDK 'iOS 11.2'
+** BUILD FAILED **
+
+make[3]: *** [build-sdk-iphoneos.stamp] Error 65
+make[3]: *** Waiting for unfinished jobs....
+=== BUILD TARGET YouTube OF PROJECT YouTube WITH CONFIGURATION Debug ===
+/* com.apple.actool.document.warnings */
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/repository/YouTube/Assets.xcassets:./AppIcon.appiconset: warning: A 1024x1024 app store icon is required for iOS apps
+/* com.apple.actool.compilation-results */
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/iphonesimulator/YouTube.app/AppIcon29x29@2x.png
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/iphonesimulator/YouTube.app/AppIcon29x29@3x.png
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/iphonesimulator/YouTube.app/AppIcon40x40@2x.png
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/iphonesimulator/YouTube.app/AppIcon40x40@3x.png
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/iphonesimulator/YouTube.app/AppIcon60x60@2x.png
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/iphonesimulator/YouTube.app/AppIcon60x60@3x.png
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/iphonesimulator/YouTube.app/Assets.car
+/work/swift-o-matic/maccore2/tools/tom-swifty/tests/3rd-party/youtube-iOS/bin/intermediates/iphonesimulator/YouTube.build/Debug-iphonesimulator/YouTube.build/assetcatalog_generated_info.plist
+
+make[2]: [build] Error 2 (ignored)

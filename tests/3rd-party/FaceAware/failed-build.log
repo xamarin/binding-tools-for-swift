@@ -1,0 +1,31 @@
+Building FaceAware
+Cloning https://github.com/BeauNouvelle/FaceAware into ./repository...
+Successfully checked out 77763a863f51fc6e8d4855b571ed73dbd8873726 for https://github.com/BeauNouvelle/FaceAware in ./repository.
+XCODEBUILD/iphoneos FaceAware
+XCODEBUILD/iphonesimulator FaceAware
+GEN    FaceAware.framework
+SWIFT-O-MATIC FaceAware
+
+15 warnings and 1 errors
+
+warning SM4018: entry _$s9FaceAware10AttachableTL uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s9FaceAware14ClosureWrapperC7closureyyxcvM:
+Parameter name: ofType, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperC7closureyyxcvM uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperC7closureyyxcvMTq uses an unsupported swift feature, skipping.
+warning SM3000: unexpected error handling _$s9FaceAware14ClosureWrapperC7closureyyxcvg:
+Parameter name: ret, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperC7closureyyxcvg uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperC7closureyyxcvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperC7closureyyxcvpMV uses an unsupported swift feature, skipping.
+error SM0502: error dispensing top level definition of type TLFieldOffset decomposed from _$s9FaceAware14ClosureWrapperC7closureyyxcvpWvd: Expected a top level definition to have a class name.
+warning SM3000: unexpected error handling _$s9FaceAware14ClosureWrapperC7closureyyxcvs:
+Parameter name: parms, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperC7closureyyxcvs uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperC7closureyyxcvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s9FaceAware14ClosureWrapperCyACyxGyxccfCTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo11UIImageViewC9FaceAwareE05debugcD0SbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo11UIImageViewC9FaceAwareE12focusOnFacesSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$sSo11UIImageViewC9FaceAwareE15didFocusOnFacesyycSgvpMV uses an unsupported swift feature, skipping.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2

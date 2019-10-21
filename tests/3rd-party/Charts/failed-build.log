@@ -1,0 +1,20 @@
+Building Charts
+Checking out cd1120b004cc6aac40d889fa665c0e495e463b13 for https://github.com/danielgindi/Charts...
+HEAD is now at cd1120b0 correct 3.3 to 3.3.0.
+Updating submodules for https://github.com/danielgindi/Charts...
+Successfully checked out cd1120b004cc6aac40d889fa665c0e495e463b13 for https://github.com/danielgindi/Charts in ./repository.
+test -f /usr/local/bin/carthage || brew install carthage || true
+cd repository && carthage bootstrap --platform iOS
+*** Checking out ios-snapshot-test-case at "6.0.3"
+*** Cloning ios-snapshot-test-case
+*** xcodebuild output can be found in /var/folders/v6/6vv3v8hd0ld4lp3f4h0gf0wh0000gn/T/carthage-xcodebuild.9CzBAM.log
+*** Downloading ios-snapshot-test-case.framework binary at "6.0.3"
+***  Skipped installing ios-snapshot-test-case.framework binary due to the error:
+	"Incompatible Swift version - framework was built with 5.0 (swiftlang-1001.0.69.5 clang-1001.0.46.3) and the local version is 5.0.1 (swiftlang-1001.0.82.4 clang-1001.0.46.5)."
+
+    Falling back to building from the source
+*** Building scheme "FBSnapshotTestCase iOS" in FBSnapshotTestCase.xcworkspace
+cd repository && bundle install
+/bin/sh: bundle: command not found
+make[1]: *** [prebuild.stamp] Error 127
+make: *** [build] Error 2

@@ -1,0 +1,191 @@
+Building DateTimePicker
+Cloning https://github.com/itsmeichigo/DateTimePicker into ./repository...
+Successfully checked out a026294dd93b39f0da1591cd15219b0ed80ddf69 for https://github.com/itsmeichigo/DateTimePicker in ./repository.
+sed -i '' \
+		-e 's/DEVELOPMENT_TEAM = 2L9U9J29G7;/DEVELOPMENT_TEAM = "";/' \
+		-e 's/DevelopmentTeam = 2L9U9J29G7;//' \
+		repository/DateTimePicker.xcodeproj/project.pbxproj
+XCODEBUILD/iphoneos DateTimePicker
+XCODEBUILD/iphonesimulator DateTimePicker
+GEN    DateTimePicker.framework
+SWIFT-O-MATIC DateTimePicker
+
+172 warnings and 3 errors
+
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC10isSelectedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC10monthLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC10monthLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC10monthLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC10monthLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC11numberLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC11numberLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC11numberLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC11numberLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC12populateItem4date14highlightColor04darkL06localey10Foundation0A0V_So7UIColorCAmI6LocaleVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC14highlightColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC14highlightColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC14highlightColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC14highlightColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC8dayLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC8dayLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC8dayLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC8dayLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC9darkColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC9darkColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC9darkColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker04FullA18CollectionViewCellC9darkColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC10isSelectedSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC11numberLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC11numberLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC11numberLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC11numberLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC12populateItem4date14highlightColor04darkK06localey10Foundation0A0V_So7UIColorCAmI6LocaleVtFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC14highlightColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC14highlightColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC14highlightColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC14highlightColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC8dayLabelSo7UILabelCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC8dayLabelSo7UILabelCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC8dayLabelSo7UILabelCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC8dayLabelSo7UILabelCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC9darkColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC9darkColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC9darkColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0A18CollectionViewCellC9darkColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker0abC8DelegateTL uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker28StepCollectionViewFlowLayoutC04snapD012CoreGraphics7CGFloatVyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker28StepCollectionViewFlowLayoutC13isValidOffset6offsetSb12CoreGraphics7CGFloatV_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker28StepCollectionViewFlowLayoutC16maxContentOffset12CoreGraphics7CGFloatVyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePicker28StepCollectionViewFlowLayoutC16minContentOffset12CoreGraphics7CGFloatVyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isaC4OnlySbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isaC4OnlySbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isaC4OnlySbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isaC4OnlySbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isbC4OnlySbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isbC4OnlySbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isbC4OnlySbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC02isbC4OnlySbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC05resetB0yyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07maximumA010Foundation0A0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07maximumA010Foundation0A0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07maximumA010Foundation0A0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07maximumA010Foundation0A0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07minimumA010Foundation0A0VSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07minimumA010Foundation0A0VSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07minimumA010Foundation0A0VSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC07minimumA010Foundation0A0VSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC08selectedA010Foundation0A0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC08selectedA010Foundation0A0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC08selectedA010Foundation0A0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC08selectedA010Foundation0A0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC08selectedA6StringSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC08selectedA6StringSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10components10Foundation0A10ComponentsVSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10components10Foundation0A10ComponentsVSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10components10Foundation0A10ComponentsVSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10components10Foundation0A10ComponentsVSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10dateFormatSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10dateFormatSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10dateFormatSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC10dateFormatSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC11dismissView6senderySo8UIButtonCSg_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC11donePicking6senderySo8UIButtonCSg_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12includeMonthSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12includeMonthSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12includeMonthSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12includeMonthSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12timeIntervalAB06MinuteE0OvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12timeIntervalAB06MinuteE0OvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12timeIntervalAB06MinuteE0OvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC12timeIntervalAB06MinuteE0OvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13amPmTableViewSo07UITableG0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13amPmTableViewSo07UITableG0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13amPmTableViewSo07UITableG0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13amPmTableViewSo07UITableG0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13contentHeight12CoreGraphics7CGFloatVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13contentHeight12CoreGraphics7CGFloatVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13contentHeight12CoreGraphics7CGFloatVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13contentHeight12CoreGraphics7CGFloatVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13hourTableViewSo07UITableF0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13hourTableViewSo07UITableF0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13hourTableViewSo07UITableF0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC13hourTableViewSo07UITableF0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14MinuteIntervalO8rawValueSivpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14dismissHandleryycSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14dismissHandleryycSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14dismissHandleryycSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14dismissHandleryycSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14highlightColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14highlightColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14highlightColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14highlightColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14is12HourFormatSbvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14is12HourFormatSbvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14is12HourFormatSbvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC14is12HourFormatSbvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15doneButtonTitleSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15doneButtonTitleSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15doneButtonTitleSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15doneButtonTitleSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15minuteTableViewSo07UITableF0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15minuteTableViewSo07UITableF0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15minuteTableViewSo07UITableF0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC15minuteTableViewSo07UITableF0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC16todayButtonTitleSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC16todayButtonTitleSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC16todayButtonTitleSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC16todayButtonTitleSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17cancelButtonTitleSSvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17cancelButtonTitleSSvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17cancelButtonTitleSSvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17cancelButtonTitleSSvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17completionHandlery10Foundation0A0VcSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17completionHandlery10Foundation0A0VcSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17completionHandlery10Foundation0A0VcSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17completionHandlery10Foundation0A0VcSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17dayCollectionViewSo012UICollectionF0CSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17dayCollectionViewSo012UICollectionF0CSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17dayCollectionViewSo012UICollectionF0CSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC17dayCollectionViewSo012UICollectionF0CSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19daysBackgroundColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19daysBackgroundColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19daysBackgroundColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19daysBackgroundColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19doneBackgroundColorSo7UIColorCSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19doneBackgroundColorSo7UIColorCSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19doneBackgroundColorSo7UIColorCSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC19doneBackgroundColorSo7UIColorCSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC20updateCollectionView2toy10Foundation0A0V_tFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC4showyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC5datesSay10Foundation0A0VGSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC5datesSay10Foundation0A0VGSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC5datesSay10Foundation0A0VGSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC5datesSay10Foundation0A0VGSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC6create07minimumA007maximumA0AB10Foundation0A0VSg_AItFZTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC6locale10Foundation6LocaleVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC6locale10Foundation6LocaleVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC6locale10Foundation6LocaleVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC6locale10Foundation6LocaleVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8calendar10Foundation8CalendarVvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8calendar10Foundation8CalendarVvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8calendar10Foundation8CalendarVvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8calendar10Foundation8CalendarVvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8delegateAA0abC8Delegate_pSgvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8delegateAA0abC8Delegate_pSgvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8delegateAA0abC8Delegate_pSgvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8delegateAA0abC8Delegate_pSgvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8setTodayyyFTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8timeZone10Foundation0bE0VvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8timeZone10Foundation0bE0VvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8timeZone10Foundation0bE0VvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC8timeZone10Foundation0bE0VvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC9darkColorSo7UIColorCvMTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC9darkColorSo7UIColorCvgTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC9darkColorSo7UIColorCvpMV uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC9darkColorSo7UIColorCvsTq uses an unsupported swift feature, skipping.
+warning SM4018: entry _$s14DateTimePickerAAC9fillDates04fromA002toA0y10Foundation0A0V_AHtFTq uses an unsupported swift feature, skipping.
+error SM0554: can't handle closures types bound in generics
+error SM1514: Found and entity for AnyObject, but it was a ClassDeclaration instead of a protocol.
+error SM2000: Failed to wrap module DateTimePicker.
+make[1]: *** [run-swift-o-matic] Error 1
+make: *** [build] Error 2
