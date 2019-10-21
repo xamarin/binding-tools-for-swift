@@ -1,0 +1,48 @@
+# Pipeline for Binding Tools for Swift.
+#
+# yaml help: https://aka.ms/yaml
+
+trigger:
+- '*'
+
+pool:
+  vmImage: 'macOS-10.14'
+
+steps:
+- script: |
+    set -e
+    set -x
+    pwd
+    env | sort
+    ls -la /Applications
+  displayName: 'Environment info'
+
+- script: |
+    set -e
+    set -x
+    ./jenkins/provision-deps.sh
+  displayName: 'Provision dependencies'
+
+- script: |
+    set -e
+    set -x
+    ./jenkins/build-swift.sh --publish
+  displayName: 'Build Swift'
+
+- script: |
+    set -e
+    set -x
+    ./jenkins/build.sh
+  displayName: 'Build'
+
+- script: |
+    set -e
+    set -x
+    ./jenkins/build-package.sh
+  displayName: 'Package'
+
+- script: |
+    set -e
+    set -x
+    ./jenkins/run-tests.sh
+  displayName: 'Run tests'
