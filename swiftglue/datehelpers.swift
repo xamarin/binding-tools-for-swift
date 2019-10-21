@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Foundation
 
 public func dateNew (retval: UnsafeMutablePointer<Date>)

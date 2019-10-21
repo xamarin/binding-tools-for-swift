@@ -1,3 +1,5 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 public func optionalNewNone<T>(retval: UnsafeMutablePointer<T?>)
 {

@@ -3,7 +3,8 @@
 //  SwiftIgPay
 //
 //  Created by Steve Hawley on 10/11/17.
-//  Copyright © 2017 Steve Hawley. All rights reserved.
+//  Copyright (c) Microsoft Corporation.
+//  Licensed under the MIT License.
 //
 
 import Foundation

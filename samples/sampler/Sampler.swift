@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 public final class AFinalClass {
 	public static func aStaticMethod() -> Double { return 3.14 }
 	public static var aStaticProp: Bool = true
