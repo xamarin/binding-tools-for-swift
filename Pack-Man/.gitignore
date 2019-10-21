@@ -5,3 +5,8 @@
 # Build related
 tools/**
 !tools/packages.config
+
+binding-tools-for-swift
+*.zip
+tools
+
