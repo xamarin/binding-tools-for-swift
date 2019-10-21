@@ -1,4 +1,6 @@
-﻿
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 namespace Dynamo.SwiftLang {
 	public class SLDeclaration : LineCodeElementCollection<ICodeElement>, ISLExpr, ISLLineable {
 		public SLDeclaration (bool isLet, SLBinding binding, Visibility vis = Visibility.Private, bool isStatic = false)

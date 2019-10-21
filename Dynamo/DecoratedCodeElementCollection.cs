@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System.Collections.Generic;
 
 namespace Dynamo {
 	public class DecoratedCodeElementCollection<T> : CodeElementCollection<T> where T : ICodeElement {

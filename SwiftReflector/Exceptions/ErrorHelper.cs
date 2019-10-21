@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 // Copyright 2014, Xamarin Inc. All rights reserved,
 
 using System;

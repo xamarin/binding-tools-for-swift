@@ -1,4 +1,6 @@
-﻿
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 namespace Dynamo.CSLang {
 	public enum CSVisibility {
 		None = 0,

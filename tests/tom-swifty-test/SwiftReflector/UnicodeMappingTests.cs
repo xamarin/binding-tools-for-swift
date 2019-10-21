@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 using Dynamo;
 using Dynamo.CSLang;
 using NUnit.Framework;
@@ -105,3 +108,4 @@ public static func 🍎 () -> Int {
 		}
 	}
 }
+

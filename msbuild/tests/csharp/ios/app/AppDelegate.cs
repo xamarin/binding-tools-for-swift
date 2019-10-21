@@ -1,4 +1,7 @@
-﻿using Foundation;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using Foundation;
 using UIKit;
 
 namespace sampleappios

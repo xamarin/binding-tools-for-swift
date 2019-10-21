@@ -1,4 +1,6 @@
-﻿
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 namespace Dynamo.SwiftLang {
 	public class SLReturn : DelegatedSimpleElement, ISLExpr, ISLLineable {
 		public SLReturn (ISLExpr expr)
