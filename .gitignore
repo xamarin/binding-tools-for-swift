@@ -1,4 +1,7 @@
 apple
+bin
+obj
+Make.config.inc
 SwiftToolchain-*
 Constants.cs
 *.csproj.user
