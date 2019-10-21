@@ -33,7 +33,11 @@ if test -z "$FORCE_SWIFT_BUILD"; then
 	if ! test -d "$SWIFT_TOOLCHAIN_NAME"; then
 		# Download only if not already downloaded, and use a temporary file to avoid problems with incomplete downloads
 		if ! test -f "$SWIFT_TOOLCHAIN_NAME.zip"; then
-			if curl -vf -L "$toolchain_url" --output "$SWIFT_TOOLCHAIN_NAME.zip.tmp"; then
+			CACHED_PATH=~/Library/Caches/binding-tools-for-swift/$SWIFT_TOOLCHAIN_NAME.zip
+			if test -f "$CACHED_PATH"; then
+				echo "Found a cached version of $toolchain_url in $CACHED_PATH."
+				cp -c "$CACHED_PATH" "$SWIFT_TOOLCHAIN_NAME.zip"
+			elif curl -vf -L "$toolchain_url" --output "$SWIFT_TOOLCHAIN_NAME.zip.tmp"; then
 				# Yay, downloaded a package!
 				mv "$SWIFT_TOOLCHAIN_NAME.zip.tmp" "$SWIFT_TOOLCHAIN_NAME.zip"
 			else
