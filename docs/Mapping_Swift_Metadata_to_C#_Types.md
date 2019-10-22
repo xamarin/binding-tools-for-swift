@@ -8,7 +8,7 @@ Method 1:
 Make a hash table that maps metadata → C# Type. This can be built on first access by looping over all loaded assemblies an finding all swift mapped types and adding calling `StructMarshal.Marshaler.Metadataof` on each. This is likely a slow call. Lookup will be fast, initial access will be slow. Subsequent access will be fast.
 
 Method 2:
-Make a hash table that maps swift type name → C# Type.  We can easily add a new attribute to all bound swift types, say `[SwiftTypeName(``"``module.class.inner``"``)]`. On first access, loop over all types looking for that attribute and hash the name → C# Type. Getting the swift type name at runtime is straight forward, but potentially slow. Encoding may be funny for Bockovers. Lookup will be fast. Initial access will be. Subsequent access will be fast, but slightly slower than method 1. This method will be more uniform for generics. Takes up more space, could tweak the garbage collector because type names are note stored contiguously in swift.
+Make a hash table that maps swift type name → C# Type.  We can easily add a new attribute to all bound swift types, say `[SwiftTypeName(``"``module.class.inner``"``)]`. On first access, loop over all types looking for that attribute and hash the name → C# Type. Getting the swift type name at runtime is straight forward, but potentially slow. Encoding may be funny for Bockovers. Lookup will be fast. Initial access will be. Subsequent access will be fast, but slightly slower than method 1. This method will be more uniform for generics. Takes up more space, could tweak the garbage collector because type names are not stored contiguously in swift.
 
 
 ## Generic Nominal Types
