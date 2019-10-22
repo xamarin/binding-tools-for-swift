@@ -942,7 +942,7 @@ namespace SwiftReflector {
 
 			CompileInnerNominalsInto (enumDecl, enumClass, moduleInventory, use, wrapper, swiftLibPath, pinvokes, errors);
 
-
+			TypeNameAttribute (enumDecl).AttachBefore (enumClass);
 			return enumClass;
 		}
 
@@ -1379,6 +1379,7 @@ namespace SwiftReflector {
 				currentRawValue++;
 				csEnum.Values.Add (enumBinding);
 			}
+			TypeNameAttribute (enumDecl).AttachBefore (csEnum);
 			return csEnum;
 		}
 
@@ -1501,6 +1502,8 @@ namespace SwiftReflector {
 			ImplementMethods (st, picl, usedPinvokeNames, swiftClassName, classContents, structDecl, use, wrapper, tlf => true, swiftLibraryPath, errors);
 			ImplementProperties (st, picl, usedPinvokeNames, structDecl, classContents, null, use, wrapper, true, false, tlf => true, swiftLibraryPath, errors);
 			ImplementSubscripts (st, picl, usedPinvokeNames, structDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
+
+			TypeNameAttribute (structDecl).AttachBefore (st);
 
 			return st;
 		}
@@ -1747,6 +1750,8 @@ namespace SwiftReflector {
 
 			ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
 
+			TypeNameAttribute (protocolDecl).AttachBefore (iface);
+
 			return iface;
 		}
 
@@ -1863,6 +1868,8 @@ namespace SwiftReflector {
 				ause.Package == subclassDecl.Module.Name);
 			if (wrapUse != null)
 				use.Remove (wrapUse);
+
+			TypeNameAttribute (classDecl).AttachBefore (cl);
 
 			return cl;
 		}
@@ -2972,6 +2979,7 @@ namespace SwiftReflector {
 			ImplementProperties (cl, picl, usedPinvokeNames, classDecl, classContents, null, use, wrapper, false, false, tlf => true, swiftLibraryPath, errors);
 			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
+			TypeNameAttribute (classDecl).AttachBefore (cl);
 
 			return cl;
 		}
@@ -6138,6 +6146,13 @@ namespace SwiftReflector {
 				return false;
 
 			return ct.ClassName.ToFullyQualifiedName (false) == named.NameWithoutModule;
+		}
+
+		static CSAttribute TypeNameAttribute (BaseDeclaration decl)
+		{
+			var argList = new CSArgumentList ();
+			argList.Add (new CSArgument (CSConstant.Val (decl.ToFullyQualifiedName ())));
+			return CSAttribute.FromAttr (typeof (SwiftTypeNameAttribute), argList);
 		}
 	}
 }
