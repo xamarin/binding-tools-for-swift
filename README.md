@@ -2,19 +2,19 @@
 
 ## Elevator Pitch
 
-Xamarin Binding Tools for Swift is a set of tools that can consume a compiled swift library and will generate a set of swift wrappers around the front-facing API in the library and a set of C# bindings that makes the swift library look and act like a C# assembly.
+Xamarin Binding Tools for Swift is a set of tools that can consume a compiled Swift library and will generate a set of Swift wrappers around the front-facing API in the library and a set of C# bindings that makes the Swift library look and act like a C# assembly.
 
 
 ## TL;DR - I Just Want to See This Work
 
-Clone the repository on a MacOS machine.
+Clone the repository on a macOS machine.
 
     cd binding-tools-for-swift
     make
     cd tests/tom-swifty-test
     make
 
-In order to run the binding tools, you will need a compiled swift library which includes a `.swiftmodule`. Here are the options for the binding generator:
+In order to run the binding tools, you will need a compiled Swift library which includes a `.swiftmodule`. Here are the options for the binding generator:
 
     steveh$ mono tom-swifty/bin/Debug/tom-swifty.exe --help
     Usage:
@@ -62,27 +62,27 @@ In order to run the binding tools, you will need a compiled swift library which 
           --version              print version information.
       -h, -?, --help             prints this message
 
-If you run this on its own, you will likely run into the error `Unable to find the custom swift compiler. Try using --swift-bin-path.` This is because the tool `tom-swifty` needs a separate tool, the reflector, which can reflect on the types in a swift module. This is the custom swift compiler. It also needs access to the associated swift libraries.
+If you run this on its own, you will likely run into the error `Unable to find the custom swift compiler. Try using --swift-bin-path.` This is because the tool `tom-swifty` needs a separate tool, the reflector, which can reflect on the types in a Swift module. This is the custom Swift compiler. It also needs access to the associated Swift libraries.
 
-When you make binding-tools-for-swift, the build will bring down a copy of the built swift reflector in the directory `/path/to/binding-tools-for-swift/SwiftToolchain-v3-GITHASH` where `GITHASH` is a git hash. The bin and lib paths are:
+When you make binding-tools-for-swift, the build will bring down a copy of the built Swift reflector in the directory `/path/to/binding-tools-for-swift/SwiftToolchain-v3-GITHASH` where `GITHASH` is a git hash. The bin and lib paths are:
 
     /path/to/binding-tools-for-swift/SwiftToolchain-v3/GITHASH/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin
     /path/to/binding-tools-for-swift/SwiftToolchain-v3/GITHASH/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib
 
-Since the binding tools need to compile swift wrappers that use some runtime glue, it needs a reference 
+Since the binding tools need to compile Swift wrappers that use some runtime glue, it needs a reference 
 
 A typical set of commands to generate bindings is:
 
-    mono /path/to/tom-swift.exe --swift-bin-path SWIFT_BIN_PATH --swift-lib-path SWIFT_LIB_PATH -o /path/to/output_directory -C /path/to/YOURLIBRARY.framework -C /path/to/binding-tools-for-swift/swiftglue/bin/Debug/PLATFORM/XamGlue.framework -module-name YOURLIBRARY
+    mono /path/to/tom-swifty.exe --swift-bin-path SWIFT_BIN_PATH --swift-lib-path SWIFT_LIB_PATH -o /path/to/output_directory -C /path/to/YOURLIBRARY.framework -C /path/to/binding-tools-for-swift/swiftglue/bin/Debug/PLATFORM/XamGlue.framework -module-name YOURLIBRARY
 
-In this example `SWIFT_BIN_PATH` and `SWIFT_LIB_PATH` are paths to the swift reflector build (see above). `YOULIBRARY` is the name of the library you’re trying to bind. `PLATFORM` is one of `appletv`, `iphone`, `mac`, or `watch`.
+In this example `SWIFT_BIN_PATH` and `SWIFT_LIB_PATH` are paths to the Swift reflector build (see above). `YOULIBRARY` is the name of the library you’re trying to bind. `PLATFORM` is one of `appletv`, `iphone`, `mac`, or `watch`.
 
-if you add the argument `--retain-swift-wrappers`, the binding tools will leave a directory that contains the source to the swift wrappers written during the compilation. If you add the argument `--retain-xml-reflection`, the binding tools will leaves a directory that contains output of the reflector in XML format.
+If you add the argument `--retain-swift-wrappers`, the binding tools will leave a directory that contains the source to the Swift wrappers written during the compilation. If you add the argument `--retain-xml-reflection`, the binding tools will leaves a directory that contains output of the reflector in XML format.
 
 The binding tools need the following to operate:
 
 - the location of the custom compiler and its libraries
-- the location of the swift runtime glue framework for the platform you’re targeting
+- the location of the Swift runtime glue framework for the platform you’re targeting
 - the location of your framework
 - the name of your framework
 
