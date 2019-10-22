@@ -2,7 +2,7 @@
 
 ## Elevator Pitch
 
-Xamarin Binding Tools for Swift is a set of tools that can consume a compiled Swift library and will generate a set of Swift wrappers around the front-facing API in the library and a set of C# bindings that makes the Swift library look and act like a C# assembly.
+Xamarin Binding Tools for Swift is a set of tools that can consume a compiled Apple Swift library and will generate a set of Swift wrappers around the front-facing API in the library and a set of C# bindings that makes the Swift library look and act like a .NET assembly.
 
 
 ## TL;DR - I Just Want to See This Work
@@ -92,4 +92,27 @@ In addition, the tools can operator on separate `.swiftmodule` and `.dylib` file
 ## How Does This All Work?
 
 There is a set of document in the [docs](https://github.com/xamarin/binding-tools-for-swift/tree/master/docs) directory. The best place to start is the [functional outline](https://github.com/xamarin/binding-tools-for-swift/blob/master/docs/FunctionalOutline.md). There is also a document that describes the runtime libraries and their public API.
+
+
+## What Binds?
+- Classes
+- Structs
+- Enums
+- Protocols *without* associated types
+- Top-level functions and variables
+- Generic classes, structs, and enums
+- Escaping closures
+- Support of `@ObjC` types
+- Protocol composition types in non-virtual methods
+- Exceptions
+- Extensions
+## What Doesn’t Bind Yet?
+- Protocols with associated types
+- Bound generic types with closures
+- Non-escaping closures
+## What Can I Expect?
+- An `open` class in Swift can be subclassed in C# and the subclass can be passed in to Swift. Overridden virtual methods in C# will be called when invoked from Swift.
+- A C# type implementing an interface bound to a Swift protocol can be passed in to Swift. Methods and properties in the C# interface implementation will be called when invoked from Swift.
+- At runtime, the generated code honors the Swift Automatic Reference Counting as well as .NET garbage collection.
+- When writing bindings, the code generator tries hard to generate something. If an API uses a type that’s not supported yet, that API will be flagged and skipped.
 
