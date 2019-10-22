@@ -1,0 +1,14 @@
+# Binding Tools For Swift Code Owners File
+#
+# GitHub uses this file to determine who to assign for reviews
+# on pull requests. Please keep this file alphabetically sorted.
+#
+# References:
+#
+# https://github.com/blog/2392-introducing-code-owners
+# https://help.github.com/articles/about-codeowners
+
+/ @stephen-hawley
+/jenkins @rolfbjarne
+/tests/tom-swifty-test/CommandLineTests/ @mandel-macaque
+/tom-swifty/SwiftyOptions.cs @mandel-macaque
