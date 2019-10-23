@@ -1504,7 +1504,6 @@ namespace SwiftReflector {
 			ImplementSubscripts (st, picl, usedPinvokeNames, structDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
 			TypeNameAttribute (structDecl).AttachBefore (st);
-
 			return st;
 		}
 
@@ -1751,7 +1750,6 @@ namespace SwiftReflector {
 			ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
 
 			TypeNameAttribute (protocolDecl).AttachBefore (iface);
-
 			return iface;
 		}
 
@@ -1870,7 +1868,6 @@ namespace SwiftReflector {
 				use.Remove (wrapUse);
 
 			TypeNameAttribute (classDecl).AttachBefore (cl);
-
 			return cl;
 		}
 
@@ -2980,7 +2977,6 @@ namespace SwiftReflector {
 			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
 			TypeNameAttribute (classDecl).AttachBefore (cl);
-
 			return cl;
 		}
 

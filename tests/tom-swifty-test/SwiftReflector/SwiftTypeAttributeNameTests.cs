@@ -23,6 +23,19 @@ public class BoringClass {
 
 
 		[Test]
+		public void AttributeOnEmojiClass ()
+		{
+			var swiftCode = @"
+public class BoringClass🤡 {
+    public init () {
+    }
+}
+";
+			var callingCode = PrintTypeName ("BoringClassU0001F921", true);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "2E-42-6F-72-69-6E-67-43-6C-61-73-73-3F-3F\n");
+		}
+
+		[Test]
 		public void AttributeOnOpenClass ()
 		{
 			var swiftCode = @"
@@ -111,7 +124,8 @@ public enum BoringEnum3 {
 		}
 
 
-		CSCodeBlock PrintTypeName (string csTypeName)
+
+		CSCodeBlock PrintTypeName (string csTypeName, bool hexEncode = false)
 		{
 			// string name;
 			// SwiftTypeNameAttribute.TryGetSwiftName (typeof (csTypeName), out name);
@@ -125,10 +139,15 @@ public enum BoringEnum3 {
 				new CSFunctionCall ("typeof", false, new CSIdentifier (csTypeName)),
 				new CSIdentifier ($"out {nameID}"));
 
+			CSBaseExpression nameExpr = new CSFunctionCall ($"{nameID}.Substring", false,
+					new CSFunctionCall ($"{nameID}.IndexOf", false, CSConstant.Val ('.')));
 
-			var printer = CSFunctionCall.ConsoleWriteLine (
-				new CSFunctionCall ($"{nameID}.Substring", false,
-					new CSFunctionCall ($"{nameID}.IndexOf", false, CSConstant.Val ('.'))));
+			if (hexEncode) {
+				nameExpr = new CSFunctionCall ("BitConverter.ToString", false,
+					new CSFunctionCall ("System.Text.Encoding.Default.GetBytes", false, nameExpr));
+			}
+
+			var printer = CSFunctionCall.ConsoleWriteLine (nameExpr);
 
 			return CSCodeBlock.Create (nameDecl, tryGet, printer);
 		}
