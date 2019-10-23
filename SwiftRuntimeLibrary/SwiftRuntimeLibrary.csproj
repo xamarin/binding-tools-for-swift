@@ -110,6 +110,7 @@
     <Compile Include="EveryProtocol.cs" />
     <Compile Include="ExistentialContainers.cs" />
     <Compile Include="BaseProxy.cs" />
+    <Compile Include="SwiftMarshal\SwiftTypeNameAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

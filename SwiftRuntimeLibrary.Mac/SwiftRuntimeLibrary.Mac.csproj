@@ -259,6 +259,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\BaseProxy.cs">
       <Link>BaseProxy.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftTypeNameAttribute.cs">
+      <Link>SwiftMarshal\SwiftTypeNameAttribute.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />
