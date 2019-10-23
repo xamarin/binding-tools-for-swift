@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 namespace Dynamo.SwiftLang {
 	public class SLUnaryExpr : SLBaseExpr {
 		public SLUnaryExpr (string op, ISLExpr expr, bool isPrefix)

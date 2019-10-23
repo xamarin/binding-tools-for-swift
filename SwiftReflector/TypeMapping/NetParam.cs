@@ -1,4 +1,7 @@
-﻿namespace SwiftReflector.TypeMapping {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace SwiftReflector.TypeMapping {
 	public class NetParam {
 		public NetParam (string name, NetTypeBundle bundle)
 		{

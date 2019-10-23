@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 public func hasherNew(retval: UnsafeMutablePointer<Hasher>)
 {
     retval.initialize(to: Hasher());

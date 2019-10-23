@@ -3,7 +3,8 @@
 //  EulerPhone
 //
 //  Created by Steve Hawley on 6/22/18.
-//  Copyright © 2018 Steve Hawley. All rights reserved.
+//  Copyright (c) Microsoft Corporation.
+//  Licensed under the MIT License.
 //
 
 //#import <UIKit/UIKit.h>

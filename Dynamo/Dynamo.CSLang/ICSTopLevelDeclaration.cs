@@ -1,4 +1,7 @@
-﻿namespace Dynamo.CSLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.CSLang {
 	public interface ICSTopLevelDeclaration : ICodeElement {
 	}
 

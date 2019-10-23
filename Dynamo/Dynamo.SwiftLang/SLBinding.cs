@@ -1,4 +1,7 @@
-﻿namespace Dynamo.SwiftLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.SwiftLang {
 	public class SLBinding : SLBaseExpr, ISLLineable {
 		public SLBinding (SLIdentifier id, ISLExpr value, SLType typeAnnotation = null)
 		{

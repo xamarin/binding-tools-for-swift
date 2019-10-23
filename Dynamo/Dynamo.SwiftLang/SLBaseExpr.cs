@@ -1,4 +1,7 @@
-﻿namespace Dynamo.SwiftLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.SwiftLang {
 	public abstract class SLBaseExpr : DelegatedSimpleElement, ISLExpr {
 		public static SLBaseExpr operator + (SLBaseExpr lhs, SLBaseExpr rhs)
 		{

@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 using System.Xml.Linq;
 using SwiftReflector.Exceptions;
 using System.Collections.Generic;

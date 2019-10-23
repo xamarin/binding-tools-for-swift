@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 internal struct Hashable_xam_vtable
 {
 	internal var func0: (@convention(c)(_: UnsafeRawPointer) -> Int)?;

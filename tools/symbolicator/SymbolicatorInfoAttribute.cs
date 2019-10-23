@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 namespace SwiftRuntimeLibrary {
 	internal class SymbolicatorInfoAttribute : Attribute {
 		public string DemangledString { get; set; }

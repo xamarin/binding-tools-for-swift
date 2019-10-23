@@ -1,4 +1,7 @@
-﻿//#define CRASH_ON_EXCEPTION
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+//#define CRASH_ON_EXCEPTION
 
 using System;
 using System.Collections.Generic;

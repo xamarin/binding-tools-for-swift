@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 namespace Dynamo.SwiftLang {
 	public class SLComment : DelegatedSimpleElement {
 		public SLComment (string contents, bool onOwnLine)

@@ -1,4 +1,7 @@
-﻿using System.Xml.Linq;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System.Xml.Linq;
 using SwiftReflector.IOUtils;
 
 namespace SwiftReflector.SwiftXmlReflection {

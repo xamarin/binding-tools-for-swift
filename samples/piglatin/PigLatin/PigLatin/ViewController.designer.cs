@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 // WARNING
 //
 // This file has been generated automatically by Visual Studio from the outlets and
@@ -44,3 +47,4 @@ namespace PigLatin
         }
     }
 }
+

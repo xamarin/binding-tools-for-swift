@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 namespace SwiftRuntimeLibrary.SwiftMarshal {
 	[AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public class SwiftNativeObjectAttribute : Attribute {
