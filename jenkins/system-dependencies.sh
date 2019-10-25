@@ -375,7 +375,7 @@ function install_coresimulator ()
 	# CoreSimulator.framework manually first.
 	log "Installing CoreSimulator.framework $CURRENT_CORESIMULATOR_VERSION..."
 	$SUDO rm -Rf /Library/Developer/PrivateFrameworks/CoreSimulator.framework
-	$SUDO installer -pkg "$CORESIMULATOR_PKG" -target /
+	$SUDO installer -pkg "$CORESIMULATOR_PKG" -target / -allowUntrusted
 
 	CURRENT_CORESIMULATOR_VERSION=$(otool -L $CURRENT_CORESIMULATOR_PATH | grep "$CURRENT_CORESIMULATOR_PATH.*current version" | sed -e 's/.*current version//' -e 's/)//' -e 's/[[:space:]]//g')
 	log "Installed CoreSimulator.framework $CURRENT_CORESIMULATOR_VERSION successfully."
