@@ -35,7 +35,7 @@ public class BoringClass🤡 {
 }
 ";
 			var callingCode = PrintTypeName ("BoringClassU0001F921", true);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "2E-42-6F-72-69-6E-67-43-6C-61-73-73-3F-3F\n");
+			TestRunning.TestAndExecute (swiftCode, callingCode, "2E-42-6F-72-69-6E-67-43-6C-61-73-73-F0-9F-A4-A1\n");
 		}
 
 		[Test]
