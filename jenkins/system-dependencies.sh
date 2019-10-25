@@ -373,7 +373,7 @@ function install_coresimulator ()
 	# Just installing the package won't work, because there's a version check somewhere
 	# that prevents the macOS installer from downgrading, so remove the existing
 	# CoreSimulator.framework manually first.
-	log "Installing CoreSimulator.framework $CURRENT_CORESIMULATOR_VERSION..."
+	log "Installing CoreSimulator.framework $CURRENT_CORESIMULATOR_VERSION from $CORESIMULATOR_PKG (md5: $(md5 "$CORESIMULATOR_PKG")..."
 	$SUDO rm -Rf /Library/Developer/PrivateFrameworks/CoreSimulator.framework
 	$SUDO installer -pkg "$CORESIMULATOR_PKG" -target /
 
