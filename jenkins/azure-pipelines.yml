@@ -10,11 +10,15 @@ pool:
 
 steps:
 - script: |
-    set -e
+    set +e # we don't care about errors here
     set -x
     pwd
     env | sort
     ls -la /Applications
+    system_profiler SPHardwareDataType
+    curl -s https://support-sp.apple.com/sp/product?cc=$(system_profiler SPHardwareDataType | awk '/Serial/ {print $4}' | cut -c 9-) | sed 's|.*<configCode>\(.*\)</configCode>.*|\1|'
+    sysctl -a | grep cpu
+    exit 0 # make sure we don't return an error code if the last command failed
   displayName: 'Environment info'
 
 - script: |
