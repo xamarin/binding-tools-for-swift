@@ -139,7 +139,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				mt = SwiftStandardMetatypes.UInt;
 				return true;
 			}
-	    		if (t == typeof (UnsafeRawPointer)) {
+			if (t == typeof (UnsafeRawPointer)) {
 				mt = SwiftStandardMetatypes.UnsafeRawPointer;
 				return true;
 			}
@@ -160,6 +160,18 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			if (t.IsDelegate ()) {
 				mt = DelegateMetatype (t);
 			}
+
+			if (IsAction (t)) {
+				mt = ActionMetatype (t);
+				return true;
+			}
+
+			if (IsFunc (t)) {
+				mt = FunctionMetatype (t);
+				return true;
+			}
+
+
 			if (t.IsTuple ()) {
 				SwiftMetatype [] tupleTypes = TupleTypes (t).Select (Metatypeof).ToArray ();
 				mt = SwiftCore.TupleMetatype (tupleTypes);
@@ -247,6 +259,42 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return (IntPtr)pi.GetValue (null);
 		}
 
+		bool IsAction (Type t)
+		{
+			return t.FullName.StartsWith ("System.Action`", StringComparison.Ordinal) || t.FullName == "System.Action";
+		}
+
+		bool IsFunc (Type t)
+		{
+			return t.FullName.StartsWith ("System.Func`", StringComparison.Ordinal);
+		}
+
+		SwiftMetatype ActionMetatype (Type t)
+		{
+			if (t.IsGenericType) {
+				return GeneralFuncActionMetatype (t.GenericTypeArguments, t.GenericTypeArguments.Length, SwiftStandardMetatypes.Void);
+			} else {
+				return SwiftCore.GetFunctionTypeMetadata (new SwiftMetatype [0], new int [0], SwiftStandardMetatypes.Void, false);
+			}
+		}
+
+		SwiftMetatype FunctionMetatype (Type t)
+		{
+			var args = t.GenericTypeArguments;
+			var returnType = Metatypeof (args [args.Length - 1]);
+			return GeneralFuncActionMetatype (args, args.Length - 1, returnType);
+		}
+
+		SwiftMetatype GeneralFuncActionMetatype (Type [] args, int length, SwiftMetatype returnType)
+		{
+			var swiftArgs = new SwiftMetatype [length];
+			var inOutFlags = new int [length];
+			for (int i=0; i < length; i++) {
+				swiftArgs [i] = Metatypeof (args [i]);
+			}
+			return SwiftCore.GetFunctionTypeMetadata (swiftArgs, inOutFlags, returnType, false);
+		}
+
 		unsafe SwiftMetatype DelegateMetatype (Type t)
 		{
 			var mi = t.GetMethod ("Invoke");
@@ -255,7 +303,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 			var inOutFlags = pis.Select (pi => ToSwiftFlags (pi)).ToArray ();
 
-			var returnType = mi.ReturnType != null ? Metatypeof (mi.ReturnType) : SwiftStandardMetatypes.Void;
+			var returnType = mi.ReturnType != typeof (void) ? Metatypeof (mi.ReturnType) : SwiftStandardMetatypes.Void;
 			return SwiftCore.GetFunctionTypeMetadata (parmTypes, inOutFlags, returnType, false);
 		}
 
@@ -393,6 +441,19 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 					return Metatypeof (typeof (OpaquePointer));
 				}
 				throw new SwiftRuntimeException ($"Illegal type code for type {t.Name}:  {Type.GetTypeCode (t)}");
+			}
+		}
+
+		static Type[] primitiveTypes = new Type [] {
+				typeof (bool), typeof (byte), typeof (sbyte), typeof (short), typeof (ushort),
+				typeof (int), typeof (uint), typeof (long), typeof (ulong), typeof (float), typeof (double),
+				typeof (nint), typeof (nuint)
+			};
+
+		internal static IEnumerable<Tuple<SwiftMetatype, Type>> PrimitiveTypeMap ()
+		{
+			foreach (var type in primitiveTypes) {
+				yield return new Tuple<SwiftMetatype, Type> (Marshaler.Metatypeof (type), type);
 			}
 		}
 
@@ -1164,7 +1225,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return GetTupleConstructor (t) (args);
 		}
 
-		Type MakeTupleType (Type [] types)
+		internal Type MakeTupleType (Type [] types)
 		{
 			if (types.Length == 0)
 				throw new SwiftRuntimeException ("Empty tuples not supported. Yet.");

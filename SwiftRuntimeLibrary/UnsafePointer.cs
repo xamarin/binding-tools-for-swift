@@ -7,6 +7,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 
+	[SwiftTypeName ("Swift.UnsafePointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafePointer_NominalTypeDescriptor, "", "")]
 	public class UnsafePointer<T> : ISwiftStruct {
 		internal UnsafePointer (SwiftNominalCtorArgument unused)

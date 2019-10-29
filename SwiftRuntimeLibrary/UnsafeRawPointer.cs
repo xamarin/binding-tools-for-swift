@@ -2,7 +2,10 @@
 // Licensed under the MIT License.
 
 using System;
+using SwiftRuntimeLibrary.SwiftMarshal;
+
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.UnsafeRawPointer")]
 	public struct UnsafeRawPointer {
 		public UnsafeRawPointer (IntPtr p)
 		{
@@ -29,6 +32,7 @@ namespace SwiftRuntimeLibrary {
 		}
 	}
 
+	[SwiftTypeName ("Swift.UnsafeMutableRawPointer")]
 	public struct UnsafeMutableRawPointer {
 		public UnsafeMutableRawPointer (IntPtr p)
 		{
@@ -55,7 +59,7 @@ namespace SwiftRuntimeLibrary {
 		}
 	}
 
-//	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.OpaquePointer_NominalTypeDescriptor, SwiftCoreConstants.OpaquePointer_Metadata, "")]
+	[SwiftTypeName ("Swift.OpaquePointer")]
 	public struct OpaquePointer {
 		public OpaquePointer (IntPtr p)
 		{

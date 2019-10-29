@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.Hasher")]
 	[SwiftStruct(SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.Hasher_NominalTypeDescriptor, SwiftCoreConstants.Hasher_Metadata, "")]
 	public class SwiftHasher : ISwiftStruct {
 		public unsafe SwiftHasher ()

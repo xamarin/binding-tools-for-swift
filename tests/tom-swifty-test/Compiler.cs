@@ -483,8 +483,9 @@ namespace tomwiftytest {
 				var rv = ExecAndCollect.RunCommand (executable, args.ToString (), env, output, workingDirectory: workingDirectory ?? string.Empty);
 
 				if (rv != 0) {
-					Console.WriteLine ($"Test failed to execute (exit code: {rv}):\n{output}");
-					throw new Exception ($"Test failed to execute (exit code: {rv}):\n{output}");
+					var outputStr = output.ToString ();						 
+					Console.WriteLine ($"Test failed to execute (exit code: {rv}):\n{outputStr}");
+					throw new Exception ($"Test failed to execute (exit code: {rv}):\n{outputStr}");
 				}
 
 				if (!string.IsNullOrEmpty (outputFile)) {

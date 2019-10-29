@@ -3,8 +3,10 @@
 
 using System;
 using System.Runtime.InteropServices;
+using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.Error")]
 	public class SwiftError {
 		public SwiftError (IntPtr handle)
 		{
