@@ -1,4 +1,6 @@
-﻿
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 namespace Dynamo.SwiftLang {
 	public class SLFunctionCall : SLBaseExpr, ISLLineable {
 		public SLFunctionCall (SLIdentifier ident, DelegatedCommaListElemCollection<SLArgument> paramList)

@@ -1,4 +1,7 @@
-﻿
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+
 namespace SwiftReflector.IOUtils {
 	public class TempDirectoryFilenameProvider : TempDirectoryStreamProvider<string> {
 

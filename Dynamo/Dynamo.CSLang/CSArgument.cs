@@ -1,4 +1,6 @@
-﻿
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 namespace Dynamo.CSLang {
 	public class CSArgument : DelegatedSimpleElement {
 		public CSArgument (ICSExpression expr)

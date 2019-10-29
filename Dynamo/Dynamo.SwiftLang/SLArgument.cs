@@ -1,4 +1,7 @@
-﻿namespace Dynamo.SwiftLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.SwiftLang {
 	public class SLArgument : DelegatedSimpleElement {
 		public SLArgument (SLIdentifier ident, SLBaseExpr expr, bool identifierIsRequired = false)
 		{

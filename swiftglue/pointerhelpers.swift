@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 public func toIntPtr<T>(value:T) -> UnsafeRawPointer
 {
 	return unsafeBitCast(value, to: UnsafeRawPointer.self);

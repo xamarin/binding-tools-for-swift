@@ -1,4 +1,7 @@
-﻿using UIKit;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using UIKit;
 
 namespace tomswiftydevicetests
 {

@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 using Dynamo.SwiftLang;
 using System.Collections.Generic;
 using SwiftReflector.SwiftXmlReflection;

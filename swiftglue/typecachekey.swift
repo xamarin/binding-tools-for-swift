@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 public struct TypeCacheKey : Hashable {
 	internal var _types : [ObjectIdentifier]
 	public init(types: ObjectIdentifier...) {

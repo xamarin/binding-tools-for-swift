@@ -9,7 +9,7 @@ BINDINGTOOLSFORSWIFT=mono --debug $(TOMSWIFTY)
 
 # Detect if the system Xcode is not the expected one.
 ACTUAL_XCODE_VERSION:=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(shell xcode-select -p)/../Info.plist")
-EXPECTED_XCODE_VERSION:=$(shell grep ^Xcode $(TOP)/jenkins/BindingToolsForSwiftProvisioning.csx | sed 's/.*"\(.*\)".*/\1/')
+EXPECTED_XCODE_VERSION:=$(shell grep ^XCODE_VERSION= $(TOP)/Make.config | sed 's/.*=//')
 ifneq ($(ACTUAL_XCODE_VERSION),$(EXPECTED_XCODE_VERSION))
 ifeq ($(IGNORE_XCODE_VERSION),)
 $(error Invalid Xcode version, expected $(EXPECTED_XCODE_VERSION) found $(ACTUAL_XCODE_VERSION))

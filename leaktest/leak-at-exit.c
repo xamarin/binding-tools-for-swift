@@ -4,7 +4,8 @@
 // Author:
 //   Rolf Bjarne Kvinge
 //
-// Copyright 2017-2019 Microsoft
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 //
 
 #include <stdio.h>

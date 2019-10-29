@@ -1,4 +1,7 @@
-﻿namespace Dynamo.CSLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.CSLang {
 	public class CSReturn : DelegatedSimpleElement, ICSExpression, ICSLineable {
 		public CSReturn (ICSExpression expr)
 		{

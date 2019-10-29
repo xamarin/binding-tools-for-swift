@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using NUnit.Framework;
 using System;
 using System.IO;
 using System.Diagnostics;

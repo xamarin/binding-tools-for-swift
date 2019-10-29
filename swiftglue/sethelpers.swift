@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 import Swift;
 
 public func newSet<T>(retval: UnsafeMutablePointer<Set<T>>, capacity: Int)

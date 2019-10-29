@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 namespace Dynamo.CSLang {
 	public class CSCatch : DelegatedSimpleElement, ICSStatement {
 		public CSCatch (CSType catchType, CSIdentifier name, CSCodeBlock body)

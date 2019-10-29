@@ -1,4 +1,7 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 namespace SwiftRuntimeLibrary {
 	internal static class SwiftFoundationConstants {
 		internal const string LibSwiftFoundation = "libswiftFoundation.dylib";

@@ -1,4 +1,7 @@
-﻿// this is an adaptation of NUnitLite's TcpWriter.cs with an additional 
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+// this is an adaptation of NUnitLite's TcpWriter.cs with an additional 
 // overrides and with network-activity UI enhancement
 
 using System;
