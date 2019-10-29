@@ -3,18 +3,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
-	public class SwiftTypeRegistry {
+	public sealed class SwiftTypeRegistry {
 		static SwiftTypeRegistry registry = new SwiftTypeRegistry ();
 		object registryLock = new object ();
 		Dictionary<SwiftMetatype, Type> primaryCache = new Dictionary<SwiftMetatype, Type> ();
 		Dictionary<string, Type> secondaryCache = new Dictionary<string, Type> ();
 		HashSet<Assembly> cachedAssemblies = new HashSet<Assembly> ();
 
-		protected SwiftTypeRegistry ()
+		SwiftTypeRegistry ()
 		{
 			CachePrimitives ();
 		}
@@ -236,6 +237,8 @@ namespace SwiftRuntimeLibrary {
 				if (cachedAssemblies.Contains (assembly))
 					continue;
 				cachedAssemblies.Add (assembly);
+				if (NoSwiftRuntimeReferences (assembly))
+					continue;
 				foreach (var t in assembly.GetTypes ()) {
 					string swiftTypeName;
 					if (SwiftTypeNameAttribute.TryGetSwiftName (t, out swiftTypeName)) {
@@ -243,6 +246,28 @@ namespace SwiftRuntimeLibrary {
 					}
 				}
 			}
+		}
+
+#if TOM_SWIFTY
+		static string runtimeAssemblyName = "SwiftRuntimeLibrary";
+#elif __IOS__
+		static string runtimeAssemblyName = "SwiftRuntimeLibrary.iOS";
+#elif __WATCHOS__
+		static string runtimeAssemblyName = "SwiftRuntimeLibrary.watchOS";
+#elif __TVS__
+		static string runtimeAssemblyName = "SwiftRuntimeLibrary.tvOS";
+#else
+		static string runtimeAssemblyName = "SwiftRuntimeLibrary.Mac";
+#endif
+
+
+		static bool NoSwiftRuntimeReferences (Assembly assembly)
+		{
+			foreach (var reference in assembly.GetReferencedAssemblies ()) {
+				if (reference.Name == runtimeAssemblyName)
+					return false;
+			}
+			return true;
 		}
 
 		public static SwiftTypeRegistry Registry => registry;

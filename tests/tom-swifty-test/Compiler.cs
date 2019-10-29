@@ -481,8 +481,8 @@ namespace tomwiftytest {
 
 				if (rv != 0) {
 					var outputStr = output.ToString ();						 
-					Console.WriteLine ($"Test failed to execute (exit code: {rv}):\n{output}");
-					throw new Exception ($"Test failed to execute (exit code: {rv}):\n{output}");
+					Console.WriteLine ($"Test failed to execute (exit code: {rv}):\n{outputStr}");
+					throw new Exception ($"Test failed to execute (exit code: {rv}):\n{outputStr}");
 				}
 
 				if (!string.IsNullOrEmpty (outputFile)) {
