@@ -375,7 +375,7 @@ function install_coresimulator ()
 	# CoreSimulator.framework manually first.
 	log "Installing CoreSimulator.framework $CURRENT_CORESIMULATOR_VERSION..."
 	$SUDO rm -Rf /Library/Developer/PrivateFrameworks/CoreSimulator.framework
-	$SUDO installer -pkg "$CORESIMULATOR_PKG" -target /
+	$SUDO installer -pkg "$CORESIMULATOR_PKG" -target / -allowUntrusted
 
 	CURRENT_CORESIMULATOR_VERSION=$(otool -L $CURRENT_CORESIMULATOR_PATH | grep "$CURRENT_CORESIMULATOR_PATH.*current version" | sed -e 's/.*current version//' -e 's/)//' -e 's/[[:space:]]//g')
 	log "Installed CoreSimulator.framework $CURRENT_CORESIMULATOR_VERSION successfully."
@@ -527,10 +527,10 @@ function check_versioned_product () {
 	ACTUAL_PRODUCT_VERSION=$(cat "$VERSION_FILE")
 	if ! is_at_least_version "$ACTUAL_PRODUCT_VERSION" "$MIN_PRODUCT_VERSION"; then
 		if ! test -z "$PROVISION_PRODUCT"; then
-			"install_${INFIX}"
+			install_versioned_product "$MIN_PRODUCT_URL" "$INFIX" "$PRODUCT_NAME" "$MIN_PRODUCT_VERSION"
 			ACTUAL_PRODUCT_VERSION=$(cat "$VERSION_FILE")
 		else
-			fail "You must have at least Xamarin.iOS $MIN_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION. Download URL: $MIN_PRODUCT_URL"
+			fail "You must have at least $PRODUCT_NAME $MIN_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION. Download URL: $MIN_PRODUCT_URL"
 			return
 		fi
 	elif [[ "$ACTUAL_PRODUCT_VERSION" == "$MAX_PRODUCT_VERSION" ]]; then

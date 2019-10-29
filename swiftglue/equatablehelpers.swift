@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 private struct Equatable_xam_vtable
 {
 	internal var func0: (@convention(c)(_: UnsafeRawPointer, _: UnsafeRawPointer) -> Bool)?

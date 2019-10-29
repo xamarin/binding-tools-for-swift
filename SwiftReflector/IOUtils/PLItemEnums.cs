@@ -1,4 +1,7 @@
-﻿namespace SwiftReflector.IOUtils {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace SwiftReflector.IOUtils {
 	public enum CFKey {
 		CFAppleHelpAnchor,
 		CFBundleAllowMixedLocalizations,

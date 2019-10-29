@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 namespace SwiftReflector.IOUtils {
 	public partial class SwiftModuleFinder {
 		static string [] systemModuleNamesMac = {

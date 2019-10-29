@@ -1,4 +1,7 @@
-﻿using AppKit;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using AppKit;
 using Foundation;
 
 namespace sampleappxm

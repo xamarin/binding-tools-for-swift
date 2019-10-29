@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 
 public class PropertyBag<T> {
 	private var bag: [String : T]

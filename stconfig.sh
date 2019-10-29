@@ -23,7 +23,7 @@ else
     SWIFTLIB="$SCRIPT_DIR/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift"
     SWIFTC="$SCRIPT_DIR/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc"
     SWIFTGLUE="${PLATFORM}"
-    SWIFTGLUEPREFIX="$SCRIPT_DIR/../tom-swifty/swiftglue/bin/Debug/"
+    SWIFTGLUEPREFIX="$SCRIPT_DIR/swiftglue/bin/Debug/"
     SWIFTGLUESUFFIX="/FinalProduct/XamGlue.framework"
     SWIFTBINDINGS="$SCRIPT_DIR/bindings"
     TOMSWIFTY="$SCRIPT_DIR/tom-swifty/bin/Debug/tom-swifty.exe"

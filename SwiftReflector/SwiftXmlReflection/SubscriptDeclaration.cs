@@ -1,4 +1,7 @@
-﻿namespace SwiftReflector.SwiftXmlReflection {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace SwiftReflector.SwiftXmlReflection {
 	// this is a pseudo class.
 	public class SubscriptDeclaration {
 		public SubscriptDeclaration (FunctionDeclaration getter, FunctionDeclaration setter, FunctionDeclaration materializer)

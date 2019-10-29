@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 using System.IO;
 using Dynamo;
 using Dynamo.CSLang;

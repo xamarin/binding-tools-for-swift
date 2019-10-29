@@ -1,4 +1,7 @@
-﻿#if !TOM_SWIFTY
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+#if !TOM_SWIFTY
 using System;
 using System.Runtime.InteropServices;
 using Foundation;

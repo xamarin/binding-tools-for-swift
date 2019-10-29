@@ -1,4 +1,7 @@
-﻿namespace Dynamo.SwiftLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.SwiftLang {
 	public class SLClosure : SLBaseExpr {
 		public SLClosure (SLType type, SLTupleType parms, CodeElementCollection<ICodeElement> body, bool throws)
 		{

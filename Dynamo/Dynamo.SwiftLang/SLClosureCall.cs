@@ -1,4 +1,7 @@
-﻿namespace Dynamo.SwiftLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.SwiftLang {
 	public class SLClosureCall : SLBaseExpr, ISLLineable {
 
 		public SLClosureCall (SLClosure closure, DelegatedCommaListElemCollection<SLArgument> paramList)

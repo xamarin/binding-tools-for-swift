@@ -1,4 +1,7 @@
-﻿namespace Dynamo.SwiftLang {
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+namespace Dynamo.SwiftLang {
 	public class SLAddressOf : SLBaseExpr {
 		public SLAddressOf (SLBaseExpr expr, bool addParens)
 		{
