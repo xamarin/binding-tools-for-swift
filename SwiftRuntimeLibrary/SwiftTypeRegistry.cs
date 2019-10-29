@@ -263,6 +263,8 @@ namespace SwiftRuntimeLibrary {
 
 		static bool NoSwiftRuntimeReferences (Assembly assembly)
 		{
+			if (assembly.GetName ().Name == runtimeAssemblyName)
+				return false;
 			foreach (var reference in assembly.GetReferencedAssemblies ()) {
 				if (reference.Name == runtimeAssemblyName)
 					return false;
