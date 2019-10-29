@@ -11,6 +11,7 @@ namespace SwiftRuntimeLibrary {
 		Some,
 	}
 
+	[SwiftTypeName ("Swift.Optional")]
 	[SwiftEnumType (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftOptional_NominalTypeDescriptor, "", "")]
 	public class SwiftOptional<T> : ISwiftEnum {
 		internal SwiftOptional (SwiftNominalCtorArgument unused)

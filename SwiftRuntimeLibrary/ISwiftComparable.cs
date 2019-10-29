@@ -2,6 +2,7 @@
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.Comparable")]
 	[SwiftProtocolType (typeof (SwiftComparableProxy), true)]
 	[SwiftExternalProtocolDefinition (typeof (SwiftString), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftComparable_SwiftString)]
 	[SwiftExternalProtocolDefinition (typeof (IntPtr), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftComparable_IntPtr)]

@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.Set")]
 	[SwiftStruct(SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftSet_NominalTypeDescriptor, "", "")]
 	public class SwiftSet<T> : ISwiftStruct {
 

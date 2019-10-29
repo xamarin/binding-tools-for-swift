@@ -5,7 +5,8 @@ using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
-	[SwiftStruct(SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeRawBufferPointer_NominalTypeDescriptor, SwiftCoreConstants.UnsafeRawBufferPointer_Metadata, "")]
+	[SwiftTypeName ("Swift.UnsafeRawBufferPointer")]
+	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeRawBufferPointer_NominalTypeDescriptor, SwiftCoreConstants.UnsafeRawBufferPointer_Metadata, "")]
 	public class UnsafeRawBufferPointer : ISwiftStruct, IEnumerable<byte> {
 
 		public unsafe UnsafeRawBufferPointer (IntPtr start, nint count)

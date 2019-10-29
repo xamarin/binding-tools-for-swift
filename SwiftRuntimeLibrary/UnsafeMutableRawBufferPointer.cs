@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.UnsafeMutableRawBufferPointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeMutableRawBufferPointer_NominalTypeDescriptor, SwiftCoreConstants.UnsafeMutableRawBufferPointer_Metadata, "")]
 	public class UnsafeMutableRawBufferPointer : ISwiftStruct, IEnumerable<byte> {
 

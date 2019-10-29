@@ -50,11 +50,17 @@ namespace SwiftRuntimeLibrary {
 			var kind = Kind;
 			if (kind == MetatypeKind.Enum || kind == MetatypeKind.Struct)
 				return NominalTypeDescriptorFromHandle (handle);
-			if (kind == MetatypeKind.Class && IsSwiftClassMetaType ()) {
-				var nominalPtr = Marshal.ReadIntPtr (OffsetPtrByPtrSize (handle, IntPtr.Size == 4 ? 11 : 8));
-				return NominalTypeDescriptorFromHandle (nominalPtr);
+			if (kind == MetatypeKind.Class) {
+				// see below:
+				// The class header is 5 pointers followed by
+				// 2 uint32s, 2 unit16s, 2 uint32s (= 6 ints)
+				var nominalPtr = handle + (5 * IntPtr.Size + 6 * sizeof (int));
+				nominalPtr = Marshal.ReadIntPtr (nominalPtr);
+				if (nominalPtr == IntPtr.Zero)
+					throw new NotSupportedException ("Class is an artificial class and has no type descriptor");
+				return new SwiftNominalTypeDescriptor (nominalPtr);
 			}
-			throw new NotSupportedException ();
+			throw new NotSupportedException ($"Can't get nominal type descriptor for {kind}");
 		}
 
 		#region Classes
@@ -120,6 +126,84 @@ namespace SwiftRuntimeLibrary {
 			return (rodataPtr & 1) != 0;
 		}
 
+		internal static int ClassSizeWithoutMembers {
+			get {
+				return 7 * IntPtr.Size + 6 * sizeof (int);
+			}
+		}
+
+		internal static int ValueBaseSize {
+			get {
+				return 2 * IntPtr.Size;
+			}
+		}
+
+		bool IsNominal {
+			get {
+				ThrowOnInvalid ();
+				var kind = Kind;
+				return kind == MetatypeKind.Enum || kind == MetatypeKind.Struct ||
+					(kind == MetatypeKind.Class && IsSwiftClassMetaType ());
+			}
+		}
+
+		public bool IsGeneric {
+			get {
+				ThrowOnInvalid ();
+				if (!IsNominal)
+					return false;
+				var typeDesc = GetNominalTypeDescriptor ();
+				return typeDesc.IsGeneric ();
+			}
+		}
+
+		public int GenericArgumentCount {
+			get {
+				ThrowOnInvalid ();
+				if (!IsNominal)
+					return 0;
+				var typeDesc = GetNominalTypeDescriptor ();
+				if (!typeDesc.IsGeneric ())
+					return 0;
+				return typeDesc.GetTotalGenericArgumentCount ();
+			}
+		}
+
+		public SwiftMetatype GetGenericMetatype (int index)
+		{
+			ThrowOnInvalid ();
+			if (!IsNominal)
+				throw new NotSupportedException ("Generics are only available for nominal types");
+			var typeDesc = GetNominalTypeDescriptor ();
+			if (index < 0 || index >= typeDesc.GetTotalGenericArgumentCount ())
+				throw new ArgumentOutOfRangeException (nameof (index));
+			var offsetToGenerics = typeDesc.GetGenericOffset ();
+			var genericsPtr = handle + offsetToGenerics + index * IntPtr.Size;
+			return new SwiftMetatype (Marshal.ReadIntPtr (genericsPtr));
+		}
+
+		#endregion
+
+		#region Structs and Enums
+		// Struct metadata is
+		// Pointer kind
+		// Pointer Description
+		#endregion
+
+		#region Optionals
+		// optional metadata is
+		// Pointer kind
+		// Pointer Description
+		// Pointer metadata of optionally bound type
+
+		public SwiftMetatype GetOptionalBoundGeneric ()
+		{
+			ThrowOnInvalid ();
+			if (Kind != MetatypeKind.Optional)
+				throw new NotSupportedException ($"Type {Kind} is not an optional");
+			var pointer = handle + 2 * IntPtr.Size;
+			return new SwiftMetatype (Marshal.ReadIntPtr (pointer));
+		}
 		#endregion
 
 		#region Tuples
@@ -220,6 +304,60 @@ namespace SwiftRuntimeLibrary {
 		// In parameter flags, the bottom 8 bits determines the ownership. See SwiftParameterOwnership (1 is inout).
 		// The rest determine if the parameter is variadic SwiftParameterFlags.Variadic and/or
 		// SwiftParameterFlags.AutoClosure.
+
+		void ThrowOnInvalidOrNotFunction ()
+		{
+			ThrowOnInvalid ();
+			if (Kind != MetatypeKind.Function)
+				throw new NotSupportedException ($"Operation not supported on type {Kind}");
+		}
+
+		public int GetFunctionParameterCount ()
+		{
+			ThrowOnInvalidOrNotFunction ();
+			var paramCount = Marshal.ReadIntPtr (handle + IntPtr.Size).ToInt64 ();
+			return (int)paramCount & 0xffff;
+		}
+
+		public SwiftMetatype GetFunctionParameter (int index)
+		{
+			var count = GetFunctionParameterCount ();
+			if (index < 0 || index >= count)
+				throw new ArgumentOutOfRangeException (nameof (index));
+			var ptr = handle + (3 + index) * IntPtr.Size;
+			return new SwiftMetatype (Marshal.ReadIntPtr (ptr));
+		}
+
+		public bool FunctionHasParameterFlags ()
+		{
+			ThrowOnInvalidOrNotFunction ();
+			var flags = Marshal.ReadIntPtr (handle + IntPtr.Size).ToInt32 ();
+			return (flags & 0x02000000) != 0;
+		}
+
+		public bool FunctionHasReturn ()
+		{
+			ThrowOnInvalidOrNotFunction ();
+			var voidReturn = SwiftStandardMetatypes.Void;
+			var returnType = Marshal.ReadIntPtr (handle + 2 * IntPtr.Size);
+			return returnType != voidReturn.Handle;
+		}
+
+		public SwiftMetatype GetFunctionReturnType ()
+		{
+			ThrowOnInvalidOrNotFunction ();
+			var returnType = Marshal.ReadIntPtr (handle + 2 * IntPtr.Size);
+			if (returnType == IntPtr.Zero)
+				throw new NotSupportedException ("Function has no return type");
+			return new SwiftMetatype (returnType);
+		}
+
+		public SwiftCallingConvention GetFunctionCallingConvention ()
+		{
+			ThrowOnInvalidOrNotFunction ();
+			var flags = Marshal.ReadIntPtr (handle + IntPtr.Size).ToInt32 ();
+			return (SwiftCallingConvention)((flags >> 24) & 0xff);
+		}
 		#endregion
 
 		internal static MetatypeKind MetatypeKindFromHandle (IntPtr p)

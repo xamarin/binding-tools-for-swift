@@ -6,6 +6,7 @@ using System.Text;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.Character")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftCharacter_NominalTypeDescriptor, SwiftCoreConstants.SwiftCharacter_Metadata, "")]
 	public sealed class SwiftCharacter : ISwiftStruct {
 		public unsafe SwiftCharacter (string character) : this (SwiftNominalCtorArgument.None)

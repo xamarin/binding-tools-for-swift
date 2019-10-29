@@ -5,6 +5,7 @@ using Foundation;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Foundation.Date")]
 	[SwiftStruct (SwiftFoundationConstants.LibSwiftFoundation, SwiftFoundationConstants.SwiftDate_NominalTypeDescriptor, SwiftFoundationConstants.SwiftData_TypeMetadata, "")]
 	public class SwiftDate : ISwiftStruct {
 		public static SwiftDate SwiftDate_TimeIntervalSinceReferenceDate (double timeIntervalSinceReferenceDate)

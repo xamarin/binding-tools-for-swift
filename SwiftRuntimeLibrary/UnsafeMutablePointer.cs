@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
-	
+
+	[SwiftTypeName ("Swift.UnsafeMutablePointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeMutablePointer_NominalTypeDescriptor, "", "")]
 	public class UnsafeMutablePointer<T> : ISwiftStruct {
 		internal UnsafeMutablePointer (SwiftNominalCtorArgument unused)

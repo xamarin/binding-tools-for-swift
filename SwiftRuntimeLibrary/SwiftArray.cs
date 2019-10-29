@@ -7,6 +7,7 @@ using SwiftRuntimeLibrary;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.Array")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftArray_NominalTypeDescriptor, "", "")]
 	public sealed class SwiftArray<T> : ISwiftStruct, IList<T> {
 

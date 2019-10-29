@@ -7,6 +7,7 @@ using Xamarin.iOS;
 #endif
 
 namespace SwiftRuntimeLibrary {
+	[SwiftTypeName ("Swift.CustomStringConvertible")]
 	[SwiftProtocolType (typeof (CustomStringConvertibleXamProxy))]
 	public interface ICustomStringConvertible {
 		SwiftString Description { get; }

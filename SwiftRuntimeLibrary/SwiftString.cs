@@ -7,6 +7,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 
+	[SwiftTypeName ("Swift.String")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftString_NominalTypeDescriptor, SwiftCoreConstants.SwiftString_Metadata, "")]
 	public sealed class SwiftString : ISwiftStruct {
 		internal SwiftString (SwiftNominalCtorArgument unused)

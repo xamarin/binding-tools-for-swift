@@ -7,6 +7,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 
+	[SwiftTypeName ("Swift.Dictionary")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftDictionary_NominalTypeDescriptor, "", "")]
 	public class SwiftDictionary<T, U> : IDictionary<T, U>, ISwiftStruct {
 		public byte [] SwiftData { get; set; }

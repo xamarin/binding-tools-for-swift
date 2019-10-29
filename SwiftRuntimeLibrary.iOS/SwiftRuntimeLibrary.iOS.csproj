@@ -267,6 +267,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftTypeNameAttribute.cs">
       <Link>SwiftMarshal\SwiftTypeNameAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftTypeRegistry.cs">
+      <Link>SwiftTypeRegistry.cs</Link>
+    </Compile>
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.iOS.cs">
     <Exec Command="mkdir -p GeneratedCode" />
