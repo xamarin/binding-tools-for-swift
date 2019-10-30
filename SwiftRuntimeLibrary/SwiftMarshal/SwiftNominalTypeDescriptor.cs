@@ -177,7 +177,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			// returns the offset to generic arguments in the SwiftMetatype object
 			switch (GetKind ()) {
 			case NominalTypeDescriptorKind.Class:
-				return GetClassGenericOffset ();
+				return GetClassGenericOffsetInWords () * IntPtr.Size;
 			case NominalTypeDescriptorKind.Enum:
 			case NominalTypeDescriptorKind.Struct:
 				return SwiftMetatype.ValueBaseSize;
@@ -208,6 +208,14 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return (GenericHeader)Marshal.PtrToStructure (headerPtr, typeof (GenericHeader));
 		}
 
+		public int GetParameterCount ()
+		{
+			if (!IsGeneric ())
+				return 0;
+			var header = GetGenericHeader ();
+			return header.ParameterCount;
+		}
+
 		public int GetTotalGenericArgumentCount ()
 		{
 			if (!IsGeneric ())
@@ -232,11 +240,11 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return header.ExtraArgumentCount;
 		}
 
-		int GetClassGenericOffset ()
+		int GetClassGenericOffsetInWords () // returns in machine words
 		{
 			if (!HasResilientSuperClass ())
-				return NonResilientImmediateMembersOffset ();
-			return ResilientImmediateMembersOffset ();
+				return NonResilientImmediateMembersOffsetInWords ();
+			return ResilientImmediateMembersOffsetInWords ();
 		}
 
 		int MetadataNegativeSizeInWords {
@@ -268,7 +276,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-		int NonResilientImmediateMembersOffset ()
+		int NonResilientImmediateMembersOffsetInWords ()
 		{
 			return ImmediateMembersAreNegative () ?
 				-MetadataNegativeSizeInWords :
@@ -303,7 +311,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return bounds;
 		}
 
-		int ResilientImmediateMembersOffset ()
+		int ResilientImmediateMembersOffsetInWords ()
 		{
 			var storedBoundsPtr = ResilientMetadataBounds;
 			var bounds = (long)Marshal.ReadIntPtr (storedBoundsPtr);
