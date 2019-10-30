@@ -146,7 +146,7 @@ namespace SwiftRuntimeLibrary {
 				ThrowOnInvalid ();
 				var kind = Kind;
 				return kind == MetatypeKind.Enum || kind == MetatypeKind.Struct ||
-					(kind == MetatypeKind.Class && IsSwiftClassMetaType ());
+					kind == MetatypeKind.Class;
 			}
 		}
 
@@ -168,7 +168,8 @@ namespace SwiftRuntimeLibrary {
 				var typeDesc = GetNominalTypeDescriptor ();
 				if (!typeDesc.IsGeneric ())
 					return 0;
-				return typeDesc.GetTotalGenericArgumentCount ();
+
+				return typeDesc.GetParameterCount ();
 			}
 		}
 
