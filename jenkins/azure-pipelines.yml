@@ -43,7 +43,14 @@ steps:
     set -e
     set -x
     ./jenkins/build-package.sh
+    ls -la ../package || true
   displayName: 'Package'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '../package'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
 
 - script: |
     set -e
