@@ -1731,7 +1731,7 @@ namespace SwiftReflector {
 			string swiftProxyClassName = OverrideBuilder.ProxyClassName (protocolDecl);
 
 			use.AddIfNotPresent (typeof (SwiftProtocolTypeAttribute));
-			MakeProtocolTypeAttribute (className).AttachBefore (iface);
+			MakeProtocolTypeAttribute (className, PInvokeName (swiftLibraryPath), protocolContents.TypeDescriptor.MangledName.Substring (1)).AttachBefore (iface);
 
 			proxyClass = new CSClass (CSVisibility.Public, className);
 			picl = new CSClass (CSVisibility.Internal, PIClassName (swiftClassName));
@@ -5940,10 +5940,12 @@ namespace SwiftReflector {
 			return CSAttribute.FromAttr (typeof (SwiftEnumTypeAttribute), al, true);
 		}
 
-		static CSAttribute MakeProtocolTypeAttribute (string proxyNameClassName)
+		static CSAttribute MakeProtocolTypeAttribute (string proxyNameClassName, string library, string protocolDesc)
 		{
 			var al = new CSArgumentList ();
 			al.Add (new CSSimpleType (proxyNameClassName).Typeof ());
+			al.Add (CSConstant.Val (library));
+			al.Add (CSConstant.Val (protocolDesc));
 			return CSAttribute.FromAttr (typeof (SwiftProtocolTypeAttribute), al, true);
 		}
 

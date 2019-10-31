@@ -6,7 +6,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Equatable")]
-	[SwiftProtocolType (typeof (SwiftEquatableProxy), true)]
+	[SwiftProtocolType (typeof (SwiftEquatableProxy), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftEquatable_ProtocolDescriptor, true)]
 	[SwiftExternalProtocolDefinition (typeof (SwiftString), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftEquatable_SwiftString)]
 	[SwiftExternalProtocolDefinition (typeof (IntPtr), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftEquatable_IntPtr)]
 	[SwiftExternalProtocolDefinition (typeof (bool), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftEquatable_bool)]

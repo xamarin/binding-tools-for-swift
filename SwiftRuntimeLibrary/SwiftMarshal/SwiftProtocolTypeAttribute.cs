@@ -11,14 +11,18 @@ using ObjCRuntime;
 namespace SwiftRuntimeLibrary.SwiftMarshal {
 	[AttributeUsage (AttributeTargets.Interface, AllowMultiple = false)]
 	public sealed class SwiftProtocolTypeAttribute : Attribute {
-		public SwiftProtocolTypeAttribute (Type proxyType, bool isAssociatedTypeProtocol = false)
+		public SwiftProtocolTypeAttribute (Type proxyType, string libraryName, string protocolDescriptor, bool isAssociatedTypeProtocol = false)
 		{
 			if (proxyType == null)
 				throw new ArgumentNullException (nameof (proxyType));
 			ProxyType = proxyType;
+			LibraryName = Exceptions.ThrowOnNull (libraryName, nameof (libraryName));
+			ProtocolDescriptor = Exceptions.ThrowOnNull (protocolDescriptor, nameof (protocolDescriptor));
 			IsAssociatedTypeProtocol = isAssociatedTypeProtocol;
 		}
 		public Type ProxyType { get; private set; }
+		public string LibraryName { get; private set; }
+		public string ProtocolDescriptor { get; private set; }
 		public bool IsAssociatedTypeProtocol { get; private set; }
 
 #if __IOS__
@@ -65,6 +69,20 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				throw new SwiftRuntimeException ($"Type {proxyType.Name} does not have a constructor that an ISwiftExistentialContainer");
 
 			return (BaseProxy)ci.Invoke (new object [] { container });
+		}
+
+		public static SwiftNominalTypeDescriptor DescriptorForType (Type interfaceType)
+		{
+			Exceptions.ThrowOnNull (interfaceType, nameof (interfaceType));
+			if (!interfaceType.IsInterface)
+				throw new SwiftRuntimeException ($"Type {interfaceType.Name} is not an interface.");
+			var typeAttribute = interfaceType.GetCustomAttribute<SwiftProtocolTypeAttribute> ();
+			if (typeAttribute == null)
+				throw new SwiftRuntimeException ($"Type {interfaceType.Name} does not have a SwiftProtocolType attribute");
+			var desc = SwiftNominalTypeDescriptor.FromDylibFile (typeAttribute.LibraryName, DLOpenMode.Now, typeAttribute.ProtocolDescriptor);
+			if (!desc.HasValue)
+				throw new SwiftRuntimeException ($"Unable to find swift protocol type descriptor for {interfaceType.Name} with symbol {typeAttribute.ProtocolDescriptor} in file {typeAttribute.LibraryName}");
+			return desc.Value;
 		}
 	}
 }

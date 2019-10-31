@@ -591,6 +591,21 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 			TestRunning.TestAndExecute (swiftCode, callingCode, "No smoke\n", expectedErrorCount: 1, platform:PlatformName.macOS);
 		}
 
-
+		[Test]
+		public void TestProtocolTypeAttribute ()
+		{
+			var swiftCode = @"
+public protocol Useless {
+	func doNothing ()
+}
+";
+			// this will throw on fail
+			// SwiftProtocolTypeAttribute.DescriptorForType (typeof (Useless));
+			var getter = CSFunctionCall.FunctionCallLine ("SwiftProtocolTypeAttribute.DescriptorForType", false,
+				new CSSimpleType ("IUseless").Typeof ());
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
+			var callingCode = CSCodeBlock.Create (getter, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+		}
 	}
 }
