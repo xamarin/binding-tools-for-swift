@@ -6,7 +6,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Hashable")]
-	[SwiftProtocolType (typeof (SwiftHashableProxy), true)]
+	[SwiftProtocolType (typeof (SwiftHashableProxy), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftHashable_ProtocolDescriptor, true)]
 	[SwiftExternalProtocolDefinition (typeof (SwiftString), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftHashable_SwiftString)]
 	[SwiftExternalProtocolDefinition (typeof (IntPtr), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftHashable_IntPtr)]
 	[SwiftExternalProtocolDefinition (typeof (bool), SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.ISwiftHashable_bool)]
