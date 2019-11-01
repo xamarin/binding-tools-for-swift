@@ -295,5 +295,38 @@ public class GenClass<T> {
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "GenClass`1\n1\nBoolean\nTrue\n");
 		}
+
+
+		[Test]
+		public void TestExistentialContainer ()
+		{
+			var swiftCode = @"
+public protocol SomeProtocol {
+	func foo ()
+}
+";
+			// var ocsty = typeof (ISomeProtocol);
+			// var mt = StructMarshal.Marshaler.ExistentialMetatypeof (ocsty);
+			// Type csty;
+			// SwiftTypeRegistry.Registry.TryGetValue (mt, out csty);
+			// Console.WriteLine (csty.Name);
+			// Console.WriteLine (csty == ocsty);
+			var ocsTypeID = new CSIdentifier ("ocsty");
+			var csTypeID = new CSIdentifier ("csty");
+			var mtID = new CSIdentifier ("mt");
+
+			var ocstyDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, ocsTypeID, new CSSimpleType ("ISomeProtocol").Typeof ());
+			var mtDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, mtID,
+				new CSFunctionCall ("StructMarshal.Marshaler.ExistentialMetatypeof", false, ocsTypeID));
+			var cstyDecl = CSVariableDeclaration.VarLine (CSSimpleType.Type, csTypeID);
+			var tryGetLine = CSFunctionCall.FunctionCallLine ("SwiftTypeRegistry.Registry.TryGetValue", false,
+				mtID, new CSUnaryExpression (CSUnaryOperator.Out, csTypeID));
+			var print1 = CSFunctionCall.ConsoleWriteLine (ocsTypeID.Dot (new CSIdentifier ("Name")));
+			var print2 = CSFunctionCall.ConsoleWriteLine (csTypeID == ocsTypeID);
+			var callingCode = CSCodeBlock.Create (ocstyDecl, mtDecl, cstyDecl, tryGetLine, print1, print2);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "ISomeProtocol\nTrue\n", platform: PlatformName.macOS);
+		}
+
 	}
 }

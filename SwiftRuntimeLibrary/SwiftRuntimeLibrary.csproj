@@ -55,7 +55,6 @@
     <Compile Include="SwiftMetatype.cs" />
     <Compile Include="SwiftMarshal\SwiftNominalTypeDescriptor.cs" />
     <Compile Include="SwiftMarshal\SwiftStandardMetatypes.cs" />
-    <Compile Include="SwiftProtocolDescriptor.cs" />
     <Compile Include="XamTrivialSwiftObject.cs" />
     <Compile Include="SwiftMarshal\SwiftNominalTypeAttribute.cs" />
     <Compile Include="SwiftMarshal\SwiftProtocolTypeAttribute.cs" />

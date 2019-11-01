@@ -166,20 +166,20 @@ namespace SwiftRuntimeLibrary {
 		static extern IntPtr swift_getExistentialTypeMetadata (nint classConstraint, IntPtr superClassConstraint,
 			nint numProtocols, IntPtr protocolDescriptors);
 
-		internal static unsafe SwiftMetatype ExistentialContainerMetadata (SwiftProtocolDescriptor[] descriptors)
+		internal static unsafe SwiftMetatype ExistentialContainerMetadata (SwiftNominalTypeDescriptor [] descriptors)
 		{
 			var arr = stackalloc IntPtr [descriptors.Length];
 			for (int i=0; i < descriptors.Length; i++) {
-				arr [i] = descriptors [i].handle;
+				arr [i] = descriptors [i].Handle;
 			}
 			var result = swift_getExistentialTypeMetadata (1, IntPtr.Zero, descriptors.Length, new IntPtr (arr));
 			return new SwiftMetatype (result);
 		}
 
-		internal static unsafe SwiftMetatype ExistentialContainerMetadata (SwiftProtocolDescriptor descriptor)
+		internal static unsafe SwiftMetatype ExistentialContainerMetadata (SwiftNominalTypeDescriptor descriptor)
 		{
 			var arr = stackalloc IntPtr [1];
-			arr [0] = descriptor.handle;
+			arr [0] = descriptor.Handle;
 			var result = swift_getExistentialTypeMetadata (1, IntPtr.Zero, 1, new IntPtr (arr));
 			return new SwiftMetatype (result);
 		}
