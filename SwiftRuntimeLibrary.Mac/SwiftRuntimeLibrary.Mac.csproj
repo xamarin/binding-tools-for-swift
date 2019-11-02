@@ -112,9 +112,6 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftOptional.cs">
       <Link>SwiftOptional.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftRuntimeLibrary\SwiftProtocolDescriptor.cs">
-      <Link>SwiftProtocolDescriptor.cs</Link>
-    </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftRuntimeException.cs">
       <Link>SwiftRuntimeException.cs</Link>
     </Compile>

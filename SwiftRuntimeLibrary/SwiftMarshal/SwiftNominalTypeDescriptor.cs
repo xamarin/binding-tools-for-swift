@@ -106,6 +106,8 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			this.handle = handle;
 		}
 
+		internal IntPtr Handle { get { return handle; } }
+
 		static bool KindIsValid (NominalTypeDescriptorKind kind)
 		{
 			switch (kind) {

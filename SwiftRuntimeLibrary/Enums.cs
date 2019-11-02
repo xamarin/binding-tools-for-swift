@@ -98,5 +98,16 @@ namespace SwiftRuntimeLibrary {
 		Abstract = 0xff,
 		IsNotBlocking = 0x100,
 	}
+
+	[Flags]
+	public enum SwiftProtocolMetadataFlags {
+		ClassConstraint = 1 << 1,
+		HasSuperClassConstraint = 1 << 0,
+	}
+
+	public enum SwiftSpecialProtocol {
+		None = 0,
+		Error = 1,
+	}
 }
 

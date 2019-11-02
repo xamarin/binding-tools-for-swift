@@ -84,5 +84,17 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				throw new SwiftRuntimeException ($"Unable to find swift protocol type descriptor for {interfaceType.Name} with symbol {typeAttribute.ProtocolDescriptor} in file {typeAttribute.LibraryName}");
 			return desc.Value;
 		}
+
+		internal static IntPtr DescriptorHandleForType (Type interfaceType)
+		{
+			// internal version, no exceptions
+			var typeAttribute = interfaceType.GetCustomAttribute<SwiftProtocolTypeAttribute> ();
+			if (typeAttribute == null)
+				return IntPtr.Zero;
+			var desc = SwiftNominalTypeDescriptor.FromDylibFile (typeAttribute.LibraryName, DLOpenMode.Now, typeAttribute.ProtocolDescriptor);
+			if (!desc.HasValue)
+				return IntPtr.Zero;
+			return desc.Value.Handle;
+		}
 	}
 }

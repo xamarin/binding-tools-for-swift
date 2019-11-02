@@ -364,6 +364,93 @@ namespace SwiftRuntimeLibrary {
 		}
 		#endregion
 
+		#region ProtocolMetadata
+		// Pointer kind
+		// uint32 flags (high 8 bits are flags, low 24 bits is the number of witness tables)
+		// uint32 number of protocol descriptors
+		// [Pointer] super class constraint if and only if there is a superclass constraint
+		// n Pointers - protocol descriptors for each protocol - low bits set if ObjC
+
+		void ThrowOnInvalidOrNotProtocol ()
+		{
+			ThrowOnInvalid ();
+			if (Kind != MetatypeKind.Protocol)
+				throw new NotSupportedException ($"Operation not support on type {Kind}");
+		}
+
+		internal SwiftProtocolMetadataFlags GetProtocolMetadataFlags ()
+		{
+			ThrowOnInvalidOrNotProtocol ();
+			var flags = Marshal.ReadInt32 (handle + IntPtr.Size);
+			return (SwiftProtocolMetadataFlags)(flags >> 30);
+		}
+
+		internal SwiftSpecialProtocol GetProtocolSpecialProtocol ()
+		{
+			ThrowOnInvalidOrNotProtocol ();
+			var flags = Marshal.ReadInt32 (handle + IntPtr.Size);
+			return (SwiftSpecialProtocol)((flags >> 24) & 0x3f);
+		}
+
+		internal int GetProtocolWitnessTableCount ()
+		{
+			ThrowOnInvalidOrNotProtocol ();
+			var flags = Marshal.ReadInt32 (handle + IntPtr.Size);
+			return flags & 0x00ffffff;
+		}
+
+		internal int GetProtocolDescriptorCount ()
+		{
+			ThrowOnInvalidOrNotProtocol ();
+			var count = Marshal.ReadInt32 (handle + IntPtr.Size + sizeof (int));
+			return count;
+		}
+
+		internal bool HasExistentialSuperclassConstraint ()
+		{
+			return (GetProtocolMetadataFlags () & SwiftProtocolMetadataFlags.HasSuperClassConstraint) != 0;
+		}
+
+		internal int GetProtocolsSuperclassOffset ()
+		{
+			return IntPtr.Size + 2 * sizeof (int);
+		}
+
+		internal SwiftMetatype GetProtocolSuperclassConstraint ()
+		{
+			if (!HasExistentialSuperclassConstraint ())
+				throw new NotSupportedException ("Existential metadata doesn't have a superclass constraint.");
+			var ptr = Marshal.ReadIntPtr (handle + GetProtocolsSuperclassOffset ());
+			return new SwiftMetatype (ptr);
+		}
+
+		internal int GetProtocolDescriptorOffset ()
+		{
+			return GetProtocolsSuperclassOffset () + (HasExistentialSuperclassConstraint () ? IntPtr.Size : 0);
+		}
+
+		internal SwiftNominalTypeDescriptor GetProtocolDescriptor (int index)
+		{
+			if (index < 0 || index >= GetProtocolDescriptorCount ())
+				throw new ArgumentOutOfRangeException (nameof (index));
+			var offset = GetProtocolDescriptorOffset () + (index * IntPtr.Size);
+			// doc'n says low bit is set if it's ObjC
+			var ptrVal = Marshal.ReadIntPtr (handle + offset).ToInt64 ();
+			return new SwiftNominalTypeDescriptor (new IntPtr (ptrVal));
+		}
+
+		internal bool ProtocolDescriptorIsObjC (int index)
+		{
+			if (index < 0 || index >= GetProtocolDescriptorCount ())
+				throw new ArgumentOutOfRangeException (nameof (index));
+			var offset = GetProtocolDescriptorOffset () + (index * IntPtr.Size);
+			// doc'n says low bit is set if it's ObjC
+			var ptrVal = Marshal.ReadIntPtr (handle + offset).ToInt64 ();
+			return (ptrVal & 1) != 0;
+		}
+
+		#endregion
+
 		internal static MetatypeKind MetatypeKindFromHandle (IntPtr p)
 		{
 			if (p == IntPtr.Zero)

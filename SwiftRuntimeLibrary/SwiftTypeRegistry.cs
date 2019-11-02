@@ -14,6 +14,7 @@ namespace SwiftRuntimeLibrary {
 		Dictionary<SwiftMetatype, Type> primaryCache = new Dictionary<SwiftMetatype, Type> ();
 		Dictionary<string, Type> secondaryCache = new Dictionary<string, Type> ();
 		HashSet<Assembly> cachedAssemblies = new HashSet<Assembly> ();
+		Dictionary<IntPtr, Type> protocolDescriptorCache = new Dictionary<IntPtr, Type> ();
 
 		SwiftTypeRegistry ()
 		{
@@ -43,6 +44,8 @@ namespace SwiftRuntimeLibrary {
 					csType = GetFunctionType (swiftType);
 					if (csType != null)
 						primaryCache.Add (swiftType, csType);
+				} else if (swiftType.Kind == MetatypeKind.Protocol) {
+					csType = GetInterfaceType (swiftType);
 				}
 				if (csType != null)
 					return true;
@@ -56,6 +59,16 @@ namespace SwiftRuntimeLibrary {
 				foreach (var swiftCsPair in StructMarshal.PrimitiveTypeMap ())
 					primaryCache.Add (swiftCsPair.Item1, swiftCsPair.Item2);
 			}
+		}
+
+		Type GetInterfaceType (SwiftMetatype swiftType)
+		{
+			if (protocolDescriptorCache.Count == 0)
+				LoadSecondaryCacheFromAssemblies ();
+			Type csType;
+			if (protocolDescriptorCache.TryGetValue (swiftType.GetProtocolDescriptor (0).Handle, out csType))
+				return csType;
+			return null;
 		}
 
 		Type GetFunctionType (SwiftMetatype swiftType)
@@ -242,7 +255,14 @@ namespace SwiftRuntimeLibrary {
 				foreach (var t in assembly.GetTypes ()) {
 					string swiftTypeName;
 					if (SwiftTypeNameAttribute.TryGetSwiftName (t, out swiftTypeName)) {
-						secondaryCache.Add (swiftTypeName, t);
+						if (t.IsInterface) {
+							var handle = SwiftProtocolTypeAttribute.DescriptorHandleForType (t);
+							if (handle != IntPtr.Zero) {
+								protocolDescriptorCache.Add (handle, t);
+							}
+						} else {
+							secondaryCache.Add (swiftTypeName, t);
+						}
 					}
 				}
 			}

@@ -470,6 +470,21 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
+		public SwiftMetatype ExistentialMetatypeof (params Type [] interfaceTypes)
+		{
+			if (interfaceTypes.Length == 1) {
+				var protocolDesc = SwiftProtocolTypeAttribute.DescriptorForType (interfaceTypes [0]);
+				return SwiftCore.ExistentialContainerMetadata (protocolDesc);
+			} else {
+				var protoDescs = new SwiftNominalTypeDescriptor [interfaceTypes.Length];
+				for (int i=0; i < interfaceTypes.Length; i++) {
+					protoDescs [i] = SwiftProtocolTypeAttribute.DescriptorForType (interfaceTypes [i]);
+				}
+				Array.Sort (protoDescs, (x, y) => string.Compare (x.GetFullName (), y.GetFullName (), StringComparison.Ordinal));
+				return SwiftCore.ExistentialContainerMetadata (protoDescs);
+			}
+		}
+
 		public int Sizeof (Type [] types)
 		{
 			var classType = FirstNonInterface (types);
