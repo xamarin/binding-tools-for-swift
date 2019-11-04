@@ -1073,7 +1073,7 @@ namespace SwiftReflector {
 			var localUsedNames = new List<string> { csFuncImplName };
 
 			var payloadFunc = TLFCompiler.CompileMethod (payloadDecl, use, "", "", csFuncImplName, false, true, false);
-			payloadFunc.Parameters.Clear ();
+			payloadFunc = new CSMethod (CSVisibility.None, payloadFunc.Kind, payloadFunc.Type, payloadFunc.Name, new CSParameterList (), new CSCodeBlock ());
 
 			var throwCall = new CSCodeBlock ();
 			throwCall.Add (CSThrow.ThrowLine (new ArgumentOutOfRangeException (), $"Expected Case to be {csCaseName}."));
