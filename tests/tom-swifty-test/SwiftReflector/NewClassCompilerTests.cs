@@ -767,6 +767,23 @@ case nothing
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Something\n");
 		}
 
+		[Test]
+		public void EnumPrivateAccessor ()
+		{
+			var swiftCode = @"
+public enum PrivAccess {
+case iVal(x: Int)
+case fVal(y: Float)
+}
+";
+			var miID = new CSIdentifier ("mi");
+			var miDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, miID, new CSFunctionCall ("typeof(PrivAccess).GetMethod", false, CSConstant.Val ("__GetValueIVal"),
+				new CSIdentifier ("System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance")));
+			var printer = CSFunctionCall.ConsoleWriteLine (miID.Dot (new CSIdentifier ("IsPublic")));
+			var callingCode = new CodeElementCollection<ICodeElement> () { miDecl, printer };
+			TestRunning.TestAndExecute (swiftCode, callingCode, "False\n");
+		}
+
 
 		[Test]
 		public void TopLevelTuple ()

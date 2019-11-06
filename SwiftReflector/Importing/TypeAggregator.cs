@@ -264,8 +264,11 @@ namespace SwiftReflector.Importing {
 		{
 			var types = new HashSet<TypeDefinition> ();
 			var notExcluded = Excludes.Excluding (typeList, typeDefinition => typeDefinition.FullName);
-			foreach (var type in notExcluded)
+			foreach (var type in notExcluded) {
+				if (type.IsAbstract)
+					continue;
 				types.Add (type);
+			}
 			var reallyInclude = Includes.Including (typeList, typeDefinition => typeDefinition.FullName);
 			foreach (var type in reallyInclude)
 				types.Add (type);
