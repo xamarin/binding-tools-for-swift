@@ -537,5 +537,99 @@ open class UsingClassPI {
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, resetter, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
 		}
+
+		[Test]
+		public void TestProtoProtoList ()
+		{
+			var swiftCode = @"
+public protocol ProtoProtoFA {
+    func constantA () -> Int
+}
+public protocol ProtoProtoFB {
+    func constantB () -> Int
+}
+public class ImplProtoFAProtoFB : ProtoProtoFA, ProtoProtoFB {
+    public init () { }
+    public func constantA () -> Int {
+        return 3
+    }
+    public func constantB () -> Int {
+        return 4
+    }
+}
+public protocol UsingProto {
+    func tryItOut (a: ProtoProtoFA & ProtoProtoFB) -> Int
+}
+public class UsingClassPP : UsingProto {
+    public init () { }
+    public func tryItOut (a: ProtoProtoFA & ProtoProtoFB) -> Int {
+        return a.constantA() + a.constantB()
+    }
+}
+";
+			// var due = new ImplProtoFAProtoFB ();
+			// var tre = new UsingClassPP ();
+			// Console.WriteLine (tre.TryItOut (due));
+
+			var thingID = new CSIdentifier ("due");
+			var anotherID = new CSIdentifier ("tre");
+			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplProtoFAProtoFB", true));
+			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ("UsingClassPP", true));
+			var invoke = new CSFunctionCall ($"{anotherID.Name}.TryItOut", false, thingID);
+			var printer = CSFunctionCall.ConsoleWriteLine (invoke);
+			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
+		}
+
+		[Test]
+		public void TestProtoPropProtoList ()
+		{
+			var swiftCode = @"
+public protocol ProtoProtoPA {
+    func constantA () -> Int
+}
+public protocol ProtoProtoPB {
+    func constantB () -> Int
+}
+public class ImplProtoFAProtoFB : ProtoProtoPA, ProtoProtoPB {
+    public init () { }
+    public func constantA () -> Int {
+        return 3
+    }
+    public func constantB () -> Int {
+        return 4
+    }
+}
+public protocol UsingProto {
+    var prop : ProtoProtoPA & ProtoProtoPB  { get }
+}
+public class UsingClassPProp : UsingProto {
+    public init () {
+        x = ImplProtoFAProtoFB ()
+    }
+    private var x: ProtoProtoPA & ProtoProtoPB
+    public var prop : ProtoProtoPA & ProtoProtoPB {
+        get {
+            return x
+        }
+    }
+}
+
+public func tryItOut (a: UsingClassPProp) -> Int {
+    let p = a.prop
+    return p.constantA() + p.constantB()
+}
+";
+			// var tre = new UsingClassPProp ();
+			// Console.WriteLine (TopLevelEntities.TryItOut(due));
+
+			var thingID = new CSIdentifier ("due");
+			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("UsingClassPProp", true));
+			var invoke = new CSFunctionCall ($"TopLevelEntities.TryItOut", false, thingID);
+			var printer = CSFunctionCall.ConsoleWriteLine (invoke);
+			var callingCode = CSCodeBlock.Create (thingDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
+		}
+
 	}
 }
