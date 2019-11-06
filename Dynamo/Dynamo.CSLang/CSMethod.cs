@@ -83,6 +83,12 @@ namespace Dynamo.CSLang {
 			return CopyGenerics (this, overrideMethod);
 		}
 
+		public CSMethod AsPrivate ()
+		{
+			var privateMethod = new CSMethod (CSVisibility.None, Kind, Type, Name, Parameters, BaseOrThisCallParameters, CallsBase, Body, IsSealed);
+			return CopyGenerics (this, privateMethod);
+		}
+
 		public static CSMethod CopyGenerics (CSMethod from, CSMethod to)
 		{
 			to.GenericParameters.AddRange (from.GenericParameters);
