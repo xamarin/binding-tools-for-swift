@@ -2,10 +2,13 @@
 
 Clone the repository on a macOS machine.
 
-    cd binding-tools-for-swift
-    make
-    cd tests/tom-swifty-test
-    make
+
+```shell
+  cd binding-tools-for-swift
+  make
+  cd tests/tom-swifty-test
+  make
+```
 
 In order to run the binding tools, you will need a compiled Swift library which includes a `.swiftmodule`. Here are the options for the binding generator:
 
