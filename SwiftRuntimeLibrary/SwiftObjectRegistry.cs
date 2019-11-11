@@ -235,12 +235,7 @@ namespace SwiftRuntimeLibrary {
 
 		Dictionary<object, List<BaseProxy>> proxies = new Dictionary<object, List<BaseProxy>> ();
 
-		public ISwiftExistentialContainer ExistentialContainerForProtocol (object implementation, Type type)
-		{
-			return ExistentialContainerForProtocols (implementation, new Type [] { type });
-		}
-
-		public ISwiftExistentialContainer ExistentialContainerForProtocols (object implementation, Type[] types)
+		public ISwiftExistentialContainer ExistentialContainerForProtocols (object implementation, params Type[] types)
 		{
 			if (types.Length > SwiftExistentialContainer0.MaximumContainerSize)
 				throw new ArgumentOutOfRangeException (nameof(types), $"Exceeded the limit of {SwiftExistentialContainer0.MaximumContainerSize} types in an existential container.");

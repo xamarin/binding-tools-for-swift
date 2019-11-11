@@ -15,6 +15,7 @@ namespace SwiftRuntimeLibrary {
 		int Count { get; }
 		int SizeOf { get; }
 		unsafe IntPtr CopyTo (IntPtr memory);
+		void CopyTo (ISwiftExistentialContainer container);
 	}
 
 	public struct SwiftExistentialContainer0 : ISwiftExistentialContainer {
@@ -41,6 +42,11 @@ namespace SwiftRuntimeLibrary {
 			return memory;
 		}
 
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			Copy (this, to);
+		}
+
 		internal static IntPtr CopyTo (ISwiftExistentialContainer from, IntPtr memory)
 		{
 			Marshal.WriteIntPtr (memory, from.Data0);
@@ -57,6 +63,18 @@ namespace SwiftRuntimeLibrary {
 				memory += IntPtr.Size;
 			}
 			return memory;
+		}
+
+		internal static void Copy (ISwiftExistentialContainer from, ISwiftExistentialContainer to)
+		{
+			if (from.Count != to.Count)
+				throw new ArgumentOutOfRangeException ($"{nameof (from)} and {nameof (to)} must have matching Count properties");
+			to.Data0 = from.Data0;
+			to.Data1 = from.Data1;
+			to.Data2 = from.Data2;
+			for (int i=0; i < from.Count; i++) {
+				to [i] = from [i];
+			}
 		}
 		public const int MaximumContainerSize = 8;
 	}
@@ -121,6 +139,11 @@ namespace SwiftRuntimeLibrary {
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
 		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
+		}
 	}
 
 	public struct SwiftExistentialContainer2 : ISwiftExistentialContainer {
@@ -153,6 +176,11 @@ namespace SwiftRuntimeLibrary {
 		public IntPtr CopyTo (IntPtr memory)
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
+		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
 		}
 	}
 
@@ -188,6 +216,11 @@ namespace SwiftRuntimeLibrary {
 		public IntPtr CopyTo (IntPtr memory)
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
+		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
 		}
 	}
 
@@ -225,6 +258,11 @@ namespace SwiftRuntimeLibrary {
 		public IntPtr CopyTo (IntPtr memory)
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
+		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
 		}
 	}
 
@@ -264,6 +302,11 @@ namespace SwiftRuntimeLibrary {
 		public IntPtr CopyTo (IntPtr memory)
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
+		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
 		}
 	}
 
@@ -305,6 +348,11 @@ namespace SwiftRuntimeLibrary {
 		public IntPtr CopyTo (IntPtr memory)
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
+		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
 		}
 	}
 
@@ -348,6 +396,11 @@ namespace SwiftRuntimeLibrary {
 		public IntPtr CopyTo (IntPtr memory)
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
+		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
 		}
 	}
 
@@ -393,6 +446,11 @@ namespace SwiftRuntimeLibrary {
 		public IntPtr CopyTo (IntPtr memory)
 		{
 			return SwiftExistentialContainer0.CopyTo (this, memory);
+		}
+
+		public void CopyTo (ISwiftExistentialContainer to)
+		{
+			SwiftExistentialContainer0.Copy (this, to);
 		}
 	}
 

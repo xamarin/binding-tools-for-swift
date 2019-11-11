@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary;
+using System.Text;
 #if !TOM_SWIFTY
 using Foundation;
 using ObjCRuntime;
@@ -1283,13 +1284,22 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			if (metadataOfContainer.Handle == EveryProtocol.GetSwiftMetatype ().Handle) {
 				return SwiftObjectRegistry.Registry.InstanceFromEveryProtocolHandle (container.Data0);
 			} else {
-				var metadataOfT = Metatypeof (t);
-				if (metadataOfT.Handle != metadataOfContainer.Handle)
-					throw new SwiftRuntimeException ($"Expected type {t.Name} does not match the actual swift type");
+				Type actualType;
+				if (!SwiftTypeRegistry.Registry.TryGetValue (metadataOfContainer, out actualType)) {
+					var name = $"kind {metadataOfContainer.Kind}";
+					try {
+						var nominalDesc = metadataOfContainer.GetNominalTypeDescriptor ();
+						name = nominalDesc.GetFullName ();
+					} catch { }
+
+					throw new SwiftRuntimeException ($"Unknown C# type for swift type {name}");
+				}
+				if (!t.IsAssignableFrom (actualType))
+					throw new SwiftRuntimeException ($"Expected type {t.Name} is not assignable from actual type {actualType.Name}");
 				var payload = stackalloc byte [container.SizeOf];
 				var payloadMemory = new IntPtr (payload);
 				container.CopyTo (payloadMemory);
-				return ToNet (payloadMemory, t);
+				return ToNet (payloadMemory, actualType);
 			}
 		}
 
@@ -1929,6 +1939,38 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return method.Invoke (null, new object [] { p, owns, t, null });
 		}
 #endif
+
+		public static bool ImplementsAll(object o, params Type [] types)
+		{
+			if (o == null)
+				throw new ArgumentNullException (nameof (o));
+			if (types.Length == 0)
+				throw new ArgumentException ("Requires one or more types");
+			var oType = o.GetType ();
+			foreach (var type in types) {
+				if (!type.IsInterface)
+					throw new ArgumentException ("Each type must be an interface type", nameof (types));
+				if (!type.IsAssignableFrom (oType))
+					return false;
+			}
+			return true;
+		}
+
+		public static object ThrowIfNotImplementsAll (object o, params Type [] types)
+		{
+			if (o == null)
+				throw new ArgumentNullException (nameof (o));
+			if (!ImplementsAll (o, types)) {
+				StringBuilder sb = new StringBuilder ();
+				sb.Append (types [0].Name);
+				for (int i=1; i < types.Length; i++) {
+					sb.Append (", ").Append (types [i].Name);
+				}
+
+				throw new SwiftRuntimeException ($"Object does not implement one or more required interfaces: {sb.ToString ()}");
+			}
+			return o;
+		}
 
 		internal static int RoundUpToAlignment (int value, int align)
 		{

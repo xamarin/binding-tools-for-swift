@@ -65,7 +65,7 @@ namespace SwiftRuntimeLibrary {
 						thingIntPtr = new IntPtr (thingPtr0);
 						Marshal.WriteIntPtr (thingIntPtr, thingProxy.SwiftObject);
 					} else {
-						var thingExistentialContainer = SwiftObjectRegistry.Registry.ExistentialContainerForProtocol (thing, typeof (ISwiftHashable));
+						var thingExistentialContainer = SwiftObjectRegistry.Registry.ExistentialContainerForProtocols (thing, typeof (ISwiftHashable));
 						byte* thingProtoPtr = stackalloc byte [thingExistentialContainer.SizeOf];
 						thingIntPtr = new IntPtr (thingProtoPtr);
 						thingExistentialContainer.CopyTo (thingIntPtr);
