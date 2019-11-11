@@ -72,7 +72,7 @@ namespace SwiftRuntimeLibrary {
 			to.Data0 = from.Data0;
 			to.Data1 = from.Data1;
 			to.Data2 = from.Data2;
-			for (int i=0; i < from.Count; i++) {
+			for (int i = 0; i < from.Count; i++) {
 				to [i] = from [i];
 			}
 		}
