@@ -1940,7 +1940,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 #endif
 
-		public static bool ImplementsAll(object o, params Type [] types)
+		public static bool ImplementsAll (object o, params Type [] types)
 		{
 			if (o == null)
 				throw new ArgumentNullException (nameof (o));
