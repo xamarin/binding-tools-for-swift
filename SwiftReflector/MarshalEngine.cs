@@ -1410,7 +1410,7 @@ namespace SwiftReflector {
 				return new CSIdentifier (String.Format ("ref {0}", protoName));
 			} else {
 				var protoMaker = new CSFunctionCall ("SwiftExistentialContainer1", true,
-					new CSFunctionCall ("SwiftObjectRegistry.Registry.ExistentialContainerForProtocol", false, p.Name,
+					new CSFunctionCall ("SwiftObjectRegistry.Registry.ExistentialContainerForProtocols", false, p.Name,
 					    new CSSimpleType (netInterfaceName).Typeof ()));
 				var localProto = new CSIdentifier (Uniqueify (p.Name + "Protocol", identifiersUsed));
 				identifiersUsed.Add (localProto.Name);

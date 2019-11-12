@@ -54,7 +54,12 @@ namespace SwiftReflector {
 			FunctionDeclaration getter, FunctionDeclaration setter, CSMethodKind methodKind = CSMethodKind.None)
 		{
 			var swiftPropertyType = GetPropertyType (getter, setter);
-			var propertyType = typeMap.MapType (getter, swiftPropertyType, false, true);
+			NetTypeBundle propertyType = null;
+			if (TypeMapper.IsCompoundProtocolListType (swiftPropertyType)) {
+				propertyType = new NetTypeBundle ("System", "object", false, false, EntityType.ProtocolList);
+			} else {
+				propertyType = typeMap.MapType (getter, swiftPropertyType, false, true);
+			}
 			propertyName = propertyName ?? typeMap.SanitizeIdentifier (getter != null ? getter.PropertyName : setter.PropertyName);
 			bool isSubscript = getter != null ? getter.IsSubscript :
 				setter.IsSubscript;
@@ -185,6 +190,7 @@ namespace SwiftReflector {
 								csReturnType = CSSimpleType.Void;
 							} else if (func.ReturnTypeSpec is ProtocolListTypeSpec pl) {
 								csParams.Insert (0, new CSParameter (new CSSimpleType ($"SwiftExistentialContainer{pl.Protocols.Count}"), retvalID, CSParameterKind.Ref));
+								csReturnType = CSSimpleType.Void;
 							}
 						}
 					} else {
@@ -211,10 +217,7 @@ namespace SwiftReflector {
 
 			NetTypeBundle returnType = null;
 			if (func.ReturnTypeSpec is ProtocolListTypeSpec plitem && !isPinvoke) {
-				var genprotoName = new CSIdentifier ($"TProtoReturn");
-				extraProtoArgs.Add (new CSGenericTypeDeclaration (genprotoName));
-				extraProtoConstraints.Add (new CSGenericConstraint (genprotoName, typeMap.ToConstraintIDs (func, plitem.Protocols.Keys, isPinvoke)));
-				returnType = new NetTypeBundle ("", genprotoName.Name, false, false, EntityType.ProtocolList);
+				returnType = new NetTypeBundle ("System", "object", false, false, EntityType.ProtocolList);
 			} else {
 				returnType = typeMap.MapType (func, func.ReturnTypeSpec, isPinvoke, true);
 			}

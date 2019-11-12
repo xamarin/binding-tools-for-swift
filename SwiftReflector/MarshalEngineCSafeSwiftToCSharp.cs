@@ -40,7 +40,7 @@ namespace SwiftReflector {
 
 			bool returnIsStruct = needsReturn && entity != null && entity.IsStructOrEnum;
 			bool returnIsClass = needsReturn && entity != null && entity.EntityType == EntityType.Class;
-			bool returnIsProtocol = needsReturn && entity != null && entity.EntityType == EntityType.Protocol;
+			bool returnIsProtocol = needsReturn && ((entity != null && entity.EntityType == EntityType.Protocol) || entityType == EntityType.ProtocolList);
 			bool returnIsTuple = needsReturn && entityType == EntityType.Tuple;
 			bool returnIsClosure = needsReturn && entityType == EntityType.Closure;
 
@@ -357,7 +357,7 @@ namespace SwiftReflector {
 						var returnContainer = MarshalEngine.Uniqueify ("returnContainer", identifiersUsed);
 						identifiersUsed.Add (returnContainer);
 						var returnContainerId = new CSIdentifier (returnContainer);
-						var protoGetter = new CSFunctionCall ($"SwiftObjectRegistry.Registry.ExistentialContainerForProtocol", false, retvalId, methodType.Typeof ());
+						var protoGetter = new CSFunctionCall ($"SwiftObjectRegistry.Registry.ExistentialContainerForProtocols", false, retvalId, methodType.Typeof ());
 						var protoDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, returnContainerId, protoGetter);
 						var marshalBack = CSFunctionCall.FunctionCallLine ($"{returnContainer}.CopyTo", delegateParams [0].Name);
 						postMarshalCode.Add (protoDecl);
@@ -443,6 +443,7 @@ namespace SwiftReflector {
 			bool returnIsStructOrEnum = needsReturn && entity != null && entity.IsStructOrEnum;
 			bool returnIsClass = needsReturn && entity != null && entity.EntityType == EntityType.Class;
 			bool returnIsProtocol = needsReturn && entity != null && entity.EntityType == EntityType.Protocol;
+			bool returnIsProtocolList = needsReturn && entityType == EntityType.ProtocolList;
 			bool returnIsTuple = needsReturn && entityType == EntityType.Tuple;
 			bool returnIsClosure = needsReturn && entityType == EntityType.Closure;
 
@@ -485,10 +486,10 @@ namespace SwiftReflector {
 					body.Add (CSFieldDeclaration.VarLine (methodType, retvalId, csharpCall));
 					if (returnIsGeneric) {
 						body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
-						                                           methodType.Typeof (), retvalId, delegateParams [0].Name));
+											   methodType.Typeof (), retvalId, delegateParams [0].Name));
 					} else {
 						body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
-						                                           retvalId, delegateParams [0].Name));
+											   retvalId, delegateParams [0].Name));
 					}
 				} else if (returnIsProtocol) {
 					string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
@@ -496,8 +497,31 @@ namespace SwiftReflector {
 					var retvalId = new CSIdentifier (retvalName);
 					body.Add (CSFieldDeclaration.VarLine (methodType, retvalId, csharpCall));
 					var protocolMaker = new CSFunctionCall ("SwiftExistentialContainer1", true,
-						new CSFunctionCall ("SwiftObjectRegistry.Registry.ExistentialContainerForProtocol", false, retvalId, methodType.Typeof ()));
+						new CSFunctionCall ("SwiftObjectRegistry.Registry.ExistentialContainerForProtocols", false, retvalId, methodType.Typeof ()));
 					body.Add (CSReturn.ReturnLine (protocolMaker));
+				} else if (returnIsProtocolList) {
+					var protoTypeOf = new List<CSBaseExpression> ();
+					var swiftProtoList = funcDecl.ReturnTypeSpec as ProtocolListTypeSpec;
+					foreach (var swiftProto in swiftProtoList.Protocols.Keys) {
+						protoTypeOf.Add (typeMapper.MapType (funcDecl, swiftProto, false).ToCSType (use).Typeof ());
+					}
+					var callExprs = new List<CSBaseExpression> ();
+					callExprs.Add (csharpCall);
+					callExprs.AddRange (protoTypeOf);
+					var retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
+					identifiersUsed.Add (retvalName);
+					var retvalId = new CSIdentifier (retvalName);
+					body.Add (CSVariableDeclaration.VarLine (methodType, retvalId, new CSFunctionCall ("StructMarshal.ThrowIfNotImplementsAll", false, callExprs.ToArray ())));
+					var containerExprs = new List<CSBaseExpression> ();
+					containerExprs.Add (retvalId);
+					containerExprs.AddRange (protoTypeOf);
+
+					var returnContainerName = MarshalEngine.Uniqueify ("returnContainer", identifiersUsed);
+					identifiersUsed.Add (returnContainerName);
+					var returnContainerId = new CSIdentifier (returnContainerName);
+					body.Add (CSVariableDeclaration.VarLine (CSSimpleType.Var, returnContainerId, new CSFunctionCall ("SwiftObjectRegistry.Registry.ExistentialContainerForProtocols", false, containerExprs.ToArray ())));
+					body.Add (CSFunctionCall.FunctionCallLine ($"{returnContainerName}.CopyTo", false, delegateParams [0].Name));
+					
 				} else {
 					if (returnIsClosure) {
 						body.Add (CSReturn.ReturnLine (MarshalEngine.BuildBlindClosureCall (csharpCall, methodType as CSSimpleType, use)));

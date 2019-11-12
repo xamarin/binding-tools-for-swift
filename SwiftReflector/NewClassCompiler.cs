@@ -1898,10 +1898,10 @@ namespace SwiftReflector {
 				if (virtFunctions [i].IsProperty) {
 					if (virtFunctions [i].IsSubscript) {
 						vtableEntryIndex = ImplementPropertyVtableForProtocolVirtualSubscripts (wrapper, protocolDecl, protocolContents, iface, proxyClass, picl, usedPinvokeNames,
-						                                                                        virtFunctions, virtFunctions [i], vtableEntryIndex, vtableName, vtable, vtableAssignments, use, swiftLibraryPath);
+															virtFunctions, virtFunctions [i], vtableEntryIndex, vtableName, vtable, vtableAssignments, use, swiftLibraryPath);
 					} else {
 						vtableEntryIndex = ImplementPropertyVtableForProtocolProperties (wrapper, protocolDecl, protocolContents, iface, proxyClass, picl, usedPinvokeNames,
-						                                                                 virtFunctions, virtFunctions [i], vtableEntryIndex, vtableName, vtable, vtableAssignments, use, swiftLibraryPath);
+															virtFunctions, virtFunctions [i], vtableEntryIndex, vtableName, vtable, vtableAssignments, use, swiftLibraryPath);
 					}
 				} else {
 					vtableEntryIndex = ImplementMethodVtableForProtocolVirtualMethods (wrapper, protocolDecl, protocolContents, iface, proxyClass, picl, usedPinvokeNames,
@@ -1933,7 +1933,6 @@ namespace SwiftReflector {
 			functions.AddRange (decl.AllVirtualMethods ().Where (func => !(func.IsDeprecated || func.IsUnavailable)));
 
 		}
-
 
 		int ImplementVtableMethodsSuperMethodsAndVtable (ModuleInventory modInventory, WrappingResult wrapper,
 		                                                 ClassDeclaration subclassDecl, ClassContents subclassContents, ClassDeclaration classDecl,
@@ -2340,7 +2339,7 @@ namespace SwiftReflector {
 				if (isSetter) {
 					protocolMethod.Body.Add (CSFunctionCall.FunctionCallLine (superEtterName, false, superEtterArgs.ToArray ()));
 				} else {
-					protocolMethod.Body.Add (CSReturn.ReturnLine (new CSFunctionCall ($"{superEtterName}<{protoArgs.ToString ()}>", false, superEtterArgs.ToArray ())));
+					protocolMethod.Body.Add (CSReturn.ReturnLine (new CSFunctionCall (superEtterName, false, superEtterArgs.ToArray ())));
 				}
 				cl.Methods.Add (protocolMethod);
 			} else {
@@ -2583,7 +2582,7 @@ namespace SwiftReflector {
 				if (isSetter) {
 					protoListMethod.Body.Add (CSFunctionCall.FunctionCallLine (superEtterName, false, protoListMethod.Parameters[0].Name));
 				} else {
-					protoListMethod.Body.Add (CSReturn.ReturnLine (new CSFunctionCall ($"{superEtterName}<{protoListMethod.Type.ToString ()}>", false)));
+					protoListMethod.Body.Add (CSReturn.ReturnLine (new CSFunctionCall (superEtterName, false)));
 				}
 				cl.Methods.Add (protoListMethod);
 			} else {
@@ -4761,16 +4760,13 @@ namespace SwiftReflector {
 			string propName = TypeMapper.SanitizeIdentifier (prop.Name.Name);
 			propName = MarshalEngine.Uniqueify (propName, usedIdentifiers);
 			usedIdentifiers.Add (propName);
-			var returnsProtocolListType = propDecl.TypeSpec is ProtocolListTypeSpec;
-			var getterName = $"{(returnsProtocolListType ? "Get" : "__Get")}{propName}";
+			var getterName = $"__Get{propName}";
 			getterName = Uniqueify (getterName, usedIdentifiers);
 			usedIdentifiers.Add (getterName);
 
-			var setterName = $"{(returnsProtocolListType ? "Set" : "__Set")}{propName}";
+			var setterName = $"__Set{propName}";
 			setterName = Uniqueify (setterName, usedIdentifiers);
 			usedIdentifiers.Add (setterName);
-
-			var forcePrivate = !returnsProtocolListType;
 
 			if ((prop.Getter != null && !funcFilter (prop.TLFGetter)) ||
 				prop.Setter != null && !funcFilter (prop.TLFSetter))
@@ -4790,7 +4786,7 @@ namespace SwiftReflector {
 				if (getterWrapperFunc == null)
 					throw new NotImplementedException ();
 				ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, pinvokeName, prop.TLFGetter, propDecl.GetGetter (), use, true, wrapper, swiftLibraryPath,
-				                                   getterWrapper, "", forcePrivate, getterName);
+				                                   getterWrapper, "", true, getterName);
 			}
 
 			if (prop.Setter != null && propDecl.GetSetter ().IsPublicOrOpen) {
@@ -4799,12 +4795,17 @@ namespace SwiftReflector {
 					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 76, $"Unable to find wrapper function for setter for property {prop.Name.Name} in class {prop.TLFSetter.Class.ClassName.ToFullyQualifiedName (true)}.");
 				}
 
-				ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, pinvokeName, prop.TLFSetter, propDecl.GetSetter (), use, true, wrapper, swiftLibraryPath,
-				                                   setterWrapper, "", forcePrivate, setterName);
+				var csSetterImpl = ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, pinvokeName, prop.TLFSetter, propDecl.GetSetter (), use, true, wrapper, swiftLibraryPath,
+				                                   setterWrapper, "", true, setterName);
+				if (TypeMapper.IsCompoundProtocolListType (prop.Getter.ReturnType)) {
+					// in the case of protocol list type, we need to change the implementation to
+					// a non-generic version with the value type of object.
+					var nonGeneric = CSMethod.RemoveGenerics (csSetterImpl);
+					nonGeneric.Parameters [0] = new CSParameter (CSSimpleType.Object, nonGeneric.Parameters [0].Name, nonGeneric.Parameters [0].ParameterKind);
+					cl.Methods.Remove (csSetterImpl);
+					cl.Methods.Add (nonGeneric);
+				}
 			}
-
-			if (returnsProtocolListType)
-				return;
 
 			var wrapperProp = TLFCompiler.CompileProperty (use, propName, propDecl.GetGetter (), propDecl.GetSetter (), prop.Getter.IsStatic ? CSMethodKind.Static : CSMethodKind.None);
 
@@ -4966,7 +4967,7 @@ namespace SwiftReflector {
 		}
 
 
-		void ImplementOverloadFromKnownWrapper (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName classForPI,
+		CSMethod ImplementOverloadFromKnownWrapper (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName classForPI,
 		                                        TLFunction methodToWrap, FunctionDeclaration funcToWrap, CSUsingPackages use, bool isFinal,
 		                                        WrappingResult wrapper, string swiftLibraryPath, TLFunction wrapperFunction,
 		                                        string homonymSuffix, bool forcePrivate = false, string alternativeName = null)
@@ -5045,6 +5046,7 @@ namespace SwiftReflector {
 
 			picl.Methods.Add (piMethod);
 			cl.Methods.Add (publicMethod);
+			return publicMethod;
 		}
 
 		TLFunction FindWrapperForExtension (FunctionDeclaration funcDeclToWrap, BaseDeclaration extensionOn, TLFunction funcToWrap, WrappingResult wrapper)

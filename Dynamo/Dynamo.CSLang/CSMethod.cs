@@ -96,6 +96,12 @@ namespace Dynamo.CSLang {
 			return to;
 		}
 
+		public static CSMethod RemoveGenerics (CSMethod from)
+		{
+			var newMethod = new CSMethod (from.Visibility, from.Kind, from.Type, from.Name, from.Parameters, from.Body);
+			return newMethod;
+		}
+
 		public static string VisibilityToString (CSVisibility visibility)
 		{
 			switch (visibility) {
