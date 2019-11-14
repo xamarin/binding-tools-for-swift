@@ -22,11 +22,11 @@ if test -f "$PACKAGED_STAMPFILE$FORCE_SWIFT_BUILD"; then
 fi
 
 # Check if we already have a swift package uploaded
-# Bump 'v1' whenever a new package must be uploaded with the same swift hash (it can be bumped back to 1 every time we bump the swift hash if we wish)
+# Bump 'v#' whenever a new package must be uploaded with the same swift hash (it can be bumped back to 1 every time we bump the swift hash if we wish)
 # (for instance if changes to Pack-Man were required to adjust which files are packaged)
-SWIFT_TOOLCHAIN_NAME="SwiftToolchain-v3-$SWIFT_HASH"
+SWIFT_TOOLCHAIN_NAME="SwiftToolchain-v1-$SWIFT_HASH"
 if test -z "$FORCE_SWIFT_BUILD"; then
-	toolchain_url="https://bosstoragemirror.blob.core.windows.net/wrench/swift-o-matic/toolchains/$SWIFT_TOOLCHAIN_NAME.zip"
+	toolchain_url="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchains/$SWIFT_TOOLCHAIN_NAME.zip"
 	echo "Checking if we already have a toolchain built for $SWIFT_HASH ($toolchain_url)"
 
 	# Extract only if not already extracted
@@ -109,14 +109,14 @@ echo "Installing cmake..."
 command -v cmake || brew install cmake
 
 echo "Checking out swift..."
-git clone git@github.com:xamarin/swift.git
+git clone https://github.com/xamarin/binding-tools-for-swift-reflector swift
 cd swift
 ls -la
 git checkout --force "$SWIFT_BRANCH"
 git reset --hard "$SWIFT_HASH"
 
 echo "Updating swift dependencies..."
-./utils/update-checkout --clone-with-ssh --skip-repository swift -j 1 --scheme "$SWIFT_SCHEME"
+./utils/update-checkout --clone --skip-repository swift -j 1 --scheme "$SWIFT_SCHEME"
 
 echo "Building swift (not so swiftly, some patience is required)..."
 ./utils/build-script --clean -R --ios --tvos --watchos --extra-cmake-options=-DSWIFT_DARWIN_ENABLE_STABLE_ABI_BIT:BOOL=TRUE
