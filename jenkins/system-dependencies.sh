@@ -366,7 +366,7 @@ function install_coresimulator ()
 
 	if test -z $PROVISION_XCODE; then
 		# This is not a failure for now, until this logic has been tested thoroughly
-		warn "You should have exactly CoreSimulator.framework version $TARGET_CORESIMULATOR_VERSION (found $CURRENT_CORESIMULATOR_VERSION). Execute './system-dependencies.sh --provision-xcode' to install the expected version."
+		warn "You should have exactly CoreSimulator.framework version $TARGET_CORESIMULATOR_VERSION (found $CURRENT_CORESIMULATOR_VERSION). Execute '$0 --provision-xcode' to install the expected version."
 		return
 	fi
 
@@ -432,7 +432,7 @@ function check_specific_xcode () {
 			log "Clearing xcrun cache..."
 			xcrun -k
 		else
-			fail "'xcode-select -p' does not point to $XCODE_DEVELOPER_ROOT, it points to $XCODE_SELECT. Execute ${COLOR_MAGENTA}$SUDO xcode-select -s $XCODE_DEVELOPER_ROOT${COLOR_RESET} or ${COLOR_MAGENTA}./system-dependencies.sh --provision-xcode${COLOR_RESET} to fix."
+			fail "'xcode-select -p' does not point to $XCODE_DEVELOPER_ROOT, it points to $XCODE_SELECT. Execute ${COLOR_MAGENTA}$SUDO xcode-select -s $XCODE_DEVELOPER_ROOT${COLOR_RESET} or ${COLOR_MAGENTA}$0 --provision-xcode${COLOR_RESET} to fix."
 		fi
 	fi
 
@@ -541,7 +541,7 @@ function check_versioned_product () {
 			ACTUAL_PRODUCT_VERSION=$(cat "$VERSION_FILE")
 		else
 			fail "Your $PRODUCT_NAME version is too new, max version is $MAX_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION."
-			warn "You can execute ${COLOR_MAGENTA}./system-dependencies.sh --provision-$(echo "${INFIX}" | tr '[:upper:]' '[:lower:]')${COLOR_RESET} to automatically install ${PRODUCT_NAME}."
+			warn "You can execute ${COLOR_MAGENTA}$0 --provision-$(echo "${INFIX}" | tr '[:upper:]' '[:lower:]')${COLOR_RESET} to automatically install ${PRODUCT_NAME}."
 			warn "You may also edit Make.config and change MAX_${INFIX}_VERSION to your actual version to continue the"
 			warn "build (unless you're on a release branch). Once the build completes successfully, please"
 			warn "commit the new MAX_${INFIX}_VERSION value."
