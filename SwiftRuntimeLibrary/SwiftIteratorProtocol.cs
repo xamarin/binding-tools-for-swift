@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
+#if !TOM_SWIFTY
+using Foundation;
+using ObjCRuntime;
+#endif
 
 namespace SwiftRuntimeLibrary {
 	// this code is preliminary and is likely to change
@@ -15,6 +19,9 @@ namespace SwiftRuntimeLibrary {
 		SwiftOptional<T> Next ();
 	}
 
+#if __IOS__
+	[MonoNativeFunctionWrapper]
+#endif
 	delegate void NextFunc (IntPtr returnVal, IntPtr self);
 
 	struct SwiftIteratorProtocolVtable {
@@ -24,9 +31,6 @@ namespace SwiftRuntimeLibrary {
 
 
 	public class SwiftIteratorProtocolProxy<T> : ISwiftObject, ISwiftIterator<T> {
-#if __IOS__
-		[MonoNativeFunctionWrapper]
-#endif
 		static SwiftIteratorProtocolProxy ()
 		{
 			SetVTable ();
