@@ -287,6 +287,30 @@ namespace SwiftReflector {
 			WrapGenNonVirtClassReturnFunc ("Struct", "BarWGNVCRFStruct", "new BarWGNVCRFStruct(12)", "GenericFunctionTests.BarWGNVCRFStruct\n");
 		}
 
+		void WrapGenReallyVirtClassReturnFunc (string appendage, string cstype, string val1, string expected)
+		{
+			string swiftCode =
+		$"public struct BarRYWGVCR{appendage} {{\npublic var X:Int32 = 0;\npublic init(x:Int32) {{\n X = x;\n}}\n}}\n" +
+		$"open class FooRYWGVCR{appendage}<T> {{\npublic init() {{ }}\nopen func Func(a:T)-> T {{\nreturn a;\n}}\n}}\n";
+
+			CSLine fooDecl = CSVariableDeclaration.VarLine (new CSSimpleType ($"FooRYWGVCR{appendage}", false,
+										    new CSSimpleType (cstype)),
+								   "foo", new CSFunctionCall ($"FooRYWGVCR{appendage}<{cstype}>", true));
+			CSLine printer = CSFunctionCall.ConsoleWriteLine (CSFunctionCall.Function ("foo.Func", (CSIdentifier)val1));
+
+			CSCodeBlock callingCode = CSCodeBlock.Create (fooDecl, printer);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapGenReallyVirtClassReturnFunc{appendage}");
+		}
+
+		[Test]
+		[Ignore ("Error in swift code generation")]
+		public void TestGenReallyVirtClassReturnBool ()
+		{
+			WrapGenReallyVirtClassReturnFunc ("BoolT", "bool", "true", "True\n");
+			WrapGenReallyVirtClassReturnFunc ("BoolF", "bool", "false", "False\n");
+		}
+
 		void WrapGenVirtClassReturnFunc (string appendage, string cstype, string val1, string expected)
 		{
 			string swiftCode =

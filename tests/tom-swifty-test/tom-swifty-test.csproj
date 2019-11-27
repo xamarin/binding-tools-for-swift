@@ -110,6 +110,7 @@
     <Compile Include="SwiftReflector\ProtocolListTests.cs" />
     <Compile Include="SwiftReflector\SwiftTypeAttributeNameTests.cs" />
     <Compile Include="SwiftReflector\SwiftTypeRegistryTests.cs" />
+    <Compile Include="SwiftReflector\ProtocolConformanceTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

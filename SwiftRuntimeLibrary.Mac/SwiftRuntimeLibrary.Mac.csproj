@@ -262,6 +262,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftTypeRegistry.cs">
       <Link>SwiftTypeRegistry.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftIteratorProtocol.cs">
+      <Link>SwiftIteratorProtocol.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />
