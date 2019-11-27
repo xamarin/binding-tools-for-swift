@@ -39,7 +39,7 @@ namespace SwiftRuntimeLibrary {
 			IteratorProtocolPinvokes.SetVtable (ref vt, StructMarshal.Marshaler.Metatypeof (typeof (T)));
 		}
 
-		static void NextFuncReceiver(IntPtr returnVal, IntPtr self)
+		static void NextFuncReceiver (IntPtr returnVal, IntPtr self)
 		{
 			var instance = SwiftObjectRegistry.Registry.CSObjectForSwiftObject<SwiftIteratorProtocolProxy<T>> (self);
 			var result = instance.Next ();
