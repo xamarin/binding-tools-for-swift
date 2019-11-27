@@ -351,6 +351,15 @@ namespace SwiftRuntimeLibrary {
 			}
 		}
 
+		[DllImport (SwiftCoreConstants.LibSwiftCore)]
+		static extern IntPtr swift_conformsToProtocol (SwiftMetatype metadata, SwiftNominalTypeDescriptor protocolDescriptor);
+
+		public static IntPtr ConformsToSwiftProtocol (SwiftMetatype metadata, SwiftNominalTypeDescriptor protocolDescriptor)
+		{
+			return swift_conformsToProtocol (metadata, protocolDescriptor);
+		}
+
+
 
 		#region ClosureAdapters
 

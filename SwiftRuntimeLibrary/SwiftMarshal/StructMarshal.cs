@@ -260,6 +260,19 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return (IntPtr)pi.GetValue (null);
 		}
 
+		public IntPtr ProtocolConformanceof (Type interfaceType, Type withRespectTo)
+		{
+			return ProtocolConformanceof (interfaceType, Metatypeof (withRespectTo));
+		}
+
+		public IntPtr ProtocolConformanceof (Type interfaceType, SwiftMetatype withRespectTo)
+		{
+			if (!interfaceType.IsInterface)
+				throw new NotSupportedException ($"Type {interfaceType.Name} must be an interface.");
+			var nominalDescriptor = SwiftProtocolTypeAttribute.DescriptorForType (interfaceType);
+			return SwiftCore.ConformsToSwiftProtocol (withRespectTo, nominalDescriptor);
+		}
+
 		bool IsAction (Type t)
 		{
 			return t.FullName.StartsWith ("System.Action`", StringComparison.Ordinal) || t.FullName == "System.Action";

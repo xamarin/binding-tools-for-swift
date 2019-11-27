@@ -73,5 +73,43 @@ namespace Dynamo.CSLang
 		}
 
 	}
+
+	public class CSListInitialized : CSBaseExpression {
+		public CSListInitialized (CSType type, CommaListElementCollection<CSBaseExpression> initializers)
+		{
+			Type = Exceptions.ThrowOnNull (type, "type");
+			Parameters = Exceptions.ThrowOnNull (initializers, "initializers");
+		}
+
+		public CSListInitialized (CSType type, params CSBaseExpression [] parameters)
+			: this (type, new CommaListElementCollection<CSBaseExpression> (parameters))
+		{
+		}
+
+		public CSListInitialized (string typeName, params CSBaseExpression [] parameters)
+			: this (new CSSimpleType (typeName), new CommaListElementCollection<CSBaseExpression> (parameters))
+		{
+		}
+
+		public CSListInitialized (string typeName, IEnumerable<CSBaseExpression> parameters)
+			: this (new CSSimpleType (typeName), new CommaListElementCollection<CSBaseExpression> (parameters))
+		{
+		}
+
+		public CSType Type { get; private set; }
+		public CommaListElementCollection<CSBaseExpression> Parameters { get; private set; }
+		protected override void LLWrite (ICodeWriter writer, object o)
+		{
+			writer.Write ("new List<", true);
+			Type.WriteAll (writer);
+			writer.Write (">", true);
+			writer.Write ("(", false);
+			writer.Write (") ", true);
+			writer.Write ("{ ", true);
+			Parameters.WriteAll (writer);
+			writer.Write ("}", false);
+		}
+
+	}
 }
 

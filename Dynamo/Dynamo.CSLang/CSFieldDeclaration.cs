@@ -40,6 +40,16 @@ namespace Dynamo.CSLang {
 		{
 			return new CSLine (new CSVariableDeclaration (type, name, value));
 		}
+
+		public static CSLine VarLine (string name, ICSExpression value)
+		{
+			return new CSLine (new CSVariableDeclaration (CSSimpleType.Var, name, value));
+		}
+
+		public static CSLine VarLine (CSIdentifier name, ICSExpression value)
+		{
+			return new CSLine (new CSVariableDeclaration (CSSimpleType.Var, name, value));
+		}
 	}
 
 	public class CSFieldDeclaration : CSVariableDeclaration {
