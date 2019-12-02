@@ -270,6 +270,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftIteratorProtocol.cs">
       <Link>SwiftIteratorProtocol.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftProtocolConformanceDescriptor.cs">
+      <Link>SwiftMarshal\SwiftProtocolConformanceDescriptor.cs</Link>
+    </Compile>
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.iOS.cs">
     <Exec Command="mkdir -p GeneratedCode" />
