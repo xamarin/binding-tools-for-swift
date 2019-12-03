@@ -109,5 +109,10 @@ namespace SwiftRuntimeLibrary {
 		None = 0,
 		Error = 1,
 	}
+
+	public enum ProtocolDispatchStrategy {
+		ObjC = 0,
+		Swift = 1,
+	}
 }
 

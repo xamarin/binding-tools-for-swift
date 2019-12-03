@@ -265,6 +265,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftIteratorProtocol.cs">
       <Link>SwiftIteratorProtocol.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftProtocolConformanceDescriptor.cs">
+      <Link>SwiftMarshal\SwiftProtocolConformanceDescriptor.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />

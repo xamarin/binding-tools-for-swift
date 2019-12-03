@@ -55,7 +55,7 @@ public func canGetProtocolConfDescMarshal () {
 			var ifaceType = new CSSimpleType ("ISwiftIterator<>").Typeof ();
 			var confDescDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, confDescID,
 				new CSFunctionCall ("StructMarshal.Marshaler.ProtocolConformanceof", false, ifaceType, concreteType));
-			var printer = CSFunctionCall.ConsoleWriteLine (confDescID != new CSIdentifier ("IntPtr.Zero"));
+			var printer = CSFunctionCall.ConsoleWriteLine (confDescID.Dot (new CSIdentifier ("Handle")) != new CSIdentifier ("IntPtr.Zero"));
 
 			var callingCode = CSCodeBlock.Create (confDescDecl, printer);
 
@@ -63,9 +63,12 @@ public func canGetProtocolConfDescMarshal () {
 		}
 
 		[Test]
+		[Ignore ("Needs a type database entry, probably")]
 		public void CanIterateAdapting ()
 		{
 			var swiftCode = @"
+import XamGlue
+
 public func iterateThings (this: iteratorprotocol_xam_helper<Int>) -> String
 {
 	var s = """";
@@ -97,6 +100,8 @@ public func iterateThings (this: iteratorprotocol_xam_helper<Int>) -> String
 			var printer = CSFunctionCall.ConsoleWriteLine (sID);
 
 			var callingCode = CSCodeBlock.Create (listDecl, iterDecl, sDecl, printer);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "13 -4 2\n");
 		}
 	}
 }
