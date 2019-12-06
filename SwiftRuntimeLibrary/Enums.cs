@@ -114,5 +114,12 @@ namespace SwiftRuntimeLibrary {
 		ObjC = 0,
 		Swift = 1,
 	}
+
+	public enum SwiftProtocolConformanceTypeDescriptorKind {
+		DirectTypeDescriptor,
+		IndirectTypeDescriptor,
+		DirectObjCClassName,
+		IndirectObjCClass,
+	}
 }
 

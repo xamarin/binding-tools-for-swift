@@ -73,6 +73,9 @@ namespace SwiftRuntimeLibrary {
 			return p;
 		}
 
+		[DllImport ("libobjc.A.dylib")]
+		internal static extern IntPtr objc_lookUpClass (IntPtr utf8Name);
+
 		[DllImport (SwiftCoreConstants.LibSwiftCore)]
 		static extern void swift_unownedRetain (IntPtr p);
 
