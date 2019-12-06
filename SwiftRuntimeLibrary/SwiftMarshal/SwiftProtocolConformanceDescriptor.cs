@@ -31,7 +31,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				var len = 0;
 				var bp = (byte *)ptr.ToPointer ();
 				while (bp [len] != 0) len++;
-				return Encoding.UTF8.GetString (bp, len);
+				var buffer = new byte [len];
+				Marshal.Copy (ptr, buffer, 0, len);
+				return Encoding.UTF8.GetString (buffer);
 			}
 		}
 	}
