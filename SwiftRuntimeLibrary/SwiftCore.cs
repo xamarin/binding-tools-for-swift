@@ -357,12 +357,33 @@ namespace SwiftRuntimeLibrary {
 		[DllImport (SwiftCoreConstants.LibSwiftCore)]
 		static extern IntPtr swift_conformsToProtocol (SwiftMetatype metadata, SwiftNominalTypeDescriptor protocolDescriptor);
 
-		public static IntPtr ConformsToSwiftProtocol (SwiftMetatype metadata, SwiftNominalTypeDescriptor protocolDescriptor)
+		public static SwiftProtocolWitnessTable ConformsToSwiftProtocol (SwiftMetatype metadata, SwiftNominalTypeDescriptor protocolDescriptor)
 		{
-			return swift_conformsToProtocol (metadata, protocolDescriptor);
+			return new SwiftProtocolWitnessTable (swift_conformsToProtocol (metadata, protocolDescriptor));
 		}
 
+		struct MetadataResponse {
+			public SwiftMetatype Metadata;
+			public nint ResponseState;
+		}
 
+		[DllImport (SwiftCoreConstants.LibSwiftCore)]
+		static extern MetadataResponse swift_getAssociatedTypeWitness (SwiftMetadataRequest request, SwiftProtocolWitnessTable witness,
+			SwiftMetatype conformingType, IntPtr conformanceStart, IntPtr conformanceRequest);
+
+		internal static SwiftMetatype AssociatedTypeMetadataRequest (SwiftMetatype conformingType, SwiftProtocolWitnessTable witness,
+			SwiftProtocolConformanceDescriptor conformance, int index)
+		{
+			if (conformance.ResilientWitnessCount <= 0 || index >= conformance.ResilientWitnessCount)
+				throw new ArgumentOutOfRangeException (nameof (index));
+			var conformanceStart = conformance.ResilientWitnessPointer (0);
+			var conformanceRequest = conformance.ResilientWitnessPointer (index);
+			var response = swift_getAssociatedTypeWitness (SwiftMetadataRequest.Complete, witness, conformingType,
+				conformanceStart, conformanceRequest);
+			if (response.ResponseState > 1) // 0 and 1 are ok for us
+				throw new SwiftRuntimeException ($"Error retrieving associated type {index} from protocol - returned {response.ResponseState}");
+			return response.Metadata;
+		}
 
 		#region ClosureAdapters
 

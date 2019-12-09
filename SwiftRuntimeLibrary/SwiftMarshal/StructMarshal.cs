@@ -270,7 +270,8 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			if (!interfaceType.IsInterface)
 				throw new NotSupportedException ($"Type {interfaceType.Name} must be an interface.");
 			var nominalDescriptor = SwiftProtocolTypeAttribute.DescriptorForType (interfaceType);
-			return new SwiftProtocolConformanceDescriptor (SwiftCore.ConformsToSwiftProtocol (withRespectTo, nominalDescriptor));
+			var witnessTable = SwiftCore.ConformsToSwiftProtocol (withRespectTo, nominalDescriptor);
+			return witnessTable.Conformance;
 		}
 
 		bool IsAction (Type t)
@@ -1953,6 +1954,26 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 #endif
 
+		public Type[] GetAssociatedTypes (SwiftMetatype implementingType, Type interfaceType, int expectedAssociatedTypeCount)
+		{
+			if (expectedAssociatedTypeCount <= 0)
+				throw new ArgumentOutOfRangeException (nameof (expectedAssociatedTypeCount));
+			Exceptions.ThrowOnNull (interfaceType, nameof (interfaceType));
+			var protoDescriptor = SwiftProtocolTypeAttribute.DescriptorForType (interfaceType);
+			var witness = SwiftCore.ConformsToSwiftProtocol (implementingType, protoDescriptor);
+			var protoConformance = witness.Conformance;
+
+			var finalTypes = new Type [expectedAssociatedTypeCount];
+			for (int i = 0; i < expectedAssociatedTypeCount; i++) {
+				var metadata = SwiftCore.AssociatedTypeMetadataRequest (implementingType, witness, protoConformance, i);
+				Type csType = null;
+				if (!SwiftTypeRegistry.Registry.TryGetValue (metadata, out csType))
+					throw new SwiftRuntimeException ("Unable to get C# type for swift type");
+				finalTypes [i] = csType;
+			}
+			return finalTypes;
+		}
+
 		public static bool ImplementsAll (object o, params Type [] types)
 		{
 			if (o == null)
@@ -2001,4 +2022,3 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 	}
 }
-

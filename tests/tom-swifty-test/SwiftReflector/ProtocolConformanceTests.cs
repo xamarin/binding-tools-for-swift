@@ -13,7 +13,7 @@ namespace SwiftReflector {
 		public void CanGetProtocolConformanceDesc ()
 		{
 			// var nomDesc = SwiftProtocolTypeAttribute.DescriptorForType (typeof (ISwiftIterator<>));
-			// var confDesc = SwiftCore.ConformsToSwiftProtocol (StructMarshal.Marshaler.Metatypeof (typeof (SwiftIteratorProtocolProxy<nint>)),
+			// var witTable = SwiftCore.ConformsToSwiftProtocol (StructMarshal.Marshaler.Metatypeof (typeof (SwiftIteratorProtocolProxy<nint>)),
 			//                                          nomDesc);
 			// Console.WriteLine (confDesc != IntPtr.Zero);
 
@@ -22,15 +22,15 @@ public func canGetProtocolConfDesc () {
 }
 ";
 			var nomDescID = new CSIdentifier ("nomDesc");
-			var confDescID = new CSIdentifier ("confDesc");
+			var witTableID = new CSIdentifier ("witTable");
 
 			var nomDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, nomDescID,
 				new CSFunctionCall ("SwiftProtocolTypeAttribute.DescriptorForType", false, new CSSimpleType ("ISwiftIterator<>").Typeof ()));
 
 			var metaTypeCall = new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false, new CSSimpleType ("SwiftIteratorProtocolProxy<nint>").Typeof ());
-			var confDescDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, confDescID,
+			var confDescDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, witTableID,
 				new CSFunctionCall ("SwiftCore.ConformsToSwiftProtocol", false, metaTypeCall, nomDescID));
-			var printer = CSFunctionCall.ConsoleWriteLine (confDescID != new CSIdentifier ("IntPtr.Zero"));
+			var printer = CSFunctionCall.ConsoleWriteLine (witTableID.Dot (new CSIdentifier ("Handle")) != new CSIdentifier ("IntPtr.Zero"));
 
 			var callingCode = CSCodeBlock.Create (nomDecl, confDescDecl, printer);
 
