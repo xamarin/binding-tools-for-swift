@@ -1964,7 +1964,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			var protoConformance = witness.Conformance;
 
 			var finalTypes = new Type [expectedAssociatedTypeCount];
-			for (int i=0; i < expectedAssociatedTypeCount; i++) {
+			for (int i = 0; i < expectedAssociatedTypeCount; i++) {
 				var metadata = SwiftCore.AssociatedTypeMetadataRequest (implementingType, witness, protoConformance, i);
 				Type csType = null;
 				if (!SwiftTypeRegistry.Registry.TryGetValue (metadata, out csType))
@@ -2022,4 +2022,3 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 	}
 }
-
