@@ -242,6 +242,11 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return ResilientWitnessHeaderOffset + (HasResilientWitnesses ? 1 : 0);
 			}
 		}
+
+		internal IntPtr ResilientWitnessPointer (int index)
+		{
+			return HandleOffsetBy (ResilientWitnessEntryOffset + (index * kResilientWitnessSize));
+		}
 		// note for future coders - a resilient witness table entry is:
 		// int32 indirectable relative pointer to descriptor, low bit is indirectability
 		//      descriptor may be an associated type descriptor or a method descriptor or ... ?
