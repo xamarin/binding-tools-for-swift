@@ -728,7 +728,7 @@ namespace SwiftReflector.Demangling {
 				new MatchRule () {
 					Name = "ExistentialMetatype",
 		    			NodeKind = NodeKind.ExistentialMetatype,
-					Reducer = ConvertFirstChildToSwiftType,
+					Reducer = ConvertToExistentialMetatype,
 		    			MatchChildCount = false
 				},
 				// Probably should be last
@@ -1651,6 +1651,18 @@ namespace SwiftReflector.Demangling {
 				}
 			}
 			return result;
+		}
+
+		SwiftType ConvertToExistentialMetatype (Node node, bool isReference, SwiftName name)
+		{
+			var child = ConvertFirstChildToSwiftType (node, false, name);
+			var childType = child as SwiftProtocolListType;
+			if (child is SwiftClassType classType) {
+				childType = new SwiftProtocolListType (classType, classType.IsReference, classType.Name);
+			}
+			if (childType == null)
+				return null;
+			return new SwiftExistentialMetaType (childType, isReference, null);
 		}
 
 		SwiftType ConvertToGenericFunction (Node node, bool isReference, SwiftName name)

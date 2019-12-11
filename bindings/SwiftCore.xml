@@ -148,5 +148,8 @@
         <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="SwiftDate" entityType="Struct" blitable="NonBlitable" size="0" stride="0">
         	<typedeclaration kind="struct" name="Foundation.Date" module="Foundation" accessibility="Public" isObjC="false" isFinal="true" />
         </entity>
+        <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="SwiftMetatype" entityType="Scalar" blitable="Blitable" size="8" stride="8">
+            <typedeclaration kind="struct" name="Any.Type" module="Any" accessibility="Public" isObjC="false" isFinal="true" />
+        </entity>
     </entities>
 </xamtypedatabase>

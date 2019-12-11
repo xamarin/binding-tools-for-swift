@@ -271,6 +271,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftProtocolWitnessTable.cs">
       <Link>SwiftMarshal\SwiftProtocolWitnessTable.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftAssociatedTypeDescriptor.cs">
+      <Link>SwiftMarshal\SwiftAssociatedTypeDescriptor.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />

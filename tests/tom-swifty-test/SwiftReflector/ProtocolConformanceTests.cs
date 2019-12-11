@@ -103,5 +103,44 @@ public func iterateThings (this: iteratorprotocol_xam_helper<Int>) -> String
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "13 -4 2\n");
 		}
+
+		[Test]
+		public void CanGetAssocTypes ()
+		{
+			var swiftCode = @"
+private class Foo : IteratorProtocol {
+	public init () {
+	}
+	private var x = -1
+	public func next () -> Int? {
+		if x < 5 {
+			x = x + 1
+			return x
+		}
+		else {
+			return nil
+		}
+	}
+}
+public func blindAssocFunc () -> Any.Type {
+	return Foo.self
+}
+";
+			// var any = TopLevelEntities.BlindAssocFunc ();
+			// var types = StructMarshal.Marshaler.GetAssociatedTypes (any, typeof (ISwiftIterator<>), 1);
+			// Console.WriteLine (types[0].Name);
+
+			var anyID = new CSIdentifier ("any");
+			var anyDecl = CSVariableDeclaration.VarLine (anyID, new CSFunctionCall ("TopLevelEntities.BlindAssocFunc", false));
+			var assocTypesID = new CSIdentifier ("assoc");
+			var typesID = new CSIdentifier ("types");
+			var typesDecl = CSVariableDeclaration.VarLine (typesID, new CSFunctionCall ("StructMarshal.Marshaler.GetAssociatedTypes", false,
+				anyID, new CSSimpleType ("ISwiftIterator<>").Typeof (), CSConstant.Val (1)));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSIndexExpression (typesID, false, CSConstant.Val (0)).Dot (new CSIdentifier ("Name")));
+
+			var callingCode = CSCodeBlock.Create (anyDecl, typesDecl, printer);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "nint\n");
+		}
 	}
 }

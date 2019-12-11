@@ -46,6 +46,21 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		// Note: total arguments = num key arguments + num extra arguments
 
 
+		// Protocol Descriptor
+		// 3	32 bits NumRequirementsInSignature (number of generic requirements in signature)
+		// -- start of base descriptor
+		// 4	32 bits NumRequirements
+		// 5	relative pointer to associated type names
+		// -- n generic requirements (NumRequirementsInSignature)
+		// first one is offset 6
+		//	0	32 bits flags
+		//	1	32 bits relative pointer to mangled name of constraint
+		//	2	32 bits union
+		// -- n associated type descriptors
+		//	0	32 bits flags
+		//	1	32 bits relative pointer
+
+
 		[Flags]
 		enum TypeContextFlags {
 			// There are flags/bit field positions that are in the upper 16 bits of the
@@ -84,6 +99,14 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		const int kValueFieldOffsetVectorOffset = 6 * sizeof (int);
 
 		const int kValueTypeSize = 7 * sizeof (int);
+
+		// protocol elements
+		const int kNumRequirementsInSignatureOffset = 3 * sizeof (int);
+		const int kRequirementsBaseDescriptorOffset = 4 * sizeof (int);
+		const int kGenericRequirementsSize = 3 * sizeof (int);
+		const int kAssociatedTypeDescriptorSize = 2 * sizeof (int);
+		const int kGenericRequirementsOffset = 6 * sizeof (int);
+
 
 		[StructLayout(LayoutKind.Sequential)]
 		struct GenericHeader {
@@ -404,6 +427,33 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			var buffer = new byte [len];
 			Marshal.Copy (targetPosition, buffer, 0, buffer.Length);
 			return Encoding.UTF8.GetString (buffer);
+		}
+
+		internal IntPtr GetProtocolRequirementsBaseDescriptor ()
+		{
+			if (GetKind () != NominalTypeDescriptorKind.Protocol)
+				throw new InvalidOperationException ();
+			return handle + kRequirementsBaseDescriptorOffset;
+		}
+
+		internal SwiftAssociatedTypeDescriptor GetAssociatedTypeDescriptor (int index)
+		{
+			if (GetKind () != NominalTypeDescriptorKind.Protocol)
+				throw new InvalidOperationException ();
+			if (index < 0 || index >= GetAssociatedTypesCount ()) {
+				throw new ArgumentOutOfRangeException (nameof (index));
+			}
+			var numGenericsPtr = handle + kNumRequirementsInSignatureOffset;
+			var numGenerics = Marshal.ReadInt32 (numGenericsPtr);
+			return new SwiftAssociatedTypeDescriptor (handle + kGenericRequirementsOffset + (numGenerics * kGenericRequirementsSize));
+		}
+
+		internal int GetAssociatedTypesCount ()
+		{
+			if (GetKind () != NominalTypeDescriptorKind.Protocol)
+				throw new InvalidOperationException ();
+			var baseDesciptor = handle + kRequirementsBaseDescriptorOffset;
+			return Marshal.ReadInt32 (baseDesciptor);
 		}
 
 		internal int GetFieldCount ()

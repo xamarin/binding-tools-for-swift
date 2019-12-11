@@ -47,6 +47,14 @@ namespace SwiftRuntimeLibrary {
 			}
 		}
 
+		public bool HasNominalDescriptor
+		{
+			get {
+				return Kind == MetatypeKind.Class || Kind == MetatypeKind.Enum ||
+					Kind == MetatypeKind.Struct;
+			}
+		}
+
 		public SwiftNominalTypeDescriptor GetNominalTypeDescriptor ()
 		{
 			ThrowOnInvalid ();

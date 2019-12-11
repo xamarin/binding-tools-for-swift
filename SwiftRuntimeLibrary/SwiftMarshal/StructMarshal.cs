@@ -1959,19 +1959,45 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			if (expectedAssociatedTypeCount <= 0)
 				throw new ArgumentOutOfRangeException (nameof (expectedAssociatedTypeCount));
 			Exceptions.ThrowOnNull (interfaceType, nameof (interfaceType));
+
 			var protoDescriptor = SwiftProtocolTypeAttribute.DescriptorForType (interfaceType);
 			var witness = SwiftCore.ConformsToSwiftProtocol (implementingType, protoDescriptor);
-			var protoConformance = witness.Conformance;
+			var requirementsBase = protoDescriptor.GetProtocolRequirementsBaseDescriptor ();
 
 			var finalTypes = new Type [expectedAssociatedTypeCount];
 			for (int i = 0; i < expectedAssociatedTypeCount; i++) {
-				var metadata = SwiftCore.AssociatedTypeMetadataRequest (implementingType, witness, protoConformance, i);
+				var assocDesc = GetNthAssociatedTypeDesc (protoDescriptor, i);
+				if (!assocDesc.IsValid)
+					throw new SwiftRuntimeException ($"In looking for the associated type at index {i}, the associated type descriptor for protocol {protoDescriptor.GetFullName ()} was invalid.");
+				var metadata = SwiftCore.AssociatedTypeMetadataRequest (implementingType, witness, requirementsBase, assocDesc);
 				Type csType = null;
-				if (!SwiftTypeRegistry.Registry.TryGetValue (metadata, out csType))
-					throw new SwiftRuntimeException ("Unable to get C# type for swift type");
+				if (!SwiftTypeRegistry.Registry.TryGetValue (metadata, out csType)) {
+					var typeName = "";
+					if (metadata.HasNominalDescriptor) {
+						var nomDesc = metadata.GetNominalTypeDescriptor ();
+						typeName = nomDesc.GetFullName ();
+					} else {
+						typeName = "with kind " + ((int)metadata.Kind).ToString ("X4");
+					}
+					throw new SwiftRuntimeException ($"Unable to get C# type for swift type {typeName}");
+				}
 				finalTypes [i] = csType;
 			}
 			return finalTypes;
+		}
+
+		SwiftAssociatedTypeDescriptor GetNthAssociatedTypeDesc (SwiftNominalTypeDescriptor desc, int index)
+		{
+			int currIndex = 0;
+			for (int i = 0; i < desc.GetAssociatedTypesCount (); i++) {
+				var assocDesc = desc.GetAssociatedTypeDescriptor (i);
+				if (assocDesc.Kind == ProtocolRequirementsKind.AssociatedTypeAccessFunction) {
+					if (currIndex == index)
+						return assocDesc;
+					currIndex++;
+				}
+			}
+			return new SwiftAssociatedTypeDescriptor (IntPtr.Zero);
 		}
 
 		public static bool ImplementsAll (object o, params Type [] types)
