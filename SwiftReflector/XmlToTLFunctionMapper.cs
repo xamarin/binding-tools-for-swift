@@ -338,7 +338,7 @@ namespace SwiftReflector {
 				return TypeMatches (decl, ts, st as SwiftClassType);
 			case CoreCompoundType.MetaClass:
 				if (st is SwiftExistentialMetaType exist)
-					return TypeMatches (decl, ts, st as SwiftExistentialMetaType);
+					return TypeMatches (decl, ts, exist);
 				else
 					return TypeMatches (decl, ts, st as SwiftMetaClassType);
 			case CoreCompoundType.BoundGeneric:
