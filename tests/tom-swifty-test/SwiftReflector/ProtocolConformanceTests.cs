@@ -12,7 +12,7 @@ namespace SwiftReflector {
 		[Test]
 		public void CanGetProtocolConformanceDesc ()
 		{
-			// var nomDesc = SwiftProtocolTypeAttribute.DescriptorForType (typeof (ISwiftIterator<>));
+			// var nomDesc = SwiftProtocolTypeAttribute.DescriptorForType (typeof (IIteratorProtocol<>));
 			// var witTable = SwiftCore.ConformsToSwiftProtocol (StructMarshal.Marshaler.Metatypeof (typeof (SwiftIteratorProtocolProxy<nint>)),
 			//                                          nomDesc);
 			// Console.WriteLine (confDesc != IntPtr.Zero);
@@ -25,7 +25,7 @@ public func canGetProtocolConfDesc () {
 			var witTableID = new CSIdentifier ("witTable");
 
 			var nomDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, nomDescID,
-				new CSFunctionCall ("SwiftProtocolTypeAttribute.DescriptorForType", false, new CSSimpleType ("ISwiftIterator<>").Typeof ()));
+				new CSFunctionCall ("SwiftProtocolTypeAttribute.DescriptorForType", false, new CSSimpleType ("IIteratorProtocol<>").Typeof ()));
 
 			var metaTypeCall = new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false, new CSSimpleType ("SwiftIteratorProtocolProxy<nint>").Typeof ());
 			var confDescDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, witTableID,
@@ -41,7 +41,7 @@ public func canGetProtocolConfDesc () {
 		[Test]
 		public void CanGetProtocolConformanceDescMarshal ()
 		{
-			// var confDesc = StructMarshal.Marshaler.ProtocolConformanceof (typeof (ISwiftIterator<>),
+			// var confDesc = StructMarshal.Marshaler.ProtocolConformanceof (typeof (IIteratorProtocol<>),
 			//		typeof (SwiftIteratorProtocolProxy<nint>);
 			// Console.WriteLine (confDesc != IntPtr.Zero);
 
@@ -52,7 +52,7 @@ public func canGetProtocolConfDescMarshal () {
 			var confDescID = new CSIdentifier ("confDesc");
 
 			var concreteType = new CSSimpleType ("SwiftIteratorProtocolProxy<nint>").Typeof ();
-			var ifaceType = new CSSimpleType ("ISwiftIterator<>").Typeof ();
+			var ifaceType = new CSSimpleType ("IIteratorProtocol<>").Typeof ();
 			var confDescDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, confDescID,
 				new CSFunctionCall ("StructMarshal.Marshaler.ProtocolConformanceof", false, ifaceType, concreteType));
 			var printer = CSFunctionCall.ConsoleWriteLine (confDescID.Dot (new CSIdentifier ("Handle")) != new CSIdentifier ("IntPtr.Zero"));
@@ -83,7 +83,7 @@ public func iterateThings (this: iteratorprotocol_xam_helper<Int>) -> String
 }
 ";
 			//var list = new List<nint> () { 13, -4, 2 };
-			//var iter = new SwiftListIterator<nint> (list);
+			//var iter = new EnumerableIterator<nint> (list);
 			//var adapt = new SwiftIteratorProtocolProxy<nint> (iter);
 			//var s = TopLevelEntities.IterateThings (adapt);
 			//Console.WriteLine (s.ToString)
@@ -94,7 +94,7 @@ public func iterateThings (this: iteratorprotocol_xam_helper<Int>) -> String
 			var sID = new CSIdentifier ("s");
 			var listDecl = CSVariableDeclaration.VarLine (listID, new CSListInitialized (new CSSimpleType ("nint"),
 				CSConstant.Val (13), CSConstant.Val (-4), CSConstant.Val (2)));
-			var iterDecl = CSVariableDeclaration.VarLine (iterID, new CSFunctionCall ("SwiftListIterator<nint>", true, listID));
+			var iterDecl = CSVariableDeclaration.VarLine (iterID, new CSFunctionCall ("EnumerableIterator<nint>", true, listID));
 			var adaptDecl = CSVariableDeclaration.VarLine (adaptID, new CSFunctionCall ("SwiftIteratorProtocolProxy<nint>", true, iterID));
 			var sDecl = CSVariableDeclaration.VarLine (sID, new CSFunctionCall ("TopLevelEntities.IterateThings", false, adaptID));
 			var printer = CSFunctionCall.ConsoleWriteLine (sID);
@@ -127,7 +127,7 @@ public func blindAssocFunc () -> Any.Type {
 }
 ";
 			// var any = TopLevelEntities.BlindAssocFunc ();
-			// var types = StructMarshal.Marshaler.GetAssociatedTypes (any, typeof (ISwiftIterator<>), 1);
+			// var types = StructMarshal.Marshaler.GetAssociatedTypes (any, typeof (IIteratorProtocol<>), 1);
 			// Console.WriteLine (types[0].Name);
 
 			var anyID = new CSIdentifier ("any");
@@ -135,7 +135,7 @@ public func blindAssocFunc () -> Any.Type {
 			var assocTypesID = new CSIdentifier ("assoc");
 			var typesID = new CSIdentifier ("types");
 			var typesDecl = CSVariableDeclaration.VarLine (typesID, new CSFunctionCall ("StructMarshal.Marshaler.GetAssociatedTypes", false,
-				anyID, new CSSimpleType ("ISwiftIterator<>").Typeof (), CSConstant.Val (1)));
+				anyID, new CSSimpleType ("IIteratorProtocol<>").Typeof (), CSConstant.Val (1)));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSIndexExpression (typesID, false, CSConstant.Val (0)).Dot (new CSIdentifier ("Name")));
 
 			var callingCode = CSCodeBlock.Create (anyDecl, typesDecl, printer);
