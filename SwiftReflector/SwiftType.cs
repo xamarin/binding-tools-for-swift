@@ -642,6 +642,16 @@ namespace SwiftReflector {
 				}
 			}));
 		}
+
+		public SwiftProtocolListType (SwiftClassType protocol, bool isReference, SwiftName name = null)
+		    : base (CoreCompoundType.ProtocolList, isReference, name)
+		{
+			Protocols = new List<SwiftClassType> ();
+			if (!protocol.IsProtocol)
+				throw new ArgumentOutOfRangeException ($"Type {protocol.ClassName.ToFullyQualifiedName ()} is not a protocol");
+			Protocols.Add (protocol);
+		}
+
 		public List<SwiftClassType> Protocols { get; private set; }
 
 		protected override bool LLEquals (SwiftType other)

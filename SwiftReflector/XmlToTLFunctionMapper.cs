@@ -337,7 +337,10 @@ namespace SwiftReflector {
 			case CoreCompoundType.Class:
 				return TypeMatches (decl, ts, st as SwiftClassType);
 			case CoreCompoundType.MetaClass:
-				return TypeMatches (decl, ts, st as SwiftMetaClassType);
+				if (st is SwiftExistentialMetaType exist)
+					return TypeMatches (decl, ts, exist);
+				else
+					return TypeMatches (decl, ts, st as SwiftMetaClassType);
 			case CoreCompoundType.BoundGeneric:
 				return TypeMatches (decl, ts, st as SwiftBoundGenericType);
 			case CoreCompoundType.ProtocolList:
@@ -403,6 +406,25 @@ namespace SwiftReflector {
 			default:
 				throw new ArgumentOutOfRangeException ("st");
 			}
+		}
+
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftExistentialMetaType st)
+		{
+			if (st == null)
+				return false;
+			if (st.Protocol.Protocols.Count != 1)
+				return false;
+			var protoClass = st.Protocol.Protocols [0];
+			if (ts.Name == "Any.Type") {
+				return protoClass.ClassName.ToFullyQualifiedName () == "Swift.Any";
+			}
+			if (ts.Name == protoClass.ClassName.ToFullyQualifiedName ())
+				return true;
+			if (ts.Name.EndsWith (".Type", StringComparison.Ordinal)) {
+				var maybeClassName = ts.Name.Substring (0, ts.Name.Length - ".Type".Length);
+				return maybeClassName == protoClass.ClassName.ToFullyQualifiedName ();
+			}
+			return false;
 		}
 
 		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftMetaClassType st)

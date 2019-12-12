@@ -1050,6 +1050,20 @@ namespace SwiftReflector {
 			Assert.IsNotNull (tlf);
 
 		}
+
+		[Test]
+		public void DecomposeExistentialMetatype ()
+		{
+			var func = "_$s24ProtocolConformanceTests14blindAssocFuncypXpyF";
+			var tlf = Decomposer.Decompose (func, false) as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var returnType = tlf.Signature.ReturnType as SwiftExistentialMetaType;
+			Assert.IsNotNull (returnType, "not an existential metatype");
+			var protoList = returnType.Protocol;
+			Assert.IsNotNull (protoList, "no protocol list");
+			var proto = protoList.Protocols [0];
+			Assert.AreEqual ("Swift.Any", proto.ClassName.ToFullyQualifiedName (), "class name mismatch");
+		}
 	}
 }
 

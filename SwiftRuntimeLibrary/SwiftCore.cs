@@ -369,19 +369,15 @@ namespace SwiftRuntimeLibrary {
 
 		[DllImport (SwiftCoreConstants.LibSwiftCore)]
 		static extern MetadataResponse swift_getAssociatedTypeWitness (SwiftMetadataRequest request, SwiftProtocolWitnessTable witness,
-			SwiftMetatype conformingType, IntPtr conformanceStart, IntPtr conformanceRequest);
+			SwiftMetatype conformingType, IntPtr conformanceBaseDescriptor, IntPtr conformanceRequest);
 
 		internal static SwiftMetatype AssociatedTypeMetadataRequest (SwiftMetatype conformingType, SwiftProtocolWitnessTable witness,
-			SwiftProtocolConformanceDescriptor conformance, int index)
+			IntPtr protocolRequirementsBaseDescriptor, SwiftAssociatedTypeDescriptor assocDesc)
 		{
-			if (conformance.ResilientWitnessCount <= 0 || index >= conformance.ResilientWitnessCount)
-				throw new ArgumentOutOfRangeException (nameof (index));
-			var conformanceStart = conformance.ResilientWitnessPointer (0);
-			var conformanceRequest = conformance.ResilientWitnessPointer (index);
 			var response = swift_getAssociatedTypeWitness (SwiftMetadataRequest.Complete, witness, conformingType,
-				conformanceStart, conformanceRequest);
+				protocolRequirementsBaseDescriptor, assocDesc.Handle);
 			if (response.ResponseState > 1) // 0 and 1 are ok for us
-				throw new SwiftRuntimeException ($"Error retrieving associated type {index} from protocol - returned {response.ResponseState}");
+				throw new SwiftRuntimeException ($"Error retrieving associated type from protocol - returned {response.ResponseState}");
 			return response.Metadata;
 		}
 
