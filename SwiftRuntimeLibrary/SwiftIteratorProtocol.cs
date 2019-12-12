@@ -15,7 +15,7 @@ namespace SwiftRuntimeLibrary {
 	// do not depend on this
 
 	[SwiftProtocolType (typeof (SwiftIteratorProtocolProxy<>), SwiftCoreConstants.LibSwiftCore, "$sStMp", true)]
-	public interface ISwiftIterator<T> {
+	public interface IIteratorProtocol<T> {
 		SwiftOptional<T> Next ();
 	}
 
@@ -30,7 +30,7 @@ namespace SwiftRuntimeLibrary {
 	}
 
 
-	public class SwiftIteratorProtocolProxy<T> : ISwiftObject, ISwiftIterator<T> {
+	public class SwiftIteratorProtocolProxy<T> : ISwiftObject, IIteratorProtocol<T> {
 		static SwiftIteratorProtocolProxy ()
 		{
 			SetVTable ();
@@ -50,9 +50,9 @@ namespace SwiftRuntimeLibrary {
 			StructMarshal.Marshaler.ToSwift (result, returnVal);
 		}
 
-		ISwiftIterator<T> proxiedType;
+		IIteratorProtocol<T> proxiedType;
 
-		public SwiftIteratorProtocolProxy (ISwiftIterator<T> proxiedType)
+		public SwiftIteratorProtocolProxy (IIteratorProtocol<T> proxiedType)
 		{
 			this.proxiedType = proxiedType;
 			SwiftObject = IteratorProtocolPinvokes.NewIteratorProtocol (StructMarshal.Marshaler.Metatypeof (typeof (T)));
@@ -123,7 +123,7 @@ namespace SwiftRuntimeLibrary {
 			return IteratorProtocolPinvokes.IteratorProtocolMetadataAccessor (SwiftMetadataRequest.Complete, StructMarshal.Marshaler.Metatypeof (typeof (T)));
 		}
 
-		#region ISwiftIterator
+		#region IIteratorProtocol
 		public SwiftOptional<T> Next ()
 		{
 			if (proxiedType == null)
@@ -150,9 +150,9 @@ namespace SwiftRuntimeLibrary {
 		public static extern void IterateThings (IntPtr ret, IntPtr self);
 	}
 
-	public class SwiftListIterator<T> : ISwiftIterator<T> {
+	public class EnumerableIterator<T> : IIteratorProtocol<T> {
 		IEnumerator<T> enumerator;
-		public SwiftListIterator (IEnumerable<T> enumerable)
+		public EnumerableIterator (IEnumerable<T> enumerable)
 		{
 			this.enumerator = enumerable.GetEnumerator ();
 		}
