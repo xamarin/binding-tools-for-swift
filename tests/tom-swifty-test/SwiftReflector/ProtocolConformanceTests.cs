@@ -104,34 +104,44 @@ public func iterateThings (this: iteratorprotocol_xam_helper<Int>) -> String
 			TestRunning.TestAndExecute (swiftCode, callingCode, "13 -4 2\n");
 		}
 
-		[Test]
-		public void CanGetAssocTypes ()
+
+		[TestCase ("Bool", "Boolean", "[true, false, true]")]
+		[TestCase ("Int", "nint", "[0, 1, 2]")]
+		[TestCase ("UInt", "nuint", "[0, 1, 2]")]
+		[TestCase ("Int32", "Int32", "[0, 1, 2]")]
+		[TestCase ("UInt32", "UInt32", "[0, 1, 2]")]
+		[TestCase ("Float", "Single", "[0.1, 1.1, 2.1]")]
+		[TestCase ("Int?", "SwiftOptional`1", "[0, 1,  nil]", "OptInt")]
+		[TestCase ("String", "SwiftString", "[\"a\", \"b\",  \"c\"]")]
+		public void CanGetAssocTypesParameterized (string swiftType, string csType, string initData, string nameSuffix = null)
 		{
-			var swiftCode = @"
-private class Foo : IteratorProtocol {
-	public init () {
-	}
+			nameSuffix = nameSuffix ?? swiftType;
+			var swiftCode = $@"
+private class Foo{nameSuffix} : IteratorProtocol {{
+	public init () {{
+	}}
+	private var data: [{swiftType}] = {initData}
 	private var x = -1
-	public func next () -> Int? {
-		if x < 5 {
+	public func next () -> {swiftType}? {{
+		if x < data.count {{
 			x = x + 1
-			return x
-		}
-		else {
+			return data[x]
+		}}
+		else {{
 			return nil
-		}
-	}
-}
-public func blindAssocFunc () -> Any.Type {
-	return Foo.self
-}
+		}}
+	}}
+}}
+public func blindAssocFunc{nameSuffix} () -> Any.Type {{
+	return Foo{nameSuffix}.self
+}}
 ";
 			// var any = TopLevelEntities.BlindAssocFunc ();
 			// var types = StructMarshal.Marshaler.GetAssociatedTypes (any, typeof (IIteratorProtocol<>), 1);
 			// Console.WriteLine (types[0].Name);
 
 			var anyID = new CSIdentifier ("any");
-			var anyDecl = CSVariableDeclaration.VarLine (anyID, new CSFunctionCall ("TopLevelEntities.BlindAssocFunc", false));
+			var anyDecl = CSVariableDeclaration.VarLine (anyID, new CSFunctionCall ($"TopLevelEntities.BlindAssocFunc{nameSuffix}", false));
 			var assocTypesID = new CSIdentifier ("assoc");
 			var typesID = new CSIdentifier ("types");
 			var typesDecl = CSVariableDeclaration.VarLine (typesID, new CSFunctionCall ("StructMarshal.Marshaler.GetAssociatedTypes", false,
@@ -140,7 +150,8 @@ public func blindAssocFunc () -> Any.Type {
 
 			var callingCode = CSCodeBlock.Create (anyDecl, typesDecl, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "nint\n");
+			TestRunning.TestAndExecute (swiftCode, callingCode, $"{csType}\n", testName: $"CanGetAssocTypesParams{nameSuffix}");
 		}
+
 	}
 }
