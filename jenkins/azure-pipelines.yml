@@ -124,7 +124,7 @@ jobs:
         exit 1
       fi
       FILENAME="$(basename "$FILE")"
-      TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchains/$FILENAME"
+      TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
       ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
 

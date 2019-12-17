@@ -26,7 +26,7 @@ fi
 # (for instance if changes to Pack-Man were required to adjust which files are packaged)
 SWIFT_TOOLCHAIN_NAME="SwiftToolchain-v1-$SWIFT_HASH"
 if test -z "$FORCE_SWIFT_BUILD"; then
-	toolchain_url="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchains/$SWIFT_TOOLCHAIN_NAME.zip"
+	toolchain_url="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$SWIFT_TOOLCHAIN_NAME.zip"
 	echo "Checking if we already have a toolchain built for $SWIFT_HASH ($toolchain_url)"
 
 	# Extract only if not already extracted
