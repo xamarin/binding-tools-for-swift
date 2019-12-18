@@ -21,6 +21,7 @@ TARGET_URL=
 DESCRIPTION=
 CONTEXT=
 VERBOSE=
+AZDO_STATE=
 
 while ! test -z "${1:-}"; do
 	case "$1" in
@@ -46,6 +47,14 @@ while ! test -z "${1:-}"; do
 			;;
 		--state)
 			STATE="$2"
+			shift 2
+			;;
+		--azdo-state=*)
+			AZDO_STATE="${1:13}"
+			shift
+			;;
+		--azdo-state)
+			AZDO_STATE="$2"
 			shift 2
 			;;
 		--target-url=*)
@@ -82,6 +91,21 @@ while ! test -z "${1:-}"; do
 			;;
     esac
 done
+
+if test -n "$AZDO_STATE"; then
+	if test -n "$STATE"; then
+		echo "Can't pass both --state and --azdo-state"
+		exit 1
+	fi
+	AZDO_STATE=$(echo "$AZDO_STATE" | tr '[:upper:]' '[:lower:]')
+	case "$AZDO_STATE" in
+		succeededwithissues) STATE=error;;
+		canceled) STATE=pending;;
+		failed) STATE=failure;;
+		pending) STATE=pending;;
+		*) STATE=success;;
+	esac
+fi
 
 if test -z "$TOKEN"; then
 	echo "The GitHub token is required (--token=<TOKEN>)"
