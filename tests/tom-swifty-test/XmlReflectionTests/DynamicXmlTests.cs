@@ -361,7 +361,7 @@ namespace XmlReflectionTests {
 		}
 
 		[Test]
-		public void TypeAliasTest()
+		public void TypeAliasTest ()
 		{
 			string code = "public typealias Foo = OpaquePointer\n" +
 				"public typealias Bar = Foo\n" +
@@ -382,7 +382,7 @@ namespace XmlReflectionTests {
 		}
 
 		[Test]
-		public void DeprecatedFunction()
+		public void DeprecatedFunction ()
 		{
 			string code =
 				"@available(*, deprecated, message: \"no reason\")" +
@@ -471,7 +471,7 @@ namespace XmlReflectionTests {
 
 
 		[Test]
-		public void MethodInStruct()
+		public void MethodInStruct ()
 		{
 			string code =
 
@@ -493,7 +493,7 @@ namespace XmlReflectionTests {
 		}
 
 		[Test]
-		public void UnavailableProperty()
+		public void UnavailableProperty ()
 		{
 			string code =
 				"public struct JSON {\n" +
@@ -538,7 +538,7 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Double", ext.ExtensionOnTypeName, $"Incorrect type name {ext.ExtensionOnTypeName}");
 			Assert.AreEqual (1, ext.Members.Count, $"Expected 1 member but got {ext.Members.Count}");
 			var func = ext.Members [0] as FunctionDeclaration;
-			Assert.IsNotNull (func, $"Expected a FunctionDeclaration but got {ext.Members[0].GetType ().Name}");
+			Assert.IsNotNull (func, $"Expected a FunctionDeclaration but got {ext.Members [0].GetType ().Name}");
 		}
 
 		[Test]
@@ -952,7 +952,7 @@ open class Foo {
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
 			Assert.IsNotNull (cl, "no class");
 
-			foreach (var ctor in cl.AllConstructors()) {
+			foreach (var ctor in cl.AllConstructors ()) {
 				var item = ctor.ParameterLists.Last ().Last ();
 				if (item.PublicName == "val")
 					Assert.IsFalse (ctor.IsConvenienceInit, "designated ctor marked convenience");
@@ -983,6 +983,23 @@ public func joe (a: FooA & FooB) {
 			var protoList = parm.TypeSpec as ProtocolListTypeSpec;
 			Assert.IsNotNull (protoList, "not a proto list");
 			Assert.AreEqual (2, protoList.Protocols.Count);
+		}
+
+		[Test]
+		public void TestFuncReturningAny ()
+		{
+			var code = @"
+public func returnsAny() -> Any {
+    return 7
+}";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.FirstOrDefault (fn => fn.Name == "returnsAny");
+			Assert.IsNotNull (func, "no func");
+
+			var returnType = func.ReturnTypeSpec as NamedTypeSpec;
+			Assert.IsNotNull (returnType, "no return type");
+			Assert.AreEqual ("Swift.Any", returnType.Name, $"Wrong type: {returnType.Name}");
 		}
 	}
 }
