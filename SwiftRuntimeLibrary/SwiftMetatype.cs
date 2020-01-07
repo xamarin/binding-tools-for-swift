@@ -74,6 +74,15 @@ namespace SwiftRuntimeLibrary {
 			throw new NotSupportedException ($"Can't get nominal type descriptor for {kind}");
 		}
 
+		public string TypeName {
+			get {
+				if (!HasNominalDescriptor)
+					return "#Unknown";
+				var nomDesc = GetNominalTypeDescriptor ();
+				return nomDesc.GetFullName ();
+			}
+		}
+
 		#region Classes
 		// Class metadata is TargetClassMetadata
 		// A TargetClassMetadata is:

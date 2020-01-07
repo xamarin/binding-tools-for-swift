@@ -604,8 +604,26 @@ public protocol Useless {
 			var getter = CSFunctionCall.FunctionCallLine ("SwiftProtocolTypeAttribute.DescriptorForType", false,
 				new CSSimpleType ("IUseless").Typeof ());
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
+		
 			var callingCode = CSCodeBlock.Create (getter, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+		}
+
+		[Test]
+		public void TestReturnsAny ()
+		{
+			var swiftCode = @"
+public func returnsAny () -> Any {
+	return 7;
+}
+";
+
+			var any = new CSIdentifier ("any");
+			var anyDecl = CSVariableDeclaration.VarLine (any, new CSFunctionCall ("TopLevelEntities.ReturnsAny", false));
+			var unbox = new CSFunctionCall ("SwiftExistentialContainer0.Unbox<nint>", false, any);
+			var printer = CSFunctionCall.ConsoleWriteLine (unbox);
+			var callingCode = CSCodeBlock.Create (anyDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
 		}
 	}
 }
