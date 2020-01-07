@@ -8,3 +8,4 @@ Constants.cs
 stconfig.inc
 devicetests-build
 packages
+.vscode
