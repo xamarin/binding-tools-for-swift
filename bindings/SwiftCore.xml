@@ -127,7 +127,7 @@
         <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="SwiftAnyObject" entityType="Class" blitable="NonBlitable" size="0" stride="0">
             <typedeclaration kind="class" name="Swift.AnyObject" module="Swift" accessibility="Public" isObjC="false" isFinal="true"  />
         </entity>
-        <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="SwiftAny" entityType="Protocol" blitable="NonBlitable" size="0" stride="0">
+        <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="SwiftExistentialContainer0" entityType="Protocol" blitable="NonBlitable" size="0" stride="0">
             <typedeclaration kind="protocol" name="Swift.Any" module = "Swift" accessitibility="Public" isObjC="false" isFinal="true" />
         </entity>
         <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="ISwiftHashable" entityType="Protocol" discretionaryConstraint="true" blitable="NonBlitable" size="0" stride="0">

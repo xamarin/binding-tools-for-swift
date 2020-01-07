@@ -154,10 +154,6 @@ public func castAs<T>(retval: UnsafeMutablePointer<T?>, value: Any)
 	retval.initialize(to: value as? T)
 }
 
-public func toAny<T>(retval: UnsafeMutablePointer<Any>, value: T)
-{
-	retval.initialize(to: value)
-}
 
 public func sizeof<T>(_ ignored: T) -> Int
 {

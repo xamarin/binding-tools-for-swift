@@ -299,6 +299,10 @@ namespace SwiftRuntimeLibrary {
 		[SymbolicatorInfo (Skip = true)]
 		internal const string EveryProtocolNew = "$s7XamGlue13EveryProtocolCACycfC";
 
+		// AnyHelpers
+		internal const string ToAny = "$s7XamGlue5toAny6result3valySpyypG_xtlF";
+		internal const string FromAny = "$s7XamGlue7fromAny6result3anyySpyxG_yptlF";
+
 	}
 }
 

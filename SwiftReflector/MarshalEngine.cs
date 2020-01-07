@@ -314,7 +314,9 @@ namespace SwiftReflector {
 							returnIdent = returnIntPtr;
 						}
 					} else if (returnEntity != null && returnEntity.EntityType == EntityType.Protocol) {
-						preMarshalCode.Insert (0, CSVariableDeclaration.VarLine (returnType, returnIdent, CSConstant.Null));
+						var initialValue = !(swiftReturnType is NamedTypeSpec ns && ns.Name == "Swift.Any") ?
+							(CSBaseExpression)CSConstant.Null : new CSFunctionCall ("SwiftExistentialContainer0", true);
+						preMarshalCode.Insert (0, CSVariableDeclaration.VarLine (returnType, returnIdent, initialValue));
 						indexOfReturn = 0;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
 					} else if (swiftReturnType is TupleTypeSpec) {
@@ -798,6 +800,12 @@ namespace SwiftReflector {
 			// SomePiCall (new IntPtr (paramContainterPtr));
 			// p = SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<IFaceType> (paramContainer);
 
+			// return value of Swift.Any
+			// var paramContainer = new SwiftExistentialContainer0 ();
+			// var paramContainerPtr = &paramContainer;
+			// SomePiCall (new IntPtr (paramContainerPtr)
+			// paramContainer.CopyTo (p)
+
 			RequiredUnsafeCode = true;
 
 			var containerIdent = new CSIdentifier (Uniqueify (p.Name + "Container", identifiersUsed));
@@ -807,6 +815,8 @@ namespace SwiftReflector {
 			var proxyIdent = new CSIdentifier (Uniqueify (p.Name + "Proxy", identifiersUsed));
 			identifiersUsed.Add (containerIdent.Name);
 
+			var isAny = cl.Name == "Swift.Any";
+
 			CSFunctionCall newContainer = null;
 			use.AddIfNotPresent (typeof (SwiftExistentialContainer1));
 			if (!isReturnValue) {
@@ -815,7 +825,7 @@ namespace SwiftReflector {
 				var castoRama = new CSParenthesisExpression (new CSCastExpression (new CSSimpleType (typeof (BaseProxy)), proxyIdent));
 				newContainer = new CSFunctionCall ("SwiftExistentialContainer1", true, castoRama.Dot (new CSIdentifier ("ProxyExistentialContainer")));
 			} else {
-				newContainer = new CSFunctionCall ("SwiftExistentialContainer1", true);
+				newContainer = new CSFunctionCall (isAny ? "SwiftExistentialContainer0" : "SwiftExistentialContainer1", true);
 			}
 			var containerDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, containerIdent, newContainer);
 			preMarshalCode.Add (containerDecl);
@@ -826,10 +836,15 @@ namespace SwiftReflector {
 			preMarshalCode.Add (containerPtrDecl);
 
 			if (p.Name.Name != CSIdentifier.This.Name) {
-				use.AddIfNotPresent (typeof (SwiftObjectRegistry));
-				var rebuildIt = CSAssignment.Assign (p.Name, new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{p.CSType.ToString ()}>",
-					false, containerIdent));
-				postMarshalCode.Add (rebuildIt);
+				if (isAny) {
+					var copyIt = CSFunctionCall.FunctionCallLine ($"{containerIdent}.CopyTo", false, new CSUnaryExpression (CSUnaryOperator.Ref, p.Name));
+					postMarshalCode.Add (copyIt);
+				} else {
+					use.AddIfNotPresent (typeof (SwiftObjectRegistry));
+					var rebuildIt = CSAssignment.Assign (p.Name, new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{p.CSType.ToString ()}>",
+						false, containerIdent));
+					postMarshalCode.Add (rebuildIt);
+				}
 			}
 
 			return new CSFunctionCall ("IntPtr", true, containerPtrIdent);
