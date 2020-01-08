@@ -9,3 +9,4 @@ stconfig.inc
 devicetests-build
 packages
 .vscode
+.vs
