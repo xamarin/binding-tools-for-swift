@@ -153,5 +153,52 @@ public func blindAssocFunc{nameSuffix} () -> Any.Type {{
 			TestRunning.TestAndExecute (swiftCode, callingCode, $"{csType}\n", testName: $"CanGetAssocTypesParams{nameSuffix}");
 		}
 
+
+		[TestCase ("Bool", "Boolean", "[true, false, true]")]
+		[TestCase ("Int", "nint", "[0, 1, 2]")]
+		[TestCase ("UInt", "nuint", "[0, 1, 2]")]
+		[TestCase ("Int32", "Int32", "[0, 1, 2]")]
+		[TestCase ("UInt32", "UInt32", "[0, 1, 2]")]
+		[TestCase ("Float", "Single", "[0.1, 1.1, 2.1]")]
+		[TestCase ("Int?", "SwiftOptional`1", "[0, 1,  nil]", "OptInt")]
+		[TestCase ("String", "SwiftString", "[\"a\", \"b\",  \"c\"]")]
+		public void CanGetAssociatedTypeFromAny (string swiftType, string csType, string initData, string nameSuffix = null)
+		{
+			nameSuffix = nameSuffix ?? swiftType;
+			var swiftCode = $@"
+private class FooAny{nameSuffix} : IteratorProtocol {{
+	public init () {{ }}
+	private var data : [{swiftType}] = {initData}
+	private var x = -1
+	public func next () -> {swiftType}? {{
+		if x < data.count {{
+			x = x + 1
+			return data[x]
+		}}
+		else {{
+			return nil
+		}}
+	}}
+}}
+public func blindAssocFuncAny{nameSuffix} () -> Any {{
+	return FooAny{nameSuffix} ()
+}}
+";
+			// var any = TopLevelEntities.BlindAssocFuncAny ();
+			// var types = StructMarshal.Marshaler.GetAssociateTypes (any.ObjectMetadata, typeof (IIteratorProtocol<>), 1);
+			// Console.WriteLine (types[0].Name);
+
+			var anyID = new CSIdentifier ("any");
+			var anyDecl = CSVariableDeclaration.VarLine (anyID, new CSFunctionCall ($"TopLevelEntities.BlindAssocFuncAny{nameSuffix}", false));
+			var assocTypesID = new CSIdentifier ("assoc");
+			var typesID = new CSIdentifier ("tyypes");
+			var typesDecl = CSVariableDeclaration.VarLine (typesID, new CSFunctionCall ("StructMarshal.Marshaler.GetAssociatedTypes", false,
+				anyID.Dot (new CSIdentifier ("ObjectMetadata")), new CSSimpleType ("IIteratorProtocol<>").Typeof (), CSConstant.Val (1)));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSIndexExpression (typesID, false, CSConstant.Val (0)).Dot (new CSIdentifier ("Name")));
+
+			var callingCode = CSCodeBlock.Create (anyDecl, typesDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, $"{csType}\n", testName: $"CanGetAssociatedTypeFromAny{nameSuffix}");
+		}
+
 	}
 }
