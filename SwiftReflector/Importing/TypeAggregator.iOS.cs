@@ -384,6 +384,9 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
+			// StoreKit
+			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
+			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
 		};
 	}
 }
