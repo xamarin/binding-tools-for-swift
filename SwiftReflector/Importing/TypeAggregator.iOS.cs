@@ -384,6 +384,8 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
+			// Photos
+			{ "Photos.PHAssetPlaybackStyle", "PHAsset.PlaybackStyle" },
 		};
 	}
 }
