@@ -384,6 +384,9 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
+			// HealthKit
+			{ "HealthKit.HKErrorCode", "HKError.Code" },
+			{ "HealthKit.HKFhirResourceType", "HKFHIRResourceType" },
 		};
 	}
 }
