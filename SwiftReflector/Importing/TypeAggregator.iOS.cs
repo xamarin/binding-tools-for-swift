@@ -141,7 +141,14 @@ namespace SwiftReflector.Importing {
 	    		"CoreGraphics.CGImageColorModel", // can't find it
 			"CoreGraphics.CGColorConverterTriple", // can't find it
 	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
-			"CoreGraphics.MatrixOrder"
+			"CoreGraphics.MatrixOrder",
+			// HomeKit
+			"HomeKit.HMAccessoryCategoryType", // not an enum
+			"HomeKit.HMActionSetType", // not an enum
+			"HomeKit.HMCharacteristicMetadataFormat", // not an enum
+			"HomeKit.HMCharacteristicMetadataUnits", // not an enum
+			"HomeKit.HMCharacteristicType", // not an enum
+			"HomeKit.HMServiceType", // not an enum
 		};
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
@@ -384,6 +391,9 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
+			// HomeKit
+			{ "HomeKit.HMCharacteristicValueAirParticulate", "HMCharacteristicValueAirParticulateSize" },
+			{ "HomeKit.HMCharacteristicValueLockMechanism", "HMCharacteristicValueLockMechanismLastKnownAction" }
 		};
 	}
 }
