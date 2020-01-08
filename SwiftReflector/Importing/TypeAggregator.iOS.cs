@@ -141,7 +141,9 @@ namespace SwiftReflector.Importing {
 	    		"CoreGraphics.CGImageColorModel", // can't find it
 			"CoreGraphics.CGColorConverterTriple", // can't find it
 	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
-			"CoreGraphics.MatrixOrder"
+			"CoreGraphics.MatrixOrder",
+			// PdfKit
+			"PdfKit.PdfPrintScalingMode", // macOS only
 		};
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
@@ -384,6 +386,27 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
+			// PdfKit
+			{ "PDFKit.PdfActionNamedName", "PDFActionNamedName" },
+			{ "PDFKit.PdfAnnotationHighlightingMode", "PDFAnnotationHighlightingMode" },
+			{ "PDFKit.PdfAnnotationKey", "PDFAnnotationKey" },
+			{ "PDFKit.PdfAnnotationLineEndingStyle", "PDFAnnotationLineEndingStyle" },
+			{ "PDFKit.PdfAnnotationSubtype", "PDFAnnotationSubtype" },
+			{ "PDFKit.PdfAnnotationTextIconType", "PDFAnnotationTextIconType" },
+			{ "PDFKit.PdfAnnotationWidgetSubtype", "PDFAnnotationWidgetSubtype" },
+			{ "PDFKit.PdfAreaOfInterest", "PDFAreaOfInterest" },
+			{ "PDFKit.PdfBorderStyle", "PDFBorderStyle" },
+			{ "PDFKit.PdfDisplayBox", "PDFDisplayBox" },
+			{ "PDFKit.PdfDisplayDirection", "PDFDisplayDirection" },
+			{ "PDFKit.PdfDisplayMode", "PDFDisplayMode" },
+			{ "PDFKit.PdfDocumentPermissions", "PDFDocumentPermissions" },
+			{ "PDFKit.PdfInterpolationQuality", "PDFInterpolationQuality" },
+			{ "PDFKit.PdfLineStyle", "PDFLineStyle" },
+			{ "PDFKit.PdfMarkupType", "PDFMarkupType" },
+			{ "PDFKit.PdfTextAnnotationIconType", "PDFTextAnnotationIconType" },
+			{ "PDFKit.PdfThumbnailLayoutMode", "PDFThumbnailLayoutMode" },
+			{ "PDFKit.PdfWidgetCellState", "PDFWidgetCellState" },
+			{ "PDFKit.PdfWidgetControlType", "PDFWidgetControlType" },
 		};
 	}
 }
