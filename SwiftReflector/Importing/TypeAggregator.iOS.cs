@@ -141,7 +141,9 @@ namespace SwiftReflector.Importing {
 	    		"CoreGraphics.CGImageColorModel", // can't find it
 			"CoreGraphics.CGColorConverterTriple", // can't find it
 	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
-			"CoreGraphics.MatrixOrder"
+			"CoreGraphics.MatrixOrder",
+			// PassKit
+			"PassKit.PKErrorCode", // does not exist
 		};
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
@@ -384,6 +386,10 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
+			// PassKit
+			{ "PassKit.PKContactFields", "PKContactField" },
+			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
+			{ "PassKit.PKPaymentErrorCode", "PKPaymentError.Code" },
 		};
 	}
 }
