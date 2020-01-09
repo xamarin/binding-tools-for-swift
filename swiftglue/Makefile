@@ -27,6 +27,8 @@ IOS_NAMESPACES= \
 	ReplayKit \
 	StoreKit \
 	UIKit \
+	UserNotifications \
+	UserNotificationsUI \
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
