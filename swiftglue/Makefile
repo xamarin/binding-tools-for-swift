@@ -18,6 +18,7 @@ IOS_NAMESPACES= \
 	Foundation \
 	HealthKit \
 	HealthKitUI \
+	StoreKit \
 	UIKit \
 
 # this creates a bindings file for type metadata
