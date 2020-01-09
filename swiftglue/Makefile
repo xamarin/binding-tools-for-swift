@@ -21,6 +21,7 @@ IOS_NAMESPACES= \
 	HomeKit \
 	PassKit \
 	PdfKit \
+	PushKit \
 	Photos \
 	PhotosUI \
 	StoreKit \
