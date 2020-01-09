@@ -141,7 +141,13 @@ namespace SwiftReflector.Importing {
 	    		"CoreGraphics.CGImageColorModel", // can't find it
 			"CoreGraphics.CGColorConverterTriple", // can't find it
 	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
-			"CoreGraphics.MatrixOrder"
+			"CoreGraphics.MatrixOrder",
+			// AddressBook
+			"AddressBook.ABAddressBookError", // not an enum
+			"AddressBook.ABPersonKind", // not an enum
+			"AddressBook.ABPersonProperty", // not an enum
+			"AddressBook.ABPersonSortBy", // not an enum
+			"AddressBook.ABSourceProperty", // not an enum
 		};
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
