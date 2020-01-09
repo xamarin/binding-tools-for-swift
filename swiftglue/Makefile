@@ -10,14 +10,14 @@ clean:
 
 MODULENAME=XamGlue
 BINDIR=bin
-MAC_NAMESPACES= 						\
-	Foundation 							\
+MAC_NAMESPACES= \
+	Foundation \
 
-IOS_NAMESPACES= 						\
-	AddressBook							\
-	CoreGraphics 						\
-	Foundation 							\
-	UIKit 								\
+IOS_NAMESPACES= \
+	AddressBook	\
+	CoreGraphics \
+	Foundation \
+	UIKit \
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
