@@ -96,6 +96,8 @@ namespace SwiftReflector.Importing {
 			"Messages.MSMessagesAppPresentationContext",
 			// PassKit
 			"PassKit.PKErrorCode", // does not exist
+			// PdfKit
+			"PdfKit.PdfPrintScalingMode", // macOS only
 			// SafariServices
 			"SafariServices.SFSafariViewControllerDismissButtonStyle",
 			// UIKit
@@ -123,8 +125,6 @@ namespace SwiftReflector.Importing {
 			"UIKit.UITransitionViewControllerKind", // can't find it?
 	    		"UIKit.UIUserInterfaceStyle", // can't find it?
 			"UIKit.UIUserNotificationActionContext", // deprecated
-			// PdfKit
-			"PdfKit.PdfPrintScalingMode", // macOS only
 			// VideoToolbox
 			"VideoToolbox.VTStatus",
 			"VideoToolbox.VTProfileLevel",
