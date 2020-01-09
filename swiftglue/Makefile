@@ -16,7 +16,11 @@ MAC_NAMESPACES= \
 IOS_NAMESPACES= \
 	CoreGraphics \
 	Foundation \
+	HealthKit \
+	HealthKitUI \
+	HomeKit \
 	PassKit \
+	StoreKit \
 	UIKit \
 
 # this creates a bindings file for type metadata
