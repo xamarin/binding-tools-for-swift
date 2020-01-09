@@ -445,6 +445,8 @@ namespace SwiftReflector.Importing {
 			{ "UserNotifications.UNErrorCode", "UNError.Code" },
 			// WatchConnectivity
 			{ "WatchConnectivity.WCErrorCode", "WCError.Code" },
+			// WatchKit
+			{ "WatchKit.WKErrorCode", "WKError.Code" },
 			// WebKit
 			{ "WebKit.WKErrorCode", "WKError.Code" },
 		};
