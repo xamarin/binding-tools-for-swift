@@ -40,48 +40,20 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypesToSkipIOS (ref HashSet<string> result) { result = iOSTypesToSkip; }
 		static HashSet<string> iOSTypesToSkip = new HashSet<string> () {
-			"Messages.MSMessagesAppPresentationContext",
-	    		"IntentsUI.INUIAddVoiceShortcutButton",
-			"IdentityLookup.ILClassificationAction",
+			// Accounts
+			"Accounts.ACFacebookAudience",
+			// CoreGraphics
+	    		"CoreGraphics.CGColorConverterTransformType",
+			"CoreGraphics.CGTextEncoding", // Deprecated
+	    		"CoreGraphics.CGImagePixelFormatInfo", // can't find it?
+			"CoreGraphics.CGBitmapFlags", // can't find it
+	    		"CoreGraphics.CGImageColorModel", // can't find it
+			"CoreGraphics.CGColorConverterTriple", // can't find it
+	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
+			"CoreGraphics.MatrixOrder",
+			// CoreTelephony
 	    		"CoreTelephony.CTErrorDomain",
 	    		"CoreTelephony.CTCellularPlanProvisioningAddPlanResult",
-			"Accounts.ACFacebookAudience",
-	    		"Vision.VNBarcodeObservationRequestRevision",
-			"Vision.VNCoreMLRequestRevision",
-	    		"Vision.VNDetectBarcodesRequestRevision",
-			"Vision.VNDetectedObjectObservationRequestRevision",
-	    		"Vision.VNDetectFaceLandmarksRequestRevision",
-			"Vision.VNDetectFaceRectanglesRequestRevision",
-	    		"Vision.VNDetectHorizonRequestRevision",
-			"Vision.VNDetectRectanglesRequestRevision",
-	    		"Vision.VNDetectTextRectanglesRequestRevision",
-			"Vision.VNFaceObservationRequestRevision",
-	    		"Vision.VNHomographicImageRegistrationRequestRevision",
-			"Vision.VNRecognizedObjectObservationRequestRevision",
-	    		"Vision.VNRectangleObservationRequestRevision",
-			"Vision.VNRequestRevision",
-	    		"Vision.VNTextObservationRequestRevision",
-			"Vision.VNTranslationalImageRegistrationRequestRevision",
-	    		"Vision.VNTrackObjectRequestRevision",
-			"Vision.VNTrackRectangleRequestRevision",
-			"SafariServices.SFSafariViewControllerDismissButtonStyle",
-	    		"IntentsUI.INUIAddVoiceShortcutButtonStyle",
-			"VideoToolbox.VTStatus",
-			"VideoToolbox.VTProfileLevel",
-			"VideoToolbox.VTH264EntropyMode",
-	    		"VideoToolbox.VTFieldCount",
-	    		"VideoToolbox.VTFieldDetail",
-	    		"VideoToolbox.VTColorPrimaries",
-	    		"VideoToolbox.VTFTransferFunction",
-	    		"VideoToolbox.VTFieldCount",
-			"VideoToolbox.VTYCbCrMatrix",
-	    		"VideoToolbox.VTFieldMode",
-			"VideoToolbox.VTDeinterlaceMode",
-	    		"VideoToolbox.VTOnlyTheseFrames",
-			"VideoToolbox.VTPropertyType",
-	    		"VideoToolbox.VTReadWriteStatus",
-	    		"VideoToolbox.VTScalingMode",
-	    		"VideoToolbox.VTDownsamplingMode",
 			// Foundation
 			"Foundation.NSFileType",
 	    		"Foundation.NSUserDefaultsType",
@@ -108,7 +80,23 @@ namespace SwiftReflector.Importing {
 			"Foundation.NSUrlSessionMultipathServiceType",
 	    		"Foundation.NSRunLoopMode",
 			"Foundation.NSTextWritingDirection", // deprecated in 9.0
-	    		// UIKit
+			// HomeKit
+			"HomeKit.HMAccessoryCategoryType", // not an enum
+			"HomeKit.HMActionSetType", // not an enum
+			"HomeKit.HMCharacteristicMetadataFormat", // not an enum
+			"HomeKit.HMCharacteristicMetadataUnits", // not an enum
+			"HomeKit.HMCharacteristicType", // not an enum
+			"HomeKit.HMServiceType", // not an enum
+			// IdentityLookup
+			"IdentityLookup.ILClassificationAction",
+			// IntentsUI
+	    		"IntentsUI.INUIAddVoiceShortcutButton",
+			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
+			// Messages
+			"Messages.MSMessagesAppPresentationContext",
+			// SafariServices
+			"SafariServices.SFSafariViewControllerDismissButtonStyle",
+			// UIKit
 			"UIKit.UIAccessibilityPostNotification", // method in swift - not needed.
 	    		"UIKit.UIFontDescriptorAttribute",
 			"UIKit.NSTextEffect",
@@ -133,22 +121,42 @@ namespace SwiftReflector.Importing {
 			"UIKit.UITransitionViewControllerKind", // can't find it?
 	    		"UIKit.UIUserInterfaceStyle", // can't find it?
 			"UIKit.UIUserNotificationActionContext", // deprecated
-			// CoreGraphics
-	    		"CoreGraphics.CGColorConverterTransformType",
-			"CoreGraphics.CGTextEncoding", // Deprecated
-	    		"CoreGraphics.CGImagePixelFormatInfo", // can't find it?
-			"CoreGraphics.CGBitmapFlags", // can't find it
-	    		"CoreGraphics.CGImageColorModel", // can't find it
-			"CoreGraphics.CGColorConverterTriple", // can't find it
-	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
-			"CoreGraphics.MatrixOrder",
-			// HomeKit
-			"HomeKit.HMAccessoryCategoryType", // not an enum
-			"HomeKit.HMActionSetType", // not an enum
-			"HomeKit.HMCharacteristicMetadataFormat", // not an enum
-			"HomeKit.HMCharacteristicMetadataUnits", // not an enum
-			"HomeKit.HMCharacteristicType", // not an enum
-			"HomeKit.HMServiceType", // not an enum
+			// VideoToolbox
+			"VideoToolbox.VTStatus",
+			"VideoToolbox.VTProfileLevel",
+			"VideoToolbox.VTH264EntropyMode",
+	    		"VideoToolbox.VTFieldCount",
+	    		"VideoToolbox.VTFieldDetail",
+	    		"VideoToolbox.VTColorPrimaries",
+	    		"VideoToolbox.VTFTransferFunction",
+	    		"VideoToolbox.VTFieldCount",
+			"VideoToolbox.VTYCbCrMatrix",
+	    		"VideoToolbox.VTFieldMode",
+			"VideoToolbox.VTDeinterlaceMode",
+	    		"VideoToolbox.VTOnlyTheseFrames",
+			"VideoToolbox.VTPropertyType",
+	    		"VideoToolbox.VTReadWriteStatus",
+	    		"VideoToolbox.VTScalingMode",
+	    		"VideoToolbox.VTDownsamplingMode",
+			// Vision
+	    		"Vision.VNBarcodeObservationRequestRevision",
+			"Vision.VNCoreMLRequestRevision",
+	    		"Vision.VNDetectBarcodesRequestRevision",
+			"Vision.VNDetectedObjectObservationRequestRevision",
+	    		"Vision.VNDetectFaceLandmarksRequestRevision",
+			"Vision.VNDetectFaceRectanglesRequestRevision",
+	    		"Vision.VNDetectHorizonRequestRevision",
+			"Vision.VNDetectRectanglesRequestRevision",
+	    		"Vision.VNDetectTextRectanglesRequestRevision",
+			"Vision.VNFaceObservationRequestRevision",
+	    		"Vision.VNHomographicImageRegistrationRequestRevision",
+			"Vision.VNRecognizedObjectObservationRequestRevision",
+	    		"Vision.VNRectangleObservationRequestRevision",
+			"Vision.VNRequestRevision",
+	    		"Vision.VNTextObservationRequestRevision",
+			"Vision.VNTranslationalImageRegistrationRequestRevision",
+	    		"Vision.VNTrackObjectRequestRevision",
+			"Vision.VNTrackRectangleRequestRevision",
 		};
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
