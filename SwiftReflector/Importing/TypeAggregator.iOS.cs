@@ -94,6 +94,8 @@ namespace SwiftReflector.Importing {
 			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
 			// Messages
 			"Messages.MSMessagesAppPresentationContext",
+			// PassKit
+			"PassKit.PKErrorCode", // does not exist
 			// SafariServices
 			"SafariServices.SFSafariViewControllerDismissButtonStyle",
 			// UIKit
@@ -263,6 +265,10 @@ namespace SwiftReflector.Importing {
 			{ "HomeKit.HMCharacteristicValueLockMechanism", "HMCharacteristicValueLockMechanismLastKnownAction" },
 			// LocalAuthentication
 			{ "LocalAuthentication.LAStatus", "LAError" },
+			// PassKit
+			{ "PassKit.PKContactFields", "PKContactField" },
+			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
+			{ "PassKit.PKPaymentErrorCode", "PKPaymentError.Code" },
 			// SafariServices
 			{ "SafariServices.SFErrorCode", "SFError.Code" },
 			// StoreKit

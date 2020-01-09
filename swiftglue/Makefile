@@ -19,6 +19,7 @@ IOS_NAMESPACES= \
 	HealthKit \
 	HealthKitUI \
 	HomeKit \
+	PassKit \
 	StoreKit \
 	UIKit \
 
