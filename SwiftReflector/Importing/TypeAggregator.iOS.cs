@@ -246,6 +246,12 @@ namespace SwiftReflector.Importing {
 			{ "Foundation.NSStringTransform", "StringTransform" },
 			{ "Foundation.NSOperatingSystemVersion", "OperatingSystemVersion" },
 			{ "Foundation.NSDecimal", "Decimal" },
+			// HealthKit
+			{ "HealthKit.HKErrorCode", "HKError.Code" },
+			{ "HealthKit.HKFhirResourceType", "HKFHIRResourceType" },
+			// StoreKit
+			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
+			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
 			// UIKit
 			{ "UIKit.NSControlCharacterAction", "NSLayoutManager.ControlCharacterAction" },
 			{ "UIKit.NSGlyphProperty", "NSLayoutManager.GlyphProperty" },
@@ -384,9 +390,6 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
-			// StoreKit
-			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
-			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
 		};
 	}
 }

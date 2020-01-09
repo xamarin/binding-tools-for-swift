@@ -16,6 +16,8 @@ MAC_NAMESPACES= \
 IOS_NAMESPACES= \
 	CoreGraphics \
 	Foundation \
+	HealthKit \
+	HealthKitUI \
 	StoreKit \
 	UIKit \
 
