@@ -161,12 +161,6 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
 		static Dictionary<string, string> iOSTypeNamesToMap = new Dictionary<string, string> {
-			{ "SafariServices.SFErrorCode", "SFError.Code" },
-			{ "LocalAuthentication.LAStatus", "LAError" },
-			{ "WatchConnectivity.WCErrorCode", "WCError.Code" },
-			{ "WebKit.WKErrorCode", "WKError.Code" },
-			{ "UserNotifications.UNErrorCode", "UNError.Code" },
-			{ "SystemConfiguration.NetworkReachabilityFlags", "SCNetworkReachabilityFlags" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
 			{ "Foundation.NSCalendarType", "NSCalendar.Identifier" },
@@ -267,9 +261,15 @@ namespace SwiftReflector.Importing {
 			// HomeKit
 			{ "HomeKit.HMCharacteristicValueAirParticulate", "HMCharacteristicValueAirParticulateSize" },
 			{ "HomeKit.HMCharacteristicValueLockMechanism", "HMCharacteristicValueLockMechanismLastKnownAction" },
+			// LocalAuthentication
+			{ "LocalAuthentication.LAStatus", "LAError" },
+			// SafariServices
+			{ "SafariServices.SFErrorCode", "SFError.Code" },
 			// StoreKit
 			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
 			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
+			// SystemConfiguration
+			{ "SystemConfiguration.NetworkReachabilityFlags", "SCNetworkReachabilityFlags" },
 			// UIKit
 			{ "UIKit.NSControlCharacterAction", "NSLayoutManager.ControlCharacterAction" },
 			{ "UIKit.NSGlyphProperty", "NSLayoutManager.GlyphProperty" },
@@ -408,6 +408,12 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
+			// UserNotifications
+			{ "UserNotifications.UNErrorCode", "UNError.Code" },
+			// WatchConnectivity
+			{ "WatchConnectivity.WCErrorCode", "WCError.Code" },
+			// WebKit
+			{ "WebKit.WKErrorCode", "WKError.Code" },
 		};
 	}
 }
