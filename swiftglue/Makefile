@@ -31,6 +31,7 @@ IOS_NAMESPACES= \
 	UserNotificationsUI \
 	WatchConnectivity \
 	WatchKit \
+	WebKit \
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
