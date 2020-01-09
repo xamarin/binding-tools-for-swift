@@ -13,7 +13,7 @@ BINDIR=bin
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
-	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --platform=iphone --namespace=Foundation --namespace=UIKit --namespace=CoreGraphics > $@.tmp)
+	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --platform=iphone --namespace=Foundation --namespace=UIKit --namespace=CoreGraphics --namespace=iAd > $@.tmp)
 	$(Q) echo "" >> $@.tmp
 	$(Q) mv $@.tmp $@
 bindingmetadata.macos.swift:
