@@ -40,48 +40,20 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypesToSkipIOS (ref HashSet<string> result) { result = iOSTypesToSkip; }
 		static HashSet<string> iOSTypesToSkip = new HashSet<string> () {
-			"Messages.MSMessagesAppPresentationContext",
-	    		"IntentsUI.INUIAddVoiceShortcutButton",
-			"IdentityLookup.ILClassificationAction",
+			// Accounts
+			"Accounts.ACFacebookAudience",
+			// CoreGraphics
+	    		"CoreGraphics.CGColorConverterTransformType",
+			"CoreGraphics.CGTextEncoding", // Deprecated
+	    		"CoreGraphics.CGImagePixelFormatInfo", // can't find it?
+			"CoreGraphics.CGBitmapFlags", // can't find it
+	    		"CoreGraphics.CGImageColorModel", // can't find it
+			"CoreGraphics.CGColorConverterTriple", // can't find it
+	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
+			"CoreGraphics.MatrixOrder",
+			// CoreTelephony
 	    		"CoreTelephony.CTErrorDomain",
 	    		"CoreTelephony.CTCellularPlanProvisioningAddPlanResult",
-			"Accounts.ACFacebookAudience",
-	    		"Vision.VNBarcodeObservationRequestRevision",
-			"Vision.VNCoreMLRequestRevision",
-	    		"Vision.VNDetectBarcodesRequestRevision",
-			"Vision.VNDetectedObjectObservationRequestRevision",
-	    		"Vision.VNDetectFaceLandmarksRequestRevision",
-			"Vision.VNDetectFaceRectanglesRequestRevision",
-	    		"Vision.VNDetectHorizonRequestRevision",
-			"Vision.VNDetectRectanglesRequestRevision",
-	    		"Vision.VNDetectTextRectanglesRequestRevision",
-			"Vision.VNFaceObservationRequestRevision",
-	    		"Vision.VNHomographicImageRegistrationRequestRevision",
-			"Vision.VNRecognizedObjectObservationRequestRevision",
-	    		"Vision.VNRectangleObservationRequestRevision",
-			"Vision.VNRequestRevision",
-	    		"Vision.VNTextObservationRequestRevision",
-			"Vision.VNTranslationalImageRegistrationRequestRevision",
-	    		"Vision.VNTrackObjectRequestRevision",
-			"Vision.VNTrackRectangleRequestRevision",
-			"SafariServices.SFSafariViewControllerDismissButtonStyle",
-	    		"IntentsUI.INUIAddVoiceShortcutButtonStyle",
-			"VideoToolbox.VTStatus",
-			"VideoToolbox.VTProfileLevel",
-			"VideoToolbox.VTH264EntropyMode",
-	    		"VideoToolbox.VTFieldCount",
-	    		"VideoToolbox.VTFieldDetail",
-	    		"VideoToolbox.VTColorPrimaries",
-	    		"VideoToolbox.VTFTransferFunction",
-	    		"VideoToolbox.VTFieldCount",
-			"VideoToolbox.VTYCbCrMatrix",
-	    		"VideoToolbox.VTFieldMode",
-			"VideoToolbox.VTDeinterlaceMode",
-	    		"VideoToolbox.VTOnlyTheseFrames",
-			"VideoToolbox.VTPropertyType",
-	    		"VideoToolbox.VTReadWriteStatus",
-	    		"VideoToolbox.VTScalingMode",
-	    		"VideoToolbox.VTDownsamplingMode",
 			// Foundation
 			"Foundation.NSFileType",
 	    		"Foundation.NSUserDefaultsType",
@@ -108,7 +80,25 @@ namespace SwiftReflector.Importing {
 			"Foundation.NSUrlSessionMultipathServiceType",
 	    		"Foundation.NSRunLoopMode",
 			"Foundation.NSTextWritingDirection", // deprecated in 9.0
-	    		// UIKit
+			// HomeKit
+			"HomeKit.HMAccessoryCategoryType", // not an enum
+			"HomeKit.HMActionSetType", // not an enum
+			"HomeKit.HMCharacteristicMetadataFormat", // not an enum
+			"HomeKit.HMCharacteristicMetadataUnits", // not an enum
+			"HomeKit.HMCharacteristicType", // not an enum
+			"HomeKit.HMServiceType", // not an enum
+			// IdentityLookup
+			"IdentityLookup.ILClassificationAction",
+			// IntentsUI
+	    		"IntentsUI.INUIAddVoiceShortcutButton",
+			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
+			// Messages
+			"Messages.MSMessagesAppPresentationContext",
+			// PassKit
+			"PassKit.PKErrorCode", // does not exist
+			// SafariServices
+			"SafariServices.SFSafariViewControllerDismissButtonStyle",
+			// UIKit
 			"UIKit.UIAccessibilityPostNotification", // method in swift - not needed.
 	    		"UIKit.UIFontDescriptorAttribute",
 			"UIKit.NSTextEffect",
@@ -133,27 +123,48 @@ namespace SwiftReflector.Importing {
 			"UIKit.UITransitionViewControllerKind", // can't find it?
 	    		"UIKit.UIUserInterfaceStyle", // can't find it?
 			"UIKit.UIUserNotificationActionContext", // deprecated
-			// CoreGraphics
-	    		"CoreGraphics.CGColorConverterTransformType",
-			"CoreGraphics.CGTextEncoding", // Deprecated
-	    		"CoreGraphics.CGImagePixelFormatInfo", // can't find it?
-			"CoreGraphics.CGBitmapFlags", // can't find it
-	    		"CoreGraphics.CGImageColorModel", // can't find it
-			"CoreGraphics.CGColorConverterTriple", // can't find it
-	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
-			"CoreGraphics.MatrixOrder",
 			// PdfKit
 			"PdfKit.PdfPrintScalingMode", // macOS only
+			// VideoToolbox
+			"VideoToolbox.VTStatus",
+			"VideoToolbox.VTProfileLevel",
+			"VideoToolbox.VTH264EntropyMode",
+	    		"VideoToolbox.VTFieldCount",
+	    		"VideoToolbox.VTFieldDetail",
+	    		"VideoToolbox.VTColorPrimaries",
+	    		"VideoToolbox.VTFTransferFunction",
+	    		"VideoToolbox.VTFieldCount",
+			"VideoToolbox.VTYCbCrMatrix",
+	    		"VideoToolbox.VTFieldMode",
+			"VideoToolbox.VTDeinterlaceMode",
+	    		"VideoToolbox.VTOnlyTheseFrames",
+			"VideoToolbox.VTPropertyType",
+	    		"VideoToolbox.VTReadWriteStatus",
+	    		"VideoToolbox.VTScalingMode",
+	    		"VideoToolbox.VTDownsamplingMode",
+			// Vision
+	    		"Vision.VNBarcodeObservationRequestRevision",
+			"Vision.VNCoreMLRequestRevision",
+	    		"Vision.VNDetectBarcodesRequestRevision",
+			"Vision.VNDetectedObjectObservationRequestRevision",
+	    		"Vision.VNDetectFaceLandmarksRequestRevision",
+			"Vision.VNDetectFaceRectanglesRequestRevision",
+	    		"Vision.VNDetectHorizonRequestRevision",
+			"Vision.VNDetectRectanglesRequestRevision",
+	    		"Vision.VNDetectTextRectanglesRequestRevision",
+			"Vision.VNFaceObservationRequestRevision",
+	    		"Vision.VNHomographicImageRegistrationRequestRevision",
+			"Vision.VNRecognizedObjectObservationRequestRevision",
+	    		"Vision.VNRectangleObservationRequestRevision",
+			"Vision.VNRequestRevision",
+	    		"Vision.VNTextObservationRequestRevision",
+			"Vision.VNTranslationalImageRegistrationRequestRevision",
+	    		"Vision.VNTrackObjectRequestRevision",
+			"Vision.VNTrackRectangleRequestRevision",
 		};
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
 		static Dictionary<string, string> iOSTypeNamesToMap = new Dictionary<string, string> {
-			{ "SafariServices.SFErrorCode", "SFError.Code" },
-			{ "LocalAuthentication.LAStatus", "LAError" },
-			{ "WatchConnectivity.WCErrorCode", "WCError.Code" },
-			{ "WebKit.WKErrorCode", "WKError.Code" },
-			{ "UserNotifications.UNErrorCode", "UNError.Code" },
-			{ "SystemConfiguration.NetworkReachabilityFlags", "SCNetworkReachabilityFlags" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
 			{ "Foundation.NSCalendarType", "NSCalendar.Identifier" },
@@ -248,6 +259,46 @@ namespace SwiftReflector.Importing {
 			{ "Foundation.NSStringTransform", "StringTransform" },
 			{ "Foundation.NSOperatingSystemVersion", "OperatingSystemVersion" },
 			{ "Foundation.NSDecimal", "Decimal" },
+			// HealthKit
+			{ "HealthKit.HKErrorCode", "HKError.Code" },
+			{ "HealthKit.HKFhirResourceType", "HKFHIRResourceType" },
+			// HomeKit
+			{ "HomeKit.HMCharacteristicValueAirParticulate", "HMCharacteristicValueAirParticulateSize" },
+			{ "HomeKit.HMCharacteristicValueLockMechanism", "HMCharacteristicValueLockMechanismLastKnownAction" },
+			// LocalAuthentication
+			{ "LocalAuthentication.LAStatus", "LAError" },
+			// PassKit
+			{ "PassKit.PKContactFields", "PKContactField" },
+			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
+			{ "PassKit.PKPaymentErrorCode", "PKPaymentError.Code" },
+			// PdfKit
+			{ "PDFKit.PdfActionNamedName", "PDFActionNamedName" },
+			{ "PDFKit.PdfAnnotationHighlightingMode", "PDFAnnotationHighlightingMode" },
+			{ "PDFKit.PdfAnnotationKey", "PDFAnnotationKey" },
+			{ "PDFKit.PdfAnnotationLineEndingStyle", "PDFAnnotationLineEndingStyle" },
+			{ "PDFKit.PdfAnnotationSubtype", "PDFAnnotationSubtype" },
+			{ "PDFKit.PdfAnnotationTextIconType", "PDFAnnotationTextIconType" },
+			{ "PDFKit.PdfAnnotationWidgetSubtype", "PDFAnnotationWidgetSubtype" },
+			{ "PDFKit.PdfAreaOfInterest", "PDFAreaOfInterest" },
+			{ "PDFKit.PdfBorderStyle", "PDFBorderStyle" },
+			{ "PDFKit.PdfDisplayBox", "PDFDisplayBox" },
+			{ "PDFKit.PdfDisplayDirection", "PDFDisplayDirection" },
+			{ "PDFKit.PdfDisplayMode", "PDFDisplayMode" },
+			{ "PDFKit.PdfDocumentPermissions", "PDFDocumentPermissions" },
+			{ "PDFKit.PdfInterpolationQuality", "PDFInterpolationQuality" },
+			{ "PDFKit.PdfLineStyle", "PDFLineStyle" },
+			{ "PDFKit.PdfMarkupType", "PDFMarkupType" },
+			{ "PDFKit.PdfTextAnnotationIconType", "PDFTextAnnotationIconType" },
+			{ "PDFKit.PdfThumbnailLayoutMode", "PDFThumbnailLayoutMode" },
+			{ "PDFKit.PdfWidgetCellState", "PDFWidgetCellState" },
+			{ "PDFKit.PdfWidgetControlType", "PDFWidgetControlType" },
+			// SafariServices
+			{ "SafariServices.SFErrorCode", "SFError.Code" },
+			// StoreKit
+			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
+			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
+			// SystemConfiguration
+			{ "SystemConfiguration.NetworkReachabilityFlags", "SCNetworkReachabilityFlags" },
 			// UIKit
 			{ "UIKit.NSControlCharacterAction", "NSLayoutManager.ControlCharacterAction" },
 			{ "UIKit.NSGlyphProperty", "NSLayoutManager.GlyphProperty" },
@@ -386,27 +437,12 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
 	    		{ "UIKit.UIDocumentBrowserImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
-			// PdfKit
-			{ "PDFKit.PdfActionNamedName", "PDFActionNamedName" },
-			{ "PDFKit.PdfAnnotationHighlightingMode", "PDFAnnotationHighlightingMode" },
-			{ "PDFKit.PdfAnnotationKey", "PDFAnnotationKey" },
-			{ "PDFKit.PdfAnnotationLineEndingStyle", "PDFAnnotationLineEndingStyle" },
-			{ "PDFKit.PdfAnnotationSubtype", "PDFAnnotationSubtype" },
-			{ "PDFKit.PdfAnnotationTextIconType", "PDFAnnotationTextIconType" },
-			{ "PDFKit.PdfAnnotationWidgetSubtype", "PDFAnnotationWidgetSubtype" },
-			{ "PDFKit.PdfAreaOfInterest", "PDFAreaOfInterest" },
-			{ "PDFKit.PdfBorderStyle", "PDFBorderStyle" },
-			{ "PDFKit.PdfDisplayBox", "PDFDisplayBox" },
-			{ "PDFKit.PdfDisplayDirection", "PDFDisplayDirection" },
-			{ "PDFKit.PdfDisplayMode", "PDFDisplayMode" },
-			{ "PDFKit.PdfDocumentPermissions", "PDFDocumentPermissions" },
-			{ "PDFKit.PdfInterpolationQuality", "PDFInterpolationQuality" },
-			{ "PDFKit.PdfLineStyle", "PDFLineStyle" },
-			{ "PDFKit.PdfMarkupType", "PDFMarkupType" },
-			{ "PDFKit.PdfTextAnnotationIconType", "PDFTextAnnotationIconType" },
-			{ "PDFKit.PdfThumbnailLayoutMode", "PDFThumbnailLayoutMode" },
-			{ "PDFKit.PdfWidgetCellState", "PDFWidgetCellState" },
-			{ "PDFKit.PdfWidgetControlType", "PDFWidgetControlType" },
+			// UserNotifications
+			{ "UserNotifications.UNErrorCode", "UNError.Code" },
+			// WatchConnectivity
+			{ "WatchConnectivity.WCErrorCode", "WCError.Code" },
+			// WebKit
+			{ "WebKit.WKErrorCode", "WKError.Code" },
 		};
 	}
 }
