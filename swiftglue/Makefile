@@ -10,14 +10,23 @@ clean:
 
 MODULENAME=XamGlue
 BINDIR=bin
+MAC_NAMESPACES= \
+	Foundation \
+
+IOS_NAMESPACES= \
+	CoreGraphics \
+	Foundation \
+	HealthKit \
+	HealthKitUI \
+	UIKit \
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
-	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --platform=iphone --namespace=Foundation --namespace=UIKit --namespace=CoreGraphics --namespace=HealthKit --namespace=HealthKitUI > $@.tmp)
+	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --platform=iphone $(addprefix --namespace=, $(IOS_NAMESPACES)) > $@.tmp)
 	$(Q) echo "" >> $@.tmp
 	$(Q) mv $@.tmp $@
 bindingmetadata.macos.swift:
-	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --platform=mac --namespace=Foundation > $@.tmp)
+	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --platform=mac $(addprefix --namespace=, $(MAC_NAMESPACES)) > $@.tmp)
 	$(Q) echo "" >> $@.tmp
 	$(Q) mv $@.tmp $@
 
