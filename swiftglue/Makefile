@@ -16,6 +16,16 @@ MAC_NAMESPACES= \
 IOS_NAMESPACES= \
 	CoreGraphics \
 	Foundation \
+	HealthKit \
+	HealthKitUI \
+	HomeKit \
+	PassKit \
+	PdfKit \
+	PushKit \
+	Photos \
+	PhotosUI \
+	ReplayKit \
+	StoreKit \
 	UIKit \
 	UserNotifications \
 	UserNotificationsUI \
