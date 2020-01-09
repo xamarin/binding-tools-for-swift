@@ -215,6 +215,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 				}
 			}
 
+			var protoDecl = decl as ProtocolDeclaration;
+			if (protoDecl != null) {
+				if (elem.Element ("associatedtypes") != null) {
+					var assocElements = from assocElem in elem.Element ("associatedtypes").Elements ()
+							    select AssociatedTypeDeclaration.FromXElement (assocElem);
+					protoDecl.AssociatedTypes.AddRange (assocElements);
+				}
+			}
+
 			return decl;
 		}
 
