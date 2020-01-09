@@ -294,6 +294,8 @@ namespace SwiftReflector.Importing {
 			{ "PDFKit.PdfWidgetControlType", "PDFWidgetControlType" },
 			// Photos
 			{ "Photos.PHAssetPlaybackStyle", "PHAsset.PlaybackStyle" },
+			// ReplayKit
+			{ "ReplayKit.RPRecordingError", "RPRecordingErrorCode" },
 			// SafariServices
 			{ "SafariServices.SFErrorCode", "SFError.Code" },
 			// StoreKit
