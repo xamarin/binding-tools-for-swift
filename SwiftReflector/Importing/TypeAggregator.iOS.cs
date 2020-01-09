@@ -96,6 +96,8 @@ namespace SwiftReflector.Importing {
 			"Messages.MSMessagesAppPresentationContext",
 			// PassKit
 			"PassKit.PKErrorCode", // does not exist
+			// PdfKit
+			"PdfKit.PdfPrintScalingMode", // macOS only
 			// SafariServices
 			"SafariServices.SFSafariViewControllerDismissButtonStyle",
 			// UIKit
@@ -269,6 +271,27 @@ namespace SwiftReflector.Importing {
 			{ "PassKit.PKContactFields", "PKContactField" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
 			{ "PassKit.PKPaymentErrorCode", "PKPaymentError.Code" },
+			// PdfKit
+			{ "PDFKit.PdfActionNamedName", "PDFActionNamedName" },
+			{ "PDFKit.PdfAnnotationHighlightingMode", "PDFAnnotationHighlightingMode" },
+			{ "PDFKit.PdfAnnotationKey", "PDFAnnotationKey" },
+			{ "PDFKit.PdfAnnotationLineEndingStyle", "PDFAnnotationLineEndingStyle" },
+			{ "PDFKit.PdfAnnotationSubtype", "PDFAnnotationSubtype" },
+			{ "PDFKit.PdfAnnotationTextIconType", "PDFAnnotationTextIconType" },
+			{ "PDFKit.PdfAnnotationWidgetSubtype", "PDFAnnotationWidgetSubtype" },
+			{ "PDFKit.PdfAreaOfInterest", "PDFAreaOfInterest" },
+			{ "PDFKit.PdfBorderStyle", "PDFBorderStyle" },
+			{ "PDFKit.PdfDisplayBox", "PDFDisplayBox" },
+			{ "PDFKit.PdfDisplayDirection", "PDFDisplayDirection" },
+			{ "PDFKit.PdfDisplayMode", "PDFDisplayMode" },
+			{ "PDFKit.PdfDocumentPermissions", "PDFDocumentPermissions" },
+			{ "PDFKit.PdfInterpolationQuality", "PDFInterpolationQuality" },
+			{ "PDFKit.PdfLineStyle", "PDFLineStyle" },
+			{ "PDFKit.PdfMarkupType", "PDFMarkupType" },
+			{ "PDFKit.PdfTextAnnotationIconType", "PDFTextAnnotationIconType" },
+			{ "PDFKit.PdfThumbnailLayoutMode", "PDFThumbnailLayoutMode" },
+			{ "PDFKit.PdfWidgetCellState", "PDFWidgetCellState" },
+			{ "PDFKit.PdfWidgetControlType", "PDFWidgetControlType" },
 			// SafariServices
 			{ "SafariServices.SFErrorCode", "SFError.Code" },
 			// StoreKit
