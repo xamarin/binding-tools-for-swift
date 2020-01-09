@@ -14,7 +14,6 @@ MAC_NAMESPACES= \
 	Foundation \
 
 IOS_NAMESPACES= \
-	AddressBook	\
 	CoreGraphics \
 	Foundation \
 	UIKit \
