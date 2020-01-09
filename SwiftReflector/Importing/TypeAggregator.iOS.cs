@@ -292,6 +292,8 @@ namespace SwiftReflector.Importing {
 			{ "PDFKit.PdfThumbnailLayoutMode", "PDFThumbnailLayoutMode" },
 			{ "PDFKit.PdfWidgetCellState", "PDFWidgetCellState" },
 			{ "PDFKit.PdfWidgetControlType", "PDFWidgetControlType" },
+			// Photos
+			{ "Photos.PHAssetPlaybackStyle", "PHAsset.PlaybackStyle" },
 			// SafariServices
 			{ "SafariServices.SFErrorCode", "SFError.Code" },
 			// StoreKit
