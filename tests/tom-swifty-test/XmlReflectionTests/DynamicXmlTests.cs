@@ -1087,7 +1087,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
 			Assert.AreEqual (1, assoc.ConformingProtocols.Count, "wrong number of conf");
 			Assert.IsNull (assoc.SuperClass, "non-null superclass");
-			Assert.IsNotNull (assoc.DefaultType, "null default type");
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
