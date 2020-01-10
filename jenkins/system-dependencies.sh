@@ -606,7 +606,10 @@ function install_cmake ()
 		# First go to the homebrew repo
 		cd "$(brew --repo)"/Library/Taps/homebrew/homebrew-core
 		# Checkout the hash that has the cmake version we want
-		git fetch
+		git fetch origin
+		git show
+		git show origin/master
+		git log -1 "$BREW_CMAKE_HASH"
 		git checkout "$BREW_CMAKE_HASH"
 		# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
 		if type -t cmake > /dev/null; then
