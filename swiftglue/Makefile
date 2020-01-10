@@ -15,6 +15,7 @@ MAC_NAMESPACES= \
 
 IOS_NAMESPACES= \
 	Accounts \
+	AdSupport \
 	CoreGraphics \
 	Foundation \
 	HealthKit \
