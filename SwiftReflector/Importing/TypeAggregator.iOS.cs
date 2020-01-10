@@ -51,6 +51,43 @@ namespace SwiftReflector.Importing {
 			// AssetsLibrary
 			"AssetsLibrary.ALAssetsError", // not an enum
 			"AssetsLibrary.ALAssetType", // not an enum
+			// AudioToolbox
+			"AudioToolbox.AudioCodecComponentType", // not an enum
+			"AudioToolbox.AudioConverterError", // not an enum
+			"AudioToolbox.AudioConverterPrimeMethod", // not an enum
+			"AudioToolbox.AudioConverterQuality", // not an enum
+			"AudioToolbox.AudioConverterSampleRateConverterComplexity", // not an enum
+			"AudioToolbox.AudioFileChunkType", // can't find it
+			"AudioToolbox.AudioFileError", // not an enum
+			"AudioToolbox.AudioFileLoopDirection", // not an enum
+			"AudioToolbox.AudioFileMarkerType", // not an enum
+			"AudioToolbox.AudioFileProperty", // not an enum
+			"AudioToolbox.AudioFileStreamProperty", // not an enum
+			"AudioToolbox.AudioFileStreamStatus", // can't find it
+			"AudioToolbox.AudioFileType", // not an enum
+			"AudioToolbox.AudioFormatError", // not an enum
+			"AudioToolbox.AudioFormatType", // can't find it
+			"AudioToolbox.AudioQueueDeviceProperty", // not an enum
+			"AudioToolbox.AudioQueueHardwareCodecPolicy", // not an enum
+			"AudioToolbox.AudioQueueParameter", // not an enum
+			"AudioToolbox.AudioQueueProperty", // not an enum
+			"AudioToolbox.AudioQueueStatus", // can't find it
+			"AudioToolbox.AudioQueueTimePitchAlgorithm", // not an enum
+			"AudioToolbox.AudioServicesError", // can't find it
+			"AudioToolbox.AudioSessionActiveFlags", // not an enum
+			"AudioToolbox.AudioSessionCategory", // not an enum
+			"AudioToolbox.AudioSessionErrors", // not an enum
+			"AudioToolbox.AudioSessionInputRouteKind", // not an enum, not in Swift
+			"AudioToolbox.AudioSessionInterruptionState", // not an enum
+			"AudioToolbox.AudioSessionMode", // not an enum
+			"AudioToolbox.AudioSessionOutputRouteKind", // not an enum, not in Swift
+			"AudioToolbox.AudioSessionProperty", // not an enum
+			"AudioToolbox.AudioSessionRouteChangeReason", // not an enum
+			"AudioToolbox.AudioSessionRoutingOverride", // not an enum
+			"AudioToolbox.MusicPlayerStatus", // can't find it
+			"AudioToolbox.SmpteTime", // wrong namespace
+			"AudioToolbox.SmpteTimeFlags", // wrong namespace
+			"AudioToolbox.SmpteTimeType", // wrong namespace
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated
@@ -174,6 +211,15 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
 		static Dictionary<string, string> iOSTypeNamesToMap = new Dictionary<string, string> {
+			// AudioToolbox
+			{ "AudioToolbox.AudioChannelBit", "AudioChannelBitmap" },
+			{ "AudioToolbox.AudioFilePermission", "AudioFilePermissions" },
+			{ "AudioToolbox.AudioFileSmpteTime", "AudioFile_SMPTE_Time" },
+			{ "AudioToolbox.AudioFileStreamPropertyFlag", "AudioFileStreamPropertyFlags" },
+			{ "AudioToolbox.AudioFormat", "AudioFormatListItem" },
+			{ "AudioToolbox.MidiChannelMessage", "MIDIChannelMessage" },
+			{ "AudioToolbox.MidiNoteMessage", "MIDINoteMessage" },
+			{ "AudioToolbox.PanningMode", "AudioPanningMode" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
 			{ "Foundation.NSCalendarType", "NSCalendar.Identifier" },
