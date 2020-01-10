@@ -609,7 +609,9 @@ function install_cmake ()
 		git fetch origin
 		git show
 		git show origin/master
-		git log -1 "$BREW_CMAKE_HASH"
+		if ! git log -1 "$BREW_CMAKE_HASH" >/dev/null; then
+			git fetch --unshallow
+		fi
 		git checkout "$BREW_CMAKE_HASH"
 		# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
 		if type -t cmake > /dev/null; then
