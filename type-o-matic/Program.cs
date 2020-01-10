@@ -176,7 +176,7 @@ namespace typeomatic {
 			// Used to be MetaDataWrapperFor
 	    		// The size of this symbol gets magnified by the number of types.
 			// Removing 14 characters saves ~32K
-			return $"MDW_{type.Name}";
+			return $"MDW_{type.Namespace}_{type.Name}";
 		}
 
 		// for debugging
