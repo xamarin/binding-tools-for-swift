@@ -88,6 +88,30 @@ namespace SwiftReflector.Importing {
 			"AudioToolbox.SmpteTime", // wrong namespace
 			"AudioToolbox.SmpteTimeFlags", // wrong namespace
 			"AudioToolbox.SmpteTimeType", // wrong namespace
+			// AudioUnit
+			"AudioUnit.AudioCodecManufacturer", // not an enum
+			"AudioUnit.AudioComponentManufacturerType", // can't find it
+			"AudioUnit.AudioComponentStatus", // can't find it
+			"AudioUnit.AudioComponentType", // can't find it
+			"AudioUnit.AudioObjectPropertyElement", // not an enum
+			"AudioUnit.AudioObjectPropertyScope", // wrong namespace
+			"AudioUnit.AudioObjectPropertySelector", // wrong namespace
+			"AudioUnit.AudioTypeConverter", // not an enum
+			"AudioUnit.AudioTypeEffect", // not an enum
+			"AudioUnit.AudioTypeGenerator", // not an enum
+			"AudioUnit.AudioTypeMixer", // not an enum
+			"AudioUnit.AudioTypeMusicDevice", // not an enum
+			"AudioUnit.AudioTypeOutput", // not an enum
+			"AudioUnit.AudioTypePanner", // unimplemented
+			"AudioUnit.AudioUnitClumpID", // not an enum
+			"AudioUnit.AudioUnitParameterType", // can't find it
+			"AudioUnit.AudioUnitPropertyIDType", // not an enum
+			"AudioUnit.AudioUnitScopeType", // not an enum
+			"AudioUnit.AudioUnitStatus", // can't find it
+			"AudioUnit.AudioUnitSubType", // not an enum
+			"AudioUnit.AUGraphError", // not an enum
+			"AudioUnit.ExtAudioFileError", // not an enum
+			"AudioUnit.InstrumentType", // not an enum
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated
@@ -220,6 +244,13 @@ namespace SwiftReflector.Importing {
 			{ "AudioToolbox.MidiChannelMessage", "MIDIChannelMessage" },
 			{ "AudioToolbox.MidiNoteMessage", "MIDINoteMessage" },
 			{ "AudioToolbox.PanningMode", "AudioPanningMode" },
+			// AudioUnit
+			{ "AudioUnit.AudioComponentFlag", "AudioComponentFlags" },
+			{ "AudioUnit.AudioUnitBusType", "AUAudioUnitBusType" },
+			{ "AudioUnit.AudioUnitParameterFlag", "AudioUnitParameterOptions" },
+			{ "AudioUnit.ScheduledAudioSliceFlag", "AUScheduledAudioSliceFlags" },
+			{ "AudioUnit.SpatialMixerAttenuation", "AUSpatialMixerAttenuationCurve" },
+			{ "AudioUnit.SpatialMixerRenderingFlags", "AUSpatialMixerRenderingFlags" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
 			{ "Foundation.NSCalendarType", "NSCalendar.Identifier" },

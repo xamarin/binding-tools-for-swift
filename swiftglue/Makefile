@@ -20,6 +20,7 @@ IOS_NAMESPACES= \
 	AdSupport \
 	AssetsLibrary \
 	AudioToolbox \
+	AudioUnit \
 	CoreGraphics \
 	Foundation \
 	HealthKit \
