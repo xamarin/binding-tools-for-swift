@@ -19,6 +19,7 @@ IOS_NAMESPACES= \
 	AddressBookUI \
 	AdSupport \
 	AssetsLibrary \
+	AudioToolbox \
 	CoreGraphics \
 	Foundation \
 	HealthKit \
