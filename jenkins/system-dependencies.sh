@@ -44,6 +44,11 @@ while ! test -z "$1"; do
 			unset IGNORE_XM
 			shift
 			;;
+		--provision-cmake)
+			PROVISION_CMAKE=1
+			unset IGNORE_CMAKE
+			shift
+			;;
 		--provision-all)
 			PROVISION_MONO=1
 			unset IGNORE_MONO
@@ -53,6 +58,8 @@ while ! test -z "$1"; do
 			unset IGNORE_XI
 			PROVISION_XM=1
 			unset IGNORE_XM
+			PROVISION_CMAKE=1
+			unset IGNORE_CMAKE
 			shift
 			;;
 		--ignore-all)
@@ -61,6 +68,7 @@ while ! test -z "$1"; do
 			IGNORE_XCODE=1
 			IGNORE_XI=1
 			IGNORE_XM=1
+			IGNORE_CMAKE=1
 			shift
 			;;
 		--ignore-macos)
@@ -81,6 +89,10 @@ while ! test -z "$1"; do
 			;;
 		--ignore-xamarin-mac | --ignore-xm)
 			IGNORE_XM=1
+			shift
+			;;
+		--ignore-cmake)
+			IGNORE_CMAKE=1
 			shift
 			;;
 		-v | --verbose)
@@ -570,6 +582,88 @@ function check_xm () {
 	check_versioned_product /Library/Frameworks/Xamarin.Mac.framework/Versions/Current/Version XM Xamarin.Mac
 }
 
+function get_cmake_version () {
+	if ! CMAKE_VERSION_OUTPUT=$(cmake --version 2>/dev/null); then
+		return 1
+	else
+		# the version is the third word in the whole --version output
+		read -r -a CMAKE_VERSION_OUTPUT <<< "$CMAKE_VERSION_OUTPUT"
+		CMAKE_VERSION=${CMAKE_VERSION_OUTPUT[2]}
+		echo "$CMAKE_VERSION"
+	fi
+}
+
+function install_cmake ()
+{
+	local BREW_CMAKE_HASH
+
+	pushd . > /dev/null
+
+	BREW_CMAKE_HASH=$(grep "^BREW_CMAKE_HASH=" Make.config | sed 's/.*=//')
+	if test -n "$BREW_CMAKE_HASH"; then
+		log "Installing CMake from homebrew's $BREW_CMAKE_HASH..."
+		# we need a specific cmake version. This gets a bit complicated.
+		# First go to the homebrew repo
+		cd "$(brew --repo)"/Library/Taps/homebrew/homebrew-core
+		# Checkout the hash that has the cmake version we want
+		git fetch
+		git checkout "$BREW_CMAKE_HASH"
+		# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
+		if type -t cmake > /dev/null; then
+			brew uninstall --force cmake
+		fi
+		# Install the cmake we want
+		HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake
+	else
+		log "Installing CMake..."
+		brew install cmake
+	fi
+
+	popd > /dev/null
+
+	log "Installed CMake $(get_cmake_version)."
+}
+
+function check_cmake () {
+	if test -n "$IGNORE_CMAKE"; then
+		warn "Ignoring the CMake dependency because the ${COLOR_BLUE}IGNORE_CMAKE${COLOR_RESET} variable is set."
+		return;
+	fi
+	local MIN_PRODUCT_VERSION
+	local MAX_PRODUCT_VERSION
+	MIN_PRODUCT_VERSION=$(grep "^MIN_CMAKE_VERSION=" Make.config | sed 's/.*=//')
+	MAX_PRODUCT_VERSION=$(grep "^MAX_CMAKE_VERSION=" Make.config | sed 's/.*=//')
+
+	if ! ACTUAL_PRODUCT_VERSION=$(get_cmake_version); then
+		if test -z "$PROVISION_CMAKE"; then
+			fail "You must have at least CMake $MIN_PRODUCT_VERSION."
+			return
+		fi
+		install_cmake
+	elif ! is_at_least_version "$ACTUAL_PRODUCT_VERSION" "$MIN_PRODUCT_VERSION"; then
+		if test -z "$PROVISION_CMAKE"; then
+			fail "You must have at least $PRODUCT_NAME $MIN_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION. Download URL: $MIN_PRODUCT_URL"
+			return
+		fi
+		install_cmake
+	elif [[ "$ACTUAL_PRODUCT_VERSION" == "$MAX_PRODUCT_VERSION" ]]; then
+		: # this is ok
+	elif is_at_least_version "$ACTUAL_PRODUCT_VERSION" "$MAX_PRODUCT_VERSION"; then
+		if test -z "$PROVISION_CMAKE"; then
+			fail "Your CMake version is too new, max version is $MAX_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION."
+			warn "You can execute ${COLOR_MAGENTA}$0 --provision-cmake${COLOR_RESET} to automatically install CMake."
+			warn "You may also edit Make.config and change MAX_CMAKE_VERSION to your actual version to continue the"
+			warn "build (unless you're on a release branch). Once the build completes successfully, please"
+			warn "commit the new MAX_CMAKE_VERSION value."
+			warn "Alternatively you can ${COLOR_MAGENTA}export IGNORE_CMAKE=1${COLOR_RESET} to skip this check."
+			return
+		fi
+		install_cmake
+	fi
+
+	ok "Found CMake $(get_cmake_version) (at least $MIN_PRODUCT_VERSION and not more than $MAX_PRODUCT_VERSION is required)"
+}
+
 echo "Checking system..."
 
 check_macos_version
@@ -577,6 +671,7 @@ check_xcode
 check_mono
 check_xi
 check_xm
+check_cmake
 
 if test -z $FAIL; then
 	echo "System check succeeded"
