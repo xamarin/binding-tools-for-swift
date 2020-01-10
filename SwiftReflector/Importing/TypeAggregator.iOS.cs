@@ -112,6 +112,8 @@ namespace SwiftReflector.Importing {
 			"AudioUnit.AUGraphError", // not an enum
 			"AudioUnit.ExtAudioFileError", // not an enum
 			"AudioUnit.InstrumentType", // not an enum
+			// CallKit
+			"CallKit.CXErrorCode", // doesn't exist in Swift
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated
@@ -251,6 +253,10 @@ namespace SwiftReflector.Importing {
 			{ "AudioUnit.ScheduledAudioSliceFlag", "AUScheduledAudioSliceFlags" },
 			{ "AudioUnit.SpatialMixerAttenuation", "AUSpatialMixerAttenuationCurve" },
 			{ "AudioUnit.SpatialMixerRenderingFlags", "AUSpatialMixerRenderingFlags" },
+			// CallKit
+			{ "CallKit.CXCallDirectoryEnabledStatus", "CXCallDirectoryManager.EnabledStatus" },
+			{ "CallKit.CXHandleType", "CXHandle.HandleType" },
+			{ "CallKit.CXPlayDtmfCallActionType", "CXPlayDTMFCallAction.ActionType" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
 			{ "Foundation.NSCalendarType", "NSCalendar.Identifier" },
