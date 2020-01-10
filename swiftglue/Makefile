@@ -14,11 +14,29 @@ MAC_NAMESPACES= \
 	Foundation \
 
 IOS_NAMESPACES= \
+	Accounts \
 	AddressBook \
 	AddressBookUI \
+	AdSupport \
 	CoreGraphics \
 	Foundation \
+	HealthKit \
+	HealthKitUI \
+	HomeKit \
+	iAd \
+	PassKit \
+	PdfKit \
+	PushKit \
+	Photos \
+	PhotosUI \
+	ReplayKit \
+	StoreKit \
 	UIKit \
+	UserNotifications \
+	UserNotificationsUI \
+	WatchConnectivity \
+	WatchKit \
+	WebKit \
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
