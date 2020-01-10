@@ -42,6 +42,12 @@ namespace SwiftReflector.Importing {
 		static HashSet<string> iOSTypesToSkip = new HashSet<string> () {
 			// Accounts
 			"Accounts.ACFacebookAudience",
+			// AddressBook
+			"AddressBook.ABAddressBookError", // not an enum
+			"AddressBook.ABPersonKind", // not an enum
+			"AddressBook.ABPersonProperty", // not an enum
+			"AddressBook.ABPersonSortBy", // not an enum
+			"AddressBook.ABSourceProperty", // not an enum
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated

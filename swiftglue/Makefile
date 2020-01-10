@@ -15,6 +15,8 @@ MAC_NAMESPACES= \
 
 IOS_NAMESPACES= \
 	Accounts \
+	AddressBook \
+	AddressBookUI \
 	AdSupport \
 	CoreGraphics \
 	Foundation \
