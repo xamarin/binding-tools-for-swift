@@ -87,7 +87,7 @@ namespace SwiftReflector.Importing {
 			"AudioToolbox.MusicPlayerStatus", // can't find it
 			"AudioToolbox.SmpteTime", // wrong namespace
 			"AudioToolbox.SmpteTimeFlags", // wrong namespace
-			"AudioToolbox.SmpteTimeType",
+			"AudioToolbox.SmpteTimeType", // wrong namespace
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated
