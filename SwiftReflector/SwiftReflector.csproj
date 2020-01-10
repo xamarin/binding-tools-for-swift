@@ -168,6 +168,7 @@
     <Compile Include="Importing\TypeAggregator.MacOS.cs" />
     <Compile Include="Demangling\Swift5NodeToTLDefinition.cs" />
     <Compile Include="Demangling\Swift5Demangler.cs" />
+    <Compile Include="SwiftXmlReflection\AssociatedTypeDeclaration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
