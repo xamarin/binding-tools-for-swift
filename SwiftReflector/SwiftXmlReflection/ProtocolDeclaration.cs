@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace SwiftReflector.SwiftXmlReflection {
@@ -17,7 +18,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return new ProtocolDeclaration ();
 		}
 
-		protected virtual void GatherXObjects (List<XObject> xobjects)
+		protected override void GatherXObjects (List<XObject> xobjects)
 		{
 			base.GatherXObjects (xobjects);
 			if (AssociatedTypes.Count <= 0)
@@ -31,7 +32,22 @@ namespace SwiftReflector.SwiftXmlReflection {
 			xobjects.Add (new XElement ("associatedtypes", assocTypes.ToArray ()));
 		}
 
+		protected override void CompleteUnrooting (TypeDeclaration unrooted)
+		{
+			base.CompleteUnrooting (unrooted);
+			if (unrooted is ProtocolDeclaration pd) {
+				pd.AssociatedTypes.AddRange (AssociatedTypes);
+			}
+		}
+
 		public List<AssociatedTypeDeclaration> AssociatedTypes { get; private set; }
+
+		public bool HasAssociatedTypes => AssociatedTypes.Count > 0;
+
+		public AssociatedTypeDeclaration AssociatedTypeNamed (string name)
+		{
+			return AssociatedTypes.FirstOrDefault (at => at.Name == name);
+		}
 	}
 }
 
