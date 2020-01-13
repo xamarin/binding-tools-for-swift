@@ -1086,13 +1086,13 @@ public protocol HoldsThing {
 			var assoc = protocol.AssociatedTypes [0];
 			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
 			Assert.AreEqual (1, assoc.ConformingProtocols.Count, "wrong number of conf");
+			Assert.AreEqual ("Swift.IteratorProtocol", assoc.ConformingProtocols [0].ToString ());
 			Assert.IsNull (assoc.SuperClass, "non-null superclass");
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
 
 		[Test]
-		[Ignore("Missing ending quote in super class")]
 		public void AssocTypeSuper ()
 		{
 			var code = @"
@@ -1113,8 +1113,8 @@ public protocol HoldsThing {
 			var assoc = protocol.AssociatedTypes [0];
 			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
 			Assert.AreEqual (0, assoc.ConformingProtocols.Count, "wrong number of conf");
-			Assert.IsNull (assoc.SuperClass, "non-null superclass");
-			Assert.IsNotNull (assoc.DefaultType, "null default type");
+			Assert.IsNotNull (assoc.SuperClass, "null superclass");
+			Assert.AreEqual ("SomeModule.Foo", assoc.SuperClass.ToString ());
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
