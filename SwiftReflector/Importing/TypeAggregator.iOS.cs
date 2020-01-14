@@ -188,6 +188,13 @@ namespace SwiftReflector.Importing {
 			"Foundation.NSUrlSessionMultipathServiceType",
 	    		"Foundation.NSRunLoopMode",
 			"Foundation.NSTextWritingDirection", // deprecated in 9.0
+			// GameKit
+			"GameKit.GKGameSessionErrorCode", // no longer exists
+			"GameKit.GKPeerConnectionState", // marked unavailable
+			"GameKit.GKPeerPickerConnectionType", // marked unavailable
+			"GameKit.GKSendDataMode", // marked unavailable
+			"GameKit.GKSessionMode", // marked unavailable
+			"GameKit.GKVoiceChatServiceError", // marked unavailable
 			// HomeKit
 			"HomeKit.HMAccessoryCategoryType", // not an enum
 			"HomeKit.HMActionSetType", // not an enum
@@ -482,6 +489,15 @@ namespace SwiftReflector.Importing {
 			{ "Foundation.NSStringTransform", "StringTransform" },
 			{ "Foundation.NSOperatingSystemVersion", "OperatingSystemVersion" },
 			{ "Foundation.NSDecimal", "Decimal" },
+			// GameKit
+			{ "GameKit.GKLeaderboardPlayerScope", "GKLeaderboard.PlayerScope" },
+			{ "GameKit.GKLeaderboardTimeScope", "GKLeaderboard.TimeScope" },
+			{ "GameKit.GKMatchSendDataMode", "GKMatch.SendDataMode" },
+			{ "GameKit.GKPhotoSize", "GKPlayer.PhotoSize" },
+			{ "GameKit.GKTurnBasedMatchOutcome", "GKTurnBasedMatch.Outcome" },
+			{ "GameKit.GKTurnBasedMatchStatus", "GKTurnBasedMatch.Status" },
+			{ "GameKit.GKTurnBasedParticipantStatus", "GKTurnBasedParticipant.Status" },
+			{ "GameKit.GKVoiceChatPlayerState", "GKVoiceChat.PlayerState" },
 			// HealthKit
 			{ "HealthKit.HKErrorCode", "HKError.Code" },
 			{ "HealthKit.HKFhirResourceType", "HKFHIRResourceType" },
