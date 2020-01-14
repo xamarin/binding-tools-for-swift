@@ -1001,5 +1001,141 @@ public func returnsAny() -> Any {
 			Assert.IsNotNull (returnType, "no return type");
 			Assert.AreEqual ("Swift.Any", returnType.Name, $"Wrong type: {returnType.Name}");
 		}
+
+		[Test]
+		public void AssocTypeSmoke ()
+		{
+			var code = @"
+public protocol HoldsThing {
+	associatedtype Thing
+	func getThing() -> Thing
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
+			Assert.IsNotNull (protocol, "no protocol");
+			Assert.AreEqual (1, protocol.AssociatedTypes.Count, "no associated types");
+			var assoc = protocol.AssociatedTypes [0];
+			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
+			Assert.AreEqual (0, assoc.ConformingProtocols.Count, "wrong number of conf");
+			Assert.IsNull (assoc.SuperClass, "non-null superclass");
+			Assert.IsNull (assoc.DefaultType, "non-null default type");
+		}
+
+		[Test]
+		public void AssocTypeTimesTwo ()
+		{
+			var code = @"
+public protocol HoldsThing {
+	associatedtype ThingOne
+	associatedtype ThingTwo
+	func doThing(a: ThingOne) -> ThingTwo
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
+			Assert.IsNotNull (protocol, "no protocol");
+			Assert.AreEqual (2, protocol.AssociatedTypes.Count, "no associated types");
+			var assoc = protocol.AssociatedTypes [0];
+			Assert.AreEqual ("ThingOne", assoc.Name, "wrong name");
+			assoc = protocol.AssociatedTypes [1];
+			Assert.AreEqual ("ThingTwo", assoc.Name, "wrong name");
+			Assert.AreEqual (0, assoc.ConformingProtocols.Count, "wrong number of conf");
+			Assert.IsNull (assoc.SuperClass, "non-null superclass");
+			Assert.IsNull (assoc.DefaultType, "non-null default type");
+		}
+
+		[Test]
+		public void AssocTypeDefaultType ()
+		{
+			var code = @"
+public protocol HoldsThing {
+	associatedtype Thing = Int
+	func doThing() -> Thing
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
+			Assert.IsNotNull (protocol, "no protocol");
+			Assert.AreEqual (1, protocol.AssociatedTypes.Count, "no associated types");
+			var assoc = protocol.AssociatedTypes [0];
+			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
+			Assert.AreEqual (0, assoc.ConformingProtocols.Count, "wrong number of conf");
+			Assert.IsNull (assoc.SuperClass, "non-null superclass");
+			Assert.IsNotNull (assoc.DefaultType, "null default type");
+			Assert.AreEqual ("Swift.Int", assoc.DefaultType.ToString ());
+		}
+
+		[Test]
+		public void AssocTypeConformance ()
+		{
+			var code = @"
+public protocol HoldsThing {
+	associatedtype Thing : IteratorProtocol
+	func doThing() -> Thing
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
+			Assert.IsNotNull (protocol, "no protocol");
+			Assert.AreEqual (1, protocol.AssociatedTypes.Count, "no associated types");
+			var assoc = protocol.AssociatedTypes [0];
+			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
+			Assert.AreEqual (1, assoc.ConformingProtocols.Count, "wrong number of conf");
+			Assert.AreEqual ("Swift.IteratorProtocol", assoc.ConformingProtocols [0].ToString ());
+			Assert.IsNull (assoc.SuperClass, "non-null superclass");
+			Assert.IsNull (assoc.DefaultType, "non-null default type");
+		}
+
+
+		[Test]
+		public void AssocTypeSuper ()
+		{
+			var code = @"
+open class Foo {
+	public init () { }
+}
+
+public protocol HoldsThing {
+	associatedtype Thing : Foo
+	func doThing() -> Thing
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
+			Assert.IsNotNull (protocol, "no protocol");
+			Assert.AreEqual (1, protocol.AssociatedTypes.Count, "no associated types");
+			var assoc = protocol.AssociatedTypes [0];
+			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
+			Assert.AreEqual (0, assoc.ConformingProtocols.Count, "wrong number of conf");
+			Assert.IsNotNull (assoc.SuperClass, "null superclass");
+			Assert.AreEqual ("SomeModule.Foo", assoc.SuperClass.ToString ());
+			Assert.IsNull (assoc.DefaultType, "non-null default type");
+		}
+
+		[Test]
+		public void FindsAssocTypeByName ()
+		{
+			var code = @"
+public protocol HoldsThing {
+	associatedtype Thing
+	func doThing() -> Thing
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
+			Assert.IsNotNull (protocol, "no protocol");
+			Assert.IsTrue (protocol.HasAssociatedTypes, "no associated types?!");
+			var assoc = protocol.AssociatedTypeNamed ("Thing");
+			Assert.IsNotNull (assoc, "couldn't find associated type");
+			assoc = protocol.AssociatedTypeNamed ("ThroatwarblerMangrove");
+			Assert.IsNull (assoc, "Found a non-existent associated type");
+		}
 	}
 }
