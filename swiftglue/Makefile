@@ -21,6 +21,7 @@ IOS_NAMESPACES= \
 	AssetsLibrary \
 	AudioToolbox \
 	AudioUnit \
+	CallKit \
 	CoreGraphics \
 	Foundation \
 	HealthKit \
