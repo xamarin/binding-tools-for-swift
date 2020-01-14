@@ -114,6 +114,27 @@ namespace SwiftReflector.Importing {
 			"AudioUnit.AUGraphError", // not an enum
 			"AudioUnit.ExtAudioFileError", // not an enum
 			"AudioUnit.InstrumentType", // not an enum
+			// AVFoundation
+			"AVFoundation.AVAssetExportSessionPreset", // not an enum
+			"AVFoundation.AVAudioBitRateStrategy", // not an enum
+			"AVFoundation.AVAudioDataSourceLocation", // not an enum
+			"AVFoundation.AVAudioDataSourceOrientation", // not an enum
+			"AVFoundation.AVAudioDataSourcePolarPattern", // not an enum
+			"AVFoundation.AVAudioSessionFlags", // not an enum
+			"AVFoundation.AVAudioSessionInterruptionFlags", // not an enum
+			"AVFoundation.AVAuthorizationMediaType", // can't find it
+			"AVFoundation.AVCaptureDeviceTransportControlsPlaybackMode", // marked unavailable
+			"AVFoundation.AVMediaTypes", // not an enum
+			"AVFoundation.AVSampleCursorChunkInfo", // Mac only
+			"AVFoundation.AVSampleCursorDependencyInfo", // Mac only
+			"AVFoundation.AVSampleCursorStorageRange", // Mac only
+			"AVFoundation.AVSampleCursorSyncInfo", // Mac only
+			"AVFoundation.AVSampleRateConverterAlgorithm", // not an enum
+			"AVFoundation.AVVideoCodec", // not an enum
+			"AVFoundation.AVVideoFieldMode", // marked unavailable
+			"AVFoundation.AVVideoH264EntropyMode", // not an enum
+			"AVFoundation.AVVideoProfileLevelH264", // not an enum
+			"AVFoundation.AVVideoScalingMode", // not an enum
 			// CallKit
 			"CallKit.CXErrorCode", // doesn't exist in Swift
 			// Contacts
@@ -276,6 +297,56 @@ namespace SwiftReflector.Importing {
 			{ "AudioUnit.ScheduledAudioSliceFlag", "AUScheduledAudioSliceFlags" },
 			{ "AudioUnit.SpatialMixerAttenuation", "AUSpatialMixerAttenuationCurve" },
 			{ "AudioUnit.SpatialMixerRenderingFlags", "AUSpatialMixerRenderingFlags" },
+			// AVFoundation
+			{ "AVFoundation.AVAssetExportSessionStatus", "AVAssetExportSession.Status" },
+			{ "AVFoundation.AVAssetImageGeneratorResult", "AVAssetImageGenerator.Result" },
+			{ "AVFoundation.AVAssetReaderStatus", "AVAssetReader.Status" },
+			{ "AVFoundation.AVAssetWriterInputMediaDataLocation", "AVAssetWriterInput.MediaDataLocation" },
+			{ "AVFoundation.AVAssetWriterStatus", "AVAssetWriter.Status" },
+			{ "AVFoundation.AVAudioSessionCategory", "AVAudioSession.Category" },
+			{ "AVFoundation.AVAudioSessionCategoryOptions", "AVAudioSession.CategoryOptions" },
+			{ "AVFoundation.AVAudioSessionErrorCode", "AVAudioSession.ErrorCode" },
+			{ "AVFoundation.AVAudioSessionInterruptionOptions", "AVAudioSession.InterruptionOptions" },
+			{ "AVFoundation.AVAudioSessionInterruptionType", "AVAudioSession.InterruptionType" },
+			{ "AVFoundation.AVAudioSessionIOType", "AVAudioSession.IOType" },
+			{ "AVFoundation.AVAudioSessionPortOverride", "AVAudioSession.PortOverride" },
+			{ "AVFoundation.AVAudioSessionRecordPermission", "AVAudioSession.RecordPermission" },
+			{ "AVFoundation.AVAudioSessionRouteChangeReason", "AVAudioSession.RouteChangeReason" },
+			{ "AVFoundation.AVAudioSessionRouteSharingPolicy", "AVAudioSession.RouteSharingPolicy" },
+			{ "AVFoundation.AVAudioSessionSetActiveOptions", "AVAudioSession.SetActiveOptions" },
+			{ "AVFoundation.AVAudioSessionSilenceSecondaryAudioHintType", "AVAudioSession.SilenceSecondaryAudioHintType" },
+			{ "AVFoundation.AVCaptureAutoFocusRangeRestriction", "AVCaptureDevice.AutoFocusRangeRestriction" },
+			{ "AVFoundation.AVCaptureAutoFocusSystem", "AVCaptureDevice.Format.AutoFocusSystem" },
+			{ "AVFoundation.AVCaptureDevicePosition", "AVCaptureDevice.Position" },
+			{ "AVFoundation.AVCaptureDeviceType", "AVCaptureDevice.DeviceType" },
+			{ "AVFoundation.AVCaptureDeviceFormat", "AVCaptureDevice.Format" },
+			{ "AVFoundation.AVCaptureExposureMode", "AVCaptureDevice.ExposureMode" },
+			{ "AVFoundation.AVCaptureFlashMode", "AVCaptureDevice.FlashMode" },
+			{ "AVFoundation.AVCaptureFocusMode", "AVCaptureDevice.FocusMode" },
+			{ "AVFoundation.AVCaptureLensStabilizationStatus", "AVCaptureDevice.LensStabilizationStatus" },
+			{ "AVFoundation.AVCaptureOutputDataDroppedReason", "AVCaptureOutput.DataDroppedReason" },
+			{ "AVFoundation.AVCaptureSessionInterruptionReason", "AVCaptureSession.InterruptionReason" },
+			{ "AVFoundation.AVCaptureSystemPressureFactors", "AVCaptureDevice.SystemPressureState.Factors" },
+			{ "AVFoundation.AVCaptureSystemPressureLevel", "AVCaptureDevice.SystemPressureState.Level" },
+			{ "AVFoundation.AVCaptureSystemPressureState", "AVCaptureDevice.SystemPressureState" },
+			{ "AVFoundation.AVCaptureTorchMode", "AVCaptureDevice.TorchMode" },
+			{ "AVFoundation.AVCaptureWhiteBalanceChromaticityValues", "AVCaptureDevice.WhiteBalanceChromaticityValues" },
+			{ "AVFoundation.AVCaptureWhiteBalanceGains", "AVCaptureDevice.WhiteBalanceGains" },
+			{ "AVFoundation.AVCaptureWhiteBalanceMode", "AVCaptureDevice.WhiteBalanceMode" },
+			{ "AVFoundation.AVCaptureWhiteBalanceTemperatureAndTintValues", "AVCaptureDevice.WhiteBalanceTemperatureAndTintValues" },
+			{ "AVFoundation.AVContentKeyRequestRetryReason", "AVContentKeyRequest.RetryReason" },
+			{ "AVFoundation.AVContentKeyRequestStatus", "AVContentKeyRequest.Status" },
+			{ "AVFoundation.AVDepthDataAccuracy", "AVDepthData.Accuracy" },
+			{ "AVFoundation.AVDepthDataQuality", "AVDepthData.Quality" },
+			{ "AVFoundation.AVFileTypes", "AVFileType" },
+			{ "AVFoundation.AVMediaCharacteristics", "AVMediaCharacteristic" },
+			{ "AVFoundation.AVMetadataObjectType", "AVMetadataObject.ObjectType" },
+			{ "AVFoundation.AVPlayerActionAtItemEnd", "AVPlayer.ActionAtItemEnd" },
+			{ "AVFoundation.AVPlayerHdrMode", "AVPlayer.HDRMode" },
+			{ "AVFoundation.AVPlayerItemStatus", "AVPlayerItem.Status" },
+			{ "AVFoundation.AVPlayerLooperStatus", "AVPlayerLooper.Status" },
+			{ "AVFoundation.AVPlayerStatus", "AVPlayer.Status" },
+			{ "AVFoundation.AVPlayerTimeControlStatus", "AVPlayer.TimeControlStatus" },
 			// CallKit
 			{ "CallKit.CXCallDirectoryEnabledStatus", "CXCallDirectoryManager.EnabledStatus" },
 			{ "CallKit.CXHandleType", "CXHandle.HandleType" },
