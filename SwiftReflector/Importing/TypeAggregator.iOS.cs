@@ -40,8 +40,6 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypesToSkipIOS (ref HashSet<string> result) { result = iOSTypesToSkip; }
 		static HashSet<string> iOSTypesToSkip = new HashSet<string> () {
-			// ARKit
-			"ARKit.ARPlaneClassificationStatus",
 			// Accounts
 			"Accounts.ACFacebookAudience",
 			// AddressBook
@@ -50,6 +48,8 @@ namespace SwiftReflector.Importing {
 			"AddressBook.ABPersonProperty", // not an enum
 			"AddressBook.ABPersonSortBy", // not an enum
 			"AddressBook.ABSourceProperty", // not an enum
+			// ARKit
+			"ARKit.ARPlaneClassificationStatus",
 			// AssetsLibrary
 			"AssetsLibrary.ALAssetsError", // not an enum
 			"AssetsLibrary.ALAssetType", // not an enum
