@@ -133,6 +133,8 @@ namespace SwiftReflector.Importing {
 			// CoreTelephony
 	    		"CoreTelephony.CTErrorDomain",
 	    		"CoreTelephony.CTCellularPlanProvisioningAddPlanResult",
+			// EventKit
+			"EventKit.EKCalendarEventAvailability", // not an enum
 			// Foundation
 			"Foundation.NSFileType",
 	    		"Foundation.NSUserDefaultsType",
@@ -283,6 +285,9 @@ namespace SwiftReflector.Importing {
 			{ "CloudKit.CKSubscriptionType", "CKSubscription.SubscriptionType" },
 			// Contacts
 			{ "Contacts.CNErrorCode", "CNError.Code" },
+			// EventKit
+			{ "EventKit.EKDay", "EKWeekday" },
+			{ "EventKit.EKErrorCode", "EKError.Code" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
 			{ "Foundation.NSCalendarType", "NSCalendar.Identifier" },
