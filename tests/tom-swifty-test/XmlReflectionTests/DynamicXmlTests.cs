@@ -1118,5 +1118,24 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
+		[Test]
+		public void FindsAssocTypeByName ()
+		{
+			var code = @"
+public protocol HoldsThing {
+	associatedtype Thing
+	func doThing() -> Thing
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
+			Assert.IsNotNull (protocol, "no protocol");
+			Assert.IsTrue (protocol.HasAssociatedTypes, "no associated types?!");
+			var assoc = protocol.AssociatedTypeNamed ("Thing");
+			Assert.IsNotNull (assoc, "couldn't find associated type");
+			assoc = protocol.AssociatedTypeNamed ("ThroatwarblerMangrove");
+			Assert.IsNull (assoc, "Found a non-existent associated type");
+		}
 	}
 }
