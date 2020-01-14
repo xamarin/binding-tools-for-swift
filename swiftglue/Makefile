@@ -34,6 +34,8 @@ IOS_NAMESPACES= \
 	EventKit \
 	EventKitUI \
 	ExternalAccessory \
+	FileProvider \
+	FileProviderUI \
 	Foundation \
 	HealthKit \
 	HealthKitUI \
