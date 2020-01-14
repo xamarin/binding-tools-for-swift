@@ -40,6 +40,8 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypesToSkipIOS (ref HashSet<string> result) { result = iOSTypesToSkip; }
 		static HashSet<string> iOSTypesToSkip = new HashSet<string> () {
+			// Accelerate
+			"Accelerate.vImageGamma", // not an enum
 			// Accounts
 			"Accounts.ACFacebookAudience",
 			// AddressBook
@@ -271,6 +273,17 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
 		static Dictionary<string, string> iOSTypeNamesToMap = new Dictionary<string, string> {
+			// Accelerate
+			{ "Accelerate.Pixel8888", "Pixel_8888" },
+			{ "Accelerate.PixelARGB16S", "Pixel_ARGB_16S" },
+			{ "Accelerate.PixelARGB16U", "Pixel_ARGB_16U" },
+			{ "Accelerate.PixelFFFF", "Pixel_FFFF" },
+			{ "Accelerate.vImageAffineTransformDouble", "vImage_AffineTransform_Double" },
+			{ "Accelerate.vImageAffineTransformFloat", "vImage_AffineTransform" },
+			{ "Accelerate.vImageBuffer", "vImage_Buffer" },
+			{ "Accelerate.vImageError", "vImage_Error" },
+			{ "Accelerate.vImageFlags", "vImage_Flags" },
+			{ "Accelerate.vImageInterpolationMethod", "vImage_InterpolationMethod" },
 			// ARKit
 			{ "ARKit.AREnvironmentTexturing", "ARWorldTrackingConfiguration.EnvironmentTexturing" },
 			{ "ARKit.ARErrorCode", "ARError.Code" },

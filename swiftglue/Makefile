@@ -14,6 +14,7 @@ MAC_NAMESPACES= \
 	Foundation \
 
 IOS_NAMESPACES= \
+	Accelerate \
 	Accounts \
 	AddressBook \
 	AddressBookUI \
