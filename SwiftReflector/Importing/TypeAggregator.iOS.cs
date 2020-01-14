@@ -114,6 +114,13 @@ namespace SwiftReflector.Importing {
 			"AudioUnit.InstrumentType", // not an enum
 			// CallKit
 			"CallKit.CXErrorCode", // doesn't exist in Swift
+			// Contacts
+			"Contacts.CNContactOptions", // not an enum
+			"Contacts.CNInstantMessageAddressOption", // not an enum
+			"Contacts.CNInstantMessageServiceOption", // not an enum
+			"Contacts.CNPostalAddressKeyOption", // not an enum
+			"Contacts.CNSocialProfileOption", // not an enum
+			"Contacts.CNSocialProfileServiceOption", // not an enum
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated
@@ -274,6 +281,8 @@ namespace SwiftReflector.Importing {
 			{ "CloudKit.CKShareParticipantRole", "CKShare_Participant_Role" },
 			{ "CloudKit.CKShareParticipantType", "CKShare_Participant_ParticipantType" },
 			{ "CloudKit.CKSubscriptionType", "CKSubscription.SubscriptionType" },
+			// Contacts
+			{ "Contacts.CNErrorCode", "CNError.Code" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
 			{ "Foundation.NSCalendarType", "NSCalendar.Identifier" },
