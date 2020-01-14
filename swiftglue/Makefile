@@ -27,6 +27,8 @@ IOS_NAMESPACES= \
 	ContactsUI \
 	CoreGraphics \
 	DeviceCheck \
+	EventKit \
+	EventKitUI \
 	Foundation \
 	HealthKit \
 	HealthKitUI \
