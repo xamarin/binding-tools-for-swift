@@ -40,6 +40,8 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypesToSkipIOS (ref HashSet<string> result) { result = iOSTypesToSkip; }
 		static HashSet<string> iOSTypesToSkip = new HashSet<string> () {
+			// ARKit
+			"ARKit.ARPlaneClassificationStatus",
 			// Accounts
 			"Accounts.ACFacebookAudience",
 			// AddressBook
@@ -246,6 +248,18 @@ namespace SwiftReflector.Importing {
 
 		static partial void TypeNamesToMapIOS (ref Dictionary <string, string> result) { result = iOSTypeNamesToMap; }
 		static Dictionary<string, string> iOSTypeNamesToMap = new Dictionary<string, string> {
+			// ARKit
+			{ "ARKit.AREnvironmentTexturing", "ARWorldTrackingConfiguration.EnvironmentTexturing" },
+			{ "ARKit.ARErrorCode", "ARError.Code" },
+			{ "ARKit.ARHitTestResultType", "ARHitTestResult.ResultType" },
+			{ "ARKit.ARPlaneAnchorAlignment", "ARPlaneAnchor.Alignment" },
+			{ "ARKit.ARPlaneClassification", "ARKit.ARPlaneAnchor.Classification" },
+			{ "ARKit.ARPlaneDetection", "ARKit.ARWorldTrackingConfiguration.PlaneDetection" },
+			{ "ARKit.ARSessionRunOptions", "ARSession.RunOptions" },
+			{ "ARKit.ARTrackingState", "ARCamera.TrackingState" },
+			{ "ARKit.ARTrackingStateReason", "ARCamera.TrackingState.Reason" },
+			{ "ARKit.ARWorldAlignment", "ARConfiguration.WorldAlignment" },
+			{ "ARKit.ARWorldMappingStatus", "ARFrame.WorldMappingStatus" },
 			// AudioToolbox
 			{ "AudioToolbox.AudioChannelBit", "AudioChannelBitmap" },
 			{ "AudioToolbox.AudioFilePermission", "AudioFilePermissions" },

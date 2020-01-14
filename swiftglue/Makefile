@@ -18,6 +18,7 @@ IOS_NAMESPACES= \
 	AddressBook \
 	AddressBookUI \
 	AdSupport \
+	ARKit \
 	AssetsLibrary \
 	AudioToolbox \
 	AudioUnit \
