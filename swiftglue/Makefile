@@ -23,6 +23,7 @@ IOS_NAMESPACES= \
 	AudioToolbox \
 	AudioUnit \
 	AVFoundation \
+	AVKit \
 	CallKit \
 	CloudKit \
 	Contacts \

@@ -135,6 +135,8 @@ namespace SwiftReflector.Importing {
 			"AVFoundation.AVVideoH264EntropyMode", // not an enum
 			"AVFoundation.AVVideoProfileLevelH264", // not an enum
 			"AVFoundation.AVVideoScalingMode", // not an enum
+			// AVKit
+			"AVKit.AVPlayerViewControlsStyle", // Mac only
 			// CallKit
 			"CallKit.CXErrorCode", // doesn't exist in Swift
 			// Contacts
