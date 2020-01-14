@@ -46,6 +46,7 @@ IOS_NAMESPACES= \
 	HomeKit \
 	iAd \
 	IdentityLookup \
+	ImageIO \
 	PassKit \
 	PdfKit \
 	PushKit \
