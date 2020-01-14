@@ -37,6 +37,7 @@ IOS_NAMESPACES= \
 	FileProvider \
 	FileProviderUI \
 	Foundation \
+	GLKit \
 	HealthKit \
 	HealthKitUI \
 	HomeKit \
