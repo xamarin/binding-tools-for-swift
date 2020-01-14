@@ -33,6 +33,7 @@ IOS_NAMESPACES= \
 	DeviceCheck \
 	EventKit \
 	EventKitUI \
+	ExternalAccessory \
 	Foundation \
 	HealthKit \
 	HealthKitUI \
