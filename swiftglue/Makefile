@@ -23,6 +23,8 @@ IOS_NAMESPACES= \
 	AudioUnit \
 	CallKit \
 	CloudKit \
+	Contacts \
+	ContactsUI \
 	CoreGraphics \
 	Foundation \
 	HealthKit \
