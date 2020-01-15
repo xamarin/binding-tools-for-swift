@@ -73,6 +73,7 @@ IOS_NAMESPACES= \
 	PhotosUI \
 	QuickLook \
 	ReplayKit \
+	SafariServices \
 	StoreKit \
 	UIKit \
 	UserNotifications \
