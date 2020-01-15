@@ -8,6 +8,8 @@ For support requests use https://www.xamarin.com/support
 -->
 ### Steps to Reproduce
 
+<!--If there is a specific swift language feature that triggers this issue, please include a minimal snippet that causes it. -->
+
 1. 
 2. 
 3. 
