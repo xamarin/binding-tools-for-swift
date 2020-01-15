@@ -49,6 +49,7 @@ IOS_NAMESPACES= \
 	ImageIO \
 	Intents \
 	IntentsUI \
+	JavaScriptCore \
 	PassKit \
 	PdfKit \
 	PushKit \
