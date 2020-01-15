@@ -71,6 +71,7 @@ IOS_NAMESPACES= \
 	PushKit \
 	Photos \
 	PhotosUI \
+	QuickLook \
 	ReplayKit \
 	StoreKit \
 	UIKit \
