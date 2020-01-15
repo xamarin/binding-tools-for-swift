@@ -555,6 +555,22 @@ namespace SwiftReflector.Importing {
 			{ "MetalPerformanceShaders.MPSRnnSequenceDirection", "MPSRNNSequenceDirection" },
 			// ModelIO
 			{ "ModelIO.MDLVoxelIndexExtent2", "MDLVoxelIndexExtent" },
+			// NetworkExtension
+			{ "NetworkExtension.NEDnsProxyManagerError", "NEDNSProxyManagerError" },
+			{ "NetworkExtension.NEHotspotConfigurationEapTlsVersion", "NEHotspotEAPSettings.TLSVersion" },
+			{ "NetworkExtension.NEHotspotConfigurationEapType", "NEHotspotEAPSettings.EAPType" },
+			{ "NetworkExtension.NEHotspotConfigurationTtlsInnerAuthenticationType", "NEHotspotEAPSettings.TTLSInnerAuthenticationType" },
+			{ "NetworkExtension.NEVpnError", "NEVPNError" },
+			{ "NetworkExtension.NEVpnIke2CertificateType", "NEVPNIKEv2CertificateType" },
+			{ "NetworkExtension.NEVpnIke2DeadPeerDetectionRate", "NEVPNIKEv2DeadPeerDetectionRate" },
+			{ "NetworkExtension.NEVpnIke2DiffieHellman", "NEVPNIKEv2DiffieHellmanGroup" },
+			{ "NetworkExtension.NEVpnIke2EncryptionAlgorithm", "NEVPNIKEv2EncryptionAlgorithm" },
+			{ "NetworkExtension.NEVpnIke2IntegrityAlgorithm", "NEVPNIKEv2IntegrityAlgorithm" },
+			{ "NetworkExtension.NEVpnIkeAuthenticationMethod", "NEVPNIKEAuthenticationMethod" },
+			{ "NetworkExtension.NEVpnIkev2TlsVersion", "NEVPNIKEv2TLSVersion" },
+			{ "NetworkExtension.NEVpnStatus", "NEVPNStatus" },
+			{ "NetworkExtension.NWTcpConnectionState", "NWTCPConnectionState" },
+			{ "NetworkExtension.NWUdpSessionState", "NWUDPSessionState" },
 			// PassKit
 			{ "PassKit.PKContactFields", "PKContactField" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
