@@ -57,6 +57,9 @@ IOS_NAMESPACES= \
 	MediaToolbox \
 	Messages \
 	MessageUI \
+	Metal \
+	MetalKit \
+	MetalPerformanceShaders \
 	PassKit \
 	PdfKit \
 	PushKit \
