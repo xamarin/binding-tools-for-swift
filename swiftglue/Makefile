@@ -39,6 +39,7 @@ IOS_NAMESPACES= \
 	Foundation \
 	GameController \
 	GameKit \
+	GameplayKit \
 	GLKit \
 	HealthKit \
 	HealthKitUI \
