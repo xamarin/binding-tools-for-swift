@@ -207,6 +207,9 @@ namespace SwiftReflector.Importing {
 			// ImageIO
 			"ImageIO.CGImageAuxiliaryDataType", // not an enum
 			"ImageIO.CGImagePropertyPngFilters", // can't find it
+			// Intents
+			"Intents.INIntentIdentifier", // not an enum
+			"Intents.INPriceRangeOption", // not an enum
 			// IntentsUI
 	    		"IntentsUI.INUIAddVoiceShortcutButton",
 			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
@@ -507,6 +510,9 @@ namespace SwiftReflector.Importing {
 			// HomeKit
 			{ "HomeKit.HMCharacteristicValueAirParticulate", "HMCharacteristicValueAirParticulateSize" },
 			{ "HomeKit.HMCharacteristicValueLockMechanism", "HMCharacteristicValueLockMechanismLastKnownAction" },
+			// Intents
+			{ "Intents.INDailyRoutineSituation", "INDailyRoutineRelevanceProvider.Situation" },
+			{ "Intents.INIntentErrorCode", "INIntentError.Code" },
 			// LocalAuthentication
 			{ "LocalAuthentication.LAStatus", "LAError" },
 			// PassKit
