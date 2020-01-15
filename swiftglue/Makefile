@@ -47,6 +47,8 @@ IOS_NAMESPACES= \
 	iAd \
 	IdentityLookup \
 	ImageIO \
+	Intents \
+	IntentsUI \
 	PassKit \
 	PdfKit \
 	PushKit \
