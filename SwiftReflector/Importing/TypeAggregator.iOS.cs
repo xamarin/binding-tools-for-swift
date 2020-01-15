@@ -213,6 +213,8 @@ namespace SwiftReflector.Importing {
 			// IntentsUI
 	    		"IntentsUI.INUIAddVoiceShortcutButton",
 			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
+			// MapKit
+			"MapKit.MKDirectionsMode", // not an enum
 			// Messages
 			"Messages.MSMessagesAppPresentationContext",
 			// PassKit
@@ -515,6 +517,14 @@ namespace SwiftReflector.Importing {
 			{ "Intents.INIntentErrorCode", "INIntentError.Code" },
 			// LocalAuthentication
 			{ "LocalAuthentication.LAStatus", "LAError" },
+			// MapKit
+			{ "MapKit.MKAnnotationViewCollisionMode", "MKAnnotationView.CollisionMode" },
+			{ "MapKit.MKAnnotationViewDragState", "MKAnnotationView.DragState" },
+			{ "MapKit.MKDistanceFormatterUnits", "MKDistanceFormatter.Units" },
+			{ "MapKit.MKDistanceFormatterUnitStyle", "MKDistanceFormatter.DistanceUnitStyle" },
+			{ "MapKit.MKErrorCode", "MKError.Code" },
+			{ "MapKit.MKScaleViewAlignment", "MKScaleView.Alignment" },
+			{ "MapKit.MKSearchCompletionFilterType", "MKLocalSearchCompleter.FilterType" },
 			// PassKit
 			{ "PassKit.PKContactFields", "PKContactField" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
