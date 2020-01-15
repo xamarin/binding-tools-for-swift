@@ -204,6 +204,9 @@ namespace SwiftReflector.Importing {
 			"HomeKit.HMServiceType", // not an enum
 			// IdentityLookup
 			"IdentityLookup.ILClassificationAction",
+			// ImageIO
+			"ImageIO.CGImageAuxiliaryDataType", // not an enum
+			"ImageIO.CGImagePropertyPngFilters", // can't find it
 			// IntentsUI
 	    		"IntentsUI.INUIAddVoiceShortcutButton",
 			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
