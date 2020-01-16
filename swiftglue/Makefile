@@ -78,6 +78,7 @@ IOS_NAMESPACES= \
 	Security \
 	Social \
 	Speech \
+	SpriteKit \
 	StoreKit \
 	UIKit \
 	UserNotifications \
