@@ -10,7 +10,6 @@ namespace SwiftReflector.Importing {
 		static partial void ModulesToSkipIOS (ref HashSet<string> result) { result = iOSModulesToSkip; }
 		static HashSet<string> iOSModulesToSkip = new HashSet<string> () {
 			"IdentityLookupUI",
-	    		"AuthenticationServices",
 			"OpenTK",
 	    		"CoreMidi",
 			"Registrar",
@@ -359,6 +358,11 @@ namespace SwiftReflector.Importing {
 			{ "AudioUnit.ScheduledAudioSliceFlag", "AUScheduledAudioSliceFlags" },
 			{ "AudioUnit.SpatialMixerAttenuation", "AUSpatialMixerAttenuationCurve" },
 			{ "AudioUnit.SpatialMixerRenderingFlags", "AUSpatialMixerRenderingFlags" },
+			// AuthenticationServices
+			{ "AuthenticationServices.ASCredentialIdentityStoreErrorCode", "ASCredentialIdentityStoreError.Code" },
+			{ "AuthenticationServices.ASCredentialServiceIdentifierType", "ASCredentialServiceIdentifier.IdentifierType" },
+			{ "AuthenticationServices.ASExtensionErrorCode", "ASExtensionError.Code" },
+			{ "AuthenticationServices.ASWebAuthenticationSessionErrorCode", "ASWebAuthenticationSessionError.Code" },
 			// AVFoundation
 			{ "AVFoundation.AVAssetExportSessionStatus", "AVAssetExportSession.Status" },
 			{ "AVFoundation.AVAssetImageGeneratorResult", "AVAssetImageGenerator.Result" },
