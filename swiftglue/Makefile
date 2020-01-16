@@ -85,6 +85,7 @@ IOS_NAMESPACES= \
 	UserNotifications \
 	UserNotificationsUI \
 	VideoToolbox \
+	Vision \
 	WatchConnectivity \
 	WatchKit \
 	WebKit \
