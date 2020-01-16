@@ -75,6 +75,7 @@ IOS_NAMESPACES= \
 	ReplayKit \
 	SafariServices \
 	SceneKit \
+	Security \
 	StoreKit \
 	UIKit \
 	UserNotifications \

@@ -237,6 +237,20 @@ namespace SwiftReflector.Importing {
 			// SceneKit
 			"SceneKit.SCNErrorCode", // can't find it
 			"SceneKit.SCNTessellationSmoothingMode", // can't find it
+			// Security
+			"Security.SecAccessible", // not an enum
+			"Security.SecAuthenticationType", // Mac only
+			"Security.SecAuthenticationUI", // not an enum
+			"Security.SecKeyClass", // not an enum
+			"Security.SecKeyType", // not an enum
+			"Security.SecKind", // can't find it
+			"Security.SecProtocol", // Mac only (SecProtocolType)
+			"Security.SecRevocation", // not an enum
+			"Security.SecStatusCode", // can't find it
+			"Security.SecTokenID", // not an enum
+			"Security.SslSessionConfig", // can't find it
+			"Security.SslSessionStrengthPolicy", // can't find it
+			"Security.SslStatus", // can't find it
 			// UIKit
 			"UIKit.UIAccessibilityPostNotification", // method in swift - not needed.
 	    		"UIKit.UIFontDescriptorAttribute",
@@ -611,6 +625,17 @@ namespace SwiftReflector.Importing {
 			{ "SceneKit.SCNPhysicsSearchMode", "SCNPhysicsWorld.TestSearchMode" },
 			{ "SceneKit.SCNPhysicsShapeType", "SCNPhysicsShape.ShapeType" },
 			{ "SceneKit.SCNRenderingApi", "SCNRenderingAPI" },
+			// Security
+			{ "Security.SecTrustResult", "SecTrustResultType" },
+			{ "Security.SslAuthenticate", "SSLAuthenticate" },
+			{ "Security.SslCipherSuite", "SSLCipherSuite" },
+			{ "Security.SslCipherSuiteGroup", "SSLCiphersuiteGroup" },
+			{ "Security.SslClientCertificateState", "SSLClientCertificateState" },
+			{ "Security.SslConnectionType", "SSLConnectionType" },
+			{ "Security.SslProtocol", "SSLProtocol" },
+			{ "Security.SslProtocolSide", "SSLProtocolSide" },
+			{ "Security.SslSessionOption", "SSLSessionOption" },
+			{ "Security.SslSessionState", "SSLSessionState" },
 			// StoreKit
 			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
 			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
