@@ -80,6 +80,7 @@ IOS_NAMESPACES= \
 	Speech \
 	SpriteKit \
 	StoreKit \
+	SystemConfiguration \
 	UIKit \
 	UserNotifications \
 	UserNotificationsUI \
