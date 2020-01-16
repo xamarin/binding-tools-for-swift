@@ -51,6 +51,7 @@ IOS_NAMESPACES= \
 	HomeKit \
 	iAd \
 	IdentityLookup \
+	IdentityLookupUI \
 	ImageIO \
 	Intents \
 	IntentsUI \

@@ -9,7 +9,6 @@ namespace SwiftReflector.Importing {
 
 		static partial void ModulesToSkipIOS (ref HashSet<string> result) { result = iOSModulesToSkip; }
 		static HashSet<string> iOSModulesToSkip = new HashSet<string> () {
-			"IdentityLookupUI",
 			"OpenTK",
 	    		"CoreMidi",
 			"Registrar",
