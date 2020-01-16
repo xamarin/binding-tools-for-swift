@@ -36,6 +36,7 @@ IOS_NAMESPACES= \
 	ContactsUI \
 	CoreAudioKit \
 	CoreBluetooth \
+	CoreData \
 	CoreGraphics \
 	DeviceCheck \
 	EventKit \
