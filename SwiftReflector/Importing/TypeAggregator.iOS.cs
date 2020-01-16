@@ -23,7 +23,6 @@ namespace SwiftReflector.Importing {
 	    		"Xamarin.Utils",
 			"ObjCRuntime",
 	    		"VideoSubscriberAccount",
-			"IOSurface",
 		};
 
 		static partial void AvailableMapIOS (ref Dictionary<string, string> result)
@@ -209,6 +208,8 @@ namespace SwiftReflector.Importing {
 			// IntentsUI
 	    		"IntentsUI.INUIAddVoiceShortcutButton",
 			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
+			// IOSurface
+			"IOSurface.IOSurfaceMemoryMap", // has become anonymous
 			// MapKit
 			"MapKit.MKDirectionsMode", // not an enum
 			// MediaPlayer
