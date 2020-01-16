@@ -37,6 +37,7 @@ IOS_NAMESPACES= \
 	CoreAudioKit \
 	CoreBluetooth \
 	CoreData \
+	CoreFoundation \
 	CoreGraphics \
 	DeviceCheck \
 	EventKit \

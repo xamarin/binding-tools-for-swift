@@ -145,6 +145,14 @@ namespace SwiftReflector.Importing {
 			"CoreData.ObjectGraphManagementErrorType", // not an enum
 			"CoreData.PersistentStoreErrorType", // not an enum
 			"CoreData.ValidationErrorType", // not an enum
+			// CoreFoundation
+			"CoreFoundation.CFMessagePortSendRequestStatus", // not an enum
+			"CoreFoundation.CFProxyType", // not an enum
+			"CoreFoundation.CFSocketFlags", // no name
+			"CoreFoundation.DispatchQueuePriority", // not an enum
+			"CoreFoundation.MemoryPressureFlags", // not an enum
+			"CoreFoundation.ProcessMonitorFlags", // not an enum
+			"CoreFoundation.VnodeMonitorKind", // not an enum
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated
@@ -458,6 +466,9 @@ namespace SwiftReflector.Importing {
 			{ "Compression.CompressionAlgorithm", "compression_algorithm" },
 			// Contacts
 			{ "Contacts.CNErrorCode", "CNError.Code" },
+			// CoreFoundation
+			{ "CoreFoundation.CFRunLoopExitReason", "CFRunLoopRunResult" },
+			{ "CoreFoundation.CFUrlPathStyle", "CFURLPathStyle" },
 			// EventKit
 			{ "EventKit.EKDay", "EKWeekday" },
 			{ "EventKit.EKErrorCode", "EKError.Code" },
