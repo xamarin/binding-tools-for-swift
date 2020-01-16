@@ -26,6 +26,7 @@ IOS_NAMESPACES= \
 	AVFoundation \
 	AVKit \
 	CallKit \
+	ClassKit \
 	CloudKit \
 	Contacts \
 	ContactsUI \

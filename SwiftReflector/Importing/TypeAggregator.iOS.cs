@@ -18,7 +18,6 @@ namespace SwiftReflector.Importing {
 			"Network",
 	    		"NaturalLanguage",
 			"CoreAnimation",
-	    		"ClassKit",
 			"CoreServices",
 	    		"CarPlay",
 			"BusinessChat",
