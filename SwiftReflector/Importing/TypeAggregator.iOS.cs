@@ -19,7 +19,6 @@ namespace SwiftReflector.Importing {
 	    		"NaturalLanguage",
 			"CoreAnimation",
 			"CoreServices",
-	    		"CarPlay",
 			"BusinessChat",
 	    		"System",
 			"System.Drawing",
@@ -414,6 +413,12 @@ namespace SwiftReflector.Importing {
 			{ "CallKit.CXCallDirectoryEnabledStatus", "CXCallDirectoryManager.EnabledStatus" },
 			{ "CallKit.CXHandleType", "CXHandle.HandleType" },
 			{ "CallKit.CXPlayDtmfCallActionType", "CXPlayDTMFCallAction.ActionType" },
+			// CarPlay
+			{ "CarPlay.CPAlertActionStyle", "CPAlertAction.Style" },
+			{ "CarPlay.CPBarButtonType", "CPBarButton.Type" },
+			{ "CarPlay.CPNavigationAlertDismissalContext", "CPNavigationAlert.DismissalContext" },
+			{ "CarPlay.CPPanDirection", "CPMapTemplate.PanDirection" },
+			{ "CarPlay.CPTripPauseReason", "CPNavigationSession.PauseReason" },
 			// ClassKit
 			{ "ClassKit.CLSErrorCode", "CLSError.Code" },
 			// CloudKit
