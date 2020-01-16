@@ -13,7 +13,6 @@ namespace SwiftReflector.Importing {
 	    		"CoreMidi",
 			"Registrar",
 	    		"Twitter",
-			"Network",
 			"CoreAnimation",
 			"CoreServices",
 	    		"System",
@@ -223,6 +222,13 @@ namespace SwiftReflector.Importing {
 			// ModelIO
 			"ModelIO.MDLNoiseTextureType", // can't find it
 			"ModelIO.MDLVoxelIndexExtent", // replaced
+			// Network
+			"Network.NWEndpointType", // not an enum
+			"Network.NWErrorDomain", // can't find it
+			"Network.NWMultiPathService", // can't find it
+			"Network.NWConnectionState", // iOS 12.0 or later
+			"Network.NWInterfaceType", // iOS 12.0 or later
+			"Network.NWListenerState", // iOS 12.0 or later
 			// PassKit
 			"PassKit.PKErrorCode", // does not exist
 			// PdfKit
@@ -595,6 +601,14 @@ namespace SwiftReflector.Importing {
 			{ "NaturalLanguage.NLModelType", "NLModel.ModelType" },
 			{ "NaturalLanguage.NLTaggerOptions", "NLTagger.Options" },
 			{ "NaturalLanguage.NLTokenizerAttributes", "NLTokenizer.Attributes" },
+			// Network
+			// iOS 12.0 or later: { "Network.NWConnectionState", "NWConnection.State" },
+			// iOS 12.0 or later: { "Network.NWInterfaceType", "NWInterface.InterfaceType" },
+			{ "Network.NWIPEcnFlag", "nw_ip_ecn_flag_t" },
+			{ "Network.NWIPVersion", "nw_ip_version_t" },
+			// iOS 12.0 or later: { "Network.NWListenerState", "NWListener.State" },
+			{ "Network.NWParametersExpiredDnsBehavior", "NWParameters.ExpiredDNSBehavior" },
+			{ "Network.NWServiceClass", "nw_service_class_t" },
 			// NetworkExtension
 			{ "NetworkExtension.NEDnsProxyManagerError", "NEDNSProxyManagerError" },
 			{ "NetworkExtension.NEHotspotConfigurationEapTlsVersion", "NEHotspotEAPSettings.TLSVersion" },
