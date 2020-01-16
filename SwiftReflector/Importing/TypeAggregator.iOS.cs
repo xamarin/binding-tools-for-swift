@@ -251,6 +251,8 @@ namespace SwiftReflector.Importing {
 			"Security.SslSessionConfig", // can't find it
 			"Security.SslSessionStrengthPolicy", // can't find it
 			"Security.SslStatus", // can't find it
+			// Social
+			"Social.SLServiceKind", // not an enum
 			// UIKit
 			"UIKit.UIAccessibilityPostNotification", // method in swift - not needed.
 	    		"UIKit.UIFontDescriptorAttribute",
