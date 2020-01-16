@@ -14,7 +14,6 @@ namespace SwiftReflector.Importing {
 			"Registrar",
 	    		"Twitter",
 			"Network",
-	    		"NaturalLanguage",
 			"CoreAnimation",
 			"CoreServices",
 	    		"System",
@@ -592,6 +591,10 @@ namespace SwiftReflector.Importing {
 			{ "MetalPerformanceShaders.MPSRnnSequenceDirection", "MPSRNNSequenceDirection" },
 			// ModelIO
 			{ "ModelIO.MDLVoxelIndexExtent2", "MDLVoxelIndexExtent" },
+			// NaturalLanguage
+			{ "NaturalLanguage.NLModelType", "NLModel.ModelType" },
+			{ "NaturalLanguage.NLTaggerOptions", "NLTagger.Options" },
+			{ "NaturalLanguage.NLTokenizerAttributes", "NLTokenizer.Attributes" },
 			// NetworkExtension
 			{ "NetworkExtension.NEDnsProxyManagerError", "NEDNSProxyManagerError" },
 			{ "NetworkExtension.NEHotspotConfigurationEapTlsVersion", "NEHotspotEAPSettings.TLSVersion" },
