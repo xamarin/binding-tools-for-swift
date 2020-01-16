@@ -31,6 +31,7 @@ IOS_NAMESPACES= \
 	CarPlay \
 	ClassKit \
 	CloudKit \
+	Compression \
 	Contacts \
 	ContactsUI \
 	CoreGraphics \

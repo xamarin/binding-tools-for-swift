@@ -444,6 +444,8 @@ namespace SwiftReflector.Importing {
 			{ "CloudKit.CKShareParticipantRole", "CKShare_Participant_Role" },
 			{ "CloudKit.CKShareParticipantType", "CKShare_Participant_ParticipantType" },
 			{ "CloudKit.CKSubscriptionType", "CKSubscription.SubscriptionType" },
+			// Compression
+			{ "Compression.CompressionAlgorithm", "compression_algorithm" },
 			// Contacts
 			{ "Contacts.CNErrorCode", "CNError.Code" },
 			// EventKit
