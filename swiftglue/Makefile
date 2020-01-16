@@ -90,6 +90,7 @@ IOS_NAMESPACES= \
 	SpriteKit \
 	StoreKit \
 	SystemConfiguration \
+	Twitter \
 	UIKit \
 	UserNotifications \
 	UserNotificationsUI \
