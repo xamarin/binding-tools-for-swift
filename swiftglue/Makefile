@@ -61,6 +61,7 @@ IOS_NAMESPACES= \
 	MetalKit \
 	MetalPerformanceShaders \
 	MobileCoreServices \
+	ModelIO \
 	PassKit \
 	PdfKit \
 	PushKit \

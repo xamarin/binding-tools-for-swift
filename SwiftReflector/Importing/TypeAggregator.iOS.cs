@@ -225,6 +225,9 @@ namespace SwiftReflector.Importing {
 			"Metal.MTLClearValue", // can't find it
 			"Metal.MTLRenderPipelineError", // can't find it
 			"Metal.MTLSamplerBorderColor", // marked unavailable
+			// ModelIO
+			"ModelIO.MDLNoiseTextureType", // can't find it
+			"ModelIO.MDLVoxelIndexExtent", // replaced
 			// PassKit
 			"PassKit.PKErrorCode", // does not exist
 			// PdfKit
@@ -550,6 +553,8 @@ namespace SwiftReflector.Importing {
 			{ "MetalPerformanceShaders.MPSCnnNeuronType", "MPSCNNNeuronType" },
 			{ "MetalPerformanceShaders.MPSRnnBidirectionalCombineMode", "MPSRNNBidirectionalCombineMode" },
 			{ "MetalPerformanceShaders.MPSRnnSequenceDirection", "MPSRNNSequenceDirection" },
+			// ModelIO
+			{ "ModelIO.MDLVoxelIndexExtent2", "MDLVoxelIndexExtent" },
 			// PassKit
 			{ "PassKit.PKContactFields", "PKContactField" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
