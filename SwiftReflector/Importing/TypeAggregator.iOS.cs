@@ -532,6 +532,8 @@ namespace SwiftReflector.Importing {
 			// MediaPlayer
 			{ "MediaPlayer.MPErrorCode", "MPError.Code" },
 			{ "MediaPlayer.MPMovieMediaType", "MPMovieMediaTypeMask" },
+			// MessageUI
+			{ "MessageUI.MFMailComposeErrorCode", "MFMailComposeError.Code" },
 			// PassKit
 			{ "PassKit.PKContactFields", "PKContactField" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },

@@ -55,6 +55,8 @@ IOS_NAMESPACES= \
 	MediaAccessibility \
 	MediaPlayer \
 	MediaToolbox \
+	Messages \
+	MessageUI \
 	PassKit \
 	PdfKit \
 	PushKit \
