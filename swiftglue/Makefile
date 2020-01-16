@@ -34,6 +34,7 @@ IOS_NAMESPACES= \
 	Compression \
 	Contacts \
 	ContactsUI \
+	CoreAudioKit \
 	CoreGraphics \
 	DeviceCheck \
 	EventKit \
