@@ -64,6 +64,7 @@ IOS_NAMESPACES= \
 	ModelIO \
 	MultipeerConnectivity \
 	NetworkExtension \
+	NewsstandKit \
 	PassKit \
 	PdfKit \
 	PushKit \
