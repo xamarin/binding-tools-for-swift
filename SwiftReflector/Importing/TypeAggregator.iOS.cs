@@ -297,6 +297,8 @@ namespace SwiftReflector.Importing {
 	    		"VideoToolbox.VTReadWriteStatus",
 	    		"VideoToolbox.VTScalingMode",
 	    		"VideoToolbox.VTDownsamplingMode",
+			"VideoToolbox.VTDataRateLimit", // can't find it
+			"VideoToolbox.VTTransferFunction", // can't find it
 			// Vision
 	    		"Vision.VNBarcodeObservationRequestRevision",
 			"Vision.VNCoreMLRequestRevision",
