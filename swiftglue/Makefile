@@ -52,6 +52,7 @@ IOS_NAMESPACES= \
 	JavaScriptCore \
 	LocalAuthentication \
 	MapKit \
+	MediaAccessibility \
 	PassKit \
 	PdfKit \
 	PushKit \
