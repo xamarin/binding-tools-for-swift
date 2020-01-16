@@ -50,6 +50,7 @@ IOS_NAMESPACES= \
 	Intents \
 	IntentsUI \
 	JavaScriptCore \
+	LocalAuthentication \
 	PassKit \
 	PdfKit \
 	PushKit \
