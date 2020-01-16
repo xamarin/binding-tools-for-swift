@@ -76,6 +76,7 @@ IOS_NAMESPACES= \
 	SafariServices \
 	SceneKit \
 	Security \
+	Social \
 	StoreKit \
 	UIKit \
 	UserNotifications \
