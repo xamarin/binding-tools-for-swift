@@ -74,6 +74,7 @@ IOS_NAMESPACES= \
 	QuickLook \
 	ReplayKit \
 	SafariServices \
+	SceneKit \
 	StoreKit \
 	UIKit \
 	UserNotifications \

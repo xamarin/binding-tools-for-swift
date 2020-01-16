@@ -234,6 +234,9 @@ namespace SwiftReflector.Importing {
 			"PdfKit.PdfPrintScalingMode", // macOS only
 			// SafariServices
 			"SafariServices.SFSafariViewControllerDismissButtonStyle",
+			// SceneKit
+			"SceneKit.SCNErrorCode", // can't find it
+			"SceneKit.SCNTessellationSmoothingMode", // can't find it
 			// UIKit
 			"UIKit.UIAccessibilityPostNotification", // method in swift - not needed.
 	    		"UIKit.UIFontDescriptorAttribute",
@@ -602,6 +605,12 @@ namespace SwiftReflector.Importing {
 			{ "ReplayKit.RPRecordingError", "RPRecordingErrorCode" },
 			// SafariServices
 			{ "SafariServices.SFErrorCode", "SFError.Code" },
+			// SceneKit
+			{ "SceneKit.SCNAnimationImportPolicy", "SCNSceneSource.AnimationImportPolicy" },
+			{ "SceneKit.SCNGeometrySourceSemantics", "SCNGeometrySource.Semantic" },
+			{ "SceneKit.SCNPhysicsSearchMode", "SCNPhysicsWorld.TestSearchMode" },
+			{ "SceneKit.SCNPhysicsShapeType", "SCNPhysicsShape.ShapeType" },
+			{ "SceneKit.SCNRenderingApi", "SCNRenderingAPI" },
 			// StoreKit
 			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
 			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
