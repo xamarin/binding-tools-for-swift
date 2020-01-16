@@ -221,6 +221,10 @@ namespace SwiftReflector.Importing {
 			"MediaToolbox.MTAudioProcessingTapError", // can't find it
 			// Messages
 			"Messages.MSMessagesAppPresentationContext",
+			// Metal
+			"Metal.MTLClearValue", // can't find it
+			"Metal.MTLRenderPipelineError", // can't find it
+			"Metal.MTLSamplerBorderColor", // marked unavailable
 			// PassKit
 			"PassKit.PKErrorCode", // does not exist
 			// PdfKit
@@ -534,6 +538,18 @@ namespace SwiftReflector.Importing {
 			{ "MediaPlayer.MPMovieMediaType", "MPMovieMediaTypeMask" },
 			// MessageUI
 			{ "MessageUI.MFMailComposeErrorCode", "MFMailComposeError.Code" },
+			// Metal
+			{ "Metal.MTLCpuCacheMode", "MTLCPUCacheMode" },
+			// MetalKit
+			{ "MetalKit.MTKTextureLoaderCubeLayout", "MTKTextureLoader.CubeLayout" },
+			{ "MetalKit.MTKTextureLoaderOrigin", "MTKTextureLoader.Origin" },
+			// MetalPerformanceShaders
+			{ "MetalPerformanceShaders.MPSCnnBinaryConvolutionFlags", "MPSCNNBinaryConvolutionFlags" },
+			{ "MetalPerformanceShaders.MPSCnnBinaryConvolutionType", "MPSCNNBinaryConvolutionType" },
+			{ "MetalPerformanceShaders.MPSCnnConvolutionFlags", "MPSCNNConvolutionFlags" },
+			{ "MetalPerformanceShaders.MPSCnnNeuronType", "MPSCNNNeuronType" },
+			{ "MetalPerformanceShaders.MPSRnnBidirectionalCombineMode", "MPSRNNBidirectionalCombineMode" },
+			{ "MetalPerformanceShaders.MPSRnnSequenceDirection", "MPSRNNSequenceDirection" },
 			// PassKit
 			{ "PassKit.PKContactFields", "PKContactField" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
