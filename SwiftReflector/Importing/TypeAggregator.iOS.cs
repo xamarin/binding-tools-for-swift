@@ -215,6 +215,8 @@ namespace SwiftReflector.Importing {
 			"IntentsUI.INUIAddVoiceShortcutButtonStyle",
 			// MapKit
 			"MapKit.MKDirectionsMode", // not an enum
+			// MediaPlayer
+			"MediaPlayer.MPMovieControlMode", // not an enum
 			// Messages
 			"Messages.MSMessagesAppPresentationContext",
 			// PassKit
@@ -525,6 +527,9 @@ namespace SwiftReflector.Importing {
 			{ "MapKit.MKErrorCode", "MKError.Code" },
 			{ "MapKit.MKScaleViewAlignment", "MKScaleView.Alignment" },
 			{ "MapKit.MKSearchCompletionFilterType", "MKLocalSearchCompleter.FilterType" },
+			// MediaPlayer
+			{ "MediaPlayer.MPErrorCode", "MPError.Code" },
+			{ "MediaPlayer.MPMovieMediaType", "MPMovieMediaTypeMask" },
 			// PassKit
 			{ "PassKit.PKContactFields", "PKContactField" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },

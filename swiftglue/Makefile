@@ -53,6 +53,7 @@ IOS_NAMESPACES= \
 	LocalAuthentication \
 	MapKit \
 	MediaAccessibility \
+	MediaPlayer \
 	PassKit \
 	PdfKit \
 	PushKit \
