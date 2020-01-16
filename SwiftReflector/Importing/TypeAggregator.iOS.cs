@@ -217,6 +217,8 @@ namespace SwiftReflector.Importing {
 			"MapKit.MKDirectionsMode", // not an enum
 			// MediaPlayer
 			"MediaPlayer.MPMovieControlMode", // not an enum
+			// MediaToolbox
+			"MediaToolbox.MTAudioProcessingTapError", // can't find it
 			// Messages
 			"Messages.MSMessagesAppPresentationContext",
 			// PassKit
