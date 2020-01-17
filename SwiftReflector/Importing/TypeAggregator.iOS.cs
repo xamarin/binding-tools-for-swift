@@ -18,7 +18,6 @@ namespace SwiftReflector.Importing {
 			"Network",
 	    		"NaturalLanguage",
 			"CoreAnimation",
-	    		"ClassKit",
 			"CoreServices",
 	    		"CarPlay",
 			"BusinessChat",
@@ -415,6 +414,8 @@ namespace SwiftReflector.Importing {
 			{ "CallKit.CXCallDirectoryEnabledStatus", "CXCallDirectoryManager.EnabledStatus" },
 			{ "CallKit.CXHandleType", "CXHandle.HandleType" },
 			{ "CallKit.CXPlayDtmfCallActionType", "CXPlayDTMFCallAction.ActionType" },
+			// ClassKit
+			{ "ClassKit.CLSErrorCode", "CLSError.Code" },
 			// CloudKit
 			{ "CloudKit.CKApplicationPermissions", "CKContainer_Application_Permissions" },
 			{ "CloudKit.CKApplicationPermissionStatus", "CKContainer_Application_PermissionStatus" },
