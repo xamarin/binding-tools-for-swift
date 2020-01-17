@@ -44,6 +44,7 @@ IOS_NAMESPACES= \
 	CoreMedia \
 	CoreML \
 	CoreMotion \
+	CoreNFC \
 	DeviceCheck \
 	EventKit \
 	EventKitUI \
