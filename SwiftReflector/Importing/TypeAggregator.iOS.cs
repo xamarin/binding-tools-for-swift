@@ -182,6 +182,14 @@ namespace SwiftReflector.Importing {
 			// CoreTelephony
 	    		"CoreTelephony.CTErrorDomain",
 	    		"CoreTelephony.CTCellularPlanProvisioningAddPlanResult",
+			// CoreText
+			"CoreText.CTBaselineClass", // can't find it
+			"CoreText.CTBaselineFont", // can't find it
+			"CoreText.CTFontNameKey", // can't find it
+			"CoreText.CTFontTable", // not an enum
+			"CoreText.CTLigatureFormation", // can't find it
+			"CoreText.CTSuperscriptStyle", // can't find it
+			"CoreText.FontFeatureGroup", // not an enum
 			// EventKit
 			"EventKit.EKCalendarEventAvailability", // not an enum
 			// Foundation
@@ -497,6 +505,9 @@ namespace SwiftReflector.Importing {
 			// CoreSpotlight
 			{ "CoreSpotlight.CSIndexErrorCode", "CSIndexError.Code" },
 			{ "CoreSpotlight.CSSearchQueryErrorCode", "CSSearchQueryError.Code" },
+			// CoreText
+			{ "CoreText.CTFontManagerAutoActivation", "CTFontManagerAutoActivationSetting" },
+			{ "CoreText.CTLineTruncation", "CTLineTruncationType" },
 			// EventKit
 			{ "EventKit.EKDay", "EKWeekday" },
 			{ "EventKit.EKErrorCode", "EKError.Code" },
