@@ -141,7 +141,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			var sb = new StringBuilder (ToFullyQualifiedName ());
 			if (ContainsGenericParameters) {
 				sb.Append ("<");
-				for (int i=0; i < Generics.Count; i++) {
+				for (int i = 0; i < Generics.Count; i++) {
 					if (i > 0)
 						sb.Append (", ");
 					sb.Append (Generics [i].Name);
@@ -539,4 +539,3 @@ namespace SwiftReflector.SwiftXmlReflection {
 	}
 
 }
-
