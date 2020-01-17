@@ -45,6 +45,7 @@ IOS_NAMESPACES= \
 	CoreML \
 	CoreMotion \
 	CoreNFC \
+	CoreServices \
 	CoreSpotlight \
 	CoreTelephony \
 	CoreText \
@@ -95,6 +96,7 @@ IOS_NAMESPACES= \
 	Photos \
 	PhotosUI \
 	QuickLook \
+	Registrar \
 	ReplayKit \
 	SafariServices \
 	SceneKit \
