@@ -167,6 +167,16 @@ namespace SwiftReflector.Importing {
 			"CoreImage.CIImageOrientation", // not in this namespace
 			"CoreImage.CIWrapMode", // can't find it
 			"CoreImage.FaceDetectorAccuracy", // not an enum
+			// CoreMedia
+			"CoreMedia.CMFormatDescriptionError", // not an enum
+			"CoreMedia.CMPixelFormat", // not an enum
+			"CoreMedia.CMTimebaseError", // not an enum
+			"CoreMedia.LensStabilizationStatus", // can't find it
+			"CoreMedia.TextMarkupColor", // can't find it
+			"CoreMedia.CMBlockBufferError", // doesn't exist
+			"CoreMedia.CMClockError", // doesn't exist
+			"CoreMedia.CMSampleBufferError", // doesn't exist
+			"CoreMedia.CMSyncError", // doesn't exist
 			// CoreTelephony
 	    		"CoreTelephony.CTErrorDomain",
 	    		"CoreTelephony.CTCellularPlanProvisioningAddPlanResult",
@@ -477,6 +487,11 @@ namespace SwiftReflector.Importing {
 			// CoreImage
 			{ "CoreImage.CIDataMatrixCodeEccVersion", "CIDataMatrixCodeDescriptor.ECCVersion" },
 			{ "CoreImage.CIQRCodeErrorCorrectionLevel", "CIQRCodeDescriptor.ErrorCorrectionLevel" },
+			// CoreMedia
+			// iOS 13.0 or later: { "CoreMedia.CMBlockBufferError", "CMBlockBuffer.Error" },
+			// iOS 13.0 or later: { "CoreMedia.CMClockError", "CMClock.Error" },
+			// iOS 13.0 or later: { "CoreMedia.CMSampleBufferError", "CMSampleBuffer.Error" },
+			// iOS 13.0 or later: { "CoreMedia.CMSyncError", "CMSync.Error" },
 			// EventKit
 			{ "EventKit.EKDay", "EKWeekday" },
 			{ "EventKit.EKErrorCode", "EKError.Code" },
