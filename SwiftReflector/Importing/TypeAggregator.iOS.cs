@@ -162,6 +162,11 @@ namespace SwiftReflector.Importing {
 			"CoreGraphics.CGColorConverterTriple", // can't find it
 	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
 			"CoreGraphics.MatrixOrder",
+			// CoreImage
+			"CoreImage.CIFilterMode", // not in this namespace
+			"CoreImage.CIImageOrientation", // not in this namespace
+			"CoreImage.CIWrapMode", // can't find it
+			"CoreImage.FaceDetectorAccuracy", // not an enum
 			// CoreTelephony
 	    		"CoreTelephony.CTErrorDomain",
 	    		"CoreTelephony.CTCellularPlanProvisioningAddPlanResult",
@@ -469,6 +474,9 @@ namespace SwiftReflector.Importing {
 			// CoreFoundation
 			{ "CoreFoundation.CFRunLoopExitReason", "CFRunLoopRunResult" },
 			{ "CoreFoundation.CFUrlPathStyle", "CFURLPathStyle" },
+			// CoreImage
+			{ "CoreImage.CIDataMatrixCodeEccVersion", "CIDataMatrixCodeDescriptor.ECCVersion" },
+			{ "CoreImage.CIQRCodeErrorCorrectionLevel", "CIQRCodeDescriptor.ErrorCorrectionLevel" },
 			// EventKit
 			{ "EventKit.EKDay", "EKWeekday" },
 			{ "EventKit.EKErrorCode", "EKError.Code" },
