@@ -147,7 +147,7 @@ namespace SwiftReflector.IOUtils {
 
 			try {
 				foreach (string moduleName in allReferencedModules) {
-					if (moduleName == "Swift")
+					if (moduleName == "Swift" || moduleName == "Self")
 						continue;
 					ISwiftModuleLocation loc = SwiftModuleFinder.Find (inputModuleDirectories, moduleName, target);
 					if (loc == null) {

@@ -58,6 +58,8 @@ namespace Dynamo.SwiftLang {
 		{
 			if (OwningModule != null && use.Module == OwningModule)
 				return this;
+			if (use.Module == "Self")
+				return this;
 			Add (use);
 			return this;
 		}
@@ -67,6 +69,8 @@ namespace Dynamo.SwiftLang {
 		public void AddIfNotPresent (string package)
 		{
 			SLImport target = new SLImport (package);
+			if (package == "Self")
+				return;
 
 			if (package != OwningModule && !this.Exists (imp => imp.Contents == target.Contents))
 				Add (target);

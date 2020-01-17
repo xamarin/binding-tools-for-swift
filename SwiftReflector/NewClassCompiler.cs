@@ -1563,6 +1563,8 @@ namespace SwiftReflector {
 						errors.Add (ex);
 						continue;
 					}
+					if (decl.HasAssociatedTypes)
+						continue;
 					var use = new CSUsingPackages ("System", "System.Runtime.InteropServices");
 					string nameSpace = TypeMapper.MapModuleToNamespace (decl.Module.Name);
 					var nm = new CSNamespace (nameSpace);
