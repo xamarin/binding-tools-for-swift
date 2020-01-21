@@ -190,6 +190,11 @@ namespace SwiftReflector.Importing {
 			"CoreText.CTLigatureFormation", // can't find it
 			"CoreText.CTSuperscriptStyle", // can't find it
 			"CoreText.FontFeatureGroup", // not an enum
+			// CoreVideo
+			"CoreVideo.CVImageBufferColorPrimaries", // not an enum
+			"CoreVideo.CVImageBufferTransferFunction", // not an enum
+			"CoreVideo.CVImageBufferYCbCrMatrix", // not an enum
+			"CoreVideo.CVPixelFormatType", // not an enum
 			// EventKit
 			"EventKit.EKCalendarEventAvailability", // not an enum
 			// Foundation
@@ -508,6 +513,8 @@ namespace SwiftReflector.Importing {
 			// CoreText
 			{ "CoreText.CTFontManagerAutoActivation", "CTFontManagerAutoActivationSetting" },
 			{ "CoreText.CTLineTruncation", "CTLineTruncationType" },
+			// CoreVideo
+			{ "CoreVideo.CVPixelBufferLock", "CVPixelBufferLockFlags" },
 			// EventKit
 			{ "EventKit.EKDay", "EKWeekday" },
 			{ "EventKit.EKErrorCode", "EKError.Code" },

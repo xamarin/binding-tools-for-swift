@@ -48,6 +48,7 @@ IOS_NAMESPACES= \
 	CoreSpotlight \
 	CoreTelephony \
 	CoreText \
+	CoreVideo \
 	DeviceCheck \
 	EventKit \
 	EventKitUI \
