@@ -177,6 +177,8 @@ namespace SwiftReflector.Importing {
 			"CoreMedia.CMClockError", // doesn't exist
 			"CoreMedia.CMSampleBufferError", // doesn't exist
 			"CoreMedia.CMSyncError", // doesn't exist
+			// CoreSpotlight
+			"CoreSpotlight.CSFileProtection", // can't find it
 			// CoreTelephony
 	    		"CoreTelephony.CTErrorDomain",
 	    		"CoreTelephony.CTCellularPlanProvisioningAddPlanResult",
@@ -492,6 +494,9 @@ namespace SwiftReflector.Importing {
 			// iOS 13.0 or later: { "CoreMedia.CMClockError", "CMClock.Error" },
 			// iOS 13.0 or later: { "CoreMedia.CMSampleBufferError", "CMSampleBuffer.Error" },
 			// iOS 13.0 or later: { "CoreMedia.CMSyncError", "CMSync.Error" },
+			// CoreSpotlight
+			{ "CoreSpotlight.CSIndexErrorCode", "CSIndexError.Code" },
+			{ "CoreSpotlight.CSSearchQueryErrorCode", "CSSearchQueryError.Code" },
 			// EventKit
 			{ "EventKit.EKDay", "EKWeekday" },
 			{ "EventKit.EKErrorCode", "EKError.Code" },
