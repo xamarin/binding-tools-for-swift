@@ -23,6 +23,7 @@ IOS_NAMESPACES= \
 	AssetsLibrary \
 	AudioToolbox \
 	AudioUnit \
+	AuthenticationServices \
 	AVFoundation \
 	AVKit \
 	CallKit \
