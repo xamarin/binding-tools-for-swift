@@ -19,7 +19,7 @@ namespace SwiftReflector.Importing {
 			"System.Drawing",
 	    		"Xamarin.Utils",
 			"ObjCRuntime",
-	    		"VideoSubscriberAccount",
+	    		"VideoSubscriberAccount", // tvOS only
 		};
 
 		static partial void AvailableMapIOS (ref Dictionary<string, string> result)
