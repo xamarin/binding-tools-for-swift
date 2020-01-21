@@ -54,6 +54,7 @@ IOS_NAMESPACES= \
 	ImageIO \
 	Intents \
 	IntentsUI \
+	IOSurface \
 	JavaScriptCore \
 	LocalAuthentication \
 	MapKit \
