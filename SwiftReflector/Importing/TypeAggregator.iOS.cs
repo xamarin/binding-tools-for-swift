@@ -12,7 +12,7 @@ namespace SwiftReflector.Importing {
 			"OpenTK",
 	    		"CoreMidi",
 			"Registrar",
-	    		"Twitter", // not compatible with Swift
+	    		"Twitter",
 			"CoreAnimation",
 			"CoreServices",
 	    		"System",
