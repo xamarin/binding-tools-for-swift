@@ -71,6 +71,7 @@ IOS_NAMESPACES= \
 	ModelIO \
 	MultipeerConnectivity \
 	NaturalLanguage \
+	Network \
 	NetworkExtension \
 	NewsstandKit \
 	NotificationCenter \
