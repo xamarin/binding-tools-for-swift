@@ -9,16 +9,15 @@ namespace SwiftReflector.Importing {
 
 		static partial void ModulesToSkipIOS (ref HashSet<string> result) { result = iOSModulesToSkip; }
 		static HashSet<string> iOSModulesToSkip = new HashSet<string> () {
-			"OpenTK",
-	    		"CoreMidi",
-			"Registrar",
+			"OpenTK", // not a namespace
+	    		"CoreMidi", // not a namespace
+			"Registrar", // not a namespace
 	    		"Twitter", // not compatible with Swift
-			"CoreAnimation",
-			"CoreServices",
-	    		"System",
-			"System.Drawing",
-	    		"Xamarin.Utils",
-			"ObjCRuntime",
+			"CoreAnimation", // not a namespace
+	    		"System", // not a namespace
+			"System.Drawing", // not a namespace
+	    		"Xamarin.Utils", // .NET only
+			"ObjCRuntime", // .NET only
 	    		"VideoSubscriberAccount", // tvOS only
 		};
 
