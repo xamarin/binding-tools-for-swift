@@ -26,6 +26,7 @@ IOS_NAMESPACES= \
 	AuthenticationServices \
 	AVFoundation \
 	AVKit \
+	BusinessChat \
 	CallKit \
 	CarPlay \
 	ClassKit \

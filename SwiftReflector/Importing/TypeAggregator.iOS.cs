@@ -18,7 +18,6 @@ namespace SwiftReflector.Importing {
 	    		"NaturalLanguage",
 			"CoreAnimation",
 			"CoreServices",
-			"BusinessChat",
 	    		"System",
 			"System.Drawing",
 	    		"Xamarin.Utils",
@@ -413,6 +412,9 @@ namespace SwiftReflector.Importing {
 			{ "AVFoundation.AVPlayerLooperStatus", "AVPlayerLooper.Status" },
 			{ "AVFoundation.AVPlayerStatus", "AVPlayer.Status" },
 			{ "AVFoundation.AVPlayerTimeControlStatus", "AVPlayer.TimeControlStatus" },
+			// BusinessChat
+			{ "BusinessChat.BCChatButtonStyle", "BCChatButton.Style" },
+			{ "BusinessChat.BCParameterName", "BCChatAction.Parameter" },
 			// CallKit
 			{ "CallKit.CXCallDirectoryEnabledStatus", "CXCallDirectoryManager.EnabledStatus" },
 			{ "CallKit.CXHandleType", "CXHandle.HandleType" },
