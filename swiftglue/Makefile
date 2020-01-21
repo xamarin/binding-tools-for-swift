@@ -41,6 +41,7 @@ IOS_NAMESPACES= \
 	CoreGraphics \
 	CoreImage \
 	CoreLocation \
+	CoreML \
 	DeviceCheck \
 	EventKit \
 	EventKitUI \
