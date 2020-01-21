@@ -140,6 +140,11 @@ namespace SwiftReflector.Importing {
 			"Contacts.CNPostalAddressKeyOption", // not an enum
 			"Contacts.CNSocialProfileOption", // not an enum
 			"Contacts.CNSocialProfileServiceOption", // not an enum
+			// CoreData
+			"CoreData.MigrationErrorType", // not an enum
+			"CoreData.ObjectGraphManagementErrorType", // not an enum
+			"CoreData.PersistentStoreErrorType", // not an enum
+			"CoreData.ValidationErrorType", // not an enum
 			// CoreGraphics
 	    		"CoreGraphics.CGColorConverterTransformType",
 			"CoreGraphics.CGTextEncoding", // Deprecated
