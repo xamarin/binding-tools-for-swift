@@ -47,6 +47,7 @@ IOS_NAMESPACES= \
 	CoreNFC \
 	CoreSpotlight \
 	CoreTelephony \
+	CoreText \
 	DeviceCheck \
 	EventKit \
 	EventKitUI \
