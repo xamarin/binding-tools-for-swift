@@ -70,6 +70,7 @@ IOS_NAMESPACES= \
 	MobileCoreServices \
 	ModelIO \
 	MultipeerConnectivity \
+	NaturalLanguage \
 	NetworkExtension \
 	NewsstandKit \
 	NotificationCenter \
