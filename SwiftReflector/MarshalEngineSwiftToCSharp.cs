@@ -32,8 +32,7 @@ namespace SwiftReflector {
 			postMarshalCode.Clear ();
 			ICodeElement returnLine = null;
 			var instanceEntity = typeMapper.GetEntityForTypeSpec (func.ParameterLists [0] [0].TypeSpec);
-			bool instanceIsProtocol = instanceEntity.EntityType == EntityType.Protocol;
-			//			bool returnIsGeneric = func.ReturnTypeSpec != null && func.IsGenericType(func.ReturnTypeSpec);
+			bool instanceIsProtocol = instanceEntity != null && instanceEntity.EntityType == EntityType.Protocol;
 			SLIdentifier returnIdent = null;
 
 			if (func.ParameterLists.Count != 2) {

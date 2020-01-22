@@ -1092,13 +1092,14 @@ namespace SwiftReflector {
 
 		void WrapProtocol (ClassDeclaration cl, CodeWriter cw, ModuleInventory modInventory)
 		{
+			var protocol = cl as ProtocolDeclaration;
 			var overrider = new OverrideBuilder (typeMapper, cl, null, wrappingModule);
 			uniqueModuleReferences.Merge (overrider.ModuleReferences);
 			var file = new SLFile (overrider.Imports);
 			file.Classes.AddRange (overrider.ClassImplementations);
 			file.Functions.AddRange (overrider.Functions);
 			file.Declarations.AddRange (overrider.Declarations);
-			WrapClass (overrider.OriginalClass, cw, modInventory, file, null);
+			WrapClass (protocol.HasAssociatedTypes ? overrider.OverriddenClass : overrider.OriginalClass, cw, modInventory, file, null);
 			var entity = typeMapper.GetEntityForSwiftClassName (cl.ToFullyQualifiedName (true));
 			if (entity == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 3, $"Unable to locate entity for {cl.ToFullyQualifiedName ()} in type database.");
