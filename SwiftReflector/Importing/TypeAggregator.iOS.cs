@@ -196,6 +196,7 @@ namespace SwiftReflector.Importing {
 			"CoreVideo.CVPixelFormatType", // not an enum
 			// EventKit
 			"EventKit.EKCalendarEventAvailability", // not an enum
+			"EventKit.EKDay", // changed to EKWeekday
 			// Foundation
 			"Foundation.NSFileType",
 	    		"Foundation.NSUserDefaultsType",
@@ -515,7 +516,6 @@ namespace SwiftReflector.Importing {
 			// CoreVideo
 			{ "CoreVideo.CVPixelBufferLock", "CVPixelBufferLockFlags" },
 			// EventKit
-			{ "EventKit.EKDay", "EKWeekday" },
 			{ "EventKit.EKErrorCode", "EKError.Code" },
 	    		// Foundation
 			{ "Foundation.NSBundle", "Bundle" },
