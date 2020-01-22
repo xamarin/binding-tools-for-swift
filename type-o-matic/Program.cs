@@ -286,6 +286,11 @@ namespace typeomatic {
 
 		static SLAttribute AvailableAttributeForFunc (PlatformName platform, TypeDefinition type)
 		{
+
+			var map = TypeAggregator.AvailableMapForPlatform (platform);
+			string available;
+			if (map != null && map.TryGetValue (type.FullName, out available))
+				return new SLAttribute ("available", true, new SLIdentifier (available));
 			if (type.HasCustomAttributes) {
 				foreach (var customAttribute in type.CustomAttributes) {
 					if (customAttribute.AttributeType.Name == "IntroducedAttribute") {
@@ -309,10 +314,6 @@ namespace typeomatic {
 					}
 				}
 			}
-			var map = TypeAggregator.AvailableMapForPlatform (platform);
-			string available;
-			if (map != null && map.TryGetValue (type.FullName, out available))
-				return new SLAttribute ("available", true, new SLIdentifier (available));
 			return null;
 		}
 

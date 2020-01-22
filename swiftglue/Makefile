@@ -10,26 +10,17 @@ clean:
 
 MODULENAME=XamGlue
 BINDIR=bin
-MAC_NAMESPACES= \
-	Foundation \
 
-IOS_NAMESPACES= \
+COMMON_NAMESPACES= \
 	Accelerate \
 	Accounts \
-	AddressBook \
-	AddressBookUI \
 	AdSupport \
-	ARKit \
-	AssetsLibrary \
 	AudioToolbox \
 	AudioUnit \
 	AuthenticationServices \
 	AVFoundation \
 	AVKit \
 	BusinessChat \
-	CallKit \
-	CarPlay \
-	ClassKit \
 	CloudKit \
 	Compression \
 	Contacts \
@@ -44,15 +35,12 @@ IOS_NAMESPACES= \
 	CoreMedia \
 	CoreML \
 	CoreMotion \
-	CoreNFC \
 	CoreServices \
 	CoreSpotlight \
-	CoreTelephony \
 	CoreText \
 	CoreVideo \
 	DeviceCheck \
 	EventKit \
-	EventKitUI \
 	ExternalAccessory \
 	FileProvider \
 	FileProviderUI \
@@ -61,15 +49,8 @@ IOS_NAMESPACES= \
 	GameKit \
 	GameplayKit \
 	GLKit \
-	HealthKit \
-	HealthKitUI \
-	HomeKit \
-	iAd \
-	IdentityLookup \
-	IdentityLookupUI \
 	ImageIO \
 	Intents \
-	IntentsUI \
 	IOSurface \
 	JavaScriptCore \
 	LocalAuthentication \
@@ -77,8 +58,6 @@ IOS_NAMESPACES= \
 	MediaAccessibility \
 	MediaPlayer \
 	MediaToolbox \
-	Messages \
-	MessageUI \
 	Metal \
 	MetalKit \
 	MetalPerformanceShaders \
@@ -88,16 +67,12 @@ IOS_NAMESPACES= \
 	NaturalLanguage \
 	Network \
 	NetworkExtension \
-	NewsstandKit \
 	NotificationCenter \
-	PassKit \
 	PdfKit \
-	PushKit \
 	Photos \
 	PhotosUI \
+	PushKit \
 	QuickLook \
-	Registrar \
-	ReplayKit \
 	SafariServices \
 	SceneKit \
 	Security \
@@ -106,14 +81,67 @@ IOS_NAMESPACES= \
 	SpriteKit \
 	StoreKit \
 	SystemConfiguration \
-	UIKit \
 	UserNotifications \
-	UserNotificationsUI \
 	VideoToolbox \
 	Vision \
+	WebKit \
+
+MAC_NAMESPACES= \
+	$(COMMON_NAMESPACES) \
+	AppKit \
+	CFNetwork \
+	CoreAnimation \
+	CoreMidi \
+	CoreWlan \
+	ExecutionPolicy \
+	FinderSync \
+	ImageCaptureCore \
+	ImageKit \
+	LinkPresentation \
+	MediaLibrary \
+	OpenGL \
+	PencilKit \
+	PrintCore \
+	QTKit \
+	QuartzComposer \
+	QuickLookThumbnailing \
+	QuickLookUI \
+	ScriptingBridge \
+	SearchKit \
+	SoundAnalysis \
+	VideoSubscriberAccount \
+	WKWebKit \
+	iTunesLibrary \
+
+IOS_NAMESPACES= \
+	$(COMMON_NAMESPACES) \
+	ARKit \
+	AddressBook \
+	AddressBookUI \
+	AssetsLibrary \
+	CallKit \
+	CarPlay \
+	ClassKit \
+	CoreNFC \
+	CoreTelephony \
+	EventKitUI \
+	HealthKit \
+	HealthKitUI \
+	HomeKit \
+	iAd \
+	IdentityLookup \
+	IdentityLookupUI \
+	IntentsUI \
+	MessageUI \
+	Messages \
+	NewsstandKit \
+	PassKit \
+	Registrar \
+	ReplayKit \
+	UIKit \
+	UserNotificationsUI \
 	WatchConnectivity \
 	WatchKit \
-	WebKit \
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
