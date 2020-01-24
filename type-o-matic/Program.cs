@@ -39,7 +39,7 @@ namespace typeomatic {
 				return 1;
 			}
 
-			if (options.Platform == PlatformName.None) {
+	    		if (options.Platform == PlatformName.None) {
 				Console.WriteLine ($"Unknown platform {options.Platform}");
 				options.PrintUsage (Console.Out);
 				return 1;
@@ -104,7 +104,7 @@ namespace typeomatic {
 				.And (new CSUsing ("System"))
 				.And (new CSUsing ("System.Collections.Generic"))
 				.And (new CSUsing ("SwiftRuntimeLibrary"));
-
+		
 			var csFile = new CSFile (use, new CSNamespace [] { ns });
 			var csClass = new CSClass (CSVisibility.Internal, $"{fileName}Metadata");
 			new CSComment (kRobotText).AttachBefore (use);
@@ -138,7 +138,7 @@ namespace typeomatic {
 					}
 				}
 			}
-
+			
 			var initializers = typeOntoPinvoke.Select (typeAndFunc => new CSInitializer (new CSBaseExpression [] { typeAndFunc.Key, typeAndFunc.Value }, false));
 			var bindingExpr = new CSInitializedType (new CSFunctionCall ("Dictionary<Type, Func<SwiftMetatype>>", true), new CSInitializer (initializers, true));
 			var bindingDecl = new CSFieldDeclaration (new CSSimpleType ("Dictionary<Type, Func<SwiftMetatype>>"), "ObjCBindingSwiftMetatypes", bindingExpr, CSVisibility.Internal, true);
@@ -156,8 +156,8 @@ namespace typeomatic {
 			if (!funcs.TryGetValue (funcID, out mangledName))
 				return null;
 
-			return CSMethod.PInvoke (CSVisibility.Internal, new CSSimpleType ("SwiftMetatype"), funcID, new CSIdentifier ("SwiftCore.kXamGlue"),
-				    mangledName.Substring (1), new CSParameterList ());
+	    		return CSMethod.PInvoke (CSVisibility.Internal, new CSSimpleType ("SwiftMetatype"), funcID, new CSIdentifier ("SwiftCore.kXamGlue"),
+					mangledName.Substring (1), new CSParameterList ());
 		}
 
 
@@ -183,7 +183,7 @@ namespace typeomatic {
 		static string FuncIDForTypeDefinition (TypeDefinition type)
 		{
 			// Used to be MetaDataWrapperFor
-			// The size of this symbol gets magnified by the number of types.
+	    		// The size of this symbol gets magnified by the number of types.
 			// Removing 14 characters saves ~32K
 			return $"MDW_{type.Namespace}_{type.Name}";
 		}
@@ -215,7 +215,7 @@ namespace typeomatic {
 			return slfile;
 		}
 
-		static IEnumerable<SLFunc> MetaWrapperForFunc (PlatformName platform, IEnumerable<TypeDefinition> types,
+		static IEnumerable <SLFunc> MetaWrapperForFunc (PlatformName platform, IEnumerable<TypeDefinition> types,
 								TypeType entityType, List<string> namespaces)
 		{
 			foreach (var type in types) {

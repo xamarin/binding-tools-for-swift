@@ -1,15 +1,17 @@
 TOP=..
 include $(TOP)/common.mk
 
+configuration ?= debug
+
 all: create-pinvokes
 
 clean-ios:
 	rm -rf $(TOP)/SwiftRuntimeLibrary.iOS/bin/*
-	rm -rf $(TOP)/SwiftRuntimeLibrary.iOS/GeneratedCode/*
+	rm -rf $(TOP)/SwiftRuntimeLibrary.iOS/GeneratedCode
 
 clean-mac:
 	rm -rf $(TOP)/SwiftRuntimeLibrary.Mac/bin/*
-	rm -rf $(TOP)/SwiftRuntimeLibrary.Mac/GeneratedCode/*
+	rm -rf $(TOP)/SwiftRuntimeLibrary.Mac/GeneratedCode
 
 clean: clean-ios clean-mac
 	

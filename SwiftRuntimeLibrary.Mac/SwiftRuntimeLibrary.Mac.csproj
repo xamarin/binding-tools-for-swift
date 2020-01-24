@@ -284,7 +284,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.MacOS.cs">
-    <Exec Command="cd ../SwiftRuntimeLibrary ; make create-pinvokes-mac configuration=$(Configuration)" />
+    <Exec Command="make --directory=../SwiftRuntimeLibrary create-pinvokes-mac configuration=$(Configuration)" />
   </Target>
   <ItemGroup>
     <Compile Include="GeneratedCode\BindingMetadata.MacOS.cs" />

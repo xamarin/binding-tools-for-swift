@@ -281,7 +281,7 @@
     </Compile>
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.iOS.cs">
-    <Exec Command="cd ../SwiftRuntimeLibrary ; make create-pinvokes-ios configuration=$(Configuration)" />
+    <Exec Command="make --directory=../SwiftRuntimeLibrary create-pinvokes-ios configuration=$(Configuration)" />
   </Target>
   <ItemGroup>
     <Compile Include="GeneratedCode\BindingMetadata.iOS.cs" />
