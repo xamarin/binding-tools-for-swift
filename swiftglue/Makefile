@@ -13,11 +13,11 @@ BINDIR=bin
 
 # this creates a bindings file for type metadata
 bindingmetadata.iphone.swift:
-	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --generate=swift --platform=iphone $(addprefix --namespace=, $(IOS_NAMESPACES)) > $@.tmp)
+	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --generate=swift --platform=iphone $(addprefix --namespace=, $(TYPE_O_MATIC_IOS_NAMESPACES)) > $@.tmp)
 	$(Q) echo "" >> $@.tmp
 	$(Q) mv $@.tmp $@
 bindingmetadata.macos.swift:
-	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --generate=swift --platform=mac $(addprefix --namespace=, $(MAC_NAMESPACES)) > $@.tmp)
+	$(Q) $(shell $(TYPE_O_MATIC) --swift-lib-path=$(UNPACKAGED_SWIFTLIB) --generate=swift --platform=mac $(addprefix --namespace=, $(TYPE_O_MATIC_MAC_NAMESPACES)) > $@.tmp)
 	$(Q) echo "" >> $@.tmp
 	$(Q) mv $@.tmp $@
 

@@ -28,7 +28,7 @@ Q_XCODEBUILD = $(if $(V),,@echo "XCODEBUILD/$* $(NAME)";)
 Q_SWIFTC     = $(if $(V),,@echo "SWIFTC $(@F)";)
 
 # namespaces
-COMMON_NAMESPACES= \
+TYPE_O_MATIC_COMMON_NAMESPACES= \
 	Accelerate \
 	Accounts \
 	AdSupport \
@@ -103,7 +103,7 @@ COMMON_NAMESPACES= \
 	Vision \
 	WebKit \
 
-MAC_NAMESPACES= \
+TYPE_O_MATIC_MAC_NAMESPACES= \
 	$(COMMON_NAMESPACES) \
 	AppKit \
 	CFNetwork \
@@ -130,7 +130,7 @@ MAC_NAMESPACES= \
 	WKWebKit \
 	iTunesLibrary \
 
-IOS_NAMESPACES= \
+TYPE_O_MATIC_IOS_NAMESPACES= \
 	$(COMMON_NAMESPACES) \
 	ARKit \
 	AddressBook \
