@@ -56,8 +56,8 @@ namespace typeomatic {
 				return 1;
 			}
 
-			if (options.ToGenerate.Equals ("swift") && options.Namespaces.Count == 0) {
-				Console.WriteLine ("You need to select input namespaces to generate Swift.");
+			if (options.Namespaces.Count == 0) {
+				Console.WriteLine ("You need to select input namespaces.");
 				return 1;
 			}
 
