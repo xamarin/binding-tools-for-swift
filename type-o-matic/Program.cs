@@ -434,7 +434,7 @@ namespace typeomatic {
 			}
 		}
 
-		static SLIdentifier PlatformCondition (PlatformName platform)
+		static SLIdentifier PlatformCondition(PlatformName platform)
 		{
 			switch (platform) {
 			case PlatformName.iOS: return new SLIdentifier ("os(iOS)");
