@@ -51,7 +51,7 @@ namespace typeomatic {
 				return 1;
 			}
 
-			if (options.ToGenerate == null || (!options.ToGenerate.Equals ("swift") && !options.ToGenerate.Equals ("csharp"))) {
+			if (options.ToGenerate == null || !String.Equals (options.ToGenerate, "swift") && !String.Equals (options.ToGenerate, "csharp")) {
 				Console.WriteLine ("You need to specify what type of code you want to generate, either 'swift' or 'csharp'.");
 				return 1;
 			}
@@ -61,7 +61,7 @@ namespace typeomatic {
 				return 1;
 			}
 
-			if (options.ToGenerate.Equals ("csharp") && options.Framework == null) {
+			if (String.Equals (options.ToGenerate, "csharp") && options.Framework == null) { 
 				Console.WriteLine ("You need to select a XamGlue.framework to generate C#");
 				return 1;
 			}
