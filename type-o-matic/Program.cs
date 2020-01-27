@@ -75,10 +75,10 @@ namespace typeomatic {
 			aggregatedTypes.Aggregate ();
 
 			var writer = new CodeWriter (options.OutputWriter);
-			if (options.ToGenerate.Equals ("swift")) {
+			if (String.Equals (options.ToGenerate, "swift")) {
 				var slFile = GenerateStubsFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
 				slFile.WriteAll (writer);
-			} else { // options.ToGenerate.Equals ("csharp")
+			} else { // String.Equals (options.ToGenerate, "csharp")
 				var csFile = GeneratePInvokesFromTypes (aggregatedTypes, options.Platform, options.Framework);
 				csFile.WriteAll (writer);
 			}
