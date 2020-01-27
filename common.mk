@@ -131,7 +131,8 @@ TYPE_O_MATIC_MAC_NAMESPACES= \
 	iTunesLibrary \
 
 TYPE_O_MATIC_IOS_NAMESPACES= \
-	$(TYPE_O_MATIC_COMMON_NAMESPACES) \
+	AddressBook \
+	# $(TYPE_O_MATIC_COMMON_NAMESPACES) \
 	ARKit \
 	AddressBook \
 	AddressBookUI \

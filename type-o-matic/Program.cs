@@ -79,7 +79,8 @@ namespace typeomatic {
 				var slFile = GenerateStubsFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
 				slFile.WriteAll (writer);
 			} else { // String.Equals (options.ToGenerate, "csharp")
-				var csFile = GeneratePInvokesFromTypes (aggregatedTypes, options.Platform, options.Framework);
+				 //var csFile = GeneratePInvokesFromTypes (aggregatedTypes, options.Platform, options.Framework);
+				var csFile = GenerateHashTableFromTypes (aggregatedTypes, options.Platform, options.Namespaces, options.Framework);
 				csFile.WriteAll (writer);
 			}
 			writer.TextWriter.Flush ();
@@ -89,6 +90,79 @@ namespace typeomatic {
 			}
 
 			return 0;
+		}
+
+
+		/// <summary>
+		/// Creates a list of all types, and a hash table which is initialized on first lookup from C# type
+		/// to Swift types.
+		/// </summary>
+		/// <param name="types">Aggregated types, a subset of which are included</param>
+		/// <param name="platform">Platform targeted (typically iOS or Mac)</param>
+		/// <param name="namespaces">Namespaces to include</param>
+		/// <param name="framework">Name of framework used (typically XamGlue)</param>
+		/// <returns>CSFile which, when written, has function looking up in hash table as described in summary</returns>
+		static CSFile GenerateHashTableFromTypes (TypeAggregator types, PlatformName platform, List<string> namespaces, string framework)
+		{
+			var fileName = Path.GetFileNameWithoutExtension (framework);
+			var ns = new CSNamespace ("SwiftRuntimeLibrary.SwiftMarshal");
+			var use = new CSUsingPackages ();
+			use.And (new CSUsing ("System.Runtime.InteropServices"))
+				.And (new CSUsing ("System"))
+				.And (new CSUsing ("System.Collections.Generic"))
+				.And (new CSUsing ("SwiftRuntimeLibrary"));
+
+			var csFile = new CSFile (use, new CSNamespace [] { ns });
+			var csClass = new CSClass (CSVisibility.Internal, $"{fileName}Metadata");
+			new CSComment (kRobotText).AttachBefore (use);
+
+			CSConditionalCompilation.If (PlatformToCSCondition (platform)).AttachBefore (use);
+			CSConditionalCompilation.Endif.AttachAfter (ns);
+			ns.Block.Add (csClass);
+
+			var selectedTypes = new List<TypeDefinition> ();
+			selectedTypes.AddRange (types.PublicEnums);
+			selectedTypes.AddRange (types.PublicStructs);
+
+			// filter selected types, with same logic as Swift generation
+			selectedTypes = selectedTypes.FindAll (type => IncludeType (type, namespaces, platform));
+			// presort types
+			selectedTypes.Sort ((type1, type2) => String.CompareOrdinal (FuncIDForTypeDefinition (type1), FuncIDForTypeDefinition (type2)));
+
+			// add used namespaces to import list
+			foreach (var type in selectedTypes) {
+				use.AddIfNotPresent (type.Namespace);
+			}
+
+			var typesForList = selectedTypes.Select (type => new CSSimpleType (type.FullName).Typeof ());
+			var bindingExpr = new CSInitializedType (new CSFunctionCall ("List<Type>", true), new CSInitializer (typesForList, true));
+			var bindingDecl = new CSFieldDeclaration (new CSSimpleType ("List<Type>"), "csImportTypes", bindingExpr, CSVisibility.Internal, true);
+
+			csClass.Fields.Add (new CSLine (bindingDecl));
+			use.Sort ((package1, package2) => String.CompareOrdinal (package1.Package, package2.Package));
+
+			return csFile;
+		}
+
+
+		/// <summary>
+		/// Determines if a type should be included. Types are included if they are in namespaces, they do not have
+		/// generic parameters, and they pass TypeAggregator's filter.
+		/// </summary>
+		/// <param name="type">The type to check</param>
+		/// <param name="namespaces">The namespaces to include</param>
+		/// <param name="platform">The platform being targeted</param>
+		/// <returns>true if type should be included, false otherwise</returns>
+		static bool IncludeType (TypeDefinition type, List<string> namespaces, PlatformName platform)
+		{
+			if (!namespaces.Contains (type.Namespace))
+				return false;
+			if (type.HasGenericParameters)
+				return false;
+			var name = type.Name;
+			if (TypeAggregator.FilterModuleAndName (platform, type.Namespace, ref name))
+				return true;
+			return false;
 		}
 
 
@@ -219,15 +293,9 @@ namespace typeomatic {
 								TypeType entityType, List<string> namespaces)
 		{
 			foreach (var type in types) {
-				if (namespaces.Count > 0 && !namespaces.Contains (type.Namespace))
+				if (!IncludeType (type, namespaces, platform))
 					continue;
-				if (type.HasGenericParameters)
-					continue;
-				var moduleName = type.Namespace;
-				var name = type.Name;
-				if (TypeAggregator.FilterModuleAndName (platform, moduleName, ref name)) {
-					yield return MetadataFuncForType (platform, type, entityType);
-				}
+				yield return MetadataFuncForType (platform, type, entityType);
 			}
 		}
 
