@@ -1563,8 +1563,6 @@ namespace SwiftReflector {
 						errors.Add (ex);
 						continue;
 					}
-					if (decl.HasAssociatedTypes)
-						continue;
 					var use = new CSUsingPackages ("System", "System.Runtime.InteropServices");
 					string nameSpace = TypeMapper.MapModuleToNamespace (decl.Module.Name);
 					var nm = new CSNamespace (nameSpace);
@@ -1730,25 +1728,52 @@ namespace SwiftReflector {
 
 			string ifaceName = InterfaceNameForProtocol (swiftClassName, TypeMapper);
 			string className = CSProxyNameForProtocol (swiftClassName, TypeMapper);
+			string classNameSuffix = "";
+
+			if (protocolDecl.HasAssociatedTypes) {
+				// generates <, , ,>
+				var genParts = new StringBuilder ();
+				genParts.Append ('<');
+				for (int i = 0; i < protocolDecl.AssociatedTypes.Count - 1; i++) {
+					if (i > 0)
+						genParts.Append (' ');
+					genParts.Append (',');
+				}
+				genParts.Append ('>');
+				classNameSuffix = genParts.ToString ();
+			}
 			use.AddIfNotPresent ("SwiftRuntimeLibrary");
 			var iface = new CSInterface (CSVisibility.Public, ifaceName);
 
 			string swiftProxyClassName = OverrideBuilder.ProxyClassName (protocolDecl);
 
 			use.AddIfNotPresent (typeof (SwiftProtocolTypeAttribute));
-			MakeProtocolTypeAttribute (className, PInvokeName (swiftLibraryPath), protocolContents.TypeDescriptor.MangledName.Substring (1)).AttachBefore (iface);
+			MakeProtocolTypeAttribute (className + classNameSuffix, PInvokeName (swiftLibraryPath), protocolContents.TypeDescriptor.MangledName.Substring (1)).AttachBefore (iface);
 
 			proxyClass = new CSClass (CSVisibility.Public, className);
 			picl = new CSClass (CSVisibility.Internal, PIClassName (swiftClassName));
 			var usedPinvokeNames = new List<string> ();
 
-			proxyClass.Inheritance.Add (typeof (BaseProxy));
-			proxyClass.Inheritance.Add (iface.Name);
+			if (protocolDecl.HasAssociatedTypes) {
+				AddGenericsToInterface (iface, protocolDecl, use);
+				proxyClass.GenericParams.AddRange (iface.GenericParams);
+				proxyClass.GenericConstraints.AddRange (iface.GenericConstraints);
+				var inheritance = iface.ToCSType ().ToString ();
+				proxyClass.Inheritance.Add (new CSIdentifier (inheritance));
+			} else {
+				proxyClass.Inheritance.Add (typeof (BaseProxy));
+				proxyClass.Inheritance.Add (iface.Name);
+			}
+
 			iface.Inheritance.AddRange (protocolDecl.Inheritance.Select (inh => {
 				var netIface = TypeMapper.GetDotNetNameForTypeSpec (inh.InheritedTypeSpec);
 				use.AddIfNotPresent (netIface.Namespace);
 				return new CSIdentifier (netIface.TypeName);
 			}));
+
+			if (protocolDecl.HasAssociatedTypes)
+				return iface;
+
 
 			var hasVtable = ImplementProtocolDeclarationsVTableAndCSProxy (modInventory, wrapper,
 			                                               protocolDecl, protocolContents, iface, 
@@ -4512,6 +4537,36 @@ namespace SwiftReflector {
 
 			cl.Properties.Add (wrapperProp);
 
+		}
+
+		void AddGenericsToInterface (CSInterface iface, ProtocolDeclaration proto, CSUsingPackages use)
+		{
+			if (!proto.HasAssociatedTypes)
+				return;
+
+			foreach (var assocType in proto.AssociatedTypes) {
+				var genName = new CSIdentifier (OverrideBuilder.GenericAssociatedTypeName (assocType));
+				iface.GenericParams.Add (new CSGenericTypeDeclaration (genName));
+				if (assocType.SuperClass != null) {
+					var csTypeName = CSTypeNameFromTypeSpec (proto, assocType.SuperClass, use);
+					iface.GenericConstraints.Add (new CSGenericConstraint (genName, new CSIdentifier (csTypeName)));
+				} else if (assocType.ConformingProtocols.Count > 0) {
+					var constraints = new List<CSIdentifier> ();
+					foreach (var conformProto in assocType.ConformingProtocols) {
+						var csTypeName = CSTypeNameFromTypeSpec (proto, conformProto, use);
+						constraints.Add (new CSIdentifier (csTypeName));
+					}
+					iface.GenericConstraints.Add (new CSGenericConstraint (genName, constraints));
+				}
+			}
+		}
+
+		string CSTypeNameFromTypeSpec (BaseDeclaration context, TypeSpec spec, CSUsingPackages use)
+		{
+			var ntb = TypeMapper.MapType (context, spec, false);
+			var csType = ntb.ToCSType (use);
+			var csTypeName = csType.ToString ();
+			return csTypeName;
 		}
 
 		TLFunction FindSubscriptFoo (FunctionDeclaration decl, List<TLFunction> funcs, PropertyType propType)

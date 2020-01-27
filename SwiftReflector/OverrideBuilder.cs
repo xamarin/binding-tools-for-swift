@@ -222,6 +222,21 @@ namespace SwiftReflector {
 				decl.Generics.Add (genDecl);
 			}
 			decl.Inheritance.Add (new Inheritance (OriginalClass.ToFullyQualifiedName (), InheritanceKind.Class));
+
+			// default constructor with no arguments.
+			var ctor = new FunctionDeclaration ();
+			ctor.Parent = OverriddenClass;
+			ctor.Name = FunctionDeclaration.kConstructorName;
+			ctor.ParameterLists.Add (new List<ParameterItem> ());
+			ctor.ParameterLists.Add (new List<ParameterItem> ());
+			var instanceParm = new ParameterItem ();
+			instanceParm.PublicName = instanceParm.PrivateName = "self";
+			var instanceTypeName = decl.ToFullyQualifiedNameWithGenerics ();
+			instanceParm.TypeName = instanceTypeName;
+			ctor.ParameterLists [0].Add (instanceParm);
+			ctor.ReturnTypeName = instanceTypeName;
+			decl.Members.Add (ctor);
+
 			return decl.MakeUnrooted () as ClassDeclaration;
 		}
 
@@ -1366,7 +1381,7 @@ namespace SwiftReflector {
 			return new SLBinaryExpr (BinaryOp.And, kClassIsInitialized, new SLBinaryExpr (BinaryOp.NotEqual, vtExpr, SLConstant.Nil));
 		}
 
-		static string GenericAssociatedTypeName (AssociatedTypeDeclaration at)
+		public static string GenericAssociatedTypeName (AssociatedTypeDeclaration at)
 		{
 			return $"AT{at.Name}";
 		}
