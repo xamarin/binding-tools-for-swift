@@ -98,7 +98,9 @@ namespace SwiftReflector.Importing {
 			"AudioUnit.AudioTypeMusicDevice", // not an enum
 			"AudioUnit.AudioTypeOutput", // not an enum
 			"AudioUnit.AudioTypePanner", // unimplemented
+			"AudioUnit.AudioUnitBusType", // replaced by another
 			"AudioUnit.AudioUnitClumpID", // not an enum
+			"AudioUnit.AudioUnitParameterFlag", // replaced by another
 			"AudioUnit.AudioUnitParameterType", // can't find it
 			"AudioUnit.AudioUnitPropertyIDType", // not an enum
 			"AudioUnit.AudioUnitScopeType", // not an enum
@@ -107,6 +109,9 @@ namespace SwiftReflector.Importing {
 			"AudioUnit.AUGraphError", // not an enum
 			"AudioUnit.ExtAudioFileError", // not an enum
 			"AudioUnit.InstrumentType", // not an enum
+			"AudioUnit.ScheduledAudioSliceFlag", // replaced
+			"AudioUnit.SpatialMixerAttenuation", // replaced
+			"AudioUnit.SpatialMixerRenderingFlags", // replaced
 			// AVFoundation
 			"AVFoundation.AVAssetExportSessionPreset", // not an enum
 			"AVFoundation.AVAudioBitRateStrategy", // not an enum
@@ -400,11 +405,6 @@ namespace SwiftReflector.Importing {
 			{ "AudioToolbox.PanningMode", "AudioPanningMode" },
 			// AudioUnit
 			{ "AudioUnit.AudioComponentFlag", "AudioComponentFlags" },
-			{ "AudioUnit.AudioUnitBusType", "AUAudioUnitBusType" },
-			{ "AudioUnit.AudioUnitParameterFlag", "AudioUnitParameterOptions" },
-			{ "AudioUnit.ScheduledAudioSliceFlag", "AUScheduledAudioSliceFlags" },
-			{ "AudioUnit.SpatialMixerAttenuation", "AUSpatialMixerAttenuationCurve" },
-			{ "AudioUnit.SpatialMixerRenderingFlags", "AUSpatialMixerRenderingFlags" },
 			// AuthenticationServices
 			{ "AuthenticationServices.ASCredentialIdentityStoreErrorCode", "ASCredentialIdentityStoreError.Code" },
 			{ "AuthenticationServices.ASCredentialServiceIdentifierType", "ASCredentialServiceIdentifier.IdentifierType" },
