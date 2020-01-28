@@ -10,6 +10,7 @@ using SwiftReflector.Exceptions;
 using SwiftReflector.Demangling;
 using SwiftReflector.TypeMapping;
 using ObjCRuntime;
+using System.Text;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class TypeDeclaration : BaseDeclaration, IXElementConvertible {
@@ -133,6 +134,21 @@ namespace SwiftReflector.SwiftXmlReflection {
 			} else {
 				return base.ToFullyQualifiedName (includeModule);
 			}
+		}
+
+		public string ToFullyQualifiedNameWithGenerics ()
+		{
+			var sb = new StringBuilder (ToFullyQualifiedName ());
+			if (ContainsGenericParameters) {
+				sb.Append ("<");
+				for (int i = 0; i < Generics.Count; i++) {
+					if (i > 0)
+						sb.Append (", ");
+					sb.Append (Generics [i].Name);
+				}
+				sb.Append (">");
+			}
+			return sb.ToString ();
 		}
 
 		#region IXElementConvertible implementation
@@ -523,4 +539,3 @@ namespace SwiftReflector.SwiftXmlReflection {
 	}
 
 }
-

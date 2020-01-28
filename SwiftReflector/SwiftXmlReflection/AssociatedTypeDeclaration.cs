@@ -10,14 +10,14 @@ namespace SwiftReflector.SwiftXmlReflection {
 	public class AssociatedTypeDeclaration {
 		public AssociatedTypeDeclaration ()
 		{
-			ConformingProtocols = new List<TypeSpec> ();
+			ConformingProtocols = new List<NamedTypeSpec> ();
 		}
 
 		public string Name { get; set; }
 
 		public TypeSpec SuperClass { get; set; }
 		public TypeSpec DefaultType { get; set; }
-		public List<TypeSpec> ConformingProtocols { get; private set; }
+		public List<NamedTypeSpec> ConformingProtocols { get; private set; }
 
 
 		public static AssociatedTypeDeclaration FromXElement (XElement elem)
@@ -39,7 +39,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			
 			if (elem.Element ("conformingprotocols") != null) {
 				var conforming = from conform in elem.Element ("conformingprotocols").Elements ()
-						 select TypeSpecParser.Parse (NameAttribute (conform));
+						 select TypeSpecParser.Parse (NameAttribute (conform)) as NamedTypeSpec;
 				assocType.ConformingProtocols.AddRange (conforming);
 			}
 

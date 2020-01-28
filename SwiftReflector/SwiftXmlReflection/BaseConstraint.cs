@@ -64,6 +64,12 @@ namespace SwiftReflector.SwiftXmlReflection {
 			Inherits = inheritsTypeSpecString;
 		}
 
+		public InheritanceConstraint (string name, TypeSpec inheritsTypeSpecString)
+			: this (name, inheritsTypeSpecString.ToString ())
+		{
+
+		}
+
 		public string Name { get; private set; }
 		string inheritsStr;
 		TypeSpec inheritsSpec;

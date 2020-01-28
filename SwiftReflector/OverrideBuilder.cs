@@ -19,7 +19,7 @@ namespace SwiftReflector {
 		string vtableName = null;
 		string vtableSetterName;
 		string vtableGetterName;
-		bool isProtocol;
+		bool isProtocol, hasAssociatedTypes;
 		const string kCSIntPtr = "csIntPtr";
 		static SLIdentifier kClassIsInitialized = new SLIdentifier ("_xamarinClassIsInitialized");
 
@@ -31,7 +31,10 @@ namespace SwiftReflector {
 
 		public OverrideBuilder (TypeMapper typeMapper, ClassDeclaration classToOverride, string overrideName, ModuleDeclaration targetModule)
 		{
-			isProtocol = classToOverride is ProtocolDeclaration;
+			if (classToOverride is ProtocolDeclaration protocol) {
+				isProtocol = true;
+				hasAssociatedTypes = protocol.HasAssociatedTypes;
+			}
 			if (classToOverride.IsFinal && !isProtocol)
 				throw new ArgumentException (String.Format ("Attempt to attach override to final class {0}.", classToOverride.ToFullyQualifiedName (true)));
 			this.typeMapper = Ex.ThrowOnNull (typeMapper, "typeMapper");
@@ -54,8 +57,13 @@ namespace SwiftReflector {
 				OverriddenClass = BuildOverrideDefinition (overrideName, targetModule);
 				EveryProtocolExtension = null;
 			} else {
-				EveryProtocolExtension = BuildExtensionDefinition (targetModule);
-				OverriddenClass = null;
+				if (hasAssociatedTypes) {
+					OverriddenClass = BuildAssociatedTypeOverride (overrideName, targetModule);
+					EveryProtocolExtension = null;
+				} else {
+					EveryProtocolExtension = BuildExtensionDefinition (targetModule);
+					OverriddenClass = null;
+				}
 			}
 			OverriddenVirtualMethods = new List<FunctionDeclaration> ();
 			if (!isProtocol) {
@@ -191,6 +199,47 @@ namespace SwiftReflector {
 			return decl;
 		}
 
+		ClassDeclaration BuildAssociatedTypeOverride (string name, ModuleDeclaration targetModule)
+		{
+			name = name ?? ProxyClassName (OriginalClass);
+			var protocol = OriginalClass as ProtocolDeclaration;
+
+			var decl = new ClassDeclaration ();
+			decl.Name = name;
+			decl.Module = targetModule;
+			foreach (var at in protocol.AssociatedTypes) {
+				var genName = GenericAssociatedTypeName (at);
+				var genDecl = new GenericDeclaration (genName);
+				if (at.SuperClass != null) {
+					genDecl.Constraints.Add (new InheritanceConstraint (genName, at.SuperClass));
+				} else if (at.ConformingProtocols.Count > 0) {
+					if (at.ConformingProtocols.Count == 1) {
+						genDecl.Constraints.Add (new InheritanceConstraint (genName, at.ConformingProtocols [0]));
+					} else {
+						genDecl.Constraints.Add (new InheritanceConstraint (genName, new ProtocolListTypeSpec (at.ConformingProtocols)));
+					}
+				}
+				decl.Generics.Add (genDecl);
+			}
+			decl.Inheritance.Add (new Inheritance (OriginalClass.ToFullyQualifiedName (), InheritanceKind.Class));
+
+			// default constructor with no arguments.
+			var ctor = new FunctionDeclaration ();
+			ctor.Parent = OverriddenClass;
+			ctor.Name = FunctionDeclaration.kConstructorName;
+			ctor.ParameterLists.Add (new List<ParameterItem> ());
+			ctor.ParameterLists.Add (new List<ParameterItem> ());
+			var instanceParm = new ParameterItem ();
+			instanceParm.PublicName = instanceParm.PrivateName = "self";
+			var instanceTypeName = decl.ToFullyQualifiedNameWithGenerics ();
+			instanceParm.TypeName = instanceTypeName;
+			ctor.ParameterLists [0].Add (instanceParm);
+			ctor.ReturnTypeName = instanceTypeName;
+			decl.Members.Add (ctor);
+
+			return decl.MakeUnrooted () as ClassDeclaration;
+		}
+
 		void CopyConstructors ()
 		{
 			OverriddenClass.Members.AddRange (OriginalClass.AllConstructors ().Select (c => MarkOverrideSurrogate (c, Reparent (new FunctionDeclaration (c), OverriddenClass))));
@@ -221,10 +270,18 @@ namespace SwiftReflector {
 			else
 				HandleSuperClassVirtualMethods (OriginalClass);
 			IndexOfFirstNewVirtualMethod = OverriddenVirtualMethods.Count;
-			OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (OriginalClass).Select (m => MarkOverrideSurrogate (m, Reparent (new FunctionDeclaration (m), OverriddenClass))));
-			var members = isProtocol ? EveryProtocolExtension.Members : OverriddenClass.Members;
+			if (isProtocol && hasAssociatedTypes) {
+				OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (OriginalClass).Select (m => MarkOverrideSurrogate (m, Reparent (RebuildFunctionDeclarationWithAssociatedTypes (OverriddenClass, m), OverriddenClass))));
+			} else {
+				OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (OriginalClass).Select (m => MarkOverrideSurrogate (m, Reparent (new FunctionDeclaration (m), OverriddenClass))));
+			}
+			var members = isProtocol && !hasAssociatedTypes ? EveryProtocolExtension.Members : OverriddenClass.Members;
 			members.AddRange (OverriddenVirtualMethods);
-			members.AddRange (VirtualPropertiesForClass (OriginalClass).Select (p => Reparent (new PropertyDeclaration (p), OverriddenClass)));
+			if (isProtocol && hasAssociatedTypes) {
+				members.AddRange (VirtualPropertiesForClass (OriginalClass).Select (p => Reparent (RebuildPropertyDeclaration (p), OverriddenClass)));
+			} else {
+				members.AddRange (VirtualPropertiesForClass (OriginalClass).Select (p => Reparent (new PropertyDeclaration (p), OverriddenClass)));
+			}
 		}
 
 		void HandleProtocolMethods (ClassDeclaration decl)
@@ -296,10 +353,17 @@ namespace SwiftReflector {
 			return SLGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2);
 		}
 
+		static string GenericName (ProtocolDeclaration pd, AssociatedTypeDeclaration at)
+		{
+			var depth = 0;
+			var index = pd.AssociatedTypes.IndexOf (at);
+			return SLGenericReferenceType.DefaultNamer (depth, index);
+		}
+
 		void CreateSLImplementation ()
 		{
 			SLClass cl = null;
-			if (isProtocol) {
+			if (isProtocol && !hasAssociatedTypes) {
 				cl = new SLClass (Visibility.None, new SLIdentifier ("EveryProtocol"), namedType: NamedType.Extension);
 			} else {
 				cl = new SLClass (Visibility.Public, OverriddenClass.Name);
@@ -314,8 +378,8 @@ namespace SwiftReflector {
 							EqualityConstraint eq = bc as EqualityConstraint;
 							if (eq != null) {
 								SLType secondType = OriginalClass.IsTypeSpecGeneric (eq.Type2Spec) ?
-								                                 new SLSimpleType (GenericName (OriginalClass, eq.Type2)) :
-								                                 typeMapper.OverrideTypeSpecMapper.MapType (OriginalClass, Imports, eq.Type2Spec, false);
+												 new SLSimpleType (GenericName (OriginalClass, eq.Type2)) :
+												 typeMapper.OverrideTypeSpecMapper.MapType (OriginalClass, Imports, eq.Type2Spec, false);
 								return new SLGenericConstraint (false, new SLSimpleType (GenericName (OriginalClass, gen.Name)),
 															   secondType);
 							} else {
@@ -323,8 +387,8 @@ namespace SwiftReflector {
 								if (inh == null)
 									throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 40, $"Unexpected constraint type {bc.GetType ().Name}");
 								SLType secondType = OriginalClass.IsTypeSpecGeneric (inh.InheritsTypeSpec) ?
-								                                 new SLSimpleType (GenericName (OriginalClass, inh.Inherits)) :
-								                                 typeMapper.OverrideTypeSpecMapper.MapType (OriginalClass, Imports, inh.InheritsTypeSpec, false);
+												 new SLSimpleType (GenericName (OriginalClass, inh.Inherits)) :
+												 typeMapper.OverrideTypeSpecMapper.MapType (OriginalClass, Imports, inh.InheritsTypeSpec, false);
 								return new SLGenericConstraint (true, new SLSimpleType (GenericName (OriginalClass, gen.Name)),
 															   secondType);
 							}
@@ -338,6 +402,30 @@ namespace SwiftReflector {
 				foreach (string s in OriginalClass.Generics.Select (gen => GenericName (OriginalClass, gen.Name)).BracketInterleave ("<", ">", ", "))
 					sb.Append (s);
 				cl.Inheritance.Add (new SLIdentifier (sb.ToString ()));
+				var vtableStruct = DefineGenericVtableStruct ();
+				if (vtableStruct.Fields.Count > 0) {
+					ClassImplementations.Add (vtableStruct);
+					Declarations.Add (DefineGenericVtableDeclaration ());
+					Functions.Add (DefineGenericVtableSetter ());
+					Functions.Add (DefineGenericVtableGetter ());
+				}
+			} else if (OriginalClass is ProtocolDeclaration proto && proto.HasAssociatedTypes) {
+				foreach (var assoc in proto.AssociatedTypes) {
+					var genName = new SLIdentifier (GenericName (proto, assoc));
+					var genDecl = new SLGenericTypeDeclaration (genName);
+					var genType = new SLSimpleType (genName.Name);
+					if (assoc.SuperClass != null) {
+						var constraintType = typeMapper.TypeSpecMapper.MapType (proto, Imports, assoc.SuperClass, false);
+						genDecl.Constraints.Add (new SLGenericConstraint (true, genType, constraintType));
+					} else if (assoc.ConformingProtocols.Count > 0) {
+						foreach (var conformance in assoc.ConformingProtocols) {
+							var constraintType = typeMapper.TypeSpecMapper.MapType (proto, Imports, conformance, false);
+							genDecl.Constraints.Add (new SLGenericConstraint (true, genType, constraintType));
+						}
+					}
+					cl.Generics.Add (genDecl);
+				}
+				cl.Inheritance.Add (new SLIdentifier (OriginalClass.Name));
 				var vtableStruct = DefineGenericVtableStruct ();
 				if (vtableStruct.Fields.Count > 0) {
 					ClassImplementations.Add (vtableStruct);
@@ -367,6 +455,14 @@ namespace SwiftReflector {
 				foreach (FunctionDeclaration func in OverriddenClass.AllConstructors ().Where (f => f.Access == Accessibility.Public && !f.IsConvenienceInit)) {
 					cl.Methods.Add (ToConstructor (func));
 				}
+			} else if (hasAssociatedTypes) {
+				// public default constructor
+				var parameters = new List<SLParameter> ();
+				var body = new SLCodeBlock (null);
+
+				var slfunc = new SLFunc (Visibility.Public, FunctionKind.Constructor,
+							 null, null, new SLParameterList (parameters), body);
+				cl.Methods.Add (slfunc);
 			}
 			ClassImplementations.Add (cl);
 			var allOvers = DefineOverridesAndSupers ().ToList ();
@@ -978,7 +1074,7 @@ namespace SwiftReflector {
 
 
 			if (isProtocol) {
-				body = ifblock;
+				body.AddRange (ifblock);
 			} else {
 				var ifelse = new SLIfElse (condition, ifblock, elseblock);
 				body.Add (ifelse);
@@ -1034,16 +1130,8 @@ namespace SwiftReflector {
 			//     return _vtableName[TypeCacheKey(types:ObjectIdentifier(t0))]
 			// }
 			var parms = new List<SLParameter> ();
-			var exprs = new SLBaseExpr [OriginalClass.Generics.Count];
-			for (int i = 0; i < OriginalClass.Generics.Count; i++) {
-				var id = new SLIdentifier (String.Format ("t{0}", i));
-				exprs [i] = new SLFunctionCall ("ObjectIdentifier", true,
-				                                new SLArgument (new SLIdentifier ("_"), id));
-				parms.Add (new SLParameter (id, new SLSimpleType ("Any.Type")));
-			}
-			var typeCacheKeyExpr =
-				new SLFunctionCall ("TypeCacheKey", true, true,
-				                    new SLArgument (new SLIdentifier ("types"), new SLCommaListExpr (exprs)));
+			var exprs = BuildVTableArguments (parms);
+			var typeCacheKeyExpr = BuildTypeCacheKeyExpr (exprs);
 
 			SLCodeBlock body = new SLCodeBlock (null);
 			body.Add (SLReturn.ReturnLine (new SLSubscriptExpr (vtableName, typeCacheKeyExpr)));
@@ -1063,17 +1151,9 @@ namespace SwiftReflector {
 			var parms = new List<SLParameter> ();
 			var uvtID = new SLIdentifier ("uvt");
 			var vtID = new SLIdentifier ("vt");
-			parms.Add (new SLParameter (uvtID, new SLSimpleType ("UnsafeRawPointer")));
-			var exprs = new SLBaseExpr [OriginalClass.Generics.Count];
-			for (int i = 0; i < OriginalClass.Generics.Count; i++) {
-				var id = new SLIdentifier (String.Format ("t{0}", i));
-				exprs [i] = new SLFunctionCall ("ObjectIdentifier", true,
-				                                new SLArgument (new SLIdentifier ("_"), id));
-				parms.Add (new SLParameter (id, new SLSimpleType ("Any.Type")));
-			}
-			var typeCacheKeyExpr =
-				new SLFunctionCall ("TypeCacheKey", true, true,
-				                    new SLArgument (new SLIdentifier ("types"), new SLCommaListExpr (exprs)));
+			parms.Add (new SLParameter (new SLIdentifier ("_"), uvtID, new SLSimpleType ("UnsafeRawPointer")));
+			var exprs = BuildVTableArguments (parms);
+			var typeCacheKeyExpr = BuildTypeCacheKeyExpr (exprs);
 
 			var body = new SLCodeBlock (null);
 			body.Add (SLDeclaration.LetLine (vtID,
@@ -1085,6 +1165,30 @@ namespace SwiftReflector {
 			var func = new SLFunc (Visibility.Public, null, new SLIdentifier (vtableSetterName),
 			                       new SLParameterList (parms), body);
 			return func;
+		}
+
+		SLBaseExpr [] BuildVTableArguments (List<SLParameter> parms)
+		{
+			int count = 0;
+			if (OriginalClass is ProtocolDeclaration proto) {
+				count = proto.AssociatedTypes.Count;
+			} else {
+				count = OriginalClass.Generics.Count;
+			}
+			var exprs = new SLBaseExpr [count];
+			for (int i = 0; i < count; i++) {
+				var id = new SLIdentifier (String.Format ("t{0}", i));
+				exprs [i] = new SLFunctionCall ("ObjectIdentifier", true,
+								new SLArgument (new SLIdentifier ("_"), id));
+				parms.Add (new SLParameter (new SLIdentifier ("_"), id, new SLSimpleType ("Any.Type")));
+			}
+			return exprs;
+		}
+
+		SLFunctionCall BuildTypeCacheKeyExpr (SLBaseExpr [] exprs)
+		{
+			return new SLFunctionCall ("TypeCacheKey", true, true,
+						    new SLArgument (new SLIdentifier ("types"), new SLCommaListExpr (exprs), true));
 		}
 
 		SLFunc DefineInternalVTableSetter ()
@@ -1275,6 +1379,147 @@ namespace SwiftReflector {
 		static SLBaseExpr InitializedAndNullCheck (SLBaseExpr vtExpr)
 		{
 			return new SLBinaryExpr (BinaryOp.And, kClassIsInitialized, new SLBinaryExpr (BinaryOp.NotEqual, vtExpr, SLConstant.Nil));
+		}
+
+		public static string GenericAssociatedTypeName (AssociatedTypeDeclaration at)
+		{
+			return $"AT{at.Name}";
+		}
+
+		PropertyDeclaration RebuildPropertyDeclaration (PropertyDeclaration prop)
+		{
+			var newProp = new PropertyDeclaration (prop);
+			newProp.TypeName = RebuildTypeSpec (OriginalClass as ProtocolDeclaration, prop.TypeSpec).ToString ();
+			return newProp;
+		}
+
+		FunctionDeclaration RebuildFunctionDeclarationWithAssociatedTypes (ClassDeclaration parent, FunctionDeclaration decl)
+		{
+			var newDecl = new FunctionDeclaration (decl);
+			newDecl.ParameterLists.Clear ();
+			var parameterLists = new List<List<ParameterItem>> ();
+			foreach (var pl in decl.ParameterLists) {
+				parameterLists.Add (RebuildFunctionDeclarationParameterListWithAssociatedTypes (decl, pl));
+			}
+			newDecl.ParameterLists.AddRange (parameterLists);
+			if (newDecl.ParameterLists.Count > 1) {
+				// instance method - change the type from the protocol to the new class
+				var newParm = new ParameterItem (newDecl.ParameterLists [0] [0]);
+				newParm.TypeName = parent.ToFullyQualifiedNameWithGenerics ();
+				newDecl.ParameterLists [0] [0] = newParm;
+			}
+			newDecl.ReturnTypeName = RebuildTypeSpec (OriginalClass as ProtocolDeclaration, decl.ReturnTypeSpec).ToString ();
+			return newDecl;
+		}
+
+		List<ParameterItem> RebuildFunctionDeclarationParameterListWithAssociatedTypes (FunctionDeclaration decl, List<ParameterItem> pl)
+		{
+			List<ParameterItem> newList = new List<ParameterItem> ();
+			foreach (var parm in pl) {
+				var newParm = new ParameterItem (parm);
+				newParm.TypeSpec = RebuildTypeSpec (OriginalClass as ProtocolDeclaration, parm.TypeSpec);
+				newList.Add (newParm);
+			}
+			return newList;
+		}
+
+		TypeSpec RebuildTypeSpec (ProtocolDeclaration proto, TypeSpec ts)
+		{
+			switch (ts.Kind) {
+			case TypeSpecKind.Named:
+				return RebuildNamedTypeSpec (proto, ts as NamedTypeSpec);
+			case TypeSpecKind.Closure:
+				return RebuildClosureTypeSpec (proto, ts as ClosureTypeSpec);
+			case TypeSpecKind.Tuple:
+				return RebuildTupleTypeSpec (proto, ts as TupleTypeSpec);
+			case TypeSpecKind.ProtocolList:
+				return RebuildProtocolListTypeSpec (proto, ts as ProtocolListTypeSpec);
+			default:
+				throw new ArgumentOutOfRangeException (nameof (ts));
+			}
+		}
+
+		static string kSelfDot = "Self.";
+
+		NamedTypeSpec RebuildNamedTypeSpec (ProtocolDeclaration proto, NamedTypeSpec ts)
+		{
+			var newName = ts.Name;
+			if (ts.Name.StartsWith (kSelfDot, StringComparison.Ordinal)) {
+				var name = ts.Name.Substring (kSelfDot.Length);
+				var assocTypeDecl = proto.AssociatedTypeNamed (name);
+				if (assocTypeDecl != null) {
+					newName = GenericAssociatedTypeName (assocTypeDecl);
+				}
+			}
+			var newGenerics = new List<TypeSpec> ();
+			foreach (var gen in ts.GenericParameters) {
+				newGenerics.Add (RebuildTypeSpec (proto, gen));
+			}
+			if (newName == ts.Name && TSListMatches (ts.GenericParameters, newGenerics))
+				return ts;
+			var newSpec = new NamedTypeSpec (newName, newGenerics.ToArray ());
+			CopyTypeSpecEphemera (ts, newSpec);
+			return newSpec;
+		}
+
+		ProtocolListTypeSpec RebuildProtocolListTypeSpec (ProtocolDeclaration protoDecl, ProtocolListTypeSpec protocolList)
+		{
+			var oldProtocols = new List<TypeSpec> ();
+			var newProtocols = new List<TypeSpec> ();
+			oldProtocols.AddRange (protocolList.Protocols.Keys);
+			foreach (var proto in oldProtocols) {
+				newProtocols.Add (RebuildTypeSpec (protoDecl, proto));
+			}
+			if (TSListMatches (oldProtocols, newProtocols))
+				return protocolList;
+			var newList = new ProtocolListTypeSpec (newProtocols.Select (ts => ts as NamedTypeSpec));
+			CopyTypeSpecEphemera (protocolList, newList);
+			return newList;
+		}
+
+		ClosureTypeSpec RebuildClosureTypeSpec (ProtocolDeclaration proto, ClosureTypeSpec closure)
+		{
+			var newReturn = RebuildTypeSpec (proto, closure.ReturnType);
+			var args = RebuildTypeSpec (proto, closure.Arguments);
+			if (newReturn == closure.ReturnType && args == closure.Arguments)
+				return closure;
+			var newClosure = new ClosureTypeSpec (args, newReturn);
+			CopyTypeSpecEphemera (closure, newClosure);
+			newClosure.Throws = closure.Throws;
+			return newClosure;
+		}
+
+		TupleTypeSpec RebuildTupleTypeSpec (ProtocolDeclaration proto, TupleTypeSpec tuple)
+		{
+			var newElems = new List<TypeSpec> ();
+			foreach (var ts in tuple.Elements) {
+				newElems.Add (RebuildTypeSpec (proto, ts));
+			}
+			if (TSListMatches (tuple.Elements, newElems))
+				return tuple;
+			var newTuple = new TupleTypeSpec (newElems);
+			CopyTypeSpecEphemera (tuple, newTuple);
+			return newTuple;
+		}
+
+		static bool TSListMatches (List<TypeSpec> one, List<TypeSpec> two)
+		{
+			if (one.Count != two.Count)
+				return false;
+			bool allSame = true;
+			for (int i = 0; i < one.Count; i++) {
+				if (one[i] != two[i]) {
+					allSame = false;
+					break;
+				}
+			}
+			return allSame;
+		}
+
+		static void CopyTypeSpecEphemera (TypeSpec from, TypeSpec to)
+		{
+			to.Attributes.AddRange (from.Attributes);
+			to.IsInOut = from.IsInOut;
 		}
 	}
 }

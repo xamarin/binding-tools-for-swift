@@ -200,5 +200,19 @@ public func blindAssocFuncAny{nameSuffix} () -> Any {{
 			TestRunning.TestAndExecute (swiftCode, callingCode, $"{csType}\n", testName: $"CanGetAssociatedTypeFromAny{nameSuffix}");
 		}
 
+
+		[Test]
+		public void SmokeProtocolAssoc ()
+		{
+			var swiftCode = @"
+public protocol Iterator0 {
+	associatedtype Elem
+	func next () -> Elem
+}
+";
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
+		}
 	}
 }
