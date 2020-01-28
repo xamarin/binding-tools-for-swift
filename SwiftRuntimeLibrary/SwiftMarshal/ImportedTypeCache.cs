@@ -17,9 +17,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				if (cache.TryGetValue (t, out result))
 					return result;
 #if !TOM_SWIFTY
-				Func<SwiftMetatype> typeGetter = null;
-				if (XamGlueMetadata.ObjCBindingSwiftMetatypes.TryGetValue (t, out typeGetter)) {
-					result = typeGetter ();
+				SwiftMetatype metatype = new SwiftMetatype(IntPtr.Zero);
+				if (XamGlueMetadata.GetSwiftType(t, out metatype)) {
+					result = metatype;
 					cache.Add (t, result);
 				}
 #endif

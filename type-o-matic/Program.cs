@@ -171,8 +171,8 @@ namespace typeomatic {
 			}
 
 			var handleTranslationCode = new CSIdentifier(@"
-		public static unsafe bool GetSwiftType (string typeStr, out SwiftMetatype md) {
-			using (var swiftStr = new SwiftString (typeStr)) {
+		public static unsafe bool GetSwiftType (Type t, out SwiftMetatype md) {
+			using (var swiftStr = new SwiftString (t.FullName)) {
 				fixed (byte *swiftData = swiftStr.SwiftData) {
 					return GetSwiftType (swiftData, out md);
 				}
@@ -185,7 +185,7 @@ namespace typeomatic {
 				csImportMeta = new Dictionary<Type, SwiftMetatype> (csImportTypes.Count);
 				foreach (var t in csImportTypes) {
 					SwiftMetatype meta;
-					GetSwiftType(t.FullName, out meta);
+					GetSwiftType(t, out meta);
 					csImportMeta [t] = meta;
 				}
 			}
