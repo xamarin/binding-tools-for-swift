@@ -11,11 +11,22 @@ namespace Dynamo.SwiftLang {
 		{
 			Name = Exceptions.ThrowOnNull (name, nameof (name));
 			Add (new SimpleElememt ("@"));
+			StringRep = Name.Name;
 			Add (Name);
 			if (args != null) {
 				Add (new SimpleElememt ("("));
 				Add (args);
 				Add (new SimpleElememt (")"));
+				StringRep += "(";
+				foreach (var arg in args) {
+					try {
+						var argId = (SLIdentifier)arg;
+						StringRep += argId.Name;
+					} catch (Exception ex) {
+						continue;
+					}
+				}
+				StringRep += ")";
 			}
 		}
 
@@ -30,6 +41,8 @@ namespace Dynamo.SwiftLang {
 		}
 
 		public SLIdentifier Name { get; private set; }
+
+		public string StringRep { get; private set; }
 
 		static SLAttribute objc;
 

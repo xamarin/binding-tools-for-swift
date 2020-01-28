@@ -76,11 +76,12 @@ namespace typeomatic {
 
 			var writer = new CodeWriter (options.OutputWriter);
 			if (String.Equals (options.ToGenerate, "swift")) {
-				var slFile = GenerateStubsFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
+				//var slFile = GenerateStubsFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
+				var slFile = GenerateSwiftHashTableFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
 				slFile.WriteAll (writer);
 			} else { // String.Equals (options.ToGenerate, "csharp")
 				 //var csFile = GeneratePInvokesFromTypes (aggregatedTypes, options.Platform, options.Framework);
-				var csFile = GenerateHashTableFromTypes (aggregatedTypes, options.Platform, options.Namespaces, options.Framework);
+				var csFile = GenerateCSharpHashTableFromTypes (aggregatedTypes, options.Platform, options.Namespaces, options.Framework);
 				csFile.WriteAll (writer);
 			}
 			writer.TextWriter.Flush ();
@@ -91,59 +92,6 @@ namespace typeomatic {
 
 			return 0;
 		}
-
-
-		/// <summary>
-		/// Creates a list of all types, and a hash table which is initialized on first lookup from C# type
-		/// to Swift types.
-		/// </summary>
-		/// <param name="types">Aggregated types, a subset of which are included</param>
-		/// <param name="platform">Platform targeted (typically iOS or Mac)</param>
-		/// <param name="namespaces">Namespaces to include</param>
-		/// <param name="framework">Name of framework used (typically XamGlue)</param>
-		/// <returns>CSFile which, when written, has function looking up in hash table as described in summary</returns>
-		static CSFile GenerateHashTableFromTypes (TypeAggregator types, PlatformName platform, List<string> namespaces, string framework)
-		{
-			var fileName = Path.GetFileNameWithoutExtension (framework);
-			var ns = new CSNamespace ("SwiftRuntimeLibrary.SwiftMarshal");
-			var use = new CSUsingPackages ();
-			use.And (new CSUsing ("System.Runtime.InteropServices"))
-				.And (new CSUsing ("System"))
-				.And (new CSUsing ("System.Collections.Generic"))
-				.And (new CSUsing ("SwiftRuntimeLibrary"));
-
-			var csFile = new CSFile (use, new CSNamespace [] { ns });
-			var csClass = new CSClass (CSVisibility.Internal, $"{fileName}Metadata");
-			new CSComment (kRobotText).AttachBefore (use);
-
-			CSConditionalCompilation.If (PlatformToCSCondition (platform)).AttachBefore (use);
-			CSConditionalCompilation.Endif.AttachAfter (ns);
-			ns.Block.Add (csClass);
-
-			var selectedTypes = new List<TypeDefinition> ();
-			selectedTypes.AddRange (types.PublicEnums);
-			selectedTypes.AddRange (types.PublicStructs);
-
-			// filter selected types, with same logic as Swift generation
-			selectedTypes = selectedTypes.FindAll (type => IncludeType (type, namespaces, platform));
-			// presort types
-			selectedTypes.Sort ((type1, type2) => String.CompareOrdinal (FuncIDForTypeDefinition (type1), FuncIDForTypeDefinition (type2)));
-
-			// add used namespaces to import list
-			foreach (var type in selectedTypes) {
-				use.AddIfNotPresent (type.Namespace);
-			}
-
-			var typesForList = selectedTypes.Select (type => new CSSimpleType (type.FullName).Typeof ());
-			var bindingExpr = new CSInitializedType (new CSFunctionCall ("List<Type>", true), new CSInitializer (typesForList, true));
-			var bindingDecl = new CSFieldDeclaration (new CSSimpleType ("List<Type>"), "csImportTypes", bindingExpr, CSVisibility.Internal, true);
-
-			csClass.Fields.Add (new CSLine (bindingDecl));
-			use.Sort ((package1, package2) => String.CompareOrdinal (package1.Package, package2.Package));
-
-			return csFile;
-		}
-
 
 		/// <summary>
 		/// Determines if a type should be included. Types are included if they are in namespaces, they do not have
@@ -165,6 +113,88 @@ namespace typeomatic {
 			return false;
 		}
 
+		/// <summary>
+		/// Creates a list of all types, and a hash table which is initialized on first lookup from C# type
+		/// to Swift types.
+		/// </summary>
+		/// <param name="types">Aggregated types, a subset of which are included</param>
+		/// <param name="platform">Platform targeted (typically iOS or Mac)</param>
+		/// <param name="namespaces">Namespaces to include</param>
+		/// <param name="framework">Name of framework used (typically XamGlue)</param>
+		/// <returns>CSFile which, when written, has function looking up in hash table as described in summary</returns>
+		static CSFile GenerateCSharpHashTableFromTypes (TypeAggregator types, PlatformName platform, List<string> namespaces, string framework)
+		{
+			var fileName = Path.GetFileNameWithoutExtension (framework);
+			var ns = new CSNamespace ("SwiftRuntimeLibrary.SwiftMarshal");
+			var use = new CSUsingPackages ();
+			use.And (new CSUsing ("System.Runtime.InteropServices"))
+				.And (new CSUsing ("System"))
+				.And (new CSUsing ("System.Collections.Generic"))
+				.And (new CSUsing ("SwiftRuntimeLibrary"));
+
+			var csFile = new CSFile (use, new CSNamespace [] { ns });
+			var csClass = new CSClass (CSVisibility.Internal, $"{fileName}Metadata");
+			new CSComment (kRobotText).AttachBefore (use);
+
+			CSConditionalCompilation.If (PlatformToCSCondition (platform)).AttachBefore (use);
+			CSConditionalCompilation.Endif.AttachAfter (ns);
+			ns.Block.Add (csClass);
+
+			// collect all possible types, filter and sort
+			var selectedTypes = new List<TypeDefinition> ();
+			selectedTypes.AddRange (types.PublicEnums);
+			selectedTypes.AddRange (types.PublicStructs);
+			selectedTypes = selectedTypes.FindAll (type => IncludeType (type, namespaces, platform));
+			selectedTypes.Sort ((type1, type2) => String.CompareOrdinal (type1.FullName, type2.FullName));
+
+			// add used namespaces to import list, sort list
+			foreach (var type in selectedTypes) {
+				use.AddIfNotPresent (type.Namespace);
+			}
+			use.Sort ((package1, package2) => String.CompareOrdinal (package1.Package, package2.Package));
+
+			// create list of types to translate
+			var typesForList = selectedTypes.Select (type => new CSSimpleType (type.FullName).Typeof ());
+			var listInitializeExpr = new CSInitializedType (
+				new CSFunctionCall ("List<Type>", true),
+				new CSInitializer (typesForList, true)
+			);
+			var listBindingDecl = new CSFieldDeclaration (new CSSimpleType ("List<Type>"), "csImportTypes", listInitializeExpr, CSVisibility.Internal, true);
+			csClass.Fields.Add (new CSLine (listBindingDecl));
+
+			// create pinvoke for function
+			var dylibFile = Path.Combine (framework, fileName);
+			var funcs = TLFunctionsForFile (dylibFile, platform);
+			var PInvokeMethod = PInvokeForName ("getSwiftType", funcs);
+			if (PInvokeMethod != null) {
+				csClass.Methods.Add (PInvokeMethod);
+			}
+
+			var handleTranslationCode = new CSIdentifier(@"
+		public static unsafe bool GetSwiftType (string typeStr, out SwiftMetatype md) {
+			using (var swiftStr = new SwiftString (typeStr)) {
+				fixed (byte *swiftData = swiftStr.SwiftData) {
+					return GetSwiftType (swiftData, out md);
+				}
+			}
+		}
+
+		internal static Dictionary<Type, SwiftMetatype> csImportMeta = null;
+		internal static bool TryGetImportedMetadata (Type cSharpType, out SwiftMetatype md) {
+			if (csImportMeta == null) {
+				csImportMeta = new Dictionary<Type, SwiftMetatype> (csImportTypes.Count);
+				foreach (var t in csImportTypes) {
+					SwiftMetatype meta;
+					GetSwiftType(t.FullName, out meta);
+					csImportMeta [t] = meta;
+				}
+			}
+			return csImportMeta.TryGetValue (cSharpType, out md);
+		}");
+			csClass.Fields.Add (new CSLine (handleTranslationCode, false));
+
+			return csFile;
+		}
 
 		static CSFile GeneratePInvokesFromTypes (TypeAggregator types, PlatformName platform, string framework)
 		{
@@ -234,6 +264,148 @@ namespace typeomatic {
 					mangledName.Substring (1), new CSParameterList ());
 		}
 
+		static CSMethod PInvokeForName(string name, Dictionary<string, string> funcs)
+		{
+			string mangledName;
+			if (!funcs.TryGetValue (name, out mangledName))
+				return null;
+
+			return CSMethod.PInvoke (CSVisibility.None, new CSSimpleType("unsafe bool"), name.Replace("g", "G"), new CSIdentifier ("SwiftCore.kXamGlue"), mangledName.Substring (1), new CSParameterList(new CSParameter(CSSimpleType.ByteStar, "str"), new CSParameter(new CSSimpleType("SwiftMetatype"), "md", CSParameterKind.Out)));
+		}
+
+		/// <summary>
+		/// Creates a hash table for all types, and a function to access them.
+		/// </summary>
+		/// <param name="types">Aggregated types, a subset of which are included</param>
+		/// <param name="platform">Platform targeted (typically iOS or Mac)</param>
+		/// <param name="namespaces">Namespaces to include</param>
+		/// <returns>SLFile which, when written, has hash table and function as described in summary</returns>
+		static SLFile GenerateSwiftHashTableFromTypes (TypeAggregator types, PlatformName platform, List<string> namespaces)
+		{
+			var imports = ImportsForPlatform (platform, types.AllTypes);
+			SLConditionalCompilation.If (PlatformCondition (platform)).AttachBefore (imports);
+			new SLComment (kRobotText, true).AttachBefore (imports);
+			var slfile = new SLFile (imports);
+
+			// collect and filter types
+			var selectedTypes = new List<TypeDefinition> ();
+			selectedTypes.AddRange (types.PublicEnums);
+			selectedTypes.AddRange (types.PublicStructs);
+			selectedTypes = selectedTypes.FindAll (type => IncludeType (type, namespaces, platform));
+			selectedTypes.Sort ((type1, type2) => String.CompareOrdinal (type1.FullName, type2.FullName));
+
+			// sort types into respective availability categories
+			var availableCategories = new Dictionary<string, List<TypeDefinition>> ();
+			foreach (var type in selectedTypes) {
+				var typeAttributeObj = AvailableAttributeForType (platform, type);
+				var typeAttribute = typeAttributeObj == null ? "" : typeAttributeObj.StringRep;
+				List<TypeDefinition> otherTypes;
+				if (availableCategories.TryGetValue (typeAttribute, out otherTypes)) {
+					otherTypes.Add (type);
+				} else {
+					otherTypes = new List<TypeDefinition> { type };
+					availableCategories.Add (typeAttribute, otherTypes);
+				}
+			}
+
+			// debug
+			//foreach (var pair in availableCategories) {
+			//	Console.WriteLine ($"Available attribute \"{pair.Key}\": {pair.Value.Aggregate("", (str, type) => str + ", " + type.Name).Substring(2)} (length: {pair.Value.Count})");
+			//}
+
+			// add map for each availability status
+			var maps = new StringBuilder ();
+			var mergeFns = new StringBuilder ();
+			mergeFns.AppendLine ("private func addToTypes() {");
+			foreach (var category in availableCategories) {
+				var availableInfo = category.Key;
+				var modifier = "public";
+				var prefix = "";
+				var header = "";
+				if (availableInfo != "") {
+					modifier = "private";
+					prefix = AvailableDictPrefix (availableInfo);
+					header = $"@{availableInfo}";
+				}
+				if (header != "")
+					maps.AppendLine (header);
+				maps.AppendLine ($"{modifier} var {prefix}types: [String:Any.Type] = [");
+				maps.AppendLine (MapBodyForTypes (category.Value, platform));
+				maps.AppendLine ("]");
+				maps.AppendLine ();
+
+				if (availableInfo != "") {
+					mergeFns.AppendLine ($"	if #{availableInfo} {{");
+					mergeFns.AppendLine ($"		types.merge({AvailableDictPrefix (availableInfo)}types) {{ (_, newer) in newer }}");
+					mergeFns.AppendLine ("	}");
+				}
+			}
+			if (!availableCategories.ContainsKey ("")) {
+				maps.AppendLine ("public var types = [String:Any.Type]()");
+			}
+			mergeFns.AppendLine ("}");
+			slfile.Declarations.Add (new SLLine (new SLIdentifier (maps.ToString ()), false));
+			slfile.Declarations.Add (new SLLine (new SLIdentifier (mergeFns.ToString ()), false));
+
+			// add function to fetch type
+			var handleTranslation = @"
+private var merged = false
+
+public func getSwiftType(str: UnsafeMutablePointer<String>, result: UnsafeMutablePointer<Any.Type>) -> Bool {
+	if !merged {
+		merged = true
+		addToTypes()
+	}
+	if let mt = types[str.pointee] {
+		result.initialize(to: mt)
+		return true
+	}
+	return false
+}";
+			slfile.Declarations.Add (new SLLine (new SLIdentifier (handleTranslation), false));
+
+			slfile.Trailer.Add (SLConditionalCompilation.Endif);
+			// can't do ordinal because module names can have Bockovers
+			imports.Sort ((import1, import2) => String.Compare (import1.Module, import2.Module, StringComparison.InvariantCulture));
+			return slfile;
+
+		}
+
+		/// <summary>
+		/// Converts string of form "available (iOS 11.0, *)" to "iOS11_0".
+		/// </summary>
+		/// <param name="availableInfo">String of specified format: "available (iOS 11.0, *)"</param>
+		/// <returns>String of specified format: "iOS11_0"</returns>
+		static string AvailableDictPrefix(string availableInfo)
+		{
+			var openParensLoc = availableInfo.IndexOf ("(", StringComparison.Ordinal);
+			var commaLoc = availableInfo.IndexOf (",", StringComparison.Ordinal);
+			return availableInfo.Substring (
+				openParensLoc + 1, commaLoc - openParensLoc - 1
+			).Replace (" ", "").Replace (".", "_");
+		}
+
+		/// <summary>
+		/// Makes body of map, where each line is of form:
+		/// "Swift.Int": Int.self
+		/// </summary>
+		/// <param name="types">List of type definitions to put in map body</param>
+		/// <param name="platform">Platform for compilation</param>
+		/// <returns>String containing map body, one mapping per line.</returns>
+		static string MapBodyForTypes(List<TypeDefinition> types, PlatformName platform)
+		{
+			StringBuilder result = new StringBuilder();
+			foreach (var type in types) {
+				var cSharpName = type.Name;
+				var swiftName = type.Name;
+				var moduleName = type.Namespace;
+				TypeAggregator.RemapModuleAndName (platform, ref moduleName, ref swiftName, TypeType.None);
+				result.AppendLine ($"	\"{moduleName}.{cSharpName}\": {swiftName}.self,");
+			}
+			if (result.Length == 0)
+				return "";
+			return result.ToString().Substring(0, result.Length - 1);
+		}
 
 		static SLFunc MetadataFuncForType (PlatformName platform, TypeDefinition type, TypeType entityType)
 		{
@@ -248,7 +420,7 @@ namespace typeomatic {
 			body.Add (returnLine);
 			var func = new SLFunc (Visibility.Public, new SLSimpleType ("Any.Type"), funcID, null, body);
 			new SLComment (type.FullName, true).AttachBefore (func);
-			var attr = AvailableAttributeForFunc (platform, type);
+			var attr = AvailableAttributeForType (platform, type);
 			if (attr != null)
 				attr.AttachBefore (func);
 			return func;
@@ -361,7 +533,7 @@ namespace typeomatic {
 			}
 		}
 
-		static SLAttribute AvailableAttributeForFunc (PlatformName platform, TypeDefinition type)
+		static SLAttribute AvailableAttributeForType (PlatformName platform, TypeDefinition type)
 		{
 
 			var map = TypeAggregator.AvailableMapForPlatform (platform);
