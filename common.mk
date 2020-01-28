@@ -104,8 +104,7 @@ TYPE_O_MATIC_COMMON_NAMESPACES= \
 	WebKit \
 
 TYPE_O_MATIC_MAC_NAMESPACES= \
-	GameController \
-	# $(TYPE_O_MATIC_COMMON_NAMESPACES) \
+	$(TYPE_O_MATIC_COMMON_NAMESPACES) \
 	AppKit \
 	CFNetwork \
 	CoreAnimation \
@@ -132,9 +131,7 @@ TYPE_O_MATIC_MAC_NAMESPACES= \
 	iTunesLibrary \
 
 TYPE_O_MATIC_IOS_NAMESPACES= \
-	AddressBook \
-	ARKit \
-	# $(TYPE_O_MATIC_COMMON_NAMESPACES) \
+	$(TYPE_O_MATIC_COMMON_NAMESPACES) \
 	ARKit \
 	AddressBook \
 	AddressBookUI \
