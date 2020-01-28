@@ -1728,7 +1728,7 @@ namespace SwiftReflector {
 
 			string ifaceName = InterfaceNameForProtocol (swiftClassName, TypeMapper);
 			string className = CSProxyNameForProtocol (swiftClassName, TypeMapper);
-			string classNameSuffix = "";
+			string classNameSuffix = String.Empty;
 
 			if (protocolDecl.HasAssociatedTypes) {
 				// generates <, , ,>
@@ -6219,4 +6219,3 @@ namespace SwiftReflector {
 		}
 	}
 }
-
