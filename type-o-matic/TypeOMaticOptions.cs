@@ -107,6 +107,7 @@ namespace typeomatic {
 		OptionSet optionsSet;
 		public string SwiftLibPath { get; set; }
 		public bool PrintHelp { get; set; }
+		public string ToGenerate { get; set; }
 		public PlatformName Platform { get; set; }
 		public List<string> Namespaces { get; private set; }
 		public string Framework { get; set; }
@@ -122,6 +123,9 @@ namespace typeomatic {
 			// create an option set that will be used to parse the different
 			// options of the command line.
 			optionsSet = new OptionSet {
+				{ "generate=", "type of file to generate, one of: swift, csharp", target => {
+					ToGenerate = target.ToLower();
+				} },
 				{ "platform=", "target platform, one of: macOS|mac, iOS|iphone, watchOS|watch, tvOS|appletv, default is iOS", platform => {
 					Platform = ToPlatformName (platform);
 				}},

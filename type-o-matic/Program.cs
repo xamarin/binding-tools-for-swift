@@ -51,12 +51,21 @@ namespace typeomatic {
 				return 1;
 			}
 
-	    		if ((options.Framework != null && options.Namespaces.Count > 0) ||
-	    			(options.Framework == null && options.Namespaces.Count == 0)) {
-				Console.WriteLine ("You need to select either input namespaces (to generate swift) or a XamGlue.framework (to generate C#) but not both.");
+			if (options.ToGenerate == null || !String.Equals (options.ToGenerate, "swift") && !String.Equals (options.ToGenerate, "csharp")) {
+				Console.WriteLine ("You need to specify what type of code you want to generate, either 'swift' or 'csharp'.");
 				return 1;
 			}
-			
+
+			if (options.Namespaces.Count == 0) {
+				Console.WriteLine ("You need to select input namespaces.");
+				return 1;
+			}
+
+			if (String.Equals (options.ToGenerate, "csharp") && options.Framework == null) { 
+				Console.WriteLine ("You need to select a XamGlue.framework to generate C#");
+				return 1;
+			}
+
 			if (options.Framework != null && !Directory.Exists (options.Framework)) {
 				Console.WriteLine ($"Unable to find XamGlue framework at {options.Framework}.");
 				return 1;
@@ -66,10 +75,10 @@ namespace typeomatic {
 			aggregatedTypes.Aggregate ();
 
 			var writer = new CodeWriter (options.OutputWriter);
-			if (options.Namespaces.Count > 0) {
+			if (String.Equals (options.ToGenerate, "swift")) {
 				var slFile = GenerateStubsFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
 				slFile.WriteAll (writer);
-			} else {
+			} else { // String.Equals (options.ToGenerate, "csharp")
 				var csFile = GeneratePInvokesFromTypes (aggregatedTypes, options.Platform, options.Framework);
 				csFile.WriteAll (writer);
 			}
