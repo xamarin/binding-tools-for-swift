@@ -264,7 +264,7 @@ namespace typeomatic {
 					mangledName.Substring (1), new CSParameterList ());
 		}
 
-		static CSMethod PInvokeForName(string name, Dictionary<string, string> funcs)
+		static CSMethod PInvokeForName (string name, Dictionary<string, string> funcs)
 		{
 			string mangledName;
 			if (!funcs.TryGetValue (name, out mangledName))
@@ -376,7 +376,7 @@ public func getSwiftType(str: UnsafeMutablePointer<String>, result: UnsafeMutabl
 		/// </summary>
 		/// <param name="availableInfo">String of specified format: "available (iOS 11.0, *)"</param>
 		/// <returns>String of specified format: "iOS11_0"</returns>
-		static string AvailableDictPrefix(string availableInfo)
+		static string AvailableDictPrefix (string availableInfo)
 		{
 			var openParensLoc = availableInfo.IndexOf ("(", StringComparison.Ordinal);
 			var commaLoc = availableInfo.IndexOf (",", StringComparison.Ordinal);
@@ -392,7 +392,7 @@ public func getSwiftType(str: UnsafeMutablePointer<String>, result: UnsafeMutabl
 		/// <param name="types">List of type definitions to put in map body</param>
 		/// <param name="platform">Platform for compilation</param>
 		/// <returns>String containing map body, one mapping per line.</returns>
-		static string MapBodyForTypes(List<TypeDefinition> types, PlatformName platform)
+		static string MapBodyForTypes (List<TypeDefinition> types, PlatformName platform)
 		{
 			StringBuilder result = new StringBuilder();
 			foreach (var type in types) {

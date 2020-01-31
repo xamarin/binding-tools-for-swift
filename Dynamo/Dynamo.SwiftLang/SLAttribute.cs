@@ -3,6 +3,7 @@
 
 using System;
 using System.Reflection;
+using System.Text;
 
 namespace Dynamo.SwiftLang {
 	public class SLAttribute : LineCodeElementCollection<ICodeElement> {
@@ -11,23 +12,24 @@ namespace Dynamo.SwiftLang {
 		{
 			Name = Exceptions.ThrowOnNull (name, nameof (name));
 			Add (new SimpleElememt ("@"));
-			StringRep = Name.Name;
+			var stringRep = new StringBuilder (Name.Name);
 			Add (Name);
 			if (args != null) {
 				Add (new SimpleElememt ("("));
 				Add (args);
 				Add (new SimpleElememt (")"));
-				StringRep += "(";
+				stringRep.Append ("(");
 				foreach (var arg in args) {
 					try {
 						var argId = (SLIdentifier)arg;
-						StringRep += argId.Name;
+						stringRep.Append (argId.Name);
 					} catch (Exception ex) {
 						continue;
 					}
 				}
-				StringRep += ")";
+				stringRep.Append (")");
 			}
+			StringRep = stringRep.ToString ();
 		}
 
 		public SLAttribute (string name, CommaListElementCollection<SLBaseExpr> args = null)

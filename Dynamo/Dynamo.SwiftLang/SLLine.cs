@@ -23,7 +23,7 @@ namespace Dynamo.SwiftLang {
 		}
 
 		public ISLExpr Contents { get; private set; }
-		public bool AddSemicolon { get; set; }
+		public bool AddSemicolon { get; private set; }
 	}
 }
 
