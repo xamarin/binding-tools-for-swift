@@ -20,11 +20,8 @@ namespace Dynamo.SwiftLang {
 				Add (new SimpleElememt (")"));
 				stringRep.Append ("(");
 				foreach (var arg in args) {
-					try {
-						var argId = (SLIdentifier)arg;
+					if (arg is SLIdentifier argId) {
 						stringRep.Append (argId.Name);
-					} catch (Exception ex) {
-						continue;
 					}
 				}
 				stringRep.Append (")");
