@@ -201,6 +201,7 @@ public func blindAssocFuncAny{nameSuffix} () -> Any {{
 		}
 
 
+		[Ignore ("Wrapping code is not quite ready yet.")]
 		[Test]
 		public void SmokeProtocolAssoc ()
 		{
@@ -212,7 +213,7 @@ public protocol Iterator0 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
 		}
 	}
 }

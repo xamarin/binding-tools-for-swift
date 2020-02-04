@@ -10,6 +10,7 @@ namespace SwiftReflector {
 	public class FunctionReferenceCodeMap {
 		Dictionary<FunctionDeclaration, int> map = new Dictionary<FunctionDeclaration, int> ();
 		int currentCode = 0;
+		Dictionary<string, BaseDeclaration> allClassesAdded = new Dictionary<string, BaseDeclaration> ();
 
 		public int? ReferenceCodeFor (FunctionDeclaration declaration)
 		{
@@ -35,7 +36,18 @@ namespace SwiftReflector {
 			var result = currentCode;
 			currentCode++;
 			map.Add (declaration, result);
+			var parentName = declaration.Parent != null ? declaration.Parent.ToFullyQualifiedName (false) : null;
+			if (declaration.Parent != null && !allClassesAdded.ContainsKey (parentName))
+				allClassesAdded.Add (parentName, declaration.Parent);
 			return result;
 		}
+
+		public BaseDeclaration OriginalOrReflectedClassFor (BaseDeclaration baseDecl)
+		{
+			BaseDeclaration result = null;
+			allClassesAdded.TryGetValue (baseDecl.ToFullyQualifiedName (false), out result);
+			return result ?? baseDecl;
+		}
+
 	}
 }

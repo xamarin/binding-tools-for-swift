@@ -1151,11 +1151,19 @@ namespace SwiftReflector {
 		FunctionDeclaration FindSuperWrapper (FunctionDeclaration superFunc, WrappingResult wrapper)
 		{
 			string wrapperName = null;
+			var namePrefix = String.Empty;
+			if (superFunc.Parent is ProtocolDeclaration proto && proto.HasAssociatedTypes)
+				namePrefix = OverrideBuilder.ProxyPrefix;
+			var parentName = PrefixInsertedBeforeName (superFunc.Parent, superFunc.IsProperty, namePrefix);
 			if (superFunc.IsProperty) {
-				wrapperName = MethodWrapping.WrapperName (superFunc.Parent.ToFullyQualifiedName (),
+				wrapperName = MethodWrapping.WrapperName (parentName,
 					superFunc.PropertyName, superFunc.IsGetter ? PropertyType.Getter : PropertyType.Setter, superFunc.IsSubscript, false);
 			} else {
-				wrapperName = MethodWrapping.WrapperName (superFunc.Parent.ToFullyQualifiedName (false), superFunc.Name, false);
+				wrapperName = MethodWrapping.WrapperName (parentName, superFunc.Name, false);
+			}
+			var referenceCode = wrapper.FunctionReferenceCodeMap.ReferenceCodeFor (superFunc);
+			if (referenceCode != null) {
+				wrapperName = MethodWrapping.FuncNameWithReferenceCode (wrapperName, referenceCode.Value);
 			}
 
 			var funcsToSearch = wrapper.Module.Functions.Where (fn => fn.Name == wrapperName).ToList ();
@@ -1171,9 +1179,18 @@ namespace SwiftReflector {
 			}
 			return funcsToSearch.FirstOrDefault (fn => {
 				bool retsEqual = TypeSpec.BothNullOrEqual (returnType, fn.ReturnTypeSpec);
-				bool paramsEqual = ParameterItem.AreEqualIgnoreNamesReferencesInvariant (superFunc, listToMatch, fn, fn.ParameterLists [0], true);
+				bool paramsEqual = ParameterItem.AreEqualIgnoreNamesReferencesInvariant (superFunc, listToMatch, fn, fn.ParameterLists.Last (), true);
 				return retsEqual && paramsEqual;
 			});
+		}
+
+		static string PrefixInsertedBeforeName (BaseDeclaration decl, bool includeModule, string prefix)
+		{
+			var fullyQualified = decl.ToFullyQualifiedName (includeModule);
+			if (prefix == String.Empty)
+				return fullyQualified;
+			var name = decl.Name;
+			return $"{fullyQualified.Substring(0, fullyQualified.Length - name.Length)}{prefix}{name}";
 		}
 
 		List<ParameterItem> BuildSwiftMarshaledParameterList (FunctionDeclaration decl)
@@ -1760,6 +1777,9 @@ namespace SwiftReflector {
 				proxyClass.GenericConstraints.AddRange (iface.GenericConstraints);
 				var inheritance = iface.ToCSType ().ToString ();
 				proxyClass.Inheritance.Add (new CSIdentifier (inheritance));
+				var entity = SynthesizeEntityFromWrapperClass (swiftProxyClassName, protocolDecl, wrapper);
+				if (!TypeMapper.TypeDatabase.Contains (entity.Type.ToFullyQualifiedName ()))
+					TypeMapper.TypeDatabase.Add (entity);
 			} else {
 				proxyClass.Inheritance.Add (typeof (BaseProxy));
 				proxyClass.Inheritance.Add (iface.Name);
@@ -1771,21 +1791,34 @@ namespace SwiftReflector {
 				return new CSIdentifier (netIface.TypeName);
 			}));
 
-			if (protocolDecl.HasAssociatedTypes)
-				return iface;
-
 
 			var hasVtable = ImplementProtocolDeclarationsVTableAndCSProxy (modInventory, wrapper,
 			                                               protocolDecl, protocolContents, iface, 
 			                                               proxyClass, picl, usedPinvokeNames, use, swiftLibraryPath);
-			ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface);
 
-			ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
+			if (!protocolDecl.HasAssociatedTypes) {
+				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface);
+				ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
+			}
 
 			TypeNameAttribute (protocolDecl).AttachBefore (iface);
 			return iface;
 		}
 
+		Entity SynthesizeEntityFromWrapperClass (string csClassName, ProtocolDeclaration protocol, WrappingResult wrapper)
+		{
+			var className = OverrideBuilder.ProxyPrefix + protocol.Name;
+			var theClass = wrapper.Module.Classes.FirstOrDefault (cl => cl.Name == className);
+			var wrapperclass = wrapper.FunctionReferenceCodeMap.OriginalOrReflectedClassFor (theClass) as ClassDeclaration;
+			var entity = new Entity ();
+			entity.EntityType = EntityType.Class;
+			entity.SharpNamespace = protocol.Module.Name;
+			entity.SharpTypeName = csClassName;
+			entity.Type = wrapperclass;
+			entity.ProtocolProxyModule = protocol.Module.Name;
+
+			return entity;
+		}
 
 		CSClass CompileVirtualClass (ClassDeclaration classDecl, ModuleInventory modInventory, CSUsingPackages use,
 		                             WrappingResult wrapper, string swiftLibraryPath, List<CSClass> pinvokes, ErrorHandling errors)
@@ -1908,6 +1941,7 @@ namespace SwiftReflector {
 		                                                    ProtocolDeclaration protocolDecl, ProtocolContents protocolContents, CSInterface iface,
 		                                                    CSClass proxyClass, CSClass picl, List<string> usedPinvokeNames, CSUsingPackages use, string swiftLibraryPath)
 		{
+			List<FunctionDeclaration> assocWrapperFunctions = null;
 			var virtFunctions = new List<FunctionDeclaration> ();
 			CollectAllProtocolMethods (virtFunctions, protocolDecl);
 			string vtableName = "xamVtable" + iface.Name;
@@ -1918,6 +1952,14 @@ namespace SwiftReflector {
 
 			var vtable = new CSStruct (CSVisibility.None, new CSIdentifier (vtableTypeName));
 			int vtableEntryIndex = 0;
+
+			if (protocolDecl.HasAssociatedTypes) {
+				var matcher = new ProtocolMethodMatcher (protocolDecl, virtFunctions, wrapper);
+				assocWrapperFunctions = new List<FunctionDeclaration> ();
+				matcher.MatchFunctions (assocWrapperFunctions);
+				virtFunctions = assocWrapperFunctions;
+			}
+
 			for (int i = 0; i < virtFunctions.Count; i++) {
 				if (virtFunctions [i].IsSetter || virtFunctions [i].IsMaterializer)
 					continue;
@@ -2027,7 +2069,12 @@ namespace SwiftReflector {
 
 
 			var publicMethod = ImplementOverloadFromKnownWrapper (proxyClass, picl, usedPinvokeNames, func, use, true, wrapper, swiftLibraryPath,
-			                                                      tlWrapperFunction, false);
+			                                                      tlWrapperFunction, false, MakeAssociatedTypeNamer (protocolDecl));
+
+			if (protocolDecl.HasAssociatedTypes) {
+				SubstituteAssociatedTypeNamer (protocolDecl, publicMethod);
+			}
+
 			var ifaceMethod = new CSMethod (CSVisibility.None, CSMethodKind.Interface, publicMethod.Type,
 						     publicMethod.Name, publicMethod.Parameters, null);
 			ifaceMethod.GenericParameters.AddRange (publicMethod.GenericParameters);
@@ -4919,7 +4966,8 @@ namespace SwiftReflector {
 		}
 
 		CSMethod ImplementOverloadFromKnownWrapper (CSClass cl, CSClass picl, List<string> usedPinvokeNames, FunctionDeclaration methodToWrap, CSUsingPackages use, bool isFinal,
-			WrappingResult wrapper, string swiftLibraryPath, TLFunction wrapperFunction, bool forcePrivate = false)
+			WrappingResult wrapper, string swiftLibraryPath, TLFunction wrapperFunction, bool forcePrivate = false,
+			Func<int, int, string> genericReferenceNamer = null)
 		{
 			var wrapperFunctionDecl = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunction, TypeMapper, wrapper);
 			var className = TypeMapper.GetDotNetNameForSwiftClassName (methodToWrap.Parent.ToFullyQualifiedName (true));
@@ -4959,6 +5007,7 @@ namespace SwiftReflector {
 			};
 
 			var marshaler = new MarshalEngine (use, localIdentifiers, TypeMapper, wrapper.Module.SwiftCompilerVersion);
+			marshaler.GenericReferenceNamer = genericReferenceNamer;
 			var instanceTypeSpec = methodToWrap.ParameterLists.Count > 1 ? methodToWrap.ParameterLists [0] [0].TypeSpec : null;
 			CSType csInstanceType = null;
 			if (instanceTypeSpec != null) {
@@ -6216,6 +6265,33 @@ namespace SwiftReflector {
 			var argList = new CSArgumentList ();
 			argList.Add (new CSArgument (CSConstant.Val (decl.ToFullyQualifiedName ())));
 			return CSAttribute.FromAttr (typeof (SwiftTypeNameAttribute), argList);
+		}
+
+		Func<int, int, string> MakeAssociatedTypeNamer (ProtocolDeclaration protocolDecl)
+		{
+			return (depth, index) => {
+				if (depth != 0)
+					throw new NotImplementedException ($"Depth for associated type reference in protocol {protocolDecl.ToFullyQualifiedName ()} should always be 0");
+				return OverrideBuilder.GenericAssociatedTypeName (protocolDecl.AssociatedTypes [index]);
+			};
+		}
+
+		void SubstituteAssociatedTypeNamer (ProtocolDeclaration protocolDecl, CSMethod publicMethod)
+		{
+			var namer = MakeAssociatedTypeNamer (protocolDecl);
+			SubstituteAssociatedTypeNamer (namer, publicMethod.Type);
+			foreach (var parm in publicMethod.Parameters)
+				SubstituteAssociatedTypeNamer (namer, parm.CSType);
+		}
+
+		void SubstituteAssociatedTypeNamer (Func<int, int, string> namer, CSType ty)
+		{
+			if (ty is CSGenericReferenceType genType) {
+				genType.ReferenceNamer = namer;
+			} else if (ty is CSSimpleType simpleType) {
+				foreach (var genSubType in simpleType.GenericTypes)
+					SubstituteAssociatedTypeNamer (namer, genSubType);
+			} else throw new NotImplementedException ($"Unknown type {ty.GetType ().Name} ({ty.ToString ()})");
 		}
 	}
 }
