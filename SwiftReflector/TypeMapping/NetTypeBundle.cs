@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Dynamo.CSLang;
+using SwiftReflector.SwiftXmlReflection;
 using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.TypeMapping {
@@ -59,6 +60,16 @@ namespace SwiftReflector.TypeMapping {
 			GenericIndex = index;
 		}
 
+		public NetTypeBundle (ProtocolDeclaration proto, AssociatedTypeDeclaration assoc)
+		{
+			GenericIndex = -1;
+			AssociatedTypeProtocol = proto;
+			AssociatedType = assoc;
+			Type = OverrideBuilder.GenericAssociatedTypeName (assoc);
+			FullName = Type;
+			NameSpace = String.Empty;
+		}
+
 		static NetTypeBundle ntbVoid = new NetTypeBundle ("", kNoType, false, false, EntityType.None);
 
 		public static NetTypeBundle Void { get { return ntbVoid; } }
@@ -83,6 +94,9 @@ namespace SwiftReflector.TypeMapping {
 		public int GenericDepth { get; private set; }
 		public int GenericIndex { get; private set; }
 		public bool IsGenericReference { get { return GenericIndex >= 0; } }
+		public ProtocolDeclaration AssociatedTypeProtocol { get; private set; }
+		public AssociatedTypeDeclaration AssociatedType { get; private set; }
+		public bool IsAssociatedType {  get { return AssociatedTypeProtocol != null; } }
 		public bool ContainsGenericParts {
 			get {
 				return genericTypes.Count > 0;
@@ -174,6 +188,8 @@ namespace SwiftReflector.TypeMapping {
 					genref.InterfaceConstraints.AddRange (this.GenericConstraints.Select (ntb => ntb.ToCSType (use)));
 				}
 				return genref;
+			} else if (IsAssociatedType) {
+				return new CSSimpleType (Type, false);
 			}
 
 			return Entity == EntityType.Tuple ? ToCSTuple (TupleTypes, use) : 

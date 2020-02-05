@@ -539,12 +539,19 @@ namespace SwiftReflector.TypeMapping {
 					return ToScalar (named.Name, spec.IsInOut);
 				}
 
-				if (context.IsTypeSpecGeneric (spec) && !spec.ContainsGenericParameters) {
+				if (context.IsTypeSpecGeneric (spec) && (!spec.ContainsGenericParameters || isPinvoke)) {
 					if (isPinvoke) {
 						return new NetTypeBundle ("System", "IntPtr", false, named.IsInOut, EntityType.None);
 					} else {
 						var depthIndex = context.GetGenericDepthAndIndex (spec);
 						return new NetTypeBundle (depthIndex.Item1, depthIndex.Item2);
+					}
+				} else if (context.IsTypeSpecAssociatedType (named)) {
+					if (isPinvoke) {
+						return new NetTypeBundle ("System", "IntPtr", false, named.IsInOut, EntityType.None);
+					} else {
+						var assocType = context.AssociatedTypeDeclarationFromNamedTypeSpec (named);
+						return new NetTypeBundle (context.AsProtocolOrParentAsProtocol (), assocType);
 					}
 				} else {
 					Entity en = TypeDatabase.EntityForSwiftName (named.Name);

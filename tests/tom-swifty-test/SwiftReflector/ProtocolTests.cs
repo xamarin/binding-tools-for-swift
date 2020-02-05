@@ -588,7 +588,7 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 	    		// associated type
 			// equality constraint
 	    		// skipping FilmString (due to previous errors)
-			TestRunning.TestAndExecute (swiftCode, callingCode, "No smoke\n", expectedErrorCount: 1, platform:PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "No smoke\n", expectedErrorCount: 2, platform:PlatformName.macOS);
 		}
 
 		[Test]

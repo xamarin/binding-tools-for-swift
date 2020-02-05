@@ -23,6 +23,7 @@ namespace SwiftReflector {
 		bool skipThisParameterPremarshal = false;
 		List<CSFixedCodeBlock> fixedChain = new List<CSFixedCodeBlock> ();
 		Version swiftLangVersion;
+		Func<int, int, string> genericReferenceNamer = null;
 
 		public MarshalEngine (CSUsingPackages use, List<string> identifiersUsed, TypeMapper typeMapper, Version swiftLangVersion)
 		{
@@ -206,6 +207,10 @@ namespace SwiftReflector {
 			}
 
 			var hasReturn = returnType != null && returnType != CSSimpleType.Void;
+
+			if (hasReturn)
+				returnType = ReworkTypeWithNamer (returnType);
+
 			var returnIsScalar = returnType != null && TypeMapper.IsScalar (swiftReturnType);
 			var returnEntity = hasReturn && !typeContext.IsTypeSpecGenericReference(swiftReturnType) ? typeMapper.GetEntityForTypeSpec (swiftReturnType) : null;
 			var returnIsTrivialEnum = hasReturn && returnEntity != null && returnEntity.EntityType == EntityType.TrivialEnum;
@@ -571,6 +576,7 @@ namespace SwiftReflector {
 			int index = Int32.Parse (genDecl.Name.Substring (1));
 			var decl = func.GetGeneric (depth, index);
 			var genRef = new CSGenericReferenceType (depth, index);
+			genRef.ReferenceNamer = GenericReferenceNamer ?? genRef.ReferenceNamer;
 			var constraints = decl.
 			                      Constraints.
 			                      OfType<InheritanceConstraint> ().
@@ -586,8 +592,37 @@ namespace SwiftReflector {
 			return genRef;
 		}
 
+		CSParameter ReworkParameterWithNamer (CSParameter p)
+		{
+			if (GenericReferenceNamer == null)
+				return p;
+			var pClone = ReworkTypeWithNamer (p.CSType);
+			return new CSParameter (pClone, p.Name, p.ParameterKind, p.DefaultValue);
+		}
+
+		CSType ReworkTypeWithNamer (CSType ty)
+		{
+			if (ty is CSGenericReferenceType genRef) {
+				var newGen = new CSGenericReferenceType (genRef.Depth, genRef.Index);
+				newGen.ReferenceNamer = GenericReferenceNamer;
+				return newGen;
+			} else if (ty is CSSimpleType simple) {
+				if (simple.GenericTypes == null)
+					return simple;
+				var genSubTypes = new CSType [simple.GenericTypes.Length];
+				for (int i = 0; i < genSubTypes.Length; i++) {
+					genSubTypes [i] = ReworkTypeWithNamer (simple.GenericTypes [i]);
+				}
+				var simpleClone = new CSSimpleType (simple.GenericTypeName, simple.IsArray, genSubTypes);
+				return simpleClone;
+			} else {
+				throw new NotImplementedException ($"Unable to rework type {ty.GetType ().Name} {ty.ToString ()} as generic reference");
+			}
+		}
+
 		CSBaseExpression Marshal (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p, TypeSpec swiftType, bool marshalProtocolAsValueType, bool isReturnVariable)
 		{
+			p = ReworkParameterWithNamer (p);
 			if (typeContext.IsTypeSpecGenericReference (swiftType)) {
 				return MarshalGenericReference (typeContext, funcDecl, p, swiftType as NamedTypeSpec);
 			}
@@ -1553,6 +1588,7 @@ namespace SwiftReflector {
 		public bool MarshalProtocolsDirectly { get; set; }
 		public bool RequiredUnsafeCode { get; private set; }
 		public bool MarshalingConstructor { get; set; }
+		public Func<int, int, string> GenericReferenceNamer { get; set; }
 
 	}
 }

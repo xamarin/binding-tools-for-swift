@@ -51,6 +51,44 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return false;
 		}
 
+		public bool IsTypeSpecAssociatedType (NamedTypeSpec named)
+		{
+			var proto = ThisOrParentProtocol (this);
+			if (proto == null)
+				return false;
+			if (named.ContainsGenericParameters) {
+				foreach (var gen in named.GenericParameters) {
+					if (gen is NamedTypeSpec namedGen && IsTypeSpecAssociatedType (namedGen))
+						return true;
+				}
+			}
+			return proto.AssociatedTypeNamed (named.NameWithoutModule) != null;
+		}
+
+		public AssociatedTypeDeclaration AssociatedTypeDeclarationFromNamedTypeSpec (NamedTypeSpec named)
+		{
+			var proto = ThisOrParentProtocol (this);
+			return proto.AssociatedTypeNamed (named.NameWithoutModule);
+		}
+
+		public ProtocolDeclaration AsProtocolOrParentAsProtocol ()
+		{
+			return ThisOrParentProtocol (this);
+		}
+
+		static ProtocolDeclaration ThisOrParentProtocol (BaseDeclaration self)
+		{
+			if (self == null)
+				return null;
+
+			do {
+				if (self is ProtocolDeclaration decl)
+					return decl;
+				self = self.Parent;
+			} while (self != null);
+			return null;
+		}
+
 		public bool IsTypeSpecGeneric (TypeSpec sp)
 		{
 			if (sp.ContainsGenericParameters) {
@@ -61,7 +99,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 
 			if (sp is NamedTypeSpec named) {
-				return IsTypeSpecGeneric (sp.ToString ());
+				return IsTypeSpecGeneric (named.Name);
 			} else if (sp is ClosureTypeSpec closure) {
 				return IsTypeSpecGeneric (closure.Arguments) || IsTypeSpecGeneric (closure.ReturnType);
 			} else if (sp is TupleTypeSpec tuple) {
