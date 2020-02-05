@@ -56,6 +56,8 @@ namespace SwiftReflector {
 		bool ArgsMatch (FunctionDeclaration protoFunc, List<ParameterItem> protoList, FunctionDeclaration classFunc, List<ParameterItem> classList)
 		{
 			for (int i = 0; i < protoList.Count; i++) {
+				if (protoList [i].IsInOut != classList [i].IsInOut)
+					return false;
 				if (!TypesMatch (protoFunc, protoList [i].TypeSpec, classFunc, classList [i].TypeSpec))
 					return false;
 			}
