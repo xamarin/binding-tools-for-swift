@@ -35,3 +35,5 @@ $(TOP)/$(BINDING_METADATA_MAC): $(TYPE_O_MATIC_EXE) $(TOP)/common.mk $(XAMGLUE_M
 	@echo "Generated C# binding metadata files for MacOS at $@"
 
 create-pinvokes: $(TOP)/$(BINDING_METADATA_MAC) $(TOP)/$(BINDING_METADATA_IOS)
+create-pinvokes-ios: $(TOP)/$(BINDING_METADATA_IOS)
+create-pinvokes-mac: $(TOP)/$(BINDING_METADATA_MAC)
