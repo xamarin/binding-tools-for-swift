@@ -59,6 +59,8 @@ namespace SwiftReflector {
 			} else {
 				if (hasAssociatedTypes) {
 					OverriddenClass = BuildAssociatedTypeOverride (overrideName, targetModule);
+					var entity = NewClassCompiler.SynthesizeEntityFromWrapperClass (classToOverride.Module.Name, OverriddenClass);
+					typeMapper.TypeDatabase.Add (entity);
 					EveryProtocolExtension = null;
 				} else {
 					EveryProtocolExtension = BuildExtensionDefinition (targetModule);
@@ -144,6 +146,11 @@ namespace SwiftReflector {
 			return ProxyPrefix + decl.Name;
 		}
 
+		public static string AssociatedTypeProxyClassName (ClassDeclaration decl)
+		{
+			return decl.Name + "Protocol";
+		}
+
 		public static string ProxyFactoryName (ClassDeclaration decl)
 		{
 			return "make_" + ProxyClassName (decl);
@@ -201,7 +208,7 @@ namespace SwiftReflector {
 
 		ClassDeclaration BuildAssociatedTypeOverride (string name, ModuleDeclaration targetModule)
 		{
-			name = name ?? ProxyClassName (OriginalClass);
+			name = name ?? AssociatedTypeProxyClassName (OriginalClass);
 			var protocol = OriginalClass as ProtocolDeclaration;
 
 			var decl = new ClassDeclaration ();
@@ -221,14 +228,15 @@ namespace SwiftReflector {
 				}
 				decl.Generics.Add (genDecl);
 			}
-			decl.Inheritance.Add (new Inheritance (OriginalClass.ToFullyQualifiedName (), InheritanceKind.Class));
+			decl.Inheritance.Add (new Inheritance (OriginalClass.ToFullyQualifiedName (), InheritanceKind.Protocol));
 
 			// default constructor with no arguments.
 			var ctor = new FunctionDeclaration ();
-			ctor.Parent = OverriddenClass;
+			ctor.Parent = decl;
 			ctor.Name = FunctionDeclaration.kConstructorName;
 			ctor.ParameterLists.Add (new List<ParameterItem> ());
 			ctor.ParameterLists.Add (new List<ParameterItem> ());
+			ctor.Access = Accessibility.Public;
 			var instanceParm = new ParameterItem ();
 			instanceParm.PublicName = instanceParm.PrivateName = "self";
 			var instanceTypeName = decl.ToFullyQualifiedNameWithGenerics ();
@@ -236,6 +244,16 @@ namespace SwiftReflector {
 			ctor.ParameterLists [0].Add (instanceParm);
 			ctor.ReturnTypeName = instanceTypeName;
 			decl.Members.Add (ctor);
+
+			var dtor = new FunctionDeclaration ();
+			dtor.Parent = decl;
+			dtor.Name = FunctionDeclaration.kDestructorName;
+			dtor.ParameterLists.Add (new List<ParameterItem> ());
+			dtor.ParameterLists.Add (new List<ParameterItem> ());
+			dtor.Access = Accessibility.Public;
+			dtor.ParameterLists [0].Add (instanceParm);
+			dtor.ReturnTypeName = "()";
+			decl.Members.Add (dtor);
 
 			return decl.MakeUnrooted () as ClassDeclaration;
 		}
