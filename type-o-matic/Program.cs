@@ -76,11 +76,9 @@ namespace typeomatic {
 
 			var writer = new CodeWriter (options.OutputWriter);
 			if (String.Equals (options.ToGenerate, "swift")) {
-				//var slFile = GenerateStubsFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
 				var slFile = GenerateSwiftHashTableFromTypes (aggregatedTypes, options.Platform, options.Namespaces);
 				slFile.WriteAll (writer);
-			} else { // String.Equals (options.ToGenerate, "csharp")
-				 //var csFile = GeneratePInvokesFromTypes (aggregatedTypes, options.Platform, options.Framework);
+			} else {
 				var csFile = GenerateCSharpHashTableFromTypes (aggregatedTypes, options.Platform, options.Namespaces, options.Framework);
 				csFile.WriteAll (writer);
 			}
