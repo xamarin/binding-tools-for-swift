@@ -9,7 +9,7 @@ namespace Dynamo.SwiftLang {
 		{
 			Contents = Exceptions.ThrowOnNull (contents, nameof(contents));
 			if (!(contents is ISLLineable) && addSemicolon)
-				throw new ArgumentException ("contents must be ILineable", nameof (contents));
+				throw new ArgumentException ("contents must be ISLineable and require a semicolon", nameof (contents));
 			AddSemicolon = addSemicolon;
 		}
 
