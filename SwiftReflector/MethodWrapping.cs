@@ -42,6 +42,8 @@ namespace SwiftReflector {
 		{
 			Ex.ThrowOnNull (modules, nameof (modules));
 			Ex.ThrowOnNull (modname, nameof (modname));
+			if (modname == wrappingModule.Name)
+				return;
 			modules.AddIfNotPresent (modname);
 			uniqueModuleReferences.Add (modname);
 		}
