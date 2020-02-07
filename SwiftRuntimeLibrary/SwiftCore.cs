@@ -381,6 +381,9 @@ namespace SwiftRuntimeLibrary {
 			return response.Metadata;
 		}
 
+		[DllImport (kXamGlue, EntryPoint = XamGlueConstants.SwiftCore_GetEnumMetadata)]
+		internal static unsafe extern bool GetEnumMetadataByName (byte* stringData, out SwiftMetatype swiftMetatype);
+
 		#region ClosureAdapters
 
 		[DllImport (kXamGlue, EntryPoint = XamGlueConstants.SwiftCore_ActionToSwiftClosure1)]

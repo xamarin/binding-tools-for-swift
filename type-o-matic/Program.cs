@@ -172,7 +172,7 @@ namespace typeomatic {
 		public static unsafe bool GetSwiftType (Type t, out SwiftMetatype md) {
 			using (var swiftStr = new SwiftString (t.FullName)) {
 				fixed (byte *swiftData = swiftStr.SwiftData) {
-					return GetSwiftType (swiftData, out md);
+					return SwiftCore.GetEnumMetadataByName (swiftData, out md);
 				}
 			}
 		}
