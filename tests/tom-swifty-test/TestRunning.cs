@@ -593,7 +593,7 @@ public static class Console {
 			return cs;
 		}
 
-		static string Execute (string workingDirectory, string executable, PlatformName platform)
+		public static string Execute (string workingDirectory, string executable, PlatformName platform)
 		{
 			switch (platform) {
 			case PlatformName.macOS: {

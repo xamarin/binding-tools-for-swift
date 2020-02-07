@@ -134,6 +134,16 @@ namespace SwiftReflector {
 			CheckName ("ulong", "Swift.UInt64\n");
 		}
 
+		[TestCase ("MetalPerformanceShaders.MPSCnnBinaryConvolutionFlags", "MPSCNNBinaryConvolutionFlags")]
+		[TestCase ("AudioToolbox.AudioFileSmpteTime", "AudioFile_SMPTE_Time")]
+		[TestCase ("CloudKit.CKRecordZoneCapabilities", "Capabilities")]
+		[TestCase ("MapKit.MKDistanceFormatterUnitStyle", "DistanceUnitStyle")]
+		[TestCase ("StoreKit.SKProductDiscountPaymentMode", "PaymentMode")]
+		public void EnumTest (string originalType, string expected)
+		{
+			CheckNameExecute (originalType, "__C." + expected + "\n"); // available in both iOS and Mac, otherwise not special
+		}
+
 		void CheckType1 (string typeName, string expected)
 		{
 			using (DisposableTempDirectory temp = new DisposableTempDirectory (null, true)) {
@@ -192,14 +202,13 @@ namespace MetatypeTests
 			}
 		}
 
-		void CheckName (string typeName, string expected)
+		void CheckNameExecute (string typeName, string expected)
 		{
 			using (DisposableTempDirectory temp = new DisposableTempDirectory (null, true)) {
 
 				string csFile = Path.Combine (temp.DirectoryPath, temp.UniqueName ("CS", "", "cs"));
 				string source = $@"using System;
 using SwiftRuntimeLibrary;
-
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace dlopentest
@@ -218,10 +227,10 @@ namespace dlopentest
 				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.CompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
-				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
+				var output = TestRunning.Execute (temp.DirectoryPath, "TestIt.exe", PlatformName.macOS);
 				Assert.AreEqual (expected, output);
 
-				string tsource = $@"using System;
+				var tsource = $@"using System;
 using NewClassCompilerTests;
 using SwiftRuntimeLibrary;
 using TomTest;
@@ -242,10 +251,67 @@ namespace MetatypeTests
 	}}
 }}";
 
-				string thisTestPath = Path.Combine (Compiler.kSwiftDeviceTestRoot, "MetatypeTests");
+				var thisTestPath = Path.Combine (Compiler.kSwiftDeviceTestRoot, "MetatypeTests");
 
 				Directory.CreateDirectory (thisTestPath);
-				string tpath = Path.Combine (thisTestPath, $"CheckName{typeName}.cs");
+				var tpath = Path.Combine (thisTestPath, $"CheckNameExecute{typeName}.cs");
+				File.WriteAllText (tpath, tsource);
+			}
+		}
+
+		void CheckName (string typeName, string expected)
+		{
+			using (DisposableTempDirectory temp = new DisposableTempDirectory (null, true)) {
+
+				var csFile = Path.Combine (temp.DirectoryPath, temp.UniqueName ("CS", "", "cs"));
+				var source = $@"using System;
+using SwiftRuntimeLibrary;
+using SwiftRuntimeLibrary.SwiftMarshal;
+
+namespace dlopentest
+{{
+	class MainClass
+	{{
+		public static void Main (string[] args)
+		{{
+			SwiftNominalTypeDescriptor nt = StructMarshal.Marshaler.Metatypeof(typeof({typeName})).GetNominalTypeDescriptor();
+			Console.WriteLine(nt.GetFullName());
+		}}
+	}}
+}}";
+				source += TestRunning.GetManagedConsoleRedirectCode ();
+				File.WriteAllText (csFile, source);
+				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.CompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
+				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
+
+				var output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
+				Assert.AreEqual (expected, output);
+
+				var tsource = $@"using System;
+using NewClassCompilerTests;
+using SwiftRuntimeLibrary;
+using TomTest;
+using SwiftRuntimeLibrary.SwiftMarshal;
+
+namespace MetatypeTests
+{{
+	public class CheckName{typeName} : ITomTest
+	{{
+		public void Run()
+		{{
+			SwiftNominalTypeDescriptor nt = StructMarshal.Marshaler.Metatypeof(typeof({typeName})).GetNominalTypeDescriptor();
+			Console.WriteLine(nt.GetMangledName());
+		}}
+
+		public string TestName {{ get {{ return ""CheckName{typeName}""; }} }}
+		public string ExpectedOutput {{ get {{ return {ToStringLiteral (expected)}; }} }}
+	}}
+}}";
+
+				var thisTestPath = Path.Combine (Compiler.kSwiftDeviceTestRoot, "MetatypeTests");
+
+				Directory.CreateDirectory (thisTestPath);
+				var tpath = Path.Combine (thisTestPath, $"CheckName{typeName}.cs");
 				File.WriteAllText (tpath, tsource);
 			}
 		}
