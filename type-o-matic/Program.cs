@@ -171,9 +171,7 @@ namespace typeomatic {
 			var handleTranslationCode = new CSIdentifier(@"
 		public static unsafe bool GetSwiftType (Type t, out SwiftMetatype md) {
 			using (var swiftStr = new SwiftString (t.FullName)) {
-				fixed (byte *swiftData = swiftStr.SwiftData) {
-					return SwiftCore.GetEnumMetadataByName (swiftData, out md);
-				}
+				return SwiftCore.GetEnumMetadataByName (swiftStr.SwiftData, out md);
 			}
 		}
 
