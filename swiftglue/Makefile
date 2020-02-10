@@ -2,11 +2,14 @@ TOP=..
 include $(TOP)/common.mk
 
 
-all: generate-swift-bindings build-all
+all: generate-swift-bindings build-all touch-all
 
 clean:
 	rm -rf bin/*
 	rm -rf bindingmetadata.*.swift
+
+touch-all:
+	find bin -exec touch {} \;
 
 MODULENAME=XamGlue
 BINDIR=bin
