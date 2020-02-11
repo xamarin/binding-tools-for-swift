@@ -9,7 +9,7 @@ clean:
 	rm -rf bindingmetadata.*.swift
 
 report-all:
-	echo "Is echo working?"
+	echo "Is echo working?" >> $@.tmp
 
 	
 
