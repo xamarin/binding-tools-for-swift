@@ -9,7 +9,7 @@ msbuild
 cd "$WORKSPACE/type-o-matic"
 msbuild
 cd "$WORKSPACE/swiftglue"
-make generate-swift-bindings
+#make generate-swift-bindings
 make all -j8
 nm "$WORKSPACE/swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework/XamGlue" | grep s7XamGlue12getSwiftType3str6resultSbSpySSG_SpyypXpGtF
 
