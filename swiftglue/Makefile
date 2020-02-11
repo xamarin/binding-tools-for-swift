@@ -2,7 +2,7 @@ TOP=..
 include $(TOP)/common.mk
 
 
-all: | generate-swift-bindings build-all
+all: generate-swift-bindings build-all
 
 clean:
 	rm -rf bin/*
