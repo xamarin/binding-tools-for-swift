@@ -2,7 +2,7 @@ TOP=..
 include $(TOP)/common.mk
 
 
-all: build-all
+all: generate-swift-bindings build-all
 
 clean:
 	rm -rf bin/*
@@ -89,7 +89,7 @@ $(BINDIR)/$(2)/$(1)/FinalProduct/$(MODULENAME).framework.stamp: $(BINDIR)/$(2)/$
 	$$(call Q_2,GEN [$(1)/$(2)]) touch $$@
 
 build-$(1):: $(BINDIR)/$(2)/$(1)/FinalProduct/$(MODULENAME).framework.stamp
-build-all:: generate-swift-bindings build-$(1)
+build-all:: build-$(1)
 endef
 
 $(eval $(call SwiftFrameworkTemplate,mac,Debug,x86_64))
