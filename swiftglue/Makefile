@@ -14,7 +14,7 @@ report-all:
 	echo "generated last bits of bindingmetadata.iphone.swift"
 	tail -12 bindingmetadata.iphone.swift
 	echo "looking for getSwiftType symbol:"
-	nm bin/Release/mac/FinalProduct/XamGlue.framework/XamGlue | grep s7XamGlue12getSwiftType3str6resultSbSpySSG_SpyypXpGtF
+	nm $(BINDIR)/Release/mac/FinalProduct/XamGlue.framework/XamGlue | grep s7XamGlue12getSwiftType3str6resultSbSpySSG_SpyypXpGtF
 
 	
 
