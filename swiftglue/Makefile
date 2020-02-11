@@ -2,14 +2,21 @@ TOP=..
 include $(TOP)/common.mk
 
 
-all: generate-swift-bindings build-all touch-all
+all: generate-swift-bindings build-all report-all
 
 clean:
 	rm -rf bin/*
 	rm -rf bindingmetadata.*.swift
 
-touch-all:
-	find bin -exec touch {} \;
+report-all:
+	echo "generated last bits of bindingmetadata.macos.swift"
+	tail -12 bindingmetadata.macos.swift
+	echo "generated last bits of bindingmetadata.iphone.swift"
+	tail -12 bindingmetadata.iphone.swift
+	echo "looking for getSwiftType symbol:"
+	nm bin/Release/mac/FinalProduct/XamGlue.framework/XamGlue | grep s7XamGlue12getSwiftType3str6resultSbSpySSG_SpyypXpGtF
+
+	
 
 MODULENAME=XamGlue
 BINDIR=bin
