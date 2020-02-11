@@ -2,13 +2,7 @@ TOP=..
 include $(TOP)/common.mk
 
 
-all: generate-swift-bindings build-all
-	echo "checking bindingmetadata.macos.swift" >> $@.tmp
-	tail -12 bindingmetadata.macos.swift
-	echo "checking bindingmetadata.iphone.swift" >> $@.tmp
-	tail -12 bindingmetadata.iphone.swift
-	nm $(BINDIR)/Release/mac/FinalProduct/XamGlue.framework/XamGlue | grep s7XamGlue12getSwiftType3str6resultSbSpySSG_SpyypXpGtF >> $@.tmp
-	
+all: | generate-swift-bindings build-all
 
 clean:
 	rm -rf bin/*
