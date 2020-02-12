@@ -201,7 +201,6 @@ public func blindAssocFuncAny{nameSuffix} () -> Any {{
 		}
 
 
-		[Ignore ("Wrapping code is not quite ready yet.")]
 		[Test]
 		public void SmokeProtocolAssoc ()
 		{
