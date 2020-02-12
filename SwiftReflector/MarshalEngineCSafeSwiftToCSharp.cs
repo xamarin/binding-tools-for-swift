@@ -272,14 +272,13 @@ namespace SwiftReflector {
 					invoker = new CSIndexExpression (registryCall, false, callParams.ToArray ());
 				}
 			} else {
+				var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
 				if (thisIsInterface && !hasAssociatedTypes) {
-					var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
 					invoker = new CSFunctionCall (
 						$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{methodName}",
 						false, callParams.ToArray ());
 
 				} else {
-					var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
 					var registryCall = isObjC ?
 						$"Runtime.GetNSObject<{thisType.ToString ()}>(self).{methodName}" :
 						$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self).{methodName}";
