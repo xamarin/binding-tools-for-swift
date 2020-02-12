@@ -163,17 +163,11 @@ namespace typeomatic {
 			// create pinvoke for function
 			var dylibFile = Path.Combine (framework, fileName);
 			var funcs = TLFunctionsForFile (dylibFile, platform);
-			var PInvokeMethod = PInvokeForName ("getSwiftType", funcs);
-			if (PInvokeMethod != null) {
-				csClass.Methods.Add (PInvokeMethod);
-			}
 
 			var handleTranslationCode = new CSIdentifier(@"
 		public static unsafe bool GetSwiftType (Type t, out SwiftMetatype md) {
 			using (var swiftStr = new SwiftString (t.FullName)) {
-				fixed (byte *swiftData = swiftStr.SwiftData) {
-					return GetSwiftType (swiftData, out md);
-				}
+				return SwiftCore.GetEnumMetadataByName (swiftStr.SwiftData, out md);
 			}
 		}
 

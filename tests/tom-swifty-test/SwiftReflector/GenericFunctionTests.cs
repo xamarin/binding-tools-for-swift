@@ -626,6 +626,7 @@ namespace SwiftReflector {
 			}
 		}
 
+		[Ignore ("This is not really a good test - it should use the same testing infrastructure")]
 		[Test]
 		public void WrapGenClassMultiProtocolConstraintIncorrectUsage ()
 		{

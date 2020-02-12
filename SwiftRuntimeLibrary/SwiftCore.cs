@@ -381,7 +381,19 @@ namespace SwiftRuntimeLibrary {
 			return response.Metadata;
 		}
 
-		#region ClosureAdapters
+#if __IOS__ || __MACOS__ || __WATCHOS__ || __TVOS__
+		[DllImport (kXamGlue, EntryPoint = XamGlueConstants.SwiftCore_GetEnumMetadata)]
+		internal static extern bool GetEnumMetadataByName (byte [] stringData, out SwiftMetatype swiftMetatype);
+#else
+		// the underlying pinvoke only exists on a specific platform, for no platform default to failure.
+		internal static bool GetEnumMetadataByName (byte [] stringData, out SwiftMetatype swiftMetatype)
+		{
+			swiftMetatype = new SwiftMetatype (IntPtr.Zero);
+			return false;
+		}
+#endif
+
+#region ClosureAdapters
 
 		[DllImport (kXamGlue, EntryPoint = XamGlueConstants.SwiftCore_ActionToSwiftClosure1)]
 		internal static extern BlindSwiftClosureRepresentation ActionToSwiftClosure (SwiftClosureRepresentation clos,
@@ -693,7 +705,7 @@ namespace SwiftRuntimeLibrary {
 
 
 
-		#endregion
+#endregion
 
 	}
 }

@@ -8,6 +8,8 @@ clean:
 	rm -rf bin/*
 	rm -rf bindingmetadata.*.swift
 
+	
+
 MODULENAME=XamGlue
 BINDIR=bin
 

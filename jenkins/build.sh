@@ -9,6 +9,7 @@ msbuild
 cd "$WORKSPACE/type-o-matic"
 msbuild
 cd "$WORKSPACE/swiftglue"
+make generate-swift-bindings
 make all -j8
 
 cd "$WORKSPACE"
