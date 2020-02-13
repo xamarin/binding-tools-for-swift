@@ -26,7 +26,7 @@ namespace SwiftReflector {
 		}
 
 		public List<ICodeElement> MarshalFromLambdaReceiverToCSFunc (CSType thisType, string csProxyName, CSParameterList delegateParams,
-			FunctionDeclaration funcDecl, CSType methodType, CSParameterList methodParams, string methodName, bool isObjC)
+			FunctionDeclaration funcDecl, CSType methodType, CSParameterList methodParams, string methodName, bool isObjC, bool hasAssociatedTypes)
 		{
 			bool thisIsInterface = csProxyName != null;
 			bool isIndexer = funcDecl.IsSubscript;
@@ -272,15 +272,16 @@ namespace SwiftReflector {
 					invoker = new CSIndexExpression (registryCall, false, callParams.ToArray ());
 				}
 			} else {
-				if (thisIsInterface) {
+				var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
+				if (thisIsInterface && !hasAssociatedTypes) {
 					invoker = new CSFunctionCall (
-						$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisType.ToString ()}> (self).{methodName}",
+						$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{methodName}",
 						false, callParams.ToArray ());
 
 				} else {
 					var registryCall = isObjC ?
 						$"Runtime.GetNSObject<{thisType.ToString ()}>(self).{methodName}" :
-						$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisType.ToString ()}> (self).{methodName}";
+						$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self).{methodName}";
 					invoker = new CSFunctionCall (registryCall, false, callParams.ToArray ());
 				}
 			}

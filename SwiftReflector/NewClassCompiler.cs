@@ -2096,7 +2096,7 @@ namespace SwiftReflector {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 36, $"Unable to find wrapper function for {func.Name} in protocol {protocolDecl.ToFullyQualifiedName (true)}.");
 			}
 			var delegateDecl = TLFCompiler.CompileToDelegateDeclaration (func, use, null, "Del" + OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex),
-				true, CSVisibility.Public, !protocolDecl.IsObjC);
+				true, CSVisibility.Public, !protocolDecl.IsObjC && !protocolDecl.HasAssociatedTypes);
 			vtable.Delegates.Add (delegateDecl);
 			var field = new CSFieldDeclaration (new CSSimpleType (delegateDecl.Name.Name), OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
 			CSAttribute.MarshalAsFunctionPointer ().AttachBefore (field);
@@ -2123,8 +2123,10 @@ namespace SwiftReflector {
 
 			iface.Methods.Add (ifaceMethod);
 
-			var staticRecv = ImplementVirtualMethodStaticReceiver (new CSSimpleType (iface.Name.Name), proxyClass.Name.Name,
-			                                                       delegateDecl, use, func, publicMethod, vtable.Name, homonymSuffix, protocolDecl.IsObjC);
+			var proxyName =  proxyClass.ToCSType ().ToString ();
+
+			var staticRecv = ImplementVirtualMethodStaticReceiver (new CSSimpleType (iface.Name.Name), proxyName,
+			                                                       delegateDecl, use, func, publicMethod, vtable.Name, homonymSuffix, protocolDecl.IsObjC, protocolDecl.HasAssociatedTypes);
 			proxyClass.Methods.Add (staticRecv);
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}", vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)),
 								  staticRecv.Name));
@@ -2186,7 +2188,7 @@ namespace SwiftReflector {
 			}
 
 
-			CSMethod staticRecv = ImplementVirtualMethodStaticReceiver (cl.ToCSType (), null, delegateDecl, use, func, publicOverload, vtable.Name, "", classDecl.IsObjCOrInheritsObjC (TypeMapper));
+			CSMethod staticRecv = ImplementVirtualMethodStaticReceiver (cl.ToCSType (), null, delegateDecl, use, func, publicOverload, vtable.Name, "", classDecl.IsObjCOrInheritsObjC (TypeMapper), false);
 			cl.Methods.Add (staticRecv);
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}", vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)),
 								  staticRecv.Name));
@@ -2820,7 +2822,7 @@ namespace SwiftReflector {
 				var marshaler = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
 
 				var bodyContents = marshaler.MarshalFromLambdaReceiverToCSFunc (thisType, csProxyName, pl, funcDecl,
-												funcDecl.IsSubscriptGetter ? prop.PropType : CSSimpleType.Void, prop.IndexerParameters, null, isObjC);
+												funcDecl.IsSubscriptGetter ? prop.PropType : CSSimpleType.Void, prop.IndexerParameters, null, isObjC, false);
 				body.AddRange (bodyContents);
 				recvrName = "xamVtable_recv_" + (funcDecl.IsSubscriptGetter ? "index_get_" : "index_set_") + prop.Name.Name;
 			}
@@ -2900,7 +2902,7 @@ namespace SwiftReflector {
 
 		CSMethod ImplementVirtualMethodStaticReceiver (CSType thisType, string csProxyName, CSDelegateTypeDecl delType, CSUsingPackages use,
 		                                               FunctionDeclaration funcDecl, CSMethod publicMethod, CSIdentifier vtableName,
-		                                               string homonymSuffix, bool isObjC)
+		                                               string homonymSuffix, bool isObjC, bool hasAssociatedTypes)
 		{
 			var pl = delType.Parameters;
 			var usedIDs = new List<string> ();
@@ -2910,7 +2912,7 @@ namespace SwiftReflector {
 			var marshal = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
 
 			var bodyContents = marshal.MarshalFromLambdaReceiverToCSFunc (thisType, csProxyName, pl, funcDecl, publicMethod.Type,
-			                                                              publicMethod.Parameters, publicMethod.Name.Name, isObjC);
+			                                                              publicMethod.Parameters, publicMethod.Name.Name, isObjC, hasAssociatedTypes);
 
 			var body = new CSCodeBlock (bodyContents);
 
@@ -2960,7 +2962,7 @@ namespace SwiftReflector {
 			var marshal = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
 
 			var bodyContents = marshal.MarshalFromLambdaReceiverToCSFunc (thisType, csProxyName, pl, funcDecl, publicMethod.Type,
-			                                                              publicMethod.Parameters, publicMethod.Name.Name, isObjC);
+			                                                              publicMethod.Parameters, publicMethod.Name.Name, isObjC, false);
 
 			var body = new CSCodeBlock (bodyContents);
 
