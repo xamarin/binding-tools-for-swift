@@ -2265,7 +2265,7 @@ namespace SwiftReflector {
 		                                  List<CSLine> vtableAssignments, CSUsingPackages use, bool isSetter, CSProperty wrapperProp, string swiftLibraryPath)
 		{
 			CSDelegateTypeDecl etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
-			                                                                     OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), true);
+			                                                                     OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), !protocolDecl.HasAssociatedTypes);
 			vtable.Delegates.Add (etterDelegateDecl);
 
 			var etterWrapperFunc = FindProtocolWrapperFunction (etterFunc, wrapper);
@@ -2524,7 +2524,7 @@ namespace SwiftReflector {
 			}
 			var wrapperProp = ImplementPropertyEtter (wrapper, classDecl, subclassDecl, classContents, cl, picl, usedPinvokeNames, virtFuncs,
 			                                          getterFunc, tlSetter, vtableEntryIndex, vtableName, vtable, vtableAssignments, use,
-			                                          false, null, swiftLibraryPath);
+			                                          false, null, swiftLibraryPath, null);
 
 			if (hasSetter) {
 				wrapperProp = ImplementPropertyEtter (wrapper, classDecl, subclassDecl, classContents, cl, picl, usedPinvokeNames, virtFuncs,
@@ -2544,7 +2544,7 @@ namespace SwiftReflector {
 		                                 List<CSLine> vtableAssignments, CSUsingPackages use, bool isSetter, bool isObjC, CSProperty wrapperProp, string swiftLibraryPath)
 		{
 			var etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
-			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), true);
+			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), !protocolDecl.HasAssociatedTypes);
 			vtable.Delegates.Add (etterDelegateDecl);
 
 			var etterWrapperFunc = FindProtocolWrapperFunction (etterFunc, wrapper);
@@ -2561,7 +2561,7 @@ namespace SwiftReflector {
 			piEtterName = Uniqueify (piEtterName, usedPinvokeNames);
 			usedPinvokeNames.Add (piEtterName);
 
-			string piEtterRef = PIClassName (TypeMapper.GetDotNetNameForSwiftClassName (protocolContents.Name)) + "." + piEtterName;
+			string piEtterRef = picl.Name + "." + piEtterName;
 			var piGetter = TLFCompiler.CompileMethod (etterWrapperFunc, use,
 								  PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
 								  etterWrapper.MangledName, piEtterName, true, true, false);
@@ -2583,6 +2583,8 @@ namespace SwiftReflector {
 
 			var usedIds = new List<string> { propName };
 			var marshal = new MarshalEngine (use, usedIds, TypeMapper, wrapper.Module.SwiftCompilerVersion);
+			if (protocolDecl.HasAssociatedTypes)
+				marshal.GenericReferenceNamer = MakeAssociatedTypeNamer (protocolDecl);
 
 			var ifTest = kInterfaceImpl != CSConstant.Null;
 			var ifBlock = new CSCodeBlock ();
@@ -2603,12 +2605,16 @@ namespace SwiftReflector {
 											  etterFunc, etterFunc.ReturnTypeSpec, wrapperProp.PropType, etterFunc.ParameterLists [0] [0].TypeSpec, new CSSimpleType (iface.Name.Name), false, wrapper, etterFunc.HasThrows));
 			}
 
-			var ifElse = new CSIfElse (ifTest, ifBlock, elseBlock);
-			target.Add (ifElse);
+			if (protocolDecl.HasAssociatedTypes) {
+				target.AddRange (elseBlock);
+			} else {
+				var ifElse = new CSIfElse (ifTest, ifBlock, elseBlock);
+				target.Add (ifElse);
+			}
 
 			var recvr = ImplementVirtualPropertyStaticReceiver (new CSSimpleType (iface.Name.Name),
-			                                                    proxyClass.Name.Name, etterDelegateDecl, use,
-			                                                    etterFunc, wrapperProp, null, vtable.Name, isObjC);
+			                                                    proxyClass.ToCSType ().ToString (), etterDelegateDecl, use,
+			                                                    etterFunc, wrapperProp, null, vtable.Name, isObjC, protocolDecl.HasAssociatedTypes);
 			proxyClass.Methods.Add (recvr);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
@@ -2620,7 +2626,8 @@ namespace SwiftReflector {
 		                                 ClassDeclaration classDecl, ClassDeclaration subclassDecl,
 		                                 ClassContents classContents, CSClass cl, CSClass picl, List<string> usedPinvokeNames, List<FunctionDeclaration> virtFuncs,
 		                                 FunctionDeclaration etterFunc, TLFunction tlSetter, int vtableEntryIndex, string vtableName, CSStruct vtable,
-		                                 List<CSLine> vtableAssignments, CSUsingPackages use, bool isSetter, CSProperty wrapperProp, string swiftLibraryPath)
+		                                 List<CSLine> vtableAssignments, CSUsingPackages use, bool isSetter, CSProperty wrapperProp, string swiftLibraryPath,
+						 Func<int, int, string> genericRenamer = null)
 		{
 			var swiftClassName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
 			var tlEtter = XmlToTLFunctionMapper.ToTLFunction (etterFunc, classContents);
@@ -2647,7 +2654,8 @@ namespace SwiftReflector {
 
 			var piGetter = TLFCompiler.CompileMethod (etterWrapperFunc, use,
 								  PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
-								  etterWrapper.MangledName, piEtterName, true, true, false); picl.Methods.Add (piGetter);
+								  etterWrapper.MangledName, piEtterName, true, true, false);
+			picl.Methods.Add (piGetter);
 
 			var superEtterFunc = subclassDecl.AllMethodsNoCDTor ().Where (fn =>
 				fn.Access == Accessibility.Internal && fn.IsProperty &&
@@ -2688,7 +2696,8 @@ namespace SwiftReflector {
 				}
 			}
 
-			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, swiftClassName, superEtterTlf, superEtterFunc, use, true, wrapper, swiftLibraryPath, superEtterFuncWrapper, "", true);
+			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, swiftClassName, superEtterTlf, superEtterFunc, use, true, wrapper, swiftLibraryPath, superEtterFuncWrapper, "", true,
+				genericRenamer: genericRenamer);
 			var propertyImplMethod = cl.Methods.Last ();
 			CSMethod protoListMethod = null;
 			if (returnIsProtocolList) {
@@ -2714,7 +2723,7 @@ namespace SwiftReflector {
 			}
 
 			var recvr = ImplementVirtualPropertyStaticReceiver (cl.ToCSType (), null, etterDelegateDecl, use, etterFunc,
-			                                                    wrapperProp, protoListMethod, vtable.Name, classDecl.IsObjC);
+			                                                    wrapperProp, protoListMethod, vtable.Name, classDecl.IsObjC, false);
 			cl.Methods.Add (recvr);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
@@ -2844,7 +2853,7 @@ namespace SwiftReflector {
 
 		CSMethod ImplementVirtualPropertyStaticReceiver (CSType thisType, string csProxyName, CSDelegateTypeDecl delType,
 		                                               CSUsingPackages use, FunctionDeclaration funcDecl, CSProperty prop, CSMethod protoListMethod,
-							       CSIdentifier vtableName, bool isObjC)
+							       CSIdentifier vtableName, bool isObjC, bool hasAssociatedTypes)
 		{
 			var returnType = funcDecl.IsGetter ? delType.Type : CSSimpleType.Void;
 			CSParameterList pl = delType.Parameters;
@@ -2863,7 +2872,7 @@ namespace SwiftReflector {
 
 				var bodyContents = marshaler.MarshalFromLambdaReceiverToCSProp (prop, thisType, csProxyName,
 												delType.Parameters,
-												funcDecl, prop.PropType, isObjC);
+												funcDecl, prop.PropType, isObjC, hasAssociatedTypes);
 				body.AddRange (bodyContents);
 				recvrName = "xamVtable_recv_" + (funcDecl.IsGetter ? "get_" : "set_") + prop.Name.Name;
 			}
@@ -2898,7 +2907,7 @@ namespace SwiftReflector {
 			var marshaler = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
 
 			var bodyContents = marshaler.MarshalFromLambdaReceiverToCSProp (prop, thisType, csProxyName, delType.Parameters,
-				funcDecl, prop.PropType, isObjC);
+				funcDecl, prop.PropType, isObjC, false);
 			var body = new CSCodeBlock (bodyContents);
 			return new CSLambda (pl, body);
 		}
@@ -5125,7 +5134,8 @@ namespace SwiftReflector {
 		CSMethod ImplementOverloadFromKnownWrapper (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName classForPI,
 		                                        TLFunction methodToWrap, FunctionDeclaration funcToWrap, CSUsingPackages use, bool isFinal,
 		                                        WrappingResult wrapper, string swiftLibraryPath, TLFunction wrapperFunction,
-		                                        string homonymSuffix, bool forcePrivate = false, string alternativeName = null)
+		                                        string homonymSuffix, bool forcePrivate = false, string alternativeName = null,
+							Func<int, int, string> genericRenamer = null)
 		{
 			var wrapperFuncDecl = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunction, TypeMapper, wrapper);
 			var pinvokeMethodName = PIMethodName (classForPI, wrapperFunction.Name) + homonymSuffix;
@@ -5193,6 +5203,7 @@ namespace SwiftReflector {
 			};
 
 			var marshaler = new MarshalEngine (use, localIdentifiers, TypeMapper, wrapper.Module.SwiftCompilerVersion);
+			marshaler.GenericReferenceNamer = genericRenamer;
 
 			publicMethod.Body.AddRange (marshaler.MarshalFunctionCall (wrapperFuncDecl, false, pinvokeMethodRef,
 				publicMethod.Parameters, funcToWrap, funcToWrap.ReturnTypeSpec, publicMethod.Type, instanceTypeSpec, cl.ToCSType (),
