@@ -433,7 +433,7 @@ namespace SwiftReflector {
 
 
 		public List<ICodeElement> MarshalFromLambdaReceiverToCSProp (CSProperty prop, CSType thisType, string csProxyName, CSParameterList delegateParams,
-			FunctionDeclaration funcDecl, CSType methodType, bool isObjC)
+			FunctionDeclaration funcDecl, CSType methodType, bool isObjC, bool hasAssociatedTypes)
 		{
 			bool forProtocol = csProxyName != null;
 			bool needsReturn = funcDecl.IsGetter;
@@ -463,12 +463,13 @@ namespace SwiftReflector {
 
 
 			CSIdentifier csharpCall = null;
-			if (forProtocol) {
-				csharpCall = new CSIdentifier ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisType.ToString()}> (self).{prop.Name.Name}");
+			var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
+			if (forProtocol && !hasAssociatedTypes) {
+				csharpCall = new CSIdentifier ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{prop.Name.Name}");
 			} else {
 				var call = isObjC ?
-					$"ObjCRuntime.Runtime.GetNSObject<{thisType.ToString ()}> (self).{prop.Name.Name}" :
-					$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisType.ToString ()}> (self).{prop.Name.Name}";
+					$"ObjCRuntime.Runtime.GetNSObject<{thisTypeName}> (self).{prop.Name.Name}" :
+					$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisTypeName}> (self).{prop.Name.Name}";
 
 				csharpCall = new CSIdentifier (call);
 			}
