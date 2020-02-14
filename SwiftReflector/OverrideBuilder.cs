@@ -255,7 +255,10 @@ namespace SwiftReflector {
 			dtor.ReturnTypeName = "()";
 			decl.Members.Add (dtor);
 
-			return decl.MakeUnrooted () as ClassDeclaration;
+			decl = decl.MakeUnrooted () as ClassDeclaration;
+			foreach (var member in decl.Members)
+				member.Parent = decl;
+			return decl;
 		}
 
 		void CopyConstructors ()
@@ -837,7 +840,11 @@ namespace SwiftReflector {
 				var ifelse = new SLIfElse (condition, ifblock, elseblock);
 
 				if (isProtocol) {
-					getBlock = ifblock;
+					if (getBlock.Count == 0)
+						getBlock = ifblock;
+					else {
+						getBlock.AddRange (ifblock);
+					}
 				} else {
 					getBlock.And (ifelse);
 				}
