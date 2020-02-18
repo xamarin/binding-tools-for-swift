@@ -893,10 +893,15 @@ namespace SwiftReflector {
 				elseblock.Add (superAssign);
 				var ifelse = new SLIfElse (condition, ifblock, elseblock);
 
-				if (isProtocol)
-					setBlock = ifblock;
-				else
+				if (isProtocol) {
+					if (setBlock.Count == 0)
+						setBlock = ifblock;
+					else {
+						setBlock.AddRange (ifblock);
+					}
+				} else {
 					setBlock.And (ifelse);
+				}
 			}
 			SLType returnType = null;
 			if (getter.IsTypeSpecGeneric (getter.ReturnTypeSpec)) {

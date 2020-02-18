@@ -18,6 +18,8 @@ namespace SwiftReflector {
 		List<string> identifiersUsed;
 		TypeMapper typeMapper;
 
+		public Func<int, int, string> GenericRenamer { get; set; }
+
 		public MarshalEngineCSafeSwiftToCSharp (CSUsingPackages use, List<string> identifiersUsed, TypeMapper typeMapper)
 		{
 			this.use = use;
@@ -564,6 +566,7 @@ namespace SwiftReflector {
 					// someVal gets passed in
 					var depthIndex = funcDecl.GetGenericDepthAndIndex (funcDecl.ParameterLists [1] [0].TypeSpec);
 					var genRef = new CSGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
+					genRef.ReferenceNamer = GenericRenamer;
 					use.AddIfNotPresent (typeof (StructMarshal));
 					string valMarshalName = MarshalEngine.Uniqueify (delegateParams [1].Name + "Temp", identifiersUsed);
 					var valMarshalId = new CSIdentifier (valMarshalName);

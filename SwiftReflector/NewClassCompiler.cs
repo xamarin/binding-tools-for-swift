@@ -2612,9 +2612,12 @@ namespace SwiftReflector {
 				target.Add (ifElse);
 			}
 
+			var renamer = protocolDecl.HasAssociatedTypes ? MakeAssociatedTypeNamer (protocolDecl) : null;
+
 			var recvr = ImplementVirtualPropertyStaticReceiver (new CSSimpleType (iface.Name.Name),
 			                                                    proxyClass.ToCSType ().ToString (), etterDelegateDecl, use,
-			                                                    etterFunc, wrapperProp, null, vtable.Name, isObjC, protocolDecl.HasAssociatedTypes);
+			                                                    etterFunc, wrapperProp, null, vtable.Name, isObjC, protocolDecl.HasAssociatedTypes,
+									    renamer);
 			proxyClass.Methods.Add (recvr);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
@@ -2853,7 +2856,7 @@ namespace SwiftReflector {
 
 		CSMethod ImplementVirtualPropertyStaticReceiver (CSType thisType, string csProxyName, CSDelegateTypeDecl delType,
 		                                               CSUsingPackages use, FunctionDeclaration funcDecl, CSProperty prop, CSMethod protoListMethod,
-							       CSIdentifier vtableName, bool isObjC, bool hasAssociatedTypes)
+							       CSIdentifier vtableName, bool isObjC, bool hasAssociatedTypes, Func<int, int, string> genericRenamer = null)
 		{
 			var returnType = funcDecl.IsGetter ? delType.Type : CSSimpleType.Void;
 			CSParameterList pl = delType.Parameters;
@@ -2869,6 +2872,7 @@ namespace SwiftReflector {
 				recvrName = "xamVtable_recv_" + (funcDecl.IsGetter ? "get_" : "set_") + protoListMethod.Name.Name;
 			} else {
 				var marshaler = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
+				marshaler.GenericRenamer = genericRenamer;
 
 				var bodyContents = marshaler.MarshalFromLambdaReceiverToCSProp (prop, thisType, csProxyName,
 												delType.Parameters,
