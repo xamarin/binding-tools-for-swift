@@ -2886,31 +2886,6 @@ namespace SwiftReflector {
 			return recvr;
 		}
 
-		CSLambda ImplementVirtualPropertyReceiver (CSType thisType, string csProxyName, CSDelegateTypeDecl delType,
-		                                           CSUsingPackages use, FunctionDeclaration funcDecl, CSProperty prop, bool isObjC)
-		{
-			//
-			// vtable.funcN = ([ref] type a0, [ref] type a1, [ref] type a2) => {
-			// [pre-marshal-code]?
-			// getter:
-			// [type retVal = ]SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisTYpe>(self).Prop
-			// [post-marshal-code]
-			// [return retVal]
-			// setter:
-			// SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisTYpe>(self).Prop = value
-
-			CSParameterList pl = delType.Parameters;
-
-			var usedIDs = new List<string> ();
-			usedIDs.AddRange (pl.Select (p => p.Name.Name));
-
-			var marshaler = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
-
-			var bodyContents = marshaler.MarshalFromLambdaReceiverToCSProp (prop, thisType, csProxyName, delType.Parameters,
-				funcDecl, prop.PropType, isObjC, false);
-			var body = new CSCodeBlock (bodyContents);
-			return new CSLambda (pl, body);
-		}
 
 		CSMethod ImplementVirtualMethodStaticReceiver (CSType thisType, string csProxyName, CSDelegateTypeDecl delType, CSUsingPackages use,
 		                                               FunctionDeclaration funcDecl, CSMethod publicMethod, CSIdentifier vtableName,
@@ -2938,47 +2913,6 @@ namespace SwiftReflector {
 			args.Add (new CSFunctionCall ("typeof", false, new CSIdentifier (vtableName.Name + "." + delType.Name.Name)));
 			CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true).AttachBefore (recvr);
 			return recvr;
-		}
-
-		CSLambda ImplementVirtualMethodReceiver (CSType thisType, string csProxyName, CSDelegateTypeDecl delType, CSUsingPackages use,
-			FunctionDeclaration funcDecl, CSMethod publicMethod, bool isObjC)
-		{
-			//
-			// vtable.funcN = ([ref] type a0, [ref] type a1, [ref] type a2 ...) => {
-			//    [pre-marshal-code]?
-			//    [type retVal = ]SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisType>(self).Method(l1, l2, l3);
-			//    [post-marshal-code]?
-			//    [return retVal]
-			// }
-
-			// for methods that can (validly) throw exceptions we need something like this:
-			// try {
-			//   	[pre-marshal-code]
-			//		[type retVal =]SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisType>(self).Method(l1, l2, l3)
-			//		[post-marshal-code]
-			//		[StructMarshal.Marshal.ToSwift(typeof(type), retVal, xam_retval)]
-			//		[StructMarshal.Marshal.SetErrorNotThrown(xam_retval, typeof(Tuple<type, SwiftError, bool>));
-			// }
-			// catch (Exception e) {
-			//		StructMarshal.Marshal.SetErrorThrown(xam_retval, SwiftError.FromException(e),
-			//			typeof(Tuple<type, SwiftError, bool>));
-
-			// The overall approach to this that the parameters start at either index 0 or index 1 depending on
-			// whether or not the method returns a struct or enum. All structs and enums are passed by reference
-			// because "thanks swift!". Enums and structs 
-			var pl = delType.Parameters;
-			var usedIDs = new List<string> ();
-			usedIDs.AddRange (pl.Select (p => p.Name.Name));
-
-
-			var marshal = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
-
-			var bodyContents = marshal.MarshalFromLambdaReceiverToCSFunc (thisType, csProxyName, pl, funcDecl, publicMethod.Type,
-			                                                              publicMethod.Parameters, publicMethod.Name.Name, isObjC, false);
-
-			var body = new CSCodeBlock (bodyContents);
-
-			return new CSLambda (pl, body);
 		}
 
 
