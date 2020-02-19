@@ -6293,8 +6293,10 @@ namespace SwiftReflector {
 			if (ty is CSGenericReferenceType genType) {
 				genType.ReferenceNamer = namer;
 			} else if (ty is CSSimpleType simpleType) {
-				foreach (var genSubType in simpleType.GenericTypes)
-					SubstituteAssociatedTypeNamer (namer, genSubType);
+				if (simpleType.GenericTypes != null) {
+					foreach (var genSubType in simpleType.GenericTypes)
+						SubstituteAssociatedTypeNamer (namer, genSubType);
+				}
 			} else throw new NotImplementedException ($"Unknown type {ty.GetType ().Name} ({ty.ToString ()})");
 		}
 	}
