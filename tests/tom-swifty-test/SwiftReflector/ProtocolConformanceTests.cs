@@ -228,5 +228,19 @@ public protocol Iterator1 {
 			var callingCode = CSCodeBlock.Create (printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
 		}
+
+		[Test]
+		public void SmokeProtocolAssocGetSetProp ()
+		{
+			var swiftCode = @"
+public protocol Iterator2 {
+	associatedtype Elem
+	var item: Elem { get set }
+}
+";
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+		}
 	}
 }

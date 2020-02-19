@@ -153,9 +153,10 @@ namespace SwiftReflector {
 			var csParams = new CSParameterList ();
 			for (int i = 0; i < args.Count; i++) {
 				var arg = args [i];
+				var argIsGeneric = func.IsTypeSpecGeneric (func.ParameterLists.Last () [i].TypeSpec);
 				CSParameter csParam = null;
 				var parmType = func.ParameterLists.Last () [i].TypeSpec;
-				if (arg.Type.Entity == EntityType.Tuple || IsObjCStruct (parmType)) {
+				if (arg.Type.Entity == EntityType.Tuple || (!argIsGeneric && IsObjCStruct (parmType))) {
 					csParam = new CSParameter (CSSimpleType.IntPtr, new CSIdentifier (arg.Name), CSParameterKind.None, null);
 				} else {
 					csParam = new CSParameter (arg.Type.ToCSType (packs), new CSIdentifier (arg.Name),
