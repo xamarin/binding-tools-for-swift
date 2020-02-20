@@ -266,7 +266,7 @@ namespace SwiftReflector {
 			if (thisIsInterface && !hasAssociatedTypes) {
 				registryCall = $"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self)";
 			} else {
-				registryCall = isObjC ? $"Runtime.GetNSObject<{thisTypeName}> (self)" : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)");
+				registryCall = isObjC ? $"Runtime.GetNSObject<{thisTypeName}> (self)" : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)";
 			}
 
 
