@@ -62,7 +62,7 @@ namespace SwiftReflector {
 				entityType = !newValueIsGeneric ? typeMapper.GetEntityTypeForTypeSpec (swiftNewValue.TypeSpec) : EntityType.None;
 				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [1]);
 
-				if (entityType == EntityType.Class || entity.IsObjCProtocol) {
+				if (entityType == EntityType.Class || entity.IsObjCProtocol || hasAssociatedTypes) {
 					var csParmType = new CSSimpleType (entity.SharpNamespace + "." + entity.SharpTypeName);
 					if (csParmType == null)
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 26, "Inconceivable! The class type for a subscript was NOT a CSSimpleType!");
@@ -260,33 +260,42 @@ namespace SwiftReflector {
 			}
 
 
-			CSBaseExpression invoker = null;
+			var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
+			string registryCall;
 
-			if (isIndexer) {
-				if (thisIsInterface) {
-					invoker = new CSIndexExpression (
-						$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisType.ToString ()}> (self)",
-						false, callParams.ToArray ());
-				} else {
-					var registryCall = isObjC ?
-						$"Runtime.GetNSObject<{thisType.ToString ()}> (self)" :
-						$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisType.ToString ()}> (self)";
-					invoker = new CSIndexExpression (registryCall, false, callParams.ToArray ());
-				}
+			if (thisIsInterface && !hasAssociatedTypes) {
+				registryCall = $"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self)";
 			} else {
-				var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
-				if (thisIsInterface && !hasAssociatedTypes) {
-					invoker = new CSFunctionCall (
-						$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{methodName}",
-						false, callParams.ToArray ());
-
-				} else {
-					var registryCall = isObjC ?
-						$"Runtime.GetNSObject<{thisType.ToString ()}>(self).{methodName}" :
-						$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self).{methodName}";
-					invoker = new CSFunctionCall (registryCall, false, callParams.ToArray ());
-				}
+				registryCall = isObjC ? $"Runtime.GetNSObject<{thisTypeName}> (self)" : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)");
 			}
+
+
+			var invoker = isIndexer ? (CSBaseExpression)new CSIndexExpression (registryCall, false, callParams.ToArray ()) :
+				new CSFunctionCall (registryCall, false, callParams.ToArray ());
+			//if (isIndexer) {
+			//	if (thisIsInterface && !hasAssociatedTypes) {
+			//		invoker = new CSIndexExpression (
+			//			$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self)",
+			//			false, callParams.ToArray ());
+			//	} else {
+			//		var registryCall = isObjC ?
+			//			$"Runtime.GetNSObject<{thisTypeName}> (self)" :
+			//			$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)";
+			//		invoker = new CSIndexExpression (registryCall, false, callParams.ToArray ());
+			//	}
+			//} else {
+			//	if (thisIsInterface && !hasAssociatedTypes) {
+			//		invoker = new CSFunctionCall (
+			//			$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{methodName}",
+			//			false, callParams.ToArray ());
+
+			//	} else {
+			//		var registryCall = isObjC ?
+			//			$"Runtime.GetNSObject<{thisType.ToString ()}>(self).{methodName}" :
+			//			$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self).{methodName}";
+			//		invoker = new CSFunctionCall (registryCall, false, callParams.ToArray ());
+			//	}
+			//}
 
 			var tryBlock = funcDecl.HasThrows ? new CSCodeBlock () : null;
 			var catchBlock = funcDecl.HasThrows ? new CSCodeBlock () : null;

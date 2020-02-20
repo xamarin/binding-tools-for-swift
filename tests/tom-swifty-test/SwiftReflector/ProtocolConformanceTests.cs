@@ -247,9 +247,25 @@ public protocol Iterator2 {
 		public void SmokeProtocolAssocFuncArg ()
 		{
 			var swiftCode = @"
-public protocol Iterator2 {
+public protocol Iterator3 {
 	associatedtype Elem
 	func ident (a:Elem)
+}
+";
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+		}
+
+		[Test]
+		public void SomeProtocolAssocSubscriptGet ()
+		{
+			var swiftCode = @"
+public protocol Iterator4 {
+	associatedtype Elem
+	subscript (index: Int) -> Elem {
+		get
+	}
 }
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
