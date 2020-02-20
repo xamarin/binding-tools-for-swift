@@ -272,30 +272,6 @@ namespace SwiftReflector {
 
 			var invoker = isIndexer ? (CSBaseExpression)new CSIndexExpression (registryCall, false, callParams.ToArray ()) :
 				new CSFunctionCall (registryCall, false, callParams.ToArray ());
-			//if (isIndexer) {
-			//	if (thisIsInterface && !hasAssociatedTypes) {
-			//		invoker = new CSIndexExpression (
-			//			$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self)",
-			//			false, callParams.ToArray ());
-			//	} else {
-			//		var registryCall = isObjC ?
-			//			$"Runtime.GetNSObject<{thisTypeName}> (self)" :
-			//			$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)";
-			//		invoker = new CSIndexExpression (registryCall, false, callParams.ToArray ());
-			//	}
-			//} else {
-			//	if (thisIsInterface && !hasAssociatedTypes) {
-			//		invoker = new CSFunctionCall (
-			//			$"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{methodName}",
-			//			false, callParams.ToArray ());
-
-			//	} else {
-			//		var registryCall = isObjC ?
-			//			$"Runtime.GetNSObject<{thisType.ToString ()}>(self).{methodName}" :
-			//			$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self).{methodName}";
-			//		invoker = new CSFunctionCall (registryCall, false, callParams.ToArray ());
-			//	}
-			//}
 
 			var tryBlock = funcDecl.HasThrows ? new CSCodeBlock () : null;
 			var catchBlock = funcDecl.HasThrows ? new CSCodeBlock () : null;
