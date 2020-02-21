@@ -289,5 +289,22 @@ public protocol Iterator5 {
 			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
 		}
 
+		[Test]
+		public void SomeProtocolAssocSubscriptGetSetParams ()
+		{
+			var swiftCode = @"
+public protocol Iterator6 {
+	associatedtype Elem
+	subscript (index: Elem) -> Elem {
+		get set
+	}
+}
+";
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+		}
+
+
 	}
 }

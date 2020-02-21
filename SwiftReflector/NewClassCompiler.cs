@@ -2287,11 +2287,13 @@ namespace SwiftReflector {
 				PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
 				etterWrapper.MangledName, piEtterName, true, true, false);
 			picl.Methods.Add (piGetter);
+
 			if (wrapperProp == null) {
 				wrapperProp = TLFCompiler.CompileProperty (use, "this", etterFunc,
 					setter, CSMethodKind.None);
 				if (protocolDecl.HasAssociatedTypes) {
 					SubstituteAssociatedTypeNamer (protocolDecl, wrapperProp);
+					SubstituteAssociatedTypeNamer (protocolDecl, wrapperProp.IndexerParameters);
 				}
 
 				CSProperty ifaceProp = new CSProperty (wrapperProp.PropType, CSMethodKind.None,
@@ -6293,7 +6295,18 @@ namespace SwiftReflector {
 		{
 			var namer = MakeAssociatedTypeNamer (protocolDecl);
 			SubstituteAssociatedTypeNamer (namer, publicMethod.Type);
-			foreach (var parm in publicMethod.Parameters)
+			SubstituteAssociatedTypeNamer (namer, publicMethod.Parameters);
+		}
+
+		void SubstituteAssociatedTypeNamer (ProtocolDeclaration protocolDecl, CSParameterList parameters)
+		{
+			var namer = MakeAssociatedTypeNamer (protocolDecl);
+			SubstituteAssociatedTypeNamer (namer, parameters);
+		}
+
+		void SubstituteAssociatedTypeNamer (Func<int, int, string> namer, CSParameterList parameters)
+		{
+			foreach (var parm in parameters)
 				SubstituteAssociatedTypeNamer (namer, parm.CSType);
 		}
 
