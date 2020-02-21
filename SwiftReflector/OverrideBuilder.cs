@@ -677,10 +677,15 @@ namespace SwiftReflector {
 				elseblock.Add (SLReturn.ReturnLine (new SLSubscriptExpr (SLIdentifier.Super,
 					getParams.Select (nameTypePair => nameTypePair.PrivateName))));
 				var ifelse = new SLIfElse (condition, ifblock, elseblock);
-				if (isProtocol)
-					getBlock = ifblock;
-				else
+				if (isProtocol) {
+					if (getBlock.Count == 0) {
+						getBlock = ifblock;
+					} else {
+						getBlock.AddRange (ifblock);
+					}
+				} else {
 					getBlock.And (ifelse);
+				}
 			}
 			SLCodeBlock setBlock = null;
 
@@ -719,10 +724,16 @@ namespace SwiftReflector {
 				                                                                  getParams.Select (nameTypePair => nameTypePair.PrivateName)), new SLIdentifier ("newValue")));
 				elseblock.Add (superAssign);
 				var ifelse = new SLIfElse (condition, ifblock, elseblock);
-				if (isProtocol)
-					setBlock = ifblock;
-				else
+				if (isProtocol) {
+					if (setBlock.Count == 0) {
+						setBlock = ifblock;
+					} else {
+						setBlock.AddRange (ifblock);
+					}
+
+				} else {
 					setBlock.And (ifelse);
+				}
 			}
 			SLType returnType = null;
 			if (getter.IsTypeSpecGeneric (getter.ReturnTypeSpec)) {

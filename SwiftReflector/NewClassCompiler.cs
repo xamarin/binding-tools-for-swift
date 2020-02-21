@@ -2282,7 +2282,7 @@ namespace SwiftReflector {
 			piEtterName = Uniqueify (piEtterName, usedPinvokeNames);
 			usedPinvokeNames.Add (piEtterName);
 
-			string piEtterRef = PIClassName (TypeMapper.GetDotNetNameForSwiftClassName (protocolContents.Name)) + "." + piEtterName;
+			string piEtterRef = picl.Name.Name + "." + piEtterName;
 			var piGetter = TLFCompiler.CompileMethod (etterWrapperFunc, use,
 				PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
 				etterWrapper.MangledName, piEtterName, true, true, false);
@@ -2290,6 +2290,9 @@ namespace SwiftReflector {
 			if (wrapperProp == null) {
 				wrapperProp = TLFCompiler.CompileProperty (use, "this", etterFunc,
 					setter, CSMethodKind.None);
+				if (protocolDecl.HasAssociatedTypes) {
+					SubstituteAssociatedTypeNamer (protocolDecl, wrapperProp);
+				}
 
 				CSProperty ifaceProp = new CSProperty (wrapperProp.PropType, CSMethodKind.None,
 					CSVisibility.None, new CSCodeBlock (), CSVisibility.None, setter != null ? new CSCodeBlock () : null,
@@ -2303,6 +2306,8 @@ namespace SwiftReflector {
 			usedIds.AddRange (wrapperProp.IndexerParameters.Select (p => p.Name.Name));
 
 			var marshal = new MarshalEngine (use, usedIds, TypeMapper, wrapper.Module.SwiftCompilerVersion);
+			if (protocolDecl.HasAssociatedTypes)
+				marshal.GenericReferenceNamer = MakeAssociatedTypeNamer (protocolDecl);
 
 			var ifTest = kInterfaceImpl != CSConstant.Null;
 			var ifBlock = new CSCodeBlock ();
@@ -2330,11 +2335,19 @@ namespace SwiftReflector {
 											  etterFunc.HasThrows));
 			}
 
-			target.Add (new CSIfElse (ifTest, ifBlock, elseBlock));
+			if (protocolDecl.HasAssociatedTypes) {
+				target.AddRange (elseBlock);
+			} else {
+				target.Add (new CSIfElse (ifTest, ifBlock, elseBlock));
+			}
+
+			var renamer = protocolDecl.HasAssociatedTypes ? MakeAssociatedTypeNamer (protocolDecl) : null;
+			var proxyName = proxyClass.ToCSType ().ToString ();
 
 			var recv = ImplementVirtualSubscriptStaticReceiver (new CSSimpleType (iface.Name.Name),
-			                                                    proxyClass.Name.Name, etterDelegateDecl, use,
-			                                                    etterFunc, wrapperProp, null, vtable.Name, protocolDecl.IsObjC);
+			                                                    proxyName, etterDelegateDecl, use,
+			                                                    etterFunc, wrapperProp, null, vtable.Name, protocolDecl.IsObjC,
+									    renamer, protocolDecl.HasAssociatedTypes);
 			proxyClass.Methods.Add (recv);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
@@ -2819,7 +2832,8 @@ namespace SwiftReflector {
 		}
 
 		CSMethod ImplementVirtualSubscriptStaticReceiver (CSType thisType, string csProxyName, CSDelegateTypeDecl delType, CSUsingPackages use,
-		                                                FunctionDeclaration funcDecl, CSProperty prop, CSMethod protoListMethod, CSIdentifier vtableName, bool isObjC)
+		                                                FunctionDeclaration funcDecl, CSProperty prop, CSMethod protoListMethod, CSIdentifier vtableName, bool isObjC,
+								Func<int, int, string> genericRenamer = null, bool hasAssociatedTypes = false)
 		{
 			var returnType = funcDecl.IsSubscriptGetter ? delType.Type : CSSimpleType.Void;
 
@@ -2835,9 +2849,10 @@ namespace SwiftReflector {
 				recvrName = "xamVtable_recv_" + (funcDecl.IsGetter ? "get_" : "set_") + protoListMethod.Name.Name;
 			} else {
 				var marshaler = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, TypeMapper);
+				marshaler.GenericRenamer = genericRenamer;
 
 				var bodyContents = marshaler.MarshalFromLambdaReceiverToCSFunc (thisType, csProxyName, pl, funcDecl,
-												funcDecl.IsSubscriptGetter ? prop.PropType : CSSimpleType.Void, prop.IndexerParameters, null, isObjC, false);
+												funcDecl.IsSubscriptGetter ? prop.PropType : CSSimpleType.Void, prop.IndexerParameters, null, isObjC, hasAssociatedTypes);
 				body.AddRange (bodyContents);
 				recvrName = "xamVtable_recv_" + (funcDecl.IsSubscriptGetter ? "index_get_" : "index_set_") + prop.Name.Name;
 			}
