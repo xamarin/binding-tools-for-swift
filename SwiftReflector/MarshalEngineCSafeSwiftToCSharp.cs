@@ -62,7 +62,7 @@ namespace SwiftReflector {
 				entityType = !newValueIsGeneric ? typeMapper.GetEntityTypeForTypeSpec (swiftNewValue.TypeSpec) : EntityType.None;
 				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [1]);
 
-				if (entityType == EntityType.Class || entity.IsObjCProtocol || hasAssociatedTypes) {
+				if (entityType == EntityType.Class || entity != null && entity.IsObjCProtocol) {
 					var csParmType = new CSSimpleType (entity.SharpNamespace + "." + entity.SharpTypeName);
 					if (csParmType == null)
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 26, "Inconceivable! The class type for a subscript was NOT a CSSimpleType!");
@@ -106,8 +106,7 @@ namespace SwiftReflector {
 				} else if (newValueIsGeneric) {
 					var depthIndex = funcDecl.GetGenericDepthAndIndex (swiftNewValue.TypeSpec);
 					var genRef = new CSGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
-					if (genRef == null)
-						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 30, "Inconceivable! The generic type for a parameter in a method was NOT a CSGenericReferenceType!");
+					genRef.ReferenceNamer = GenericRenamer;
 					use.AddIfNotPresent (typeof (StructMarshal));
 					string valMarshalName = MarshalEngine.Uniqueify ("valTemp", identifiersUsed);
 					var valMarshalId = new CSIdentifier (valMarshalName);
