@@ -271,7 +271,7 @@ namespace SwiftReflector {
 
 
 			var invoker = isIndexer ? (CSBaseExpression)new CSIndexExpression (registryCall, false, callParams.ToArray ()) :
-				new CSFunctionCall (registryCall, false, callParams.ToArray ());
+				new CSFunctionCall ($"{registryCall}.{methodName}", false, callParams.ToArray ());
 
 			var tryBlock = funcDecl.HasThrows ? new CSCodeBlock () : null;
 			var catchBlock = funcDecl.HasThrows ? new CSCodeBlock () : null;
