@@ -1828,9 +1828,13 @@ namespace SwiftReflector {
 				ImplementISwiftObject (proxyClass);
 				ImplementIDisposable (wrapperClass, classContents, use, swiftLibraryPath, proxyClass, picl, false);
 				ImplementMTFields (proxyClass, use);
+				// this could be done after the if/else, passing in HasAssociateTypes as the last arg,
+				// but the ordering of the fields in the previous line and this are important, so to
+				// prevent future bugs, keep ImplementMTFields and this in the same order always.
+				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface, true);
 			} else {
-				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface);
 				ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
+				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface, false);
 			}
 
 			TypeNameAttribute (protocolDecl).AttachBefore (iface);
@@ -2338,11 +2342,7 @@ namespace SwiftReflector {
 											  etterFunc.HasThrows));
 			}
 
-			if (protocolDecl.HasAssociatedTypes) {
-				target.AddRange (elseBlock);
-			} else {
-				target.Add (new CSIfElse (ifTest, ifBlock, elseBlock));
-			}
+			target.Add (new CSIfElse (ifTest, ifBlock, elseBlock));
 
 			var renamer = protocolDecl.HasAssociatedTypes ? MakeAssociatedTypeNamer (protocolDecl) : null;
 			var proxyName = proxyClass.ToCSType ().ToString ();
@@ -2621,12 +2621,8 @@ namespace SwiftReflector {
 											  etterFunc, etterFunc.ReturnTypeSpec, wrapperProp.PropType, etterFunc.ParameterLists [0] [0].TypeSpec, new CSSimpleType (iface.Name.Name), false, wrapper, etterFunc.HasThrows));
 			}
 
-			if (protocolDecl.HasAssociatedTypes) {
-				target.AddRange (elseBlock);
-			} else {
-				var ifElse = new CSIfElse (ifTest, ifBlock, elseBlock);
-				target.Add (ifElse);
-			}
+			var ifElse = new CSIfElse (ifTest, ifBlock, elseBlock);
+			target.Add (ifElse);
 
 			var renamer = protocolDecl.HasAssociatedTypes ? MakeAssociatedTypeNamer (protocolDecl) : null;
 
@@ -3314,14 +3310,18 @@ namespace SwiftReflector {
 			}
 		}
 
-		void ImplementProxyConstructorAndFields (CSClass cl, CSUsingPackages use, bool hasVtable, CSInterface iface)
+		void ImplementProxyConstructorAndFields (CSClass cl, CSUsingPackages use, bool hasVtable, CSInterface iface, bool hasAssociatedTypes)
 		{
-			if (hasVtable)
+			if (hasVtable || hasAssociatedTypes)
 				cl.Fields.Add (CSFieldDeclaration.FieldLine (iface.ToCSType (), kInterfaceImpl));
-			cl.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (typeof (SwiftExistentialContainer1)), kContainer));
-			var prop = CSProperty.PublicGetBacking (new CSSimpleType (typeof (ISwiftExistentialContainer)), new CSIdentifier ("ProxyExistentialContainer"), kContainer, false, CSMethodKind.Override);
-			cl.Properties.Add (prop);
-			ImplementProtocolProxyConstructors (cl, use, hasVtable, iface);
+			if (!hasAssociatedTypes) {
+				cl.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (typeof (SwiftExistentialContainer1)), kContainer));
+				var prop = CSProperty.PublicGetBacking (new CSSimpleType (typeof (ISwiftExistentialContainer)), new CSIdentifier ("ProxyExistentialContainer"), kContainer, false, CSMethodKind.Override);
+				cl.Properties.Add (prop);
+				ImplementProtocolProxyConstructors (cl, use, hasVtable, iface);
+			} else {
+				ImplementProtocolProxyConstructorAssociatedTypes (cl, iface);
+			}
 		}
 
 		void ImplementProtocolProxyConstructors (CSClass cl, CSUsingPackages use, bool hasVtable, CSInterface iface)
@@ -3378,6 +3378,27 @@ namespace SwiftReflector {
 
 			if (hasVtable)
 				cl.StaticConstructor.Add (CallToSetVTable ());
+		}
+
+		void ImplementProtocolProxyConstructorAssociatedTypes (CSClass cl, CSInterface iface)
+		{
+			// ctor:
+			// public TypeName(IterfaceName actualImplementation)
+			//    : this ()
+			// {
+			//     kInterfaceImple = actualImplementation;
+			// }
+
+			var actualImplId = new CSIdentifier ("actualImplementation");
+			var parms = new CSParameterList ();
+
+			parms.Add (new CSParameter (iface.ToCSType (), actualImplId));
+
+			var body = new CSCodeBlock ();
+			body.Add (CSAssignment.Assign (kInterfaceImpl, actualImplId));
+			var thisParms = new CSBaseExpression [0];
+			var m = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, cl.Name, parms, thisParms, false, body);
+			cl.Constructors.Add (m);
 		}
 
 
@@ -5049,7 +5070,7 @@ namespace SwiftReflector {
 										   instanceTypeSpec, csInstanceType,
 										   false, wrapper, methodToWrap.HasThrows);
 
-			if (methodToWrap.IsProtocolMember) {
+			if (methodToWrap.IsProtocolMember || genericReferenceNamer != null) {
 				var ifRedirect = InterfaceMethodRedirect (publicMethod, methodContents);
 				publicMethod.Body.Add (ifRedirect);
 			} else {
