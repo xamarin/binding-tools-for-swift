@@ -1828,6 +1828,9 @@ namespace SwiftReflector {
 				ImplementISwiftObject (proxyClass);
 				ImplementIDisposable (wrapperClass, classContents, use, swiftLibraryPath, proxyClass, picl, false);
 				ImplementMTFields (proxyClass, use);
+				// this could be done after the if/else, passing in HasAssociateTypes as the last arg,
+				// but the ordering of the fields in the previous line and this are important, so to
+				// prevent future bugs, keep ImplementMTFields and this in the same order always.
 				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface, true);
 			} else {
 				ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
