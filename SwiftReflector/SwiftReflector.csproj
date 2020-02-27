@@ -170,6 +170,7 @@
     <Compile Include="Demangling\Swift5Demangler.cs" />
     <Compile Include="SwiftXmlReflection\AssociatedTypeDeclaration.cs" />
     <Compile Include="ProtocolMethodMatcher.cs" />
+    <Compile Include="PatToGenericMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
