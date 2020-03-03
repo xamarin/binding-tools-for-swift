@@ -574,7 +574,7 @@ namespace SwiftReflector {
 
 			var newFunc = new FunctionDeclaration ();
 
-			newFunc.Name = AssociatedTypeStaticWrapperName (modelFunc.Name);
+			newFunc.Name = AssociatedTypeStaticWrapperName (OriginalClass as ProtocolDeclaration, modelFunc.Name);
 			newFunc.Module = OverriddenClass.Module;
 			newFunc.ParameterLists.Add (instanceList);
 			newFunc.ParameterLists.Add (newParamList);
@@ -1692,10 +1692,11 @@ namespace SwiftReflector {
 			to.IsInOut = from.IsInOut;
 		}
 
-		public static string AssociatedTypeStaticWrapperName (string funcName)
+		public static string AssociatedTypeStaticWrapperName (ProtocolDeclaration proto, string funcName)
 		{
 			Ex.ThrowOnNull (funcName, nameof (funcName));
-			return "xamarin_static_wrapper_" + funcName;
+			string prefix = proto.ToFullyQualifiedName ().Replace ('.', '_');
+			return $"xamarin_static_wrapper_{prefix}_{funcName}";
 		}
 	}
 }
