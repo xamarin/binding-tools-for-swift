@@ -260,6 +260,21 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 			return sb.ToString ();
 		}
+
+		public virtual string ToFullyQualifiedNameWithGenerics ()
+		{
+			var sb = new StringBuilder (ToFullyQualifiedName ());
+			if (ContainsGenericParameters) {
+				sb.Append ("<");
+				for (int i = 0; i < Generics.Count; i++) {
+					if (i > 0)
+						sb.Append (", ");
+					sb.Append (Generics [i].Name);
+				}
+				sb.Append (">");
+			}
+			return sb.ToString ();
+		}
 	}
 
 }

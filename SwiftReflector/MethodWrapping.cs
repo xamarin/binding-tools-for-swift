@@ -1420,7 +1420,7 @@ namespace SwiftReflector {
 			if (funcDecl.ContainsBoundGenericClosure ())
 				throw new NotImplementedException ("can't handle closures types bound in generics");
 
-			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, modules, callParms, funcDecl.ParameterLists [1], false, genericDeclaration);
+			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, modules, callParms, funcDecl.ParameterLists.Last (), false, genericDeclaration);
 			parms.AddRange (FilterCallParams (funcDecl, callParms, funcDecl.ParameterLists.Last (), modules));
 
 			usedNames.AddRange (parms.Select (p => p.PrivateName.Name));
@@ -1446,6 +1446,8 @@ namespace SwiftReflector {
 				}
 				return grt;
 			}).ToList ();
+
+			GatherFunctionDeclarationGenerics (funcDecl, genericDeclaration);
 
 			var instanceName = hasInstance ? new SLIdentifier (GetUniqueNameForInstance (parms)) : null;
 			bool instanceIsAPointer = false;
@@ -1521,7 +1523,8 @@ namespace SwiftReflector {
 			if (hasInstance) {
 				callsiteName = instanceIsAPointer ? $"{instanceName.Name}.pointee" : instanceName.Name;
 			} else {
-				callsiteName = funcDecl.Parent.Name;
+				var callsiteType = typeMapper.TypeSpecMapper.MapType (funcDecl.Parent, modules, TypeSpecParser.Parse (funcDecl.Parent.ToFullyQualifiedNameWithGenerics ()), false);
+				callsiteName = callsiteType.ToString ();
 			}
 			string instanceCallName = null;
 
@@ -1542,7 +1545,7 @@ namespace SwiftReflector {
 			SLBaseExpr newvalueExpr = null;
 			var preMarshalCode = new List<ICodeElement> ();
 
-			var wholeList = BuildArguments (funcDecl, callParms, funcDecl.ParameterLists [1], modules,
+			var wholeList = BuildArguments (funcDecl, callParms, funcDecl.ParameterLists.Last (), modules,
 												preMarshalCode);
 			if (funcDecl.IsSetter || funcDecl.IsSubscriptSetter) {
 				for (int i = 0; i < wholeList.Count; i++) {
@@ -1922,18 +1925,7 @@ namespace SwiftReflector {
 			                       new SLParameterList (parms), funcBody);
 
 			if (funcDecl.ContainsGenericParameters) {
-				func.GenericParams.AddRange (funcDecl.Generics.Select (gp => {
-					var depthIndex = funcDecl.GetGenericDepthAndIndex (gp.Name);
-					string gpName = SLGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2);
-					var sldecl = new SLGenericTypeDeclaration (new SLIdentifier (gpName));
-
-					foreach (var constraint in gp.Constraints) {
-						if (!IsRedundantConstraint (gp, constraint, funcDecl)) {
-							sldecl.Constraints.Add (ToSLGenericConstraint (constraint, gpName));
-						}
-					}
-					return sldecl;
-				}));
+				func.GenericParams.AddRange (ToSLGeneric (funcDecl, typeMapper));
 			}
 			return func;
 		}
@@ -1943,7 +1935,28 @@ namespace SwiftReflector {
 			return $"{funcName}{referenceCode.ToString ("D8")}";
 		}
 
-		SLGenericConstraint ToSLGenericConstraint (BaseConstraint baseConstr, string gpName)
+		public static IEnumerable<SLGenericTypeDeclaration> ToSLGeneric (FunctionDeclaration context, TypeMapper typeMapper)
+		{
+			foreach (var generic in context.Generics) {
+				yield return ToSLGeneric (context, generic, typeMapper);
+			}
+		}
+
+		public static SLGenericTypeDeclaration ToSLGeneric (FunctionDeclaration context, GenericDeclaration generic, TypeMapper typeMapper)
+		{
+			var depthIndex = context.GetGenericDepthAndIndex (generic.Name);
+			var gpName = SLGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2);
+			var sldecl = new SLGenericTypeDeclaration (new SLIdentifier (gpName));
+
+			foreach (var constraint in generic.Constraints) {
+				if (!IsRedundantConstraint (generic, constraint, context, typeMapper)) {
+					sldecl.Constraints.Add (ToSLGenericConstraint (context, constraint, gpName));
+				}
+			}
+			return sldecl;
+		}
+
+		public static SLGenericConstraint ToSLGenericConstraint (FunctionDeclaration context, BaseConstraint baseConstr, string gpName)
 		{
 			var inh = baseConstr as InheritanceConstraint;
 			if (inh != null) {
@@ -1951,39 +1964,50 @@ namespace SwiftReflector {
 				return new SLGenericConstraint (true, new SLSimpleType (gpName), new SLSimpleType (inh.Inherits));
 			} else {
 				var eq = (EqualityConstraint)baseConstr;
-				string [] pieces = eq.Type1.Split ('.');
-				// T, T.U
-				if (pieces.Length == 1 || pieces.Length == 2) {
-					pieces [0] = gpName;
+				var type1 = SubstituteGenericName (eq.Type1.Split ('.'), gpName);
+
+				var type2Parts = eq.Type2.Split ('.');
+				var type2 = eq.Type2;
+				if (context.IsTypeSpecGeneric (type2Parts [0])) {
+					var depthIndex = context.GetGenericDepthAndIndex (type2Parts [0]);
+					type2 = SubstituteGenericName (type2Parts, SLGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2));
 				}
-				// Module.T.U
-				else if (pieces.Length > 2) {
-					pieces [1] = gpName;
-				}
-				string type1 = String.Join (".", pieces);
-				return new SLGenericConstraint (false, new SLSimpleType (type1), new SLSimpleType (eq.Type2));
+
+				return new SLGenericConstraint (false, new SLSimpleType (type1), new SLSimpleType (type2));
 			}
 		}
 
+		static string SubstituteGenericName (string [] pieces, string subPart)
+		{
+			if (pieces.Length == 1 || pieces.Length == 2) {
+				pieces [0] = subPart;
+			}
+			// Module.T.U
+			else if (pieces.Length > 2) {
+				pieces [1] = subPart;
+			}
+			return String.Join (".", pieces);
+		}
 
-		bool IsRedundantConstraint (GenericDeclaration genericDeclaration, BaseConstraint constraint, FunctionDeclaration funcDecl)
+
+		static bool IsRedundantConstraint (GenericDeclaration genericDeclaration, BaseConstraint constraint, FunctionDeclaration funcDecl, TypeMapper typeMapper)
 		{
 			var typeSpecs = funcDecl.ParameterLists.Last ().Select (param => param.TypeSpec).ToList ();
 			if (!TypeSpec.IsNullOrEmptyTuple (funcDecl.ReturnTypeSpec))
 				typeSpecs.Add (funcDecl.ReturnTypeSpec);
-			return IsRedundantConstraint (genericDeclaration, constraint, funcDecl, typeSpecs);
+			return IsRedundantConstraint (genericDeclaration, constraint, funcDecl, typeSpecs, typeMapper);
 		}
 
-		bool IsRedundantConstraint (GenericDeclaration genericDeclaration, BaseConstraint constraint, FunctionDeclaration funcDecl, List<TypeSpec> types)
+		static bool IsRedundantConstraint (GenericDeclaration genericDeclaration, BaseConstraint constraint, FunctionDeclaration funcDecl, List<TypeSpec> types, TypeMapper typeMapper)
 		{
 			foreach (var typeSpec in types) {
-				if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, typeSpec))
+				if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, typeSpec, typeMapper))
 					return true;
 			}
 			return false;
 		}
 
-		bool IsRedundantConstraint (GenericDeclaration genericDeclaration, BaseConstraint constraint, FunctionDeclaration funcDecl, TypeSpec typeSpec)
+		static bool IsRedundantConstraint (GenericDeclaration genericDeclaration, BaseConstraint constraint, FunctionDeclaration funcDecl, TypeSpec typeSpec, TypeMapper typeMapper)
 		{
 			var namedTypeSpec = typeSpec as NamedTypeSpec;
 			if (namedTypeSpec != null) {
@@ -2007,7 +2031,7 @@ namespace SwiftReflector {
 					if (specialization.IsUnboundGeneric (funcDecl, typeMapper))
 						continue;
 					if (specialization.IsBoundGeneric (funcDecl, typeMapper) &&
-					    IsRedundantConstraint (genericDeclaration, constraint, funcDecl, specialization))
+					    IsRedundantConstraint (genericDeclaration, constraint, funcDecl, specialization, typeMapper))
 						return true;
 				}
 				return false;
@@ -2016,7 +2040,7 @@ namespace SwiftReflector {
 			var tupleTypeSpec = typeSpec as TupleTypeSpec;
 			if (tupleTypeSpec != null) {
 				foreach (var spec in tupleTypeSpec.Elements) {
-					if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, spec))
+					if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, spec, typeMapper))
 						return true;
 				}
 				return false;
@@ -2024,17 +2048,17 @@ namespace SwiftReflector {
 
 			var closureTypeSpec = typeSpec as ClosureTypeSpec;
 			if (closureTypeSpec != null) {
-				if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, closureTypeSpec.Arguments))
+				if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, closureTypeSpec.Arguments, typeMapper))
 					return true;
 
-				if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, closureTypeSpec.ReturnType))
+				if (IsRedundantConstraint (genericDeclaration, constraint, funcDecl, closureTypeSpec.ReturnType, typeMapper))
 					return true;
 				return false;
 			}
 			throw new NotImplementedException ($"Unexpected TypeSpec type in IsRedundantConstraint. Expected a named spec, tuple or closure, but got {typeSpec.GetType ().Name}");
 		}
 
-		bool ConstraintMatchesOnType (BaseConstraint constraint, Entity entity, int index)
+		static bool ConstraintMatchesOnType (BaseConstraint constraint, Entity entity, int index)
 		{
 			var genParam = entity.Type.Generics [index];
 			foreach (var genConstraint in genParam.Constraints) {
@@ -2200,7 +2224,10 @@ namespace SwiftReflector {
 			return retval;
 		}
 
-
+		void GatherFunctionDeclarationGenerics (FunctionDeclaration funcDecl, SLGenericTypeDeclarationCollection slGenerics)
+		{
+			slGenerics.AddRange (ToSLGeneric (funcDecl, typeMapper));
+		}
 
 		DelegatedCommaListElemCollection<SLArgument> BuildStructArguments (List<SLNameTypePair> parms)
 		{

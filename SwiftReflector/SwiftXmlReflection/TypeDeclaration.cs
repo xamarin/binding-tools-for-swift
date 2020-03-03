@@ -136,21 +136,6 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
-		public string ToFullyQualifiedNameWithGenerics ()
-		{
-			var sb = new StringBuilder (ToFullyQualifiedName ());
-			if (ContainsGenericParameters) {
-				sb.Append ("<");
-				for (int i = 0; i < Generics.Count; i++) {
-					if (i > 0)
-						sb.Append (", ");
-					sb.Append (Generics [i].Name);
-				}
-				sb.Append (">");
-			}
-			return sb.ToString ();
-		}
-
 		#region IXElementConvertible implementation
 
 		public XElement ToXElement ()

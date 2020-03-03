@@ -211,7 +211,7 @@ namespace SwiftReflector.TypeMapping {
 			var parmTypeEntity = !pIsGeneric ? typeMapper.GetEntityForTypeSpec (p.TypeSpec) : null;
 			if (parmTypeEntity == null && !pIsGeneric && p.IsInOut)
 				throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 45, $"In function {func.ToFullyQualifiedName ()}, unknown type parameter type {p.PublicName}:{p.TypeName}.");
-			var parmKind = p.IsInOut && !parmTypeEntity.IsStructOrEnum ? SLParameterKind.InOut : SLParameterKind.None;
+			var parmKind = p.IsInOut && (pIsGeneric || !parmTypeEntity.IsStructOrEnum) ? SLParameterKind.InOut : SLParameterKind.None;
 			SLType parmType = null;
 
 			if (genericDecl != null) {
@@ -229,7 +229,10 @@ namespace SwiftReflector.TypeMapping {
 					}
 					parmType = boundGen;
 				} else {
-					var depthIndex = func.GetGenericDepthAndIndex (p.TypeName);
+					var namedType = p.TypeSpec as NamedTypeSpec;
+					if (namedType == null)
+						throw new NotImplementedException ("Can only have a named type spec here.");
+					var depthIndex = func.GetGenericDepthAndIndex (namedType.Name);
 					var gd = func.GetGeneric (depthIndex.Item1, depthIndex.Item2);
 					var genRef = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
 					parmType = genRef;
@@ -336,14 +339,9 @@ namespace SwiftReflector.TypeMapping {
 					var sldecl = new SLGenericTypeDeclaration (new SLIdentifier (genRef.Name));
 #if SWIFT4
 					if (depthIndex.Item1 >= func.GetMaxDepth ()) {
-						sldecl.Constraints.AddRange (gd.Constraints.Select (bc => {
-							InheritanceConstraint inh = bc as InheritanceConstraint;
-							if (inh == null)
-								throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 19, "Equality constraints not supported (yet)");
-							return new SLGenericConstraint (true,
-											new SLSimpleType (genRef.Name),
-											parent.TypeSpecMapper.MapType (func, modules, inh.InheritsTypeSpec, false));
-						}));
+						sldecl.Constraints.AddRange (gd.Constraints.Select (baseConstraint =>
+							MethodWrapping.ToSLGenericConstraint (func, baseConstraint, genRef.ToString ())
+						));
 					}
 #else
 					sldecl.Constraints.AddRange (gd.Constraints.Select (bc => {

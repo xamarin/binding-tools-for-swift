@@ -532,11 +532,140 @@ namespace SwiftReflector {
 					}
 					var overrideFunc = DefineOverride (func, i, parameters);
 					yield return overrideFunc;
+					if (isProtocol && hasAssociatedTypes) {
+						var wrapper = DefineAssociatedTypeWrapper (func);
+						var wrapperimpl = DefineAssociatedTypeWrapperImpl (wrapper, func);
+						Functions.Add (wrapperimpl);
+					}
 				}
 				i++;
 			}
 		}
 
+		FunctionDeclaration DefineAssociatedTypeWrapper (FunctionDeclaration modelFunc)
+		{
+			// this function turns an instance function declaration of the form:
+			// public func name (args) -> return
+			// into the form:
+			// public static func xamarin_static_wrapper_name<AU, generics> (this: inout AU, args_with_generics) -> return_with_generics
+			//    where AU:SomeProtocol, generic0 = AU.assoc0, ...
+
+			var assocTypeMap = new PatToGenericMap (OriginalClass as ProtocolDeclaration);
+
+			// oddly enough, static methods still have an instance type
+			// so we mock one up to be the type of the type. I don't think we actually _use_ it anywhere,
+			// but we do need it to be present.
+			var instanceList = new List<ParameterItem> ();
+			var selfItem = new ParameterItem ();
+			selfItem.PublicName = selfItem.PrivateName = "self";
+			selfItem.TypeName = $"{OverriddenClass.ToFullyQualifiedNameWithGenerics ()}.Type";
+			instanceList.Add (selfItem);
+			var newParamList = assocTypeMap.RebuildParameterListWithGenericTypes (modelFunc.ParameterLists.Last ());
+			var usedNames = new List<string> ();
+			usedNames.AddRange (newParamList.Select (pi => pi.PublicName));
+
+
+			var thisItem = new ParameterItem ();
+			thisItem.PrivateName = thisItem.PublicName = MarshalEngine.Uniqueify ("this", usedNames);
+			usedNames.Add (thisItem.PublicName);
+			thisItem.IsInOut = true;
+			thisItem.TypeName = "AU";
+			newParamList.Insert (0, thisItem);
+
+			var newFunc = new FunctionDeclaration ();
+
+			newFunc.Name = AssociatedTypeStaticWrapperName (modelFunc.Name);
+			newFunc.Module = OverriddenClass.Module;
+			newFunc.ParameterLists.Add (instanceList);
+			newFunc.ParameterLists.Add (newParamList);
+			newFunc.ReturnTypeName = assocTypeMap.RebuildTypeWithGenericType (modelFunc.ReturnTypeSpec).ToString ();
+
+			newFunc.Access = Accessibility.Public;
+			var thisGeneric = new GenericDeclaration ("AU");
+			thisGeneric.Constraints.Add (new InheritanceConstraint ("AU", OriginalClass.ToFullyQualifiedName ()));
+			newFunc.Generics.Add (thisGeneric);
+			var genericNames = assocTypeMap.UniqueGenericTypeNamesFor (modelFunc);
+			foreach (var genName in genericNames) {
+				var generic = new GenericDeclaration (genName);
+				var assocName = assocTypeMap.AssociatedTypeNameFromGenericTypeName (genName);
+				generic.Constraints.Add (new EqualityConstraint (genName, $"AU.{assocName}"));
+				newFunc.Generics.Add (generic);
+			}
+
+			return newFunc;
+		}
+
+		SLFunc DefineAssociatedTypeWrapperImpl (FunctionDeclaration funcDecl, FunctionDeclaration originalFunction)
+		{
+			// given a protocol SomeProtocol with the function of the form:
+			// public func name (args) -> return
+			// This will write the following wrapper:
+			// public static func xamarin_static_wrapper_name<AU, generics> (this: inout AU, args_with_generics) -> return_with_generics
+			//    where AU:SomeProtocol, generic0 = AU.assoc0, ... {
+			//     return this.name (args)
+			// }
+			// or
+			// public static func xamarin_static_wrapper_name<AU, generics> (this: inout AU, args_with_generics)
+			//   where AU:SomeProtocol, generic0 = AU.assoc0, ... {
+			//     this.name (args)
+			// }
+			//
+
+			var parameters = new List<SLParameter> ();
+			var generics = new SLGenericTypeDeclarationCollection ();
+			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, Imports,
+				parameters, funcDecl.ParameterLists.Last (), true, generics);
+
+			var hasReturn = !TypeSpec.IsNullOrEmptyTuple (funcDecl.ReturnTypeSpec);
+
+			var returnType =  hasReturn ?
+				typeMapper.TypeSpecMapper.MapType (funcDecl, Imports, funcDecl.ReturnTypeSpec, true) : null;
+
+			// first arg is "this"
+			var thisParmName = parameters [0].PrivateName ?? parameters [0].PublicName;
+			var callParams = parameters.Skip (1).Select ((pi, i) => {
+				var callName = pi.PrivateName ?? pi.PublicName;
+				var originalPI = originalFunction.ParameterLists.Last () [i];
+				var publicName = new SLIdentifier (originalPI.PublicName);
+				var callExpr = pi.ParameterKind == SLParameterKind.InOut ?
+					(SLBaseExpr)new SLUnaryExpr ("&", pi.PrivateName ?? pi.PublicName, true) : pi.PrivateName ?? pi.PublicName;
+				return new SLArgument (publicName, callExpr, originalPI.NameIsRequired);
+				}).ToArray ();
+
+			var body = new SLCodeBlock (null);
+
+			if (originalFunction.IsProperty) {
+				if (originalFunction.IsSubscript) {
+					if (originalFunction.IsGetter) {
+						var subscriptExpr = new SLSubscriptExpr (thisParmName, callParams.Select (arg => arg.Expr));
+						body.Add (SLReturn.ReturnLine (subscriptExpr));
+					} else {
+						var subscriptExpr = new SLSubscriptExpr (thisParmName, callParams.Skip (1).Select (arg => arg.Expr));
+						body.Add (new SLLine (new SLBinding (subscriptExpr, callParams [0].Identifier)));
+					}
+				} else {
+					var propExpr = new SLIdentifier ($"{thisParmName.Name}.{originalFunction.PropertyName}");
+					if (originalFunction.IsGetter) {
+						body.Add (SLReturn.ReturnLine (propExpr));
+					} else {
+						// note for future Steve - you need to add an argument for newValue
+						// if it's a setter.
+						body.Add (new SLLine (new SLBinding (propExpr, parameters [1].PrivateName ?? parameters [1].PublicName)));
+					}
+				}
+			} else {
+				var call = new SLFunctionCall ($"{thisParmName.Name}.{originalFunction.Name}", false, callParams);
+				if (hasReturn) {
+					body.Add (SLReturn.ReturnLine (call));
+				} else {
+					body.Add (new SLLine (call, false));
+				}
+			}
+
+			var func = new SLFunc (Visibility.Public, FunctionKind.None, returnType, new SLIdentifier (funcDecl.Name), new SLParameterList (parameters), body);
+			func.GenericParams.AddRange (MethodWrapping.ToSLGeneric (funcDecl, typeMapper));
+			return func;
+		}
 
 		PropertyDeclaration InternalSuperPropertyFromGetterSetter (FunctionDeclaration getter, FunctionDeclaration setter)
 		{
@@ -1561,6 +1690,12 @@ namespace SwiftReflector {
 		{
 			to.Attributes.AddRange (from.Attributes);
 			to.IsInOut = from.IsInOut;
+		}
+
+		public static string AssociatedTypeStaticWrapperName (string funcName)
+		{
+			Ex.ThrowOnNull (funcName, nameof (funcName));
+			return "xamarin_static_wrapper_" + funcName;
 		}
 	}
 }
