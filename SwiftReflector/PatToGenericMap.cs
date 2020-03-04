@@ -12,6 +12,7 @@ namespace SwiftReflector {
 		const int kFormatDigits = 3;
 		static readonly string kGenFormat = $"D{kFormatDigits}";
 		ProtocolDeclaration protocolDecl;
+		Dictionary<string, int> nameIndexMap = new Dictionary<string, int> ();
 
 		public PatToGenericMap (ProtocolDeclaration protocolDecl)
 		{
@@ -19,6 +20,14 @@ namespace SwiftReflector {
 			if (!protocolDecl.HasAssociatedTypes)
 				throw new ArgumentException ("ProtocolDeclaration has no associated types", nameof (protocolDecl));
 			this.protocolDecl = protocolDecl;
+			AddAssocTypesToNameMap (this.protocolDecl);
+		}
+
+		void AddAssocTypesToNameMap (ProtocolDeclaration decl)
+		{
+			for (int i = 0; i < decl.AssociatedTypes.Count; i++) {
+				nameIndexMap.Add (OverrideBuilder.GenericAssociatedTypeName (decl.AssociatedTypes [i]), i);
+			}
 		}
 
 		public string GenericTypeNameFor (string associatedTypeName)
@@ -64,6 +73,9 @@ namespace SwiftReflector {
 
 		int AssociatedTypeIndex (string associatedTypeName)
 		{
+			var index = 0;
+			if (nameIndexMap.TryGetValue (associatedTypeName, out index))
+				return index;
 			return protocolDecl.AssociatedTypes.FindIndex (assoc => assoc.Name == associatedTypeName);
 		}
 
@@ -103,6 +115,15 @@ namespace SwiftReflector {
 			}
 		}
 
+		AssociatedTypeDeclaration GetAssociatedTypeNamed (string name)
+		{
+			var index = 0;
+			if (nameIndexMap.TryGetValue (name, out index)) {
+				return protocolDecl.AssociatedTypes [index];
+			}
+			return protocolDecl.AssociatedTypeNamed (name);
+		}
+
 		void GetUniqueGenericTypeNamesFor (ClosureTypeSpec candidate, HashSet<string> result)
 		{
 			GetUniqueGenericTypeNamesFor (candidate.Arguments, result);
@@ -111,7 +132,7 @@ namespace SwiftReflector {
 
 		void GetUniqueGenericTypeNamesFor (NamedTypeSpec candidate, HashSet<string> result)
 		{
-			var assocType = protocolDecl.AssociatedTypeNamed (candidate.Name);
+			var assocType = GetAssociatedTypeNamed (candidate.Name);
 			if (assocType != null)
 				result.Add (GenericTypeNameFor (assocType.Name));
 			if (candidate.GenericParameters == null)
@@ -135,12 +156,22 @@ namespace SwiftReflector {
 			}
 		}
 
+		public List<ParameterItem> RebuildParameterListWithGenericTypes (List<ParameterItem> pl)
+		{
+			var result = new List<ParameterItem> (pl.Count);
+			foreach (var item in pl) {
+				var newItem = new ParameterItem (item);
+				newItem.TypeSpec = RebuildTypeWithGenericType (item.TypeSpec);
+				result.Add (newItem);
+			}
+			return result;
+		}
 
 		public TypeSpec RebuildTypeWithGenericType (TypeSpec type)
 		{
 			bool changed;
-			RebuildTypeWithGenericType (type, out changed);
-			return type;
+			var newType = RebuildTypeWithGenericType (type, out changed);
+			return changed ? newType : type;
 		}
 
 		TypeSpec RebuildTypeWithGenericType (TypeSpec type, out bool changed)
@@ -179,7 +210,7 @@ namespace SwiftReflector {
 		{
 			bool nameChanged = false, genArgsChanged = false;
 			string newName = null;
-			var assocType = protocolDecl.AssociatedTypeNamed (type.Name);
+			var assocType = GetAssociatedTypeNamed (type.Name);
 			if (assocType != null) {
 				nameChanged = true;
 				newName = GenericTypeNameFor (assocType.Name);
