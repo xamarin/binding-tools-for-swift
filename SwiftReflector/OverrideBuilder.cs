@@ -648,8 +648,6 @@ namespace SwiftReflector {
 					if (originalFunction.IsGetter) {
 						body.Add (SLReturn.ReturnLine (propExpr));
 					} else {
-						// note for future Steve - you need to add an argument for newValue
-						// if it's a setter.
 						body.Add (new SLLine (new SLBinding (propExpr, parameters [1].PrivateName ?? parameters [1].PublicName)));
 					}
 				}
