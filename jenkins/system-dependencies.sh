@@ -617,12 +617,11 @@ function install_cmake ()
 		if type -t cmake > /dev/null; then
 			log "install_cmake (D Before)"
 			brew uninstall --force cmake
+			log "install_cmake (D After)"
 		fi
-		log "install_cmake (E)"
 		# Install the cmake we want
 		HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake
 	else
-		log "install_cmake (A prime)"
 		log "Installing CMake..."
 		brew install cmake
 	fi
