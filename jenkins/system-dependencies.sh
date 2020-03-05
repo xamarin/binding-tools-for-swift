@@ -625,7 +625,6 @@ function install_cmake ()
 		log "install_cmake (A prime)"
 		log "Installing CMake..."
 		brew install cmake
-		log "install_cmake (B prime)"
 	fi
 
 	popd > /dev/null
