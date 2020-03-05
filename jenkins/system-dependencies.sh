@@ -612,7 +612,7 @@ function install_cmake ()
 		git checkout "$BREW_CMAKE_HASH"
 		# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
 		if type -t cmake > /dev/null; then
-			brew uninstall --force cmake || true
+			brew uninstall --force cmake || brew doctor
 		fi
 		# Install the cmake we want
 		HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake
