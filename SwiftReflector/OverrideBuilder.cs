@@ -42,6 +42,7 @@ namespace SwiftReflector {
 			vtableName = classToOverride.ContainsGenericParameters ? classToOverride.Module.Name + "_xamVtableCache" : "_vtable";
 			ClassImplementations = new List<SLClass> ();
 			Functions = new List<SLFunc> ();
+			FunctionsToWrap = new List<FunctionDeclaration> ();
 			Declarations = new List<ICodeElement> ();
 
 			ModuleReferences = new HashSet<string> ();
@@ -162,6 +163,7 @@ namespace SwiftReflector {
 		public List<SLClass> ClassImplementations { get; private set; }
 		public List<ICodeElement> Declarations { get; private set; }
 		public List<SLFunc> Functions { get; private set; }
+		public List<FunctionDeclaration> FunctionsToWrap { get; private set; }
 		public List<FunctionDeclaration> OverriddenVirtualMethods { get; private set; }
 		public SLImportModules Imports { get; private set; }
 		public HashSet<string> ModuleReferences { get; private set; }
@@ -534,6 +536,7 @@ namespace SwiftReflector {
 					yield return overrideFunc;
 					if (isProtocol && hasAssociatedTypes) {
 						var wrapper = DefineAssociatedTypeWrapper (func);
+						FunctionsToWrap.Add (wrapper);
 						var wrapperimpl = DefineAssociatedTypeWrapperImpl (wrapper, func);
 						Functions.Add (wrapperimpl);
 					}
@@ -555,15 +558,9 @@ namespace SwiftReflector {
 			// oddly enough, static methods still have an instance type
 			// so we mock one up to be the type of the type. I don't think we actually _use_ it anywhere,
 			// but we do need it to be present.
-			var instanceList = new List<ParameterItem> ();
-			var selfItem = new ParameterItem ();
-			selfItem.PublicName = selfItem.PrivateName = "self";
-			selfItem.TypeName = $"{OverriddenClass.ToFullyQualifiedNameWithGenerics ()}.Type";
-			instanceList.Add (selfItem);
 			var newParamList = assocTypeMap.RebuildParameterListWithGenericTypes (modelFunc.ParameterLists.Last ());
 			var usedNames = new List<string> ();
 			usedNames.AddRange (newParamList.Select (pi => pi.PublicName));
-
 
 			var thisItem = new ParameterItem ();
 			thisItem.PrivateName = thisItem.PublicName = MarshalEngine.Uniqueify ("this", usedNames);
@@ -576,7 +573,6 @@ namespace SwiftReflector {
 
 			newFunc.Name = AssociatedTypeStaticWrapperName (OriginalClass as ProtocolDeclaration, modelFunc.Name);
 			newFunc.Module = OverriddenClass.Module;
-			newFunc.ParameterLists.Add (instanceList);
 			newFunc.ParameterLists.Add (newParamList);
 			newFunc.ReturnTypeName = assocTypeMap.RebuildTypeWithGenericType (modelFunc.ReturnTypeSpec).ToString ();
 
