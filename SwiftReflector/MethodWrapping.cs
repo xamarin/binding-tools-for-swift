@@ -205,7 +205,7 @@ namespace SwiftReflector {
 				WrapExtension (mod.Extensions [i], inventory, i);
 			}
 
-			WrapFunctions (mod, inventory);
+			WrapFunctions (mod);
 
 			WrapProperties (mod, inventory);
 
@@ -250,38 +250,42 @@ namespace SwiftReflector {
 			}
 		}
 
-		void WrapFunctions (ModuleDeclaration mod, ModuleInventory inventory)
+		void WrapFunctions (ModuleDeclaration mod)
 		{
 			SLFile slfile = null;
 			try {
-				foreach (FunctionDeclaration fn in mod.TopLevelFunctions) {
-					if (fn.IsProperty)
-						continue;
-					if (fn.IsDeprecated || fn.IsUnavailable) {
-						errors.SkippedFunctions.Add (fn.ToFullyQualifiedName (true));
-						var reason = fn.IsDeprecated ? "deprecated" : "obsolete or unavailable";
-						errors.Add (ErrorHelper.CreateWarning (ReflectorError.kWrappingBase + 5, $"Top level function {fn.ToFullyQualifiedName ()} is {reason}, skipping"));
-						continue;
-					}
-		    			if (BoundClosureError (fn, null, "wrapping top level functions")) {
-						continue;
-					}
-					if (FuncNeedsWrapping (fn, typeMapper)) {
-						// make the file in a lazy way
-						if (slfile == null) {
-							slfile = new SLFile (null);
-						}
-						try {
-							WrapFunction (fn, inventory, slfile);
-						}
-						catch (Exception e) {
-							errors.SkippedFunctions.Add (fn.ToFullyQualifiedName (true));
-							errors.Add (e);
-						}
-					}
-				}
+				WrapFunctions (ref slfile, mod.TopLevelFunctions);
 			} finally {
 				WriteSLFile (slfile, mod, "Funcs");
+			}
+		}
+
+		void WrapFunctions (ref SLFile slfile, IEnumerable<FunctionDeclaration> funcs)
+		{
+			foreach (var fn in funcs) {
+				if (fn.IsProperty)
+					continue;
+				if (fn.IsDeprecated || fn.IsUnavailable) {
+					errors.SkippedFunctions.Add (fn.ToFullyQualifiedName (true));
+					var reason = fn.IsDeprecated ? "deprecated" : "obsolete or unavailable";
+					errors.Add (ErrorHelper.CreateWarning (ReflectorError.kWrappingBase + 5, $"Top level function {fn.ToFullyQualifiedName ()} is {reason}, skipping"));
+					continue;
+				}
+				if (BoundClosureError (fn, null, "wrapping top level functions")) {
+					continue;
+				}
+				if (FuncNeedsWrapping (fn, typeMapper)) {
+					// make the file in a lazy way
+					if (slfile == null) {
+						slfile = new SLFile (null);
+					}
+					try {
+						WrapFunction (fn, slfile);
+					} catch (Exception e) {
+						errors.SkippedFunctions.Add (fn.ToFullyQualifiedName (true));
+						errors.Add (e);
+					}
+				}
 			}
 		}
 
@@ -504,11 +508,8 @@ namespace SwiftReflector {
 		}
 
 
-		void WrapFunction (FunctionDeclaration fn, ModuleInventory modInventory, SLFile slfile)
+		void WrapFunction (FunctionDeclaration fn, SLFile slfile)
 		{
-			var tlf = XmlToTLFunctionMapper.ToTLFunction (fn, modInventory);
-			if (tlf == null)
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 0, $"In wrapping function {fn.ToFullyQualifiedName (true)}, unable to find matching top level function.");
 			AddImportIfNotPresent (slfile.Imports, fn.Module.Name);
 			var func = MapTopLevelFuncToWrapperFunc (slfile.Imports, fn);
 			if (func != null)
@@ -1101,6 +1102,7 @@ namespace SwiftReflector {
 			file.Classes.AddRange (overrider.ClassImplementations);
 			file.Functions.AddRange (overrider.Functions);
 			file.Declarations.AddRange (overrider.Declarations);
+			WrapFunctions (ref file, overrider.FunctionsToWrap);
 			WrapClass (protocol.HasAssociatedTypes ? overrider.OverriddenClass : overrider.OriginalClass, cw, modInventory, file, null);
 			var entity = typeMapper.GetEntityForSwiftClassName (cl.ToFullyQualifiedName (true));
 			if (entity == null) {
