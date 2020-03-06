@@ -36,5 +36,5 @@ check-system:
 		echo "$(COLOR_RED)*** Once fixed, you need to commit the changes for them to pass this check.$(COLOR_CLEAR)"; \
 		exit 1; \
 	fi
-	@./jenkins/system-dependencies.sh
+	@./jenkins/system-dependencies.sh -v
 	@echo "Building Binding Tools For Swift $(SOM_PACKAGE_VERSION)"
