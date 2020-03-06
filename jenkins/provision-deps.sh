@@ -12,7 +12,7 @@ fi
 security set-keychain-settings -lut 21600 login.keychain
 
 # Verify dependencies and install if necessary
-./jenkins/system-dependencies.sh --provision-all
+./jenkins/system-dependencies.sh --provision-all -v
 
 xcode-select -p
 ls -la /Applications
