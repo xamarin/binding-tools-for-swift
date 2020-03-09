@@ -1462,6 +1462,14 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			destroy (p, mt);
 		}
 
+		public unsafe void ReleaseNominalData (SwiftMetatype mt, byte [] p)
+		{
+			var destroy = GetNominalDestroy (mt);
+			fixed (byte* pptr = p) {
+				destroy (new IntPtr (pptr), mt);
+			}
+		}
+
 		// value points to the return value from calling ToSwift
 		public void ReleaseSwiftPointer (Type type, IntPtr value)
 		{
@@ -1512,6 +1520,17 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		static DestroyDelegate GetNominalDestroy (Type t)
 		{
 			var vt = ValueWitnessof (t);
+			return GetNominalDestroy (vt);
+		}
+
+		static DestroyDelegate GetNominalDestroy (SwiftMetatype mt)
+		{
+			var vt = ValueWitnessOf (mt);
+			return GetNominalDestroy (vt);
+		}
+
+		static DestroyDelegate GetNominalDestroy (SwiftValueWitnessTable vt)
+		{
 			var destroy = (DestroyDelegate)Marshal.GetDelegateForFunctionPointer (vt.DestroyOffset, typeof (DestroyDelegate));
 			return destroy;
 		}
@@ -1546,6 +1565,17 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return p;
 		}
 
+		public unsafe void RetainNominalData (SwiftMetatype metadata, byte [] p)
+		{
+			byte* tbuf = stackalloc byte [p.Length];
+			var tbufPtr = new IntPtr (tbuf);
+			var initWithCopy = GetNominalInitializeWithCopy (metadata);
+			fixed (byte* pptr = p) {
+				initWithCopy (tbufPtr, new IntPtr (pptr), metadata);
+				Memory.Copy (tbuf, pptr, p.Length);
+			}
+		}
+
 #if __IOS__
         [MonoNativeFunctionWrapper]
 #endif
@@ -1554,6 +1584,17 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		static InitDelegate GetNominalInitializeWithCopy (Type t)
 		{
 			var vt = ValueWitnessof (t);
+			return GetNominalInitializeWithCopy (vt);
+		}
+
+		static InitDelegate GetNominalInitializeWithCopy (SwiftMetatype mt)
+		{
+			var vt = ValueWitnessOf (mt);
+			return GetNominalInitializeWithCopy (vt);
+		}
+
+		static InitDelegate GetNominalInitializeWithCopy (SwiftValueWitnessTable vt)
+		{
 			var initBuffer = (InitDelegate)Marshal.GetDelegateForFunctionPointer (vt.InitializeWithCopyOffset, typeof (InitDelegate));
 			return initBuffer;
 		}
@@ -1569,6 +1610,11 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				var wit = SwiftValueWitnessTable.FromDylibFile (libvt.Item1, DLOpenMode.Now, libvt.Item2);
 				return wit ?? SwiftValueWitnessTable.FromType (t);
 			}
+		}
+
+		internal static SwiftValueWitnessTable ValueWitnessOf (SwiftMetatype mt)
+		{
+			return SwiftValueWitnessTable.FromType (mt);
 		}
 
 		static Tuple<string, string> LibValueWitnessName (Type t)
