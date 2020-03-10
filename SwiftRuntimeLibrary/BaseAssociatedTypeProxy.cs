@@ -42,8 +42,7 @@ namespace SwiftRuntimeLibrary {
 
 			protected virtual void Dispose (bool disposing)
 			{
-				if ((object_flags & SwiftObjectFlags.Disposed) !=
-				    SwiftObjectFlags.Disposed) {
+				if ((object_flags & SwiftObjectFlags.Disposed) != SwiftObjectFlags.Disposed) {
 					if (disposing) {
 						DisposeManagedResources ();
 					}
