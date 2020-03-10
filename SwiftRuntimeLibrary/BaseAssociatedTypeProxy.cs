@@ -83,12 +83,9 @@ namespace SwiftRuntimeLibrary {
 				}
 			}
 
-			protected byte [] SwiftData {
-				get; set;
-			}
-			protected SwiftMetatype ProxiedMetatype {
-				get; set;
-			}
+			protected byte [] SwiftData { get; set; }
+
+			protected SwiftMetatype ProxiedMetatype { get; set; }
 		}
 	}
 }
