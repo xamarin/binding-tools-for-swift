@@ -8,9 +8,9 @@ namespace SwiftRuntimeLibrary {
 	namespace ClassWrapTests {
 		[SwiftNativeObject ()]
 		public class BaseAssociatedTypeProxy : ISwiftObject {
-			protected IntPtr handle;
-			protected SwiftMetatype class_handle;
-			protected SwiftObjectFlags object_flags = SwiftObjectFlags.IsSwift;
+			IntPtr handle;
+			SwiftMetatype class_handle;
+			SwiftObjectFlags object_flags = SwiftObjectFlags.IsSwift;
 
 			protected BaseAssociatedTypeProxy (IntPtr handle, SwiftMetatype classHandle, SwiftObjectRegistry registry)
 			{
