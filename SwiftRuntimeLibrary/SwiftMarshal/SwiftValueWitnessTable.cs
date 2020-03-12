@@ -78,7 +78,12 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			// mov        rsi, qword [rsi+0x88]  ; get the 17th pointer into the value witness table which is the size field
 			//
 			var meta = StructMarshal.Marshaler.Metatypeof (t);
-			var backPtr = meta.handle - IntPtr.Size;
+			return FromType (meta);
+		}
+
+		public static SwiftValueWitnessTable FromType (SwiftMetatype mt)
+		{
+			var backPtr = mt.handle - IntPtr.Size;
 			var witPtr = Marshal.ReadIntPtr (backPtr);
 #if DEBUG
 			//Console.WriteLine ("Value witness table for " + t.Name);

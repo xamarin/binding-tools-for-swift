@@ -279,6 +279,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftAssociatedTypeDescriptor.cs">
       <Link>SwiftMarshal\SwiftAssociatedTypeDescriptor.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\BaseAssociatedTypeProxy.cs">
+      <Link>BaseAssociatedTypeProxy.cs</Link>
+    </Compile>
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.iOS.cs">
     <Exec Command="make --directory=../SwiftRuntimeLibrary create-pinvokes-ios configuration=$(Configuration)" />
