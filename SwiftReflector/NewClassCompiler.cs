@@ -1784,12 +1784,12 @@ namespace SwiftReflector {
 				AddGenericsToInterface (iface, protocolDecl, use);
 				proxyClass.GenericParams.AddRange (iface.GenericParams);
 				proxyClass.GenericConstraints.AddRange (iface.GenericConstraints);
+				proxyClass.Inheritance.Add (typeof (BaseAssociatedTypeProxy));
 				var inheritance = iface.ToCSType ().ToString ();
 				proxyClass.Inheritance.Add (new CSIdentifier (inheritance));
 				var entity = SynthesizeEntityFromWrapperClass (swiftProxyClassName, protocolDecl, wrapper);
 				if (!TypeMapper.TypeDatabase.Contains (entity.Type.ToFullyQualifiedName ()))
 					TypeMapper.TypeDatabase.Add (entity);
-				proxyClass.Inheritance.Add (typeof (ISwiftObject));
 			} else {
 				proxyClass.Inheritance.Add (typeof (BaseProxy));
 				proxyClass.Inheritance.Add (iface.Name);
@@ -1816,7 +1816,9 @@ namespace SwiftReflector {
 				var genericNamer = MakeAssociatedTypeNamer (protocolDecl);
 
 				var ctors = MakeConstructors (proxyClass, picl, usedPinvokeNames, wrapperClass, classContents, null, null, null, use,
-					new CSSimpleType (className), wrapper, swiftLibraryPath, true, errors, false, genericNamer);
+					new CSSimpleType (className), wrapper, swiftLibraryPath, true, errors, true, genericNamer,
+					isAssociatedTypeProxy: true);
+
 				proxyClass.Constructors.AddRange (ctors);
 
 				var cctors = MakeClassConstructor (proxyClass, picl, usedPinvokeNames, wrapperClass, classContents,
@@ -1824,10 +1826,6 @@ namespace SwiftReflector {
 				proxyClass.Constructors.AddRange (cctors);
 
 
-
-				ImplementISwiftObject (proxyClass);
-				ImplementIDisposable (wrapperClass, classContents, use, swiftLibraryPath, proxyClass, picl, false);
-				ImplementMTFields (proxyClass, use);
 				// this could be done after the if/else, passing in HasAssociateTypes as the last arg,
 				// but the ordering of the fields in the previous line and this are important, so to
 				// prevent future bugs, keep ImplementMTFields and this in the same order always.
@@ -3748,7 +3746,7 @@ namespace SwiftReflector {
 							  SwiftClassName superClassName,
 							  CSUsingPackages use, CSType csClassType, WrappingResult wrapper,
 							  string swiftLibraryPath, bool isSubclass, ErrorHandling errors, bool inheritsISwiftObject,
-							  Func<int, int, string> genericNamer = null)
+							  Func<int, int, string> genericNamer = null, bool isAssociatedTypeProxy = false)
 		{
 			var allCtors = classDecl.AllConstructors ().Where (cn => cn.Access == Accessibility.Public || cn.Access == Accessibility.Open).ToList ();
 			foreach (TLFunction tlf in classContents.Constructors.AllocatingConstructors ()) {
@@ -3766,7 +3764,7 @@ namespace SwiftReflector {
 				if (MethodWrapping.FuncNeedsWrapping (funcDecl, TypeMapper)) {
 					foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType, tlf,
 								    superClassName, use, wrapper, superClassContents ?? classContents,
-								    PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), errors, genericNamer))
+								    PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), errors, genericNamer, isAssociatedTypeProxy))
 						yield return m;
 				} else {
 					string pinvokeName = isSubclass ? PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath) : PInvokeName (swiftLibraryPath);
@@ -3779,7 +3777,7 @@ namespace SwiftReflector {
 			if (!inheritsISwiftObject)
 				yield return MakeProtectedConstructor (classDecl, className, use);
 			if (!classDecl.IsObjCOrInheritsObjC (TypeMapper))
-				yield return MakePrivateFactoryConstructor (classDecl, superClassDecl, className, use);
+				yield return MakePrivateFactoryConstructor (classDecl, superClassDecl, className, use, isAssociatedTypeProxy);
 			yield return MakePublicFactory (classDecl, className, use, inheritsISwiftObject);
 		}
 
@@ -3878,7 +3876,8 @@ namespace SwiftReflector {
 			}
 		}
 
-		CSMethod MakePrivateFactoryConstructor (TypeDeclaration classDecl, TypeDeclaration superClassDecl, string constructorName, CSUsingPackages use)
+		CSMethod MakePrivateFactoryConstructor (TypeDeclaration classDecl, TypeDeclaration superClassDecl, string constructorName, CSUsingPackages use,
+			bool forceBaseCall)
 		{
 			//			constructorName (IntPtr p, SwiftObjectRegistry registry)
 			//			{
@@ -3901,7 +3900,7 @@ namespace SwiftReflector {
 				handleId, new CSFunctionCall ("GetSwiftMetatype", false), registryId
 			};
 
-			var isThisCall = !(superClassDecl ?? classDecl).IsSwiftBaseClass ();
+			var isThisCall = !(superClassDecl ?? classDecl).IsSwiftBaseClass () || forceBaseCall;
 			return new CSMethod (CSVisibility.None, CSMethodKind.None, null, new CSIdentifier (constructorName),
 			                     new CSParameterList (parms), thisExprs, isThisCall, new CSCodeBlock ());
 		}
@@ -4095,7 +4094,7 @@ namespace SwiftReflector {
 		IEnumerable<CSMethod> ConstructorWrapperToMethod (TypeDeclaration classDecl, TypeDeclaration superClassDecl, FunctionDeclaration funcDecl, CSClass cl, CSClass picl, List<string> usedPinvokeNames,
 								  CSType csType, TLFunction tlf, SwiftClassName superClassName,
 								  CSUsingPackages use, WrappingResult wrapper, ClassContents contents, string libraryPath,
-								  ErrorHandling errors, Func<int, int, string> genericNamer)
+								  ErrorHandling errors, Func<int, int, string> genericNamer, bool isAssociatedTypeProxy)
 		{
 			var homonymSuffix = Homonyms.HomonymSuffix (funcDecl, classDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
 			var isHomonym = homonymSuffix.Length > 0;
@@ -4172,7 +4171,8 @@ namespace SwiftReflector {
 
 
 					var isObjC = classDecl.IsObjCOrInheritsObjC (TypeMapper);
-					publicCons.Body.Add (ImplementNativeObjectCheck (isObjC));
+					if (!isAssociatedTypeProxy)
+						publicCons.Body.Add (ImplementNativeObjectCheck (isObjC));
 
 					var privateConsCall = new CSFunctionCall (privateConsImplID, false,
 										  publicCons.Parameters.Select (parm => (CSBaseExpression)parm.Name).ToArray ());
@@ -4193,7 +4193,7 @@ namespace SwiftReflector {
 							throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 29, "Inconceivable! One of the class or super class should be a class declaration");
 						isThisCall = (superAsClassDecl ?? classAsClassDecl).ProtectedObjCCtorIsInThis (TypeMapper);
 					} else {
-						isThisCall = !(superClassDecl ?? classDecl).IsSwiftBaseClass ();
+						isThisCall = !(superClassDecl ?? classDecl).IsSwiftBaseClass () || isAssociatedTypeProxy;
 					}
 
 					publicCons = new CSMethod (publicCons.Visibility, publicCons.Kind, publicCons.Type, publicCons.Name,
