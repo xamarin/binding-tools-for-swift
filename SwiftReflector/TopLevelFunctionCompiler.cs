@@ -15,6 +15,12 @@ using ObjCRuntime;
 
 namespace SwiftReflector {
 	public class TopLevelFunctionCompiler {
+		// utility class
+		class GenericReferenceAssociatedTypeProto {
+			public NamedTypeSpec GenericPart { get; set; }
+			public ProtocolDeclaration Protocol { get; set; }
+		}
+
 		TypeMapper typeMap;
 		Dictionary<string, string> mangledToCSharp = new Dictionary<string, string> ();
 
@@ -268,8 +274,22 @@ namespace SwiftReflector {
 								if (entity != null && entity.IsDiscretionaryConstraint)
 									continue;
 								var ntb = typeMap.MapType (func, inh.InheritsTypeSpec, false);
-								packs.AddIfNotPresent (ntb.NameSpace);
-								retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier (ntb.Type)));
+								var proto = GetConstrainedAssociatedTypeProtocol (func, new NamedTypeSpec (inh.Name));
+								if (proto != null) {
+									// SwiftProto -> ISwiftProto<AT0, AT1, AT2, ...>
+									// need to add extra generics:
+									// AT0, ...
+									// need to add the constraint T : ISwiftProto<AT0, AT1, AT2, ...>
+									var assocTypeNames = proto.Protocol.AssociatedTypes.Select (assoc => OverrideBuilder.GenericAssociatedTypeName (assoc));
+									retval.GenericParameters.AddRange (assocTypeNames.Select (name => new CSGenericTypeDeclaration (new CSIdentifier (name))));
+									var genParts = assocTypeNames.Select (name => new CSSimpleType (name)).ToArray ();
+									var genType = new CSSimpleType ($"I{proto.Protocol.Name}", false, genParts);
+									var genRef = new CSIdentifier (CSGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2));
+									retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier (genType.ToString ())));
+								} else {
+									packs.AddIfNotPresent (ntb.NameSpace);
+									retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier (ntb.Type)));
+								}
 							} else {
 								throw new NotSupportedException ("need to do associated types.");
 							}
@@ -302,6 +322,61 @@ namespace SwiftReflector {
 					csParams.Add (new CSParameter (CSSimpleType.IntPtr, name));
 				}
 			}
+		}
+
+		GenericReferenceAssociatedTypeProto GetConstrainedAssociatedTypeProtocol (BaseDeclaration context, NamedTypeSpec spec)
+		{
+			// we're looking for the pattern T, where T is a generic or contains a generic (Foo<T>)
+			// and there exists a where T : SomeProtocol 
+			if (spec == null)
+				return null;
+			GenericReferenceAssociatedTypeProto result = null;
+			if (spec.ContainsGenericParameters) {
+				foreach (var gen in spec.GenericParameters) {
+					// recurse on generic element
+					result = GetConstrainedAssociatedTypeProtocol (context, gen as NamedTypeSpec);
+					if (result != null)
+						break;
+				}
+			} else {
+				// which declaration has this generic
+				var owningContext = FindOwningContext (context, spec);
+				if (owningContext != null) {
+					foreach (var genPart in context.Generics) {
+						if (genPart.Name != spec.Name)
+							continue;
+						// genPart is the one we care about - now look for a constraint.
+						foreach (var constraint in genPart.Constraints) {
+							// Is it inheritance?
+							if (constraint is InheritanceConstraint inheritance) {
+								// Find the entity in the database
+								var entity = typeMap.TypeDatabase.EntityForSwiftName (inheritance.Inherits);
+								// Is it a protocol and it has associated types
+								if (entity != null && entity.Type is ProtocolDeclaration proto && proto.HasAssociatedTypes)
+									result = new GenericReferenceAssociatedTypeProto () {
+										GenericPart = spec,
+										Protocol = proto
+									};
+							}
+						}
+						if (result != null)
+							break;
+					}
+				}
+			}
+			return result;
+		}
+
+		BaseDeclaration FindOwningContext (BaseDeclaration context, NamedTypeSpec spec)
+		{
+			while (context != null) {
+				foreach (var genPart in context.Generics) {
+					if (genPart.Name == spec.Name)
+						return context;
+				}
+				context = context.Parent;
+			}
+			return null;
 		}
 
 		public static bool GenericArgumentIsReferencedByGenericClassInParameterList (SwiftBaseFunctionType func, GenericArgument arg)
