@@ -305,6 +305,38 @@ public protocol Iterator6 {
 			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
 		}
 
+		[Test]
+		[Ignore ("Signature is right, marshaling isn't")]
+		public void SimplestProtocolAssocTest ()
+		{
+			var swiftCode = @"
+public protocol Simplest0 {
+	associatedtype Item
+	func printAndGetIt () -> Item
+}
+public func doPrint<T>(a:T) where T:Simplest0 {
+	let _ = a.printAndGetIt ()
+}
+";
+			var altClass = new CSClass (CSVisibility.Public, "Simple0Impl");
+			altClass.Inheritance.Add (new CSIdentifier ("ISimplest0<SwiftString>"));
+			var strID = new CSIdentifier ("theStr");
+			var strDecl = CSVariableDeclaration.VarLine (strID, CSConstant.Val ("Got here!"));
+			var printPart = CSFunctionCall.ConsoleWriteLine (strID);
+			var returnPart = CSReturn.ReturnLine (new CSFunctionCall ("SwiftString.FromString", false, strID));
+			var printBody = CSCodeBlock.Create (strDecl, printPart, returnPart);
+			var speak = new CSMethod (CSVisibility.Public, CSMethodKind.None, new CSSimpleType ("SwiftString"), new CSIdentifier ("PrintAndGetIt"), new CSParameterList (), printBody);
+			altClass.Methods.Add (speak);
 
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, altClass.Name, new CSParameterList (), CSCodeBlock.Create ());
+			altClass.Methods.Add (ctor);
+
+
+			var instID = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple0Impl", true));
+			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint", false, instID);
+			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+		}
 	}
 }
