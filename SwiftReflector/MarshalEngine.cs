@@ -1082,8 +1082,19 @@ namespace SwiftReflector {
 			return arg.IsProtocolConstrained (typeMapper);
 		}
 
+		bool IsAssociatedTypeProtocolConstrained (FunctionDeclaration funcDecl, NamedTypeSpec swiftType)
+		{
+			var depthIndex = funcDecl.GetGenericDepthAndIndex (swiftType);
+			if (depthIndex.Item1 != 0)
+				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 25, $"Depth of generic reference in wrapper function should always be 0, but is {depthIndex.Item1}");
+			var arg = funcDecl.Generics [depthIndex.Item2];
+			return arg.IsAssociatedTypeProtocolConstrained (typeMapper);
+		}
+
 		CSBaseExpression MarshalProtocolConstrained (BaseDeclaration typeContext, FunctionDeclaration wrapperFunc, CSParameter p, NamedTypeSpec swiftType)
 		{
+			if (IsAssociatedTypeProtocolConstrained (wrapperFunc, swiftType))
+				return MarshalAssociatedTypeProtocolConstrained (typeContext, wrapperFunc, p, swiftType);
 			// bool isSwiftable = StructMarshal.Marshaler.IsSwiftRepresentable(typeof(p.type));
 			// ISwiftObject pProxyObj = null;
 			// IntPtr pNameIntPtr;
@@ -1227,6 +1238,90 @@ namespace SwiftReflector {
 				postMarshalCode.Add (postMarshalCheck);
 			return pNameIntPtr;
 
+		}
+
+		CSBaseExpression MarshalAssociatedTypeProtocolConstrained (BaseDeclaration typeContext, FunctionDeclaration wrapperFunc, CSParameter p, NamedTypeSpec swiftType)
+		{
+			// var proxy = p is ProxyType ? (InterfaceType)p : SwiftProtocolTypeAttribute.MakeProxy (typeof (proxyType), (InterfaceType)p);
+			// var proxyRefCount = StructMarshal.RetainCount ((ISwiftObject)proxy);
+			// var proxyPtr = stackalloc byte [IntPtr.Size];
+			// var proxyIntPtr = new IntPtr (proxyPtr);
+			// StructMarshal.Marshaler.ToSwift (proxy, proxyIntPtr);
+			// ...
+			// if (p is ProxyType && proxyRefCount >= StructMarshal.RetainCount ((ISwiftObject)proxy)) {
+			//    ((ISwiftObject)proxy).Dispose ();
+			// }
+
+			var protocolConstraint = ProtocolConstraintFromFunctionDeclaration (swiftType, wrapperFunc);
+			var csInterfaceTypeNTB = typeMapper.MapType (wrapperFunc, new NamedTypeSpec (protocolConstraint.ToFullyQualifiedName ()), false);
+			var csInterfaceType = csInterfaceTypeNTB.ToCSType (use) as CSSimpleType;
+			var csProxyType = BuildGenericInterfaceFromAssociatedTypes (csInterfaceType, protocolConstraint);
+
+			RequiredUnsafeCode = true;
+			var proxyID = new CSIdentifier (Uniqueify ("proxy", identifiersUsed));
+			identifiersUsed.Add (proxyID.Name);
+			var proxyRefCountID = new CSIdentifier (Uniqueify ("proxyRefCount", identifiersUsed));
+			identifiersUsed.Add (proxyRefCountID.Name);
+			var proxyPtrID = new CSIdentifier (Uniqueify ("proxyPtr", identifiersUsed));
+			identifiersUsed.Add (proxyPtrID.Name);
+			var proxyIntPtrID = new CSIdentifier (Uniqueify ("proxyIntPtr", identifiersUsed));
+			identifiersUsed.Add (proxyIntPtrID.Name);
+
+			// proxy declaration
+			var isProxyTypeTest = new CSBinaryExpression (CSBinaryOperator.Is, p.Name, new CSIdentifier (csProxyType.ToString ()));
+			var makeProxy = new CSFunctionCall ("SwiftProtocolTypeAttribute.MakeProxy", false, csProxyType.Typeof (), new CSCastExpression (csInterfaceType, p.Name));
+			var proxyExpr = new CSTernary (isProxyTypeTest, new CSCastExpression (csInterfaceType, p.Name), makeProxy, false);
+			var proxyDecl = CSVariableDeclaration.VarLine (proxyID, proxyExpr);
+			preMarshalCode.Add (proxyDecl);
+
+			var proxyCount = new CSFunctionCall ("StructMarshal.RetainCount", false, new CSCastExpression (new CSSimpleType ("ISwiftObject"), proxyID));
+			// proxyRefCount declaration
+			var proxyRefCountDecl = CSVariableDeclaration.VarLine (proxyRefCountID, proxyCount);
+			preMarshalCode.Add (proxyRefCountDecl);
+
+			// proxyPtr decl
+			var proxyPtrDecl = CSVariableDeclaration.VarLine (proxyPtrID, CSArray1D.New (CSSimpleType.Byte, true, new CSIdentifier ("IntPtr.Size")));
+			preMarshalCode.Add (proxyPtrDecl);
+
+			// proxyIntPtr decl
+			var proxyIntPtrDecl = CSVariableDeclaration.VarLine (proxyIntPtrID, new CSFunctionCall ("IntPtr", true, proxyPtrID));
+			preMarshalCode.Add (proxyIntPtrDecl);
+
+			// proxy marshal
+			var proxyMarshal = CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false, proxyID, proxyIntPtrID);
+			preMarshalCode.Add (proxyMarshal);
+
+			// post marshal cleanup
+
+			var condition = new CSBinaryExpression (CSBinaryOperator.And, isProxyTypeTest,
+				new CSBinaryExpression (CSBinaryOperator.GreaterEqual, proxyRefCountID, proxyCount));
+			var disposeCall = CSFunctionCall.FunctionCallLine ($"((ISwiftObject){proxyID.Name}).Dispose", false);
+			var body = CSCodeBlock.Create (disposeCall);
+			var ifPost = new CSLine (new CSIfElse (condition, body), false);
+			postMarshalCode.Add (ifPost);
+
+
+			return proxyIntPtrID;
+
+		}
+
+		CSSimpleType BuildGenericInterfaceFromAssociatedTypes (CSSimpleType interfaceType, ProtocolDeclaration protocol)
+		{
+			
+			return new CSSimpleType (OverrideBuilder.AssociatedTypeProxyClassName (protocol), false, interfaceType.GenericTypes);
+		}
+
+		ProtocolDeclaration ProtocolConstraintFromFunctionDeclaration (NamedTypeSpec swiftType, FunctionDeclaration funcDecl)
+		{
+			var depthIndex = funcDecl.GetGenericDepthAndIndex (swiftType);
+			var genDecl = funcDecl.GetGeneric (depthIndex.Item1, depthIndex.Item2);
+			var constraint = genDecl.Constraints [0] as InheritanceConstraint;
+			var entity = typeMapper.GetEntityForTypeSpec (constraint.InheritsTypeSpec);
+			if (entity == null)
+				throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 46, $"Unable to find entity for type {constraint.Inherits}");
+			if (entity.EntityType != EntityType.Protocol)
+				throw new ArgumentOutOfRangeException (nameof (funcDecl), $"Expected a protocol constraint but got a {entity.EntityType}");
+			return entity.Type as ProtocolDeclaration;
 		}
 
 
@@ -1442,6 +1537,7 @@ namespace SwiftReflector {
 			if (IsObjCProtocol (proto.Name)) {
 				return MarshalObjCProtocol (p, proto);
 			}
+
 			var netInterfaceName = NewClassCompiler.InterfaceNameForProtocol (proto.Name, typeMapper);
 			string netWrapperName = NewClassCompiler.CSProxyNameForProtocol (proto.Name, typeMapper);
 

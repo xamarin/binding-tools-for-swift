@@ -45,6 +45,29 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return true;
 		}
 
+		public bool IsAssociatedTypeProtocolConstrained (TypeMapper mapper)
+		{
+			if (Constraints.Count == 0)
+				return false;
+			foreach (BaseConstraint bc in Constraints) {
+				Entity ent = null;
+				InheritanceConstraint inh = bc as InheritanceConstraint;
+				if (inh != null) {
+					ent = mapper.GetEntityForTypeSpec (inh.InheritsTypeSpec);
+				} else {
+					EqualityConstraint eq = (EqualityConstraint)bc;
+					ent = mapper.GetEntityForTypeSpec (eq.Type2Spec);
+				}
+				if (ent == null)
+					continue; // shouldn't happen
+				if (ent.EntityType != EntityType.Protocol)
+					return false;
+				if (ent.Type is ProtocolDeclaration proto && proto.HasAssociatedTypes)
+					return true;
+			}
+			return false;
+		}
+
 		public bool IsClassConstrained (TypeMapper mapper)
 		{
 			if (Constraints.Count == 0)

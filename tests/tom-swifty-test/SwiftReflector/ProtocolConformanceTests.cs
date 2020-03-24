@@ -334,7 +334,7 @@ public func doPrint<T>(a:T) where T:Simplest0 {
 
 			var instID = new CSIdentifier ("inst");
 			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple0Impl", true));
-			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint", false, instID);
+			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint<Simple0Impl, SwiftString>", false, instID);
 			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
 		}

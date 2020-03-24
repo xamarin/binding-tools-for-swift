@@ -603,8 +603,15 @@ namespace SwiftReflector.TypeMapping {
 							}
 						} else {
 							var retval = new NetTypeBundle (en.SharpNamespace, en.SharpTypeName, false, spec.IsInOut, en.EntityType);
-							foreach (var gen in spec.GenericParameters) {
-								retval.GenericTypes.Add (MapType (context, gen, isPinvoke));
+							if (en.EntityType == EntityType.Protocol && en.Type is ProtocolDeclaration proto) {
+								foreach (var assoc in proto.AssociatedTypes) {
+									var genMap = new NetTypeBundle (proto, assoc);
+									retval.GenericTypes.Add (genMap);
+								}
+							} else {
+								foreach (var gen in spec.GenericParameters) {
+									retval.GenericTypes.Add (MapType (context, gen, isPinvoke));
+								}
 							}
 							return retval;
 						}
