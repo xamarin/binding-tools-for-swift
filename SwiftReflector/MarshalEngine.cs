@@ -1307,7 +1307,6 @@ namespace SwiftReflector {
 
 		CSSimpleType BuildGenericInterfaceFromAssociatedTypes (CSSimpleType interfaceType, ProtocolDeclaration protocol)
 		{
-			
 			return new CSSimpleType (OverrideBuilder.AssociatedTypeProxyClassName (protocol), false, interfaceType.GenericTypes);
 		}
 
