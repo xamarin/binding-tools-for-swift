@@ -49,6 +49,15 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return proxyAttr.ProxyType;
 		}
 
+		public static T MakeProxy<T> (Type proxyType, T interfaceImpl)
+		{
+			var interfaceType = typeof (T);
+			var ci = proxyType.GetConstructor (new Type [] { interfaceType });
+			if (ci == null)
+				throw new SwiftRuntimeException ($"Type {proxyType.Name} does not have a constructor that takes takes {interfaceType.Name}");
+			return (T)ci.Invoke (new object [] { interfaceImpl });
+		}
+
 		public static BaseProxy MakeProxy (Type interfaceType, object interfaceImpl, EveryProtocol protocol)
 		{
 			var proxyType = ProxyTypeForInterfaceType (interfaceType);
