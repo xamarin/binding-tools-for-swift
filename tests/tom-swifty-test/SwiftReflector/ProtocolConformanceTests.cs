@@ -306,7 +306,6 @@ public protocol Iterator6 {
 		}
 
 		[Test]
-		[Ignore ("Signature is right, marshaling isn't")]
 		public void SimplestProtocolAssocTest ()
 		{
 			var swiftCode = @"
