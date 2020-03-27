@@ -254,7 +254,12 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			if (attr == null) {
 				throw new SwiftRuntimeException ($"Interface type {t.Name} is missing the {typeof (SwiftProtocolTypeAttribute).Name} attribute.");
 			}
-			var pi = attr.ProxyType.GetProperty ("ProtocolWitnessTable", BindingFlags.Static | BindingFlags.Public);
+			var proxyType = attr.ProxyType;
+			if (proxyType.ContainsGenericParameters) {
+				var generics = t.GenericTypeArguments;
+				proxyType = proxyType.MakeGenericType (generics);
+			}
+			var pi = proxyType.GetProperty ("ProtocolWitnessTable", BindingFlags.Static | BindingFlags.Public);
 			if (pi == null)
 				throw new SwiftRuntimeException ($"Unable to find ProtocolWitnessTable property in proxy {attr.ProxyType.Name}");
 			return (IntPtr)pi.GetValue (null);

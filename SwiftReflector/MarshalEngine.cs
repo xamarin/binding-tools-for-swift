@@ -551,11 +551,22 @@ namespace SwiftReflector {
 					callParameters.Add (new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false,
 									    csGenType.Typeof ()));
 				} else {
+					CSType argType = csGenType;
+					if (genDecl.Constraints.Count == 1 && genDecl.Constraints [0] is InheritanceConstraint inh) {
+						var protoEntity = typeMapper.GetEntityForTypeSpec (inh.InheritsTypeSpec);
+						if (protoEntity != null && protoEntity.Type is ProtocolDeclaration proto && proto.HasAssociatedTypes) {
+							var argNtb = typeMapper.MapType (wrapperFunc, inh.InheritsTypeSpec, false);
+							var ifaceType = argNtb.ToCSType (use) as CSSimpleType;
+							argType = new CSSimpleType (OverrideBuilder.AssociatedTypeProxyClassName (proto), false, ifaceType.GenericTypes);
+						}
+
+					}
+					
 					var ifaceConstrs = new CSArray1DInitialized (CSSimpleType.Type,
 										   csGenType.InterfaceConstraints.Select (constr =>
 															  (CSBaseExpression)constr.Typeof ()).ToArray ());
 					callParameters.Add (new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false,
-									    csGenType.Typeof (), ifaceConstrs));
+									    argType.Typeof (), ifaceConstrs));
 				}
 				foreach (CSType csType in csGenType.InterfaceConstraints) {
 					callParameters.Add (new CSFunctionCall ("StructMarshal.Marshaler.ProtocolWitnessof", false,

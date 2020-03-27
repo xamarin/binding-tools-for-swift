@@ -1822,13 +1822,14 @@ namespace SwiftReflector {
 				proxyClass.Constructors.AddRange (ctors);
 
 				var cctors = MakeClassConstructor (proxyClass, picl, usedPinvokeNames, wrapperClass, classContents,
-				   use, PInvokeName (swiftLibraryPath), false);
+				   use, PInvokeName (wrapper.ModuleLibPath), false);
 				proxyClass.Constructors.AddRange (cctors);
 
 
 				// this could be done after the if/else, passing in HasAssociateTypes as the last arg,
 				// but the ordering of the fields in the previous line and this are important, so to
 				// prevent future bugs, keep ImplementMTFields and this in the same order always.
+				ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
 				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface, true);
 			} else {
 				ImplementProtocolWitnessTableAccessor (proxyClass, iface, protocolDecl, wrapper, use, swiftLibraryPath);
@@ -2773,6 +2774,7 @@ namespace SwiftReflector {
 			picl.Methods.Add (swiftSetter);
 
 			swiftSetter.Parameters.Add (new CSParameter (CSSimpleType.IntPtr, new CSIdentifier ("vt"), CSParameterKind.None));
+			swiftSetter.Parameters.AddRange (cl.GenericParams.Select ((p, i) => new CSParameter (new CSSimpleType ("SwiftMetatype"), new CSIdentifier ($"t{i}"))));
 
 			var setVTable = new CSMethod (CSVisibility.None, CSMethodKind.Static,
 						   CSSimpleType.Void, new CSIdentifier ("XamSetVTable"), new CSParameterList (), new CSCodeBlock ());
@@ -2783,7 +2785,7 @@ namespace SwiftReflector {
 			//   vtPtr = new IntPtr(vtPtrData);
 			// this repeats n time.
 			//   Marshal.WriteIntPtr(vtPtr + (IntPtr.Size * n), Marshal.GetFunctionPointerForDelegate(vtableName.funcn));
-			//   Pinvokes.SwiftXamSetVTable(vPtr);
+			//   Pinvokes.SwiftXamSetVTable(vPtr [, StructMarshal.Marsahler.Metatypeof(gen0), StructMarshal.Marsahler.Metatypeof(gen0)...);
 			// }
 
 			var vtName = new CSIdentifier (vtableName);
@@ -2803,9 +2805,12 @@ namespace SwiftReflector {
 				unsafeBlock.Add (CallToWriteIntPtr (vtPtr, i, vtableAssignments [i]));
 			}
 
+			var args = new List<CSBaseExpression> ();
+			args.Add (vtPtr);
+			args.AddRange (cl.GenericParams.Select (p => new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false, new CSSimpleType (p.Name.Name).Typeof ())));
 
 			unsafeBlock.Add (CSFunctionCall.FunctionCallLine (String.Format ("{0}.{1}",
-										    picl.Name.Name, "SwiftXamSetVtable"), false, vtPtr));
+										    picl.Name.Name, "SwiftXamSetVtable"), false, args.ToArray ()));
 
 			setVTable.Body.Add (unsafeBlock);
 
@@ -3397,6 +3402,7 @@ namespace SwiftReflector {
 			var thisParms = new CSBaseExpression [0];
 			var m = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, cl.Name, parms, thisParms, false, body);
 			cl.Constructors.Add (m);
+			cl.StaticConstructor.Add (CallToSetVTable ());
 		}
 
 
@@ -3414,11 +3420,11 @@ namespace SwiftReflector {
 			// }
 
 			var proxyName = protocolDecl.HasAssociatedTypes ? OverrideBuilder.AssociatedTypeProxyClassName (protocolDecl) :
-				OverrideBuilder.ProxyClassName (protocolDecl);
+				"EveryProtocol";
 
 			ClassContents swiftProxy = null;
 			foreach (var cl in wrapper.Contents.Classes.Values) {
-				if (cl.Name.Terminus.Name == "EveryProtocol") {
+				if (cl.Name.Terminus.Name == proxyName) {
 					swiftProxy = cl;
 					break;
 				}
@@ -3446,9 +3452,10 @@ namespace SwiftReflector {
 			var condition = fieldName == new CSIdentifier ("IntPtr.Zero");
 			var ifBlock = new CSCodeBlock ();
 			var ifTest = new CSIfElse (condition, ifBlock);
+			var metaAccessor = protocolDecl.HasAssociatedTypes ? "GetSwiftMetatype" : "EveryProtocol.GetSwiftMetatype";
 			var assign = CSAssignment.Assign (fieldName, new CSFunctionCall ("SwiftCore.ProtocolWitnessTableFromFile", false,
 				CSConstant.Val (PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath)), CSConstant.Val (conformanceSymbol),
-				new CSFunctionCall ("EveryProtocol.GetSwiftMetatype", false)));
+				new CSFunctionCall (metaAccessor, false)));
 			ifBlock.Add (assign);
 
 			var getterBlock = new CSCodeBlock ();
