@@ -539,9 +539,19 @@ namespace SwiftReflector.TypeMapping {
 					return ToScalar (named.Name, spec.IsInOut);
 				}
 
-				if (context.IsTypeSpecGeneric (spec) && (!spec.ContainsGenericParameters || isPinvoke)) {
+				if (context.IsEqualityConstrainedByAssociatedType (named, this)) {
 					if (isPinvoke) {
-						return new NetTypeBundle ("System", "IntPtr", false, named.IsInOut, EntityType.None);
+						return new NetTypeBundle ("System", "IntPtr", false, false, EntityType.None);
+					} else {
+						var assocType = context.AssociatedTypeDeclarationFromConstrainedGeneric (named, this);
+						var owningProtocol = context.OwningProtocolFromConstrainedGeneric (named, this);
+						return new NetTypeBundle (owningProtocol, assocType, false);
+					}
+				} else if (context.IsTypeSpecGeneric (spec) && (!spec.ContainsGenericParameters || isPinvoke)) {
+					if (isPinvoke) {
+						var isPAT = context.GetConstrainedProtocolWithAssociatedType (named, this) != null;
+						var isInOut = isPAT ? false : named.IsInOut;
+						return new NetTypeBundle ("System", "IntPtr", false, isInOut, EntityType.None);
 					} else {
 						var depthIndex = context.GetGenericDepthAndIndex (spec);
 						return new NetTypeBundle (depthIndex.Item1, depthIndex.Item2);
@@ -551,7 +561,7 @@ namespace SwiftReflector.TypeMapping {
 						return new NetTypeBundle ("System", "IntPtr", false, named.IsInOut, EntityType.None);
 					} else {
 						var assocType = context.AssociatedTypeDeclarationFromNamedTypeSpec (named);
-						return new NetTypeBundle (context.AsProtocolOrParentAsProtocol (), assocType);
+						return new NetTypeBundle (context.AsProtocolOrParentAsProtocol (), assocType, named.IsInOut);
 					}
 				} else {
 					Entity en = TypeDatabase.EntityForSwiftName (named.Name);
@@ -605,7 +615,7 @@ namespace SwiftReflector.TypeMapping {
 							var retval = new NetTypeBundle (en.SharpNamespace, en.SharpTypeName, false, spec.IsInOut, en.EntityType);
 							if (en.EntityType == EntityType.Protocol && en.Type is ProtocolDeclaration proto) {
 								foreach (var assoc in proto.AssociatedTypes) {
-									var genMap = new NetTypeBundle (proto, assoc);
+									var genMap = new NetTypeBundle (proto, assoc, spec.IsInOut);
 									retval.GenericTypes.Add (genMap);
 								}
 							} else {

@@ -60,7 +60,7 @@ namespace SwiftReflector.TypeMapping {
 			GenericIndex = index;
 		}
 
-		public NetTypeBundle (ProtocolDeclaration proto, AssociatedTypeDeclaration assoc)
+		public NetTypeBundle (ProtocolDeclaration proto, AssociatedTypeDeclaration assoc, bool isReference)
 		{
 			GenericIndex = -1;
 			AssociatedTypeProtocol = proto;
@@ -68,6 +68,7 @@ namespace SwiftReflector.TypeMapping {
 			Type = OverrideBuilder.GenericAssociatedTypeName (assoc);
 			FullName = Type;
 			NameSpace = String.Empty;
+			IsReference = isReference;
 		}
 
 		static NetTypeBundle ntbVoid = new NetTypeBundle ("", kNoType, false, false, EntityType.None);
