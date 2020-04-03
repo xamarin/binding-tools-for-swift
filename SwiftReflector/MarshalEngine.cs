@@ -568,6 +568,11 @@ namespace SwiftReflector {
 					callParameters.Add (new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false,
 									    argType.Typeof (), ifaceConstrs));
 				}
+			}
+			foreach (GenericDeclaration genDecl in wrapperFunc.Generics) {
+				if (TopLevelFunctionCompiler.GenericDeclarationIsReferencedByGenericClassInParameterList (wrapperFunc, genDecl, typeMapper))
+					continue;
+				var csGenType = ReworkGenericTypeFromWrapperFunc (genDecl, wrapperFunc);
 				foreach (CSType csType in csGenType.InterfaceConstraints) {
 					callParameters.Add (new CSFunctionCall ("StructMarshal.Marshaler.ProtocolWitnessof", false,
 									    csType.Typeof (), csGenType.Typeof ()));
@@ -578,29 +583,38 @@ namespace SwiftReflector {
 
 		CSGenericReferenceType ReworkGenericTypeFromWrapperFunc (GenericDeclaration genDecl, FunctionDeclaration func)
 		{
-			// guh
-			if (!Char.IsUpper (genDecl.Name [0]))
-				throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 39, "Expected an uppercase letter in generic type declaration, but got " + genDecl.Name [0]);
-			// FIXME
-			// what happens after Z?
-			int depth = genDecl.Name [0] - 'T';
-			int index = Int32.Parse (genDecl.Name.Substring (1));
-			var decl = func.GetGeneric (depth, index);
-			var genRef = new CSGenericReferenceType (depth, index);
-			genRef.ReferenceNamer = GenericReferenceNamer ?? genRef.ReferenceNamer;
-			var constraints = decl.
-			                      Constraints.
-			                      OfType<InheritanceConstraint> ().
-			                      Where (cnstr => {
-				Entity en = typeMapper.GetEntityForTypeSpec (cnstr.InheritsTypeSpec);
-				return en.EntityType == EntityType.Protocol;
-			}).OrderBy ((arg) => ((NamedTypeSpec)arg.InheritsTypeSpec).Name).
-			Select (inh => {
-				NetTypeBundle ntb = typeMapper.MapType (func, inh.InheritsTypeSpec, false);
-				return ntb.ToCSType (use);
-			}).ToList ();
-			genRef.InterfaceConstraints.AddRange (constraints);
-			return genRef;
+			if (func.IsEqualityConstrainedByAssociatedType (genDecl, typeMapper)) {
+				var protoRef = func.RefProtoFromConstrainedGeneric (genDecl, typeMapper);
+				var assocType = func.AssociatedTypeDeclarationFromConstrainedGeneric (genDecl, typeMapper);
+				var index = protoRef.Protocol.AssociatedTypes.IndexOf (assocType);
+				var genRef = new CSGenericReferenceType (0, index);
+				genRef.ReferenceNamer = NewClassCompiler.MakeAssociatedTypeNamer (protoRef.Protocol);
+				return genRef;
+			} else {
+				// guh
+				if (!Char.IsUpper (genDecl.Name [0]))
+					throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 39, "Expected an uppercase letter in generic type declaration, but got " + genDecl.Name [0]);
+				// FIXME
+				// what happens after Z?
+				int depth = genDecl.Name [0] - 'T';
+				int index = Int32.Parse (genDecl.Name.Substring (1));
+				var decl = func.GetGeneric (depth, index);
+				var genRef = new CSGenericReferenceType (depth, index);
+				genRef.ReferenceNamer = GenericReferenceNamer ?? genRef.ReferenceNamer;
+				var constraints = decl.
+						      Constraints.
+						      OfType<InheritanceConstraint> ().
+						      Where (cnstr => {
+							      Entity en = typeMapper.GetEntityForTypeSpec (cnstr.InheritsTypeSpec);
+							      return en.EntityType == EntityType.Protocol;
+						      }).OrderBy ((arg) => ((NamedTypeSpec)arg.InheritsTypeSpec).Name).
+				Select (inh => {
+					NetTypeBundle ntb = typeMapper.MapType (func, inh.InheritsTypeSpec, false);
+					return ntb.ToCSType (use);
+				}).ToList ();
+				genRef.InterfaceConstraints.AddRange (constraints);
+				return genRef;
+			}
 		}
 
 		CSParameter ReworkParameterWithNamer (CSParameter p)
@@ -1187,8 +1201,7 @@ namespace SwiftReflector {
 
 			var depthIndex = wrapperFunc.GetGenericDepthAndIndex (swiftType);
 
-			var constraints = wrapperFunc.Generics [depthIndex.Item2].Constraints.Select ( cstr => {
-					var inheritanceConstraint = cstr as InheritanceConstraint;
+			var constraints = wrapperFunc.Generics [depthIndex.Item2].Constraints.OfType<InheritanceConstraint> ().Select (inheritanceConstraint => {
 					var ntb = typeMapper.MapType (wrapperFunc,inheritanceConstraint.InheritsTypeSpec, false);
 					if (ntb == null)
 						throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 33, $"Unable to find C# type for protocol constraint type {inheritanceConstraint.Inherits}");
@@ -1212,8 +1225,8 @@ namespace SwiftReflector {
 
 			CSCodeBlock assocElseClause = null;
 			CSCodeBlock assocPostElseClause = null;
-			if (wrapperFunc.Generics [depthIndex.Item2].Constraints.Count == 1) {
-				var constraint = wrapperFunc.Generics [depthIndex.Item2].Constraints [0] as InheritanceConstraint;
+			if (wrapperFunc.Generics [depthIndex.Item2].Constraints.Count == 1
+				&& wrapperFunc.Generics [depthIndex.Item2].Constraints [0] is InheritanceConstraint constraint) {
 				var constraintNTB = typeMapper.MapType (wrapperFunc, constraint.InheritsTypeSpec as NamedTypeSpec, false);
 				use.AddIfNotPresent (constraintNTB.NameSpace);
 				var constraintType = constraintNTB.ToCSType (use);

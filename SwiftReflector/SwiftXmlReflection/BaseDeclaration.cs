@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.Text;
 using SwiftReflector.Exceptions;
 using ObjCRuntime;
+using SwiftReflector.TypeMapping;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class BaseDeclaration {
@@ -65,6 +66,28 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return proto.AssociatedTypeNamed (named.NameWithoutModule) != null;
 		}
 
+		public ProtocolDeclaration GetConstrainedProtocolWithAssociatedType (NamedTypeSpec named, TypeMapper typeMapper)
+		{
+			var depthIndex = GetGenericDepthAndIndex (named);
+			if (depthIndex.Item1 < 0 || depthIndex.Item2 < 0)
+				return null;
+			var genDecl = GetGeneric (depthIndex.Item1, depthIndex.Item2);
+			if (genDecl == null)
+				return null;
+			if (genDecl.Constraints.Count != 1)
+				return null;
+			var inheritance = genDecl.Constraints [0] as InheritanceConstraint;
+			if (inheritance == null)
+				return null;
+			var entity = typeMapper.GetEntityForTypeSpec (inheritance.InheritsTypeSpec);
+			if (entity == null)
+				return null;
+			var proto = entity.Type as ProtocolDeclaration;
+			if (proto == null || !proto.HasAssociatedTypes)
+				return null;
+			return proto;
+		}
+
 		public AssociatedTypeDeclaration AssociatedTypeDeclarationFromNamedTypeSpec (NamedTypeSpec named)
 		{
 			var proto = ThisOrParentProtocol (this);
@@ -86,6 +109,142 @@ namespace SwiftReflector.SwiftXmlReflection {
 					return decl;
 				self = self.Parent;
 			} while (self != null);
+			return null;
+		}
+
+		public ProtocolDeclaration OwningProtocolFromConstrainedGeneric (NamedTypeSpec named, TypeMapper typeMap)
+		{
+			var depthIndex = GetGenericDepthAndIndex (named);
+			if (depthIndex.Item1 < 0 || depthIndex.Item2 < 0)
+				return null;
+			var genDecl = GetGeneric (depthIndex.Item1, depthIndex.Item2);
+			return OwningProtocolFromConstrainedGeneric (genDecl, typeMap);
+		}
+
+		public ProtocolDeclaration OwningProtocolFromConstrainedGeneric (GenericDeclaration generic, TypeMapper typeMap)
+		{
+			var refProto = RefProtoFromConstrainedGeneric (generic, typeMap);
+			return refProto?.Protocol;
+		}
+
+		public AssociatedTypeDeclaration AssociatedTypeDeclarationFromConstrainedGeneric (NamedTypeSpec named, TypeMapper typeMap)
+		{
+			var depthIndex = GetGenericDepthAndIndex (named);
+			if (depthIndex.Item1 < 0 || depthIndex.Item2 < 0)
+				return null;
+			var genDecl = GetGeneric (depthIndex.Item1, depthIndex.Item2);
+			return AssociatedTypeDeclarationFromConstrainedGeneric (genDecl, typeMap);
+		}
+
+		public AssociatedTypeDeclaration AssociatedTypeDeclarationFromConstrainedGeneric (GenericDeclaration generic, TypeMapper typeMap)
+		{
+			// looking for where U == T.At1[.At2...]
+			if (generic.Constraints.Count != 1)
+				return null;
+			var eqConstraint = generic.Constraints [0] as EqualityConstraint;
+			if (eqConstraint == null)
+				return null;
+			var namedSpec = eqConstraint.Type2Spec as NamedTypeSpec;
+			if (namedSpec == null)
+				return null;
+			var parts = namedSpec.Name.Split ('.');
+			if (parts.Length <= 1)
+				return null;
+			if (!IsTypeSpecGeneric (parts [0]))
+				return null;
+			var refProto = GetConstrainedAssociatedTypeProtocol (new NamedTypeSpec (parts [0]), typeMap);
+			if (refProto == null)
+				return null;
+			if (parts.Length > 2)
+				throw new NotImplementedException ($"Not currently supporting equality constraints of nested associated types (yet) {eqConstraint.Type1} == {eqConstraint.Type2}");
+			return refProto.Protocol.AssociatedTypeNamed (parts [1]);
+		}
+
+		public GenericReferenceAssociatedTypeProtocol RefProtoFromConstrainedGeneric (GenericDeclaration generic, TypeMapper typeMap)
+		{
+			// looking for where U == T.At1[.At2...]
+			if (generic.Constraints.Count != 1)
+				return null;
+			var eqConstraint = generic.Constraints [0] as EqualityConstraint;
+			if (eqConstraint == null)
+				return null;
+			var namedSpec = eqConstraint.Type2Spec as NamedTypeSpec;
+			if (namedSpec == null)
+				return null;
+			var parts = namedSpec.Name.Split ('.');
+			if (parts.Length <= 1)
+				return null;
+			if (!IsTypeSpecGeneric (parts [0]))
+				return null;
+			return GetConstrainedAssociatedTypeProtocol (new NamedTypeSpec (parts [0]), typeMap);
+		}
+
+		public bool IsEqualityConstrainedByAssociatedType (NamedTypeSpec name, TypeMapper typeMap)
+		{
+			var depthIndex = GetGenericDepthAndIndex (name);
+			if (depthIndex.Item1 < 0 || depthIndex.Item2 < 0)
+				return false;
+			var genDecl = GetGeneric (depthIndex.Item1, depthIndex.Item2);
+			return IsEqualityConstrainedByAssociatedType (genDecl, typeMap);
+		}
+
+		public bool IsEqualityConstrainedByAssociatedType (GenericDeclaration generic, TypeMapper typeMap)
+		{
+			return AssociatedTypeDeclarationFromConstrainedGeneric (generic, typeMap) != null;
+		}
+
+		public GenericReferenceAssociatedTypeProtocol GetConstrainedAssociatedTypeProtocol (NamedTypeSpec spec, TypeMapper typeMap)
+		{
+			// we're looking for the pattern T, where T is a generic or contains a generic (Foo<T>)
+			// and there exists a where T : SomeProtocol 
+			if (spec == null)
+				return null;
+			GenericReferenceAssociatedTypeProtocol result = null;
+			if (spec.ContainsGenericParameters) {
+				foreach (var gen in spec.GenericParameters) {
+					// recurse on generic element
+					result = GetConstrainedAssociatedTypeProtocol (gen as NamedTypeSpec, typeMap);
+					if (result != null)
+						break;
+				}
+			} else {
+				// which declaration has this generic
+				var owningContext = FindOwningContext (this, spec);
+				if (owningContext != null) {
+					foreach (var genPart in Generics) {
+						if (genPart.Name != spec.Name)
+							continue;
+						// genPart is the one we care about - now look for a constraint.
+						foreach (var constraint in genPart.Constraints) {
+							// Is it inheritance?
+							if (constraint is InheritanceConstraint inheritance) {
+								// Find the entity in the database
+								var entity = typeMap.TypeDatabase.EntityForSwiftName (inheritance.Inherits);
+								// Is it a protocol and it has associated types
+								if (entity != null && entity.Type is ProtocolDeclaration proto && proto.HasAssociatedTypes)
+									result = new GenericReferenceAssociatedTypeProtocol () {
+										GenericPart = spec,
+										Protocol = proto
+									};
+							}
+						}
+						if (result != null)
+							break;
+					}
+				}
+			}
+			return result;
+		}
+
+		static BaseDeclaration FindOwningContext (BaseDeclaration context, NamedTypeSpec spec)
+		{
+			while (context != null) {
+				foreach (var genPart in context.Generics) {
+					if (genPart.Name == spec.Name)
+						return context;
+				}
+				context = context.Parent;
+			}
 			return null;
 		}
 

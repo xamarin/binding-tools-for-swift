@@ -6313,7 +6313,7 @@ namespace SwiftReflector {
 			return CSAttribute.FromAttr (typeof (SwiftTypeNameAttribute), argList);
 		}
 
-		Func<int, int, string> MakeAssociatedTypeNamer (ProtocolDeclaration protocolDecl)
+		public static Func<int, int, string> MakeAssociatedTypeNamer (ProtocolDeclaration protocolDecl)
 		{
 			return (depth, index) => {
 				if (depth != 0)

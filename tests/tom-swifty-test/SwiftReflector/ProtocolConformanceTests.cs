@@ -337,5 +337,67 @@ public func doPrint<T>(a:T) where T:Simplest0 {
 			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
 		}
+
+		[Test]
+		public void SimplestProtocolPropGetAssocTest ()
+		{
+			var swiftCode = @"
+public protocol Simplest1 {
+	associatedtype Item
+	var printThing: Item { get }
+}
+public func doPrint<T>(a:T) where T:Simplest1 {
+	let _ = a.printThing
+}
+";
+			var altClass = new CSClass (CSVisibility.Public, "Simple1Impl");
+			altClass.Inheritance.Add (new CSIdentifier ("ISimplest1<SwiftString>"));
+			var strID = new CSIdentifier ("theStr");
+			var strDecl = CSVariableDeclaration.VarLine (strID, CSConstant.Val ("Got here!"));
+			var printPart = CSFunctionCall.ConsoleWriteLine (strID);
+			var returnPart = CSReturn.ReturnLine (new CSFunctionCall ("SwiftString.FromString", false, strID));
+			var printBody = CSCodeBlock.Create (strDecl, printPart, returnPart);
+			var speak = new CSProperty (new CSSimpleType ("SwiftString"), CSMethodKind.None, new CSIdentifier ("PrintThing"),
+				CSVisibility.Public, printBody, CSVisibility.Public, null);
+			altClass.Properties.Add (speak);
+
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, altClass.Name, new CSParameterList (), CSCodeBlock.Create ());
+			altClass.Methods.Add (ctor);
+
+			var instID = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple1Impl", true));
+			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint<Simple1Impl, SwiftString>", false, instID);
+			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+		}
+
+		[Test]
+		public void SimpleProtocolPropGetSetAssocTest ()
+		{
+			var swiftCode = @"
+public protocol Simplest2 {
+	associatedtype Item
+	var thing: Item { get set }
+}
+public func doSetProp<T, U> (a: inout T, b:U) where T:Simplest2, U==T.Item {
+	a.thing = b
+}
+";
+			var altClass = new CSClass (CSVisibility.Public, "Simple2Impl");
+			altClass.Inheritance.Add (new CSIdentifier ("ISimplest2<SwiftString>"));
+			var thingProp = CSProperty.PublicGetSet (new CSSimpleType ("SwiftString"), "Thing");
+			altClass.Properties.Add (thingProp);
+
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, altClass.Name, new CSParameterList (), CSCodeBlock.Create ());
+			altClass.Methods.Add (ctor);
+
+			var instID = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple2Impl", true));
+			var doSetProp = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoSetProp<Simple2Impl, SwiftString>", false, instID,
+				new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("Got here!")));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{instID.Name}.Thing"));
+			var callingCode = CSCodeBlock.Create (instDecl, doSetProp, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+		}
 	}
 }

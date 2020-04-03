@@ -15,12 +15,6 @@ using ObjCRuntime;
 
 namespace SwiftReflector {
 	public class TopLevelFunctionCompiler {
-		// utility class
-		class GenericReferenceAssociatedTypeProto {
-			public NamedTypeSpec GenericPart { get; set; }
-			public ProtocolDeclaration Protocol { get; set; }
-		}
-
 		TypeMapper typeMap;
 		Dictionary<string, string> mangledToCSharp = new Dictionary<string, string> ();
 
@@ -264,17 +258,18 @@ namespace SwiftReflector {
 				}
 				if (func.Generics.Count > 0) {
 					foreach (GenericDeclaration genDecl in func.Generics) {
+						if (func.IsEqualityConstrainedByAssociatedType (genDecl, typeMap))
+							continue;
 						var depthIndex = func.GetGenericDepthAndIndex (genDecl.Name);
 						var genTypeId = new CSIdentifier (CSGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2));
 						retval.GenericParameters.Add (new CSGenericTypeDeclaration (genTypeId));
 						foreach (var constr in genDecl.Constraints) {
-							var inh = constr as InheritanceConstraint;
-							if (inh != null) {
+							if (constr is InheritanceConstraint inh) {
 								var entity = typeMap.GetEntityForTypeSpec (inh.InheritsTypeSpec);
 								if (entity != null && entity.IsDiscretionaryConstraint)
 									continue;
 								var ntb = typeMap.MapType (func, inh.InheritsTypeSpec, false);
-								var proto = GetConstrainedAssociatedTypeProtocol (func, new NamedTypeSpec (inh.Name));
+								var proto = func.GetConstrainedAssociatedTypeProtocol (new NamedTypeSpec (inh.Name), typeMap);
 								if (proto != null) {
 									// SwiftProto -> ISwiftProto<AT0, AT1, AT2, ...>
 									// need to add extra generics:
@@ -290,8 +285,12 @@ namespace SwiftReflector {
 									packs.AddIfNotPresent (ntb.NameSpace);
 									retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier (ntb.Type)));
 								}
-							} else {
-								throw new NotSupportedException ("need to do associated types.");
+							} else if (constr is EqualityConstraint eq) {
+								// in swift: f<T, U> (a: T, b: U) where T: SwiftProto, U: T.AssocType
+								// in C#: void f<T, U>(a:T, b:U) where T:ISwiftProto<U>
+								// I think nothing needs to be done?
+								// U should already have been added for T or will be added later.
+								// If T isn't part of the signature, it's an error in swift
 							}
 						}
 					}
@@ -315,68 +314,17 @@ namespace SwiftReflector {
 				usedNames.Add (name);
 				packs.AddIfNotPresent (typeof (SwiftMetatype));
 				csParams.Add (new CSParameter (new CSSimpleType (typeof (SwiftMetatype)), name));
+			}
+			foreach (GenericDeclaration genDecl in func.Generics) {
+				if (GenericDeclarationIsReferencedByGenericClassInParameterList (func, genDecl, typeMap))
+					continue;
 				int totalProtocolConstraints = TotalProtocolConstraints (genDecl);
 				for (int j = 0; j < totalProtocolConstraints; j++) {
-					name = MarshalEngine.Uniqueify ("ct", usedNames);
+					var name = MarshalEngine.Uniqueify ("ct", usedNames);
 					usedNames.Add (name);
 					csParams.Add (new CSParameter (CSSimpleType.IntPtr, name));
 				}
 			}
-		}
-
-		GenericReferenceAssociatedTypeProto GetConstrainedAssociatedTypeProtocol (BaseDeclaration context, NamedTypeSpec spec)
-		{
-			// we're looking for the pattern T, where T is a generic or contains a generic (Foo<T>)
-			// and there exists a where T : SomeProtocol 
-			if (spec == null)
-				return null;
-			GenericReferenceAssociatedTypeProto result = null;
-			if (spec.ContainsGenericParameters) {
-				foreach (var gen in spec.GenericParameters) {
-					// recurse on generic element
-					result = GetConstrainedAssociatedTypeProtocol (context, gen as NamedTypeSpec);
-					if (result != null)
-						break;
-				}
-			} else {
-				// which declaration has this generic
-				var owningContext = FindOwningContext (context, spec);
-				if (owningContext != null) {
-					foreach (var genPart in context.Generics) {
-						if (genPart.Name != spec.Name)
-							continue;
-						// genPart is the one we care about - now look for a constraint.
-						foreach (var constraint in genPart.Constraints) {
-							// Is it inheritance?
-							if (constraint is InheritanceConstraint inheritance) {
-								// Find the entity in the database
-								var entity = typeMap.TypeDatabase.EntityForSwiftName (inheritance.Inherits);
-								// Is it a protocol and it has associated types
-								if (entity != null && entity.Type is ProtocolDeclaration proto && proto.HasAssociatedTypes)
-									result = new GenericReferenceAssociatedTypeProto () {
-										GenericPart = spec,
-										Protocol = proto
-									};
-							}
-						}
-						if (result != null)
-							break;
-					}
-				}
-			}
-			return result;
-		}
-
-		BaseDeclaration FindOwningContext (BaseDeclaration context, NamedTypeSpec spec)
-		{
-			while (context != null) {
-				foreach (var genPart in context.Generics) {
-					if (genPart.Name == spec.Name)
-						return context;
-				}
-				context = context.Parent;
-			}
-			return null;
 		}
 
 		public static bool GenericArgumentIsReferencedByGenericClassInParameterList (SwiftBaseFunctionType func, GenericArgument arg)
@@ -455,7 +403,8 @@ namespace SwiftReflector {
 			foreach (BaseConstraint constraint in gen.Constraints) {
 				var inh = constraint as InheritanceConstraint;
 				if (inh == null)
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 12, $"Expected a SwiftClassType for constraint, but got {constraint.GetType ().Name}.");
+					continue;
+//					throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 12, $"Expected a SwiftClassType for constraint, but got {constraint.GetType ().Name}.");
 				var en = typeMap.GetEntityForTypeSpec (inh.InheritsTypeSpec);
 				if (en.EntityType == EntityType.Protocol)
 					count++;
