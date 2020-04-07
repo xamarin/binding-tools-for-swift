@@ -112,6 +112,44 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return null;
 		}
 
+		public bool IsProtocolWithAssociatedTypesFullPath (NamedTypeSpec named, TypeMapper typeMap)
+		{
+			return OwningProtocolFromGenericWithFullPath (named, typeMap) != null;
+		}
+
+		public ProtocolDeclaration OwningProtocolFromGenericWithFullPath (NamedTypeSpec named, TypeMapper typeMap)
+		{
+			if (named.Name.Contains (".")) {
+				var parts = named.Name.Split ('.');
+				if (IsTypeSpecGeneric (parts [0])) {
+					// I make assertions about why things can't happen. Here's why:
+					// If we have func foo<T:SomeProtocol>(a:T b:T.Foo)
+					// it means that if the T part of T.Foo is a generic, then T HAS to be
+					// constrained to a protocol with associated types
+					// If T.Foo is a path to an associated type, then it
+					var depthIndex = GetGenericDepthAndIndex (parts [0]);
+					if (depthIndex.Item1 < 0 || depthIndex.Item2 < 0)
+						return null;
+					var genDecl = GetGeneric (depthIndex.Item1, depthIndex.Item2);
+					if (genDecl.Constraints.Count != 1) // pretty sure this can't ever happen
+						return null;
+					var inh = genDecl.Constraints [0] as InheritanceConstraint;
+					if (inh == null) // pretty sure this also can't ever happen
+						return null;
+					var entity = typeMap.GetEntityForTypeSpec (inh.InheritsTypeSpec);
+					if (entity == null) // Also can't happen
+						return null;
+					if (entity.EntityType != EntityType.Protocol)
+						return null; // Also can't happen
+					var protocol = entity.Type as ProtocolDeclaration;
+					if (protocol != null && protocol.HasAssociatedTypes && protocol.AssociatedTypeNamed (parts [1]) != null) {
+						return protocol;
+					}
+				}
+			}
+			return null;
+		}
+
 		public ProtocolDeclaration OwningProtocolFromConstrainedGeneric (NamedTypeSpec named, TypeMapper typeMap)
 		{
 			var depthIndex = GetGenericDepthAndIndex (named);

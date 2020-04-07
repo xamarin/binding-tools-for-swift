@@ -341,9 +341,12 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
-		public bool HasModule {
-			get {
-				return Name.Contains (".");
+		public bool HasModule (BaseDeclaration context, TypeMapper typeMapper)
+		{
+			if (Name.Contains (".")) {
+				return !context.IsProtocolWithAssociatedTypesFullPath (new NamedTypeSpec (Name), typeMapper);
+			} else {
+				return false;
 			}
 		}
 		public string Module {
@@ -353,7 +356,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 		public string NameWithoutModule {
 			get {
-				return HasModule ? Name.Substring (Name.IndexOf ('.') + 1) : Name;
+				return Name.Contains ('.') ? Name.Substring (Name.IndexOf ('.') + 1) : Name;
 			}
 		}
 	}

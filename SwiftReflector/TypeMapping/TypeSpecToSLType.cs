@@ -58,7 +58,7 @@ namespace SwiftReflector.TypeMapping {
 		SLType MapType (BaseDeclaration declContext, SLImportModules modules, NamedTypeSpec spec)
 		{
 			SLType retval = null;
-			if (spec.HasModule)
+			if (spec.HasModule (declContext, this.parent))
 				modules.AddIfNotPresent (spec.Module);
 			if (declContext.IsTypeSpecGeneric (spec) && !spec.ContainsGenericParameters) {
 				Tuple<int, int> depthIndex = declContext.GetGenericDepthAndIndex (spec);
@@ -66,7 +66,15 @@ namespace SwiftReflector.TypeMapping {
 			} else if (spec.ContainsGenericParameters) {
 				retval = new SLBoundGenericType (spec.NameWithoutModule, spec.GenericParameters.Select (p => MapType (declContext, modules, p, false)));
 			} else {
-				retval = new SLSimpleType (spec.Name.NameWithoutModule ());
+				if (declContext.IsProtocolWithAssociatedTypesFullPath (spec, parent)) {
+					// for T.AssocType
+					var genPart = spec.Module;
+					var depthIndex = declContext.GetGenericDepthAndIndex (genPart);
+					var newGenPart = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
+					retval = new SLSimpleType ($"{newGenPart.ToString ()}.{spec.NameWithoutModule}");
+				} else {
+					retval = new SLSimpleType (spec.NameWithoutModule);
+				}
 			}
 
 			if (spec.InnerType == null)
