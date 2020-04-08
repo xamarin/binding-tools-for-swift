@@ -805,11 +805,6 @@ namespace SwiftReflector {
 				return name + $"({Depth},{Index})";
 			}
 		}
-
-		public SwiftGenericArgReferenceType WithAssociatedTypePath (List<string> associatedTypePath)
-		{
-			return new SwiftGenericArgReferenceType (Depth, Index, IsReference, Name, associatedTypePath);
-		}
 	}
 
 	public class SwiftBoundGenericType : SwiftType {
