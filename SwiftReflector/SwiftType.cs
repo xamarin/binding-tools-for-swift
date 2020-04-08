@@ -768,27 +768,47 @@ namespace SwiftReflector {
 	}
 
 	public class SwiftGenericArgReferenceType : SwiftType {
-		public SwiftGenericArgReferenceType (int depth, int index, bool isReference, SwiftName name = null)
+		public SwiftGenericArgReferenceType (int depth, int index, bool isReference, SwiftName name = null, List<string> associatedTypePath = null)
 		    : base (CoreCompoundType.GenericReference, isReference, name)
 		{
 			Depth = depth;
 			Index = index;
+			AssociatedTypePath = new List<string> ();
+			if (associatedTypePath != null)
+				AssociatedTypePath.AddRange (associatedTypePath);
 		}
 
 		public int Depth { get; private set; }
 		public int Index { get; private set; }
+		public List<string> AssociatedTypePath { get; private set; }
+		public bool HasAssociatedTypePath => AssociatedTypePath.Count > 0;
 
 		protected override bool LLEquals (SwiftType other)
 		{
 			var art = other as SwiftGenericArgReferenceType;
 			if (art == null)
 				return false;
-			return Depth == art.Depth && Index == art.Index;
+			if (Depth != art.Depth || Index != art.Index)
+				return false;
+			if (AssociatedTypePath.Count != art.AssociatedTypePath.Count)
+				return false;
+			return AssociatedTypePath.SequenceEqual (art.AssociatedTypePath);
 		}
+
 		public override string ToString()
 		{
 			var name = Name != null ? Name.Name + ": " : "";
-			return name + $"({Depth},{Index})";
+			if (HasAssociatedTypePath) {
+				var path = AssociatedTypePath.InterleaveStrings (".");
+				return name + $"({Depth},{Index}){(char)('A' + Depth)}{Index}.{path}";
+			} else {
+				return name + $"({Depth},{Index})";
+			}
+		}
+
+		public SwiftGenericArgReferenceType WithAssociatedTypePath (List<string> associatedTypePath)
+		{
+			return new SwiftGenericArgReferenceType (Depth, Index, IsReference, Name, associatedTypePath);
 		}
 	}
 

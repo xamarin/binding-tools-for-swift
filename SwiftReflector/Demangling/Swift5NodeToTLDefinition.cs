@@ -267,7 +267,7 @@ namespace SwiftReflector.Demangling {
 				new MatchRule {
 					Name = "DependentMemberType",
 					NodeKind = NodeKind.DependentMemberType,
-					Reducer = ConvertFirstChildToSwiftType,
+					Reducer = ConvertToDependentMember,
 					ChildRules = new List<MatchRule> {
 						new MatchRule {
 							Name = "Type",
@@ -1294,6 +1294,25 @@ namespace SwiftReflector.Demangling {
 			var moduleName = BuildMemberNesting (node, memberNesting, nestingNames);
 
 			return PatchClassName (moduleName, memberNesting, nestingNames);
+		}
+
+		SwiftType ConvertToDependentMember (Node node, bool isReference, SwiftName name)
+		{
+			// format should be
+			// DependentReferenceType
+			//   Type
+			//      GenericReference (depth, index)
+			//   AssocPathItem (name)
+			// For multuple path elements, these get nested with the head being deepest.
+			// Weird flex, but OK.
+			var genericReference = ConvertFirstChildToSwiftType (node, isReference, name) as SwiftGenericArgReferenceType;
+			if (genericReference == null)
+				return null;
+			if (node.Children.Count < 2)
+				return genericReference;
+			var assocChild = node.Children [1];
+			genericReference.AssociatedTypePath.Add (assocChild.Text);
+			return genericReference;
 		}
 
 		SwiftType ConvertToCFunctionPointerType (Node node, bool isReference, SwiftName name)
