@@ -356,7 +356,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 		public string NameWithoutModule {
 			get {
-				return Name.Contains ('.') ? Name.Substring (Name.IndexOf ('.') + 1) : Name;
+				return Name.IndexOf ('.') >= 0 ? Name.Substring (Name.IndexOf ('.') + 1) : Name;
 			}
 		}
 	}

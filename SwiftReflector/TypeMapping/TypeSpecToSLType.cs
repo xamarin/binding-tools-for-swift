@@ -71,7 +71,7 @@ namespace SwiftReflector.TypeMapping {
 					var genPart = spec.Module;
 					var depthIndex = declContext.GetGenericDepthAndIndex (genPart);
 					var newGenPart = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
-					retval = new SLSimpleType ($"{newGenPart.ToString ()}.{spec.NameWithoutModule}");
+					retval = new SLSimpleType ($"{newGenPart}.{spec.NameWithoutModule}");
 				} else {
 					retval = new SLSimpleType (spec.NameWithoutModule);
 				}
