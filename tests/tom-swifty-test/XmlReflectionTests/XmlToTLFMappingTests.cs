@@ -13,6 +13,7 @@ using System.Linq;
 using SwiftReflector;
 using SwiftReflector.Demangling;
 using SwiftReflector.Inventory;
+using SwiftReflector.TypeMapping;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -32,7 +33,10 @@ namespace XmlReflectionTests {
 			FunctionDeclaration funcDecl = mod.Functions.FirstOrDefault (funcFinder);
 			Assert.IsNotNull (funcDecl, "no function found");
 
-			TLFunction func = XmlToTLFunctionMapper.ToTLFunction (funcDecl, mi);
+			// note: if you get an NRE from here then you are testing an argument that includes
+			// an associated type path from a generic. Don't do that. You need much more infrastructure to
+			// do that than you really want here.
+			TLFunction func = XmlToTLFunctionMapper.ToTLFunction (funcDecl, mi, null);
 			Assert.IsNotNull (func, $"failed to find TLFunction for {funcDecl.Name}");
 			Assert.IsTrue (tlVerifier (func), "verifier failed");
 		}
@@ -277,7 +281,8 @@ namespace XmlReflectionTests {
 			FunctionDeclaration funcDecl = classDecl.AllMethodsNoCDTor ().FirstOrDefault (funcFinder);
 			Assert.IsNotNull (funcDecl, "func decl not found");
 
-			TLFunction func = XmlToTLFunctionMapper.ToTLFunction (funcDecl, mi);
+			// see the note in the implementation of CanFindThing above
+			TLFunction func = XmlToTLFunctionMapper.ToTLFunction (funcDecl, mi, null);
 			Assert.IsNotNull (func, "TLFunction not found");
 			Assert.IsTrue (tlVerifier (func), "verifier failed");
 		}
@@ -434,10 +439,10 @@ namespace XmlReflectionTests {
 			FunctionDeclaration setter = propDecl.GetSetter ();
 			Assert.IsNotNull (setter, "null setter");
 
-			TLFunction tlgetter = XmlToTLFunctionMapper.ToTLFunction (getter, mi);
+			TLFunction tlgetter = XmlToTLFunctionMapper.ToTLFunction (getter, mi, null);
 			Assert.IsNotNull (tlgetter, "null tlgetter");
 
-			TLFunction tlsetter = XmlToTLFunctionMapper.ToTLFunction (setter, mi);
+			TLFunction tlsetter = XmlToTLFunctionMapper.ToTLFunction (setter, mi, null);
 			Assert.IsNotNull (tlsetter, "null tlsetter");
 		}
 
