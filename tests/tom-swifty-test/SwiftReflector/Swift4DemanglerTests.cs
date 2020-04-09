@@ -1386,6 +1386,33 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual ("font", tlf.Name.Name);
 		}
 
+		[Test]
+		public void TestPATReference ()
+		{
+			var tld = Decomposer.Decompose ("_$s24ProtocolConformanceTests9doSetProp1a1byxz_4ItemQztAA9Simplest3RzlF", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var arg2 = tlf.Signature.GetParameter (1) as SwiftGenericArgReferenceType;
+			Assert.IsNotNull (arg2, "Not an SLGenericReference");
+			Assert.IsTrue (arg2.HasAssociatedTypePath, "No associated type path");
+			Assert.AreEqual (1, arg2.AssociatedTypePath.Count, "wrong number of assoc type path elements");
+			Assert.AreEqual ("Item", arg2.AssociatedTypePath [0], "Mismatch in assoc type name");
+		}
 
+		[Test]
+		public void TestPATPathReference ()
+		{
+			var tld = Decomposer.Decompose ("_$s15BadAssociations7doPrint1a1byx_5Thing_4NameQZtAA13PrintableItemRzlF", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var arg2 = tlf.Signature.GetParameter (1) as SwiftGenericArgReferenceType;
+			Assert.IsNotNull (arg2, "Not an SLGenericReference");
+			Assert.IsTrue (arg2.HasAssociatedTypePath, "No associated type path");
+			Assert.AreEqual (2, arg2.AssociatedTypePath.Count, "wrong number of assoc type path elements");
+			Assert.AreEqual ("Thing", arg2.AssociatedTypePath [0], "Mismatch in assoc type name 0");
+			Assert.AreEqual ("Name", arg2.AssociatedTypePath [1], "Mismatch in assoc type name 1");
+		}
 	}
 }
