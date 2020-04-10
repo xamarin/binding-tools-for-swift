@@ -7,39 +7,40 @@ using SwiftReflector.Inventory;
 using System.Collections.Generic;
 using System.Linq;
 using SwiftReflector.Demangling;
+using SwiftReflector.TypeMapping;
 
 namespace SwiftReflector {
 	public class XmlToTLFunctionMapper {
-		public static TLFunction ToProtocolFactory (string swiftProxyFactoryName, ModuleDeclaration modDecl, ModuleContents contents)
+		public static TLFunction ToProtocolFactory (string swiftProxyFactoryName, ModuleDeclaration modDecl, ModuleContents contents, TypeMapper typeMap)
 		{
 			var swiftProxyFunctionDecl = modDecl.TopLevelFunctions.Where (fn => fn.Name == swiftProxyFactoryName).FirstOrDefault ();
 			if (swiftProxyFunctionDecl == null)
 				return null;
-			return ToTLFunction (swiftProxyFunctionDecl, contents);
+			return ToTLFunction (swiftProxyFunctionDecl, contents, typeMap);
 		}
 
-		public static TLFunction ToTLFunction (FunctionDeclaration decl, ModuleContents contents)
+		public static TLFunction ToTLFunction (FunctionDeclaration decl, ModuleContents contents, TypeMapper typeMap)
 		{
 			string nameToSearch = GetNameToSearchOn (decl);
 			var funcs = FuncsToSearch (contents, decl, nameToSearch);
-			return MatchFunctionDecl (decl, funcs);
+			return MatchFunctionDecl (decl, funcs, typeMap);
 		}
 
-		public static TLFunction ToTLFunction (FunctionDeclaration decl, ModuleInventory mi)
+		public static TLFunction ToTLFunction (FunctionDeclaration decl, ModuleInventory mi, TypeMapper typeMap)
 		{
 			var scn = ToSwiftClassName (decl);
 			var contents = mi.Values.FirstOrDefault (mc => mc.Name.Equals (scn.Module));
 			if (contents == null)
 				return null;
-			return ToTLFunction (decl, contents);
+			return ToTLFunction (decl, contents, typeMap);
 		}
 
-		public static TLFunction ToTLFunction (FunctionDeclaration decl, ClassContents classContents)
+		public static TLFunction ToTLFunction (FunctionDeclaration decl, ClassContents classContents, TypeMapper typeMap)
 		{
 			string name = decl.IsProperty ? decl.PropertyName : decl.Name;
 			var funcsToSearch = FuncsToSearch (classContents, decl, name);//decl.ParameterLists.Count == 2 ? classContents.Methods.MethodsWithName (decl.Name)
 										      //: classContents.StaticFunctions.MethodsWithName (decl.Name);
-			return MatchFunctionDecl (decl, funcsToSearch);
+			return MatchFunctionDecl (decl, funcsToSearch, typeMap);
 		}
 
 		static List<TLFunction> FuncsToSearch (ModuleContents contents, FunctionDeclaration decl, string name)
@@ -182,7 +183,7 @@ namespace SwiftReflector {
 			throw new ArgumentOutOfRangeException ("decl", String.Format ("unknown class entity type {0}", decl.GetType ().Name));
 		}
 
-		static TLFunction MatchFunctionDecl (FunctionDeclaration decl, List<TLFunction> funcs)
+		static TLFunction MatchFunctionDecl (FunctionDeclaration decl, List<TLFunction> funcs, TypeMapper typeMap)
 		{
 			if (decl.Parent == null)
 				funcs = funcs.Where (fn => fn.IsTopLevelFunction).ToList ();
@@ -190,14 +191,14 @@ namespace SwiftReflector {
 				funcs = funcs.Where (fn => !fn.IsTopLevelFunction).ToList ();
 
 			foreach (var func in funcs) {
-				if (SignaturesMatch (decl, func))
+				if (SignaturesMatch (decl, func, typeMap))
 					return func;
 			}
 			return null;
 		}
 
 
-		static bool SignaturesMatch (FunctionDeclaration decl, TLFunction func)
+		static bool SignaturesMatch (FunctionDeclaration decl, TLFunction func, TypeMapper typeMap)
 		{
 			if (decl.IsConstructor && !(func.Signature is SwiftConstructorType) ||
 				(!decl.IsConstructor && func.Signature is SwiftConstructorType))
@@ -215,13 +216,13 @@ namespace SwiftReflector {
 				// "funny" in XmlReflection and won't match
 				if ((decl.Parent == null || !(decl.Parent is StructDeclaration)) && !decl.IsConstructor) {
 					if (decl.ParameterLists [0].Count == 1) {
-						if (!TypeMatches (decl, decl.ParameterLists [0] [0], uncurriedParameter, false))
+						if (!TypeMatches (decl, decl.ParameterLists [0] [0], uncurriedParameter, false, typeMap))
 							return false;
 					} else if (decl.ParameterLists [0].Count == 0) {
 						if (uncurriedTuple == null || !uncurriedTuple.IsEmpty)
 							return false;
 					} else {
-						if (uncurriedTuple == null || !TypeMatches (decl, decl.ParameterLists [0], uncurriedTuple))
+						if (uncurriedTuple == null || !TypeMatches (decl, decl.ParameterLists [0], uncurriedTuple, typeMap))
 							return false;
 					}
 				}
@@ -232,15 +233,15 @@ namespace SwiftReflector {
 
 			if (func.Signature.ParameterCount == significantParameterList.Count) {
 				if (func.Signature.ParameterCount == 0)
-					return dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType);
+					return dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType, typeMap);
 				if (func.Signature.ParameterCount == 1) {
 					var tuple = func.Signature.Parameters as SwiftTupleType;
-					var argsMatch = TypeMatches (decl, significantParameterList [0], tuple != null ? tuple.Contents [0] : func.Signature.Parameters, decl.IsSetter);
-					var returnMatches = (dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType));
+					var argsMatch = TypeMatches (decl, significantParameterList [0], tuple != null ? tuple.Contents [0] : func.Signature.Parameters, decl.IsSetter, typeMap);
+					var returnMatches = (dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType, typeMap));
 					return argsMatch && returnMatches;
 				} else {
-					var argsMatch = TypeMatches (decl, significantParameterList, func.Signature.Parameters as SwiftTupleType);
-					var returnMatches = dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType);
+					var argsMatch = TypeMatches (decl, significantParameterList, func.Signature.Parameters as SwiftTupleType, typeMap);
+					var returnMatches = dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType, typeMap);
 					return argsMatch && returnMatches;
 				}
 			} else {
@@ -252,133 +253,150 @@ namespace SwiftReflector {
 				// __TF6Module1aFTSbSb_T_
 				// In other words, if the only argument to the function is a tuple, unwrap it.
 				if (significantParameterList.Count == 1 && significantParameterList [0].TypeSpec is TupleTypeSpec) {
-					return TypeMatches (decl, significantParameterList [0], func.Signature.Parameters, false)
-						&& (dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType));
+					return TypeMatches (decl, significantParameterList [0], func.Signature.Parameters, false, typeMap)
+						&& (dontMatchReturn || TypeMatches (decl, decl.ReturnTypeSpec, func.Signature.ReturnType, typeMap));
 				}
 			}
 			return false;
 		}
 
 
-		static bool TypeMatches (FunctionDeclaration decl, List<ParameterItem> parms, SwiftTupleType tuple)
+		static bool TypeMatches (FunctionDeclaration decl, List<ParameterItem> parms, SwiftTupleType tuple, TypeMapper typeMap)
 		{
 			if (tuple == null || parms.Count != tuple.Contents.Count)
 				return false;
 			for (int i = 0; i < parms.Count; i++) {
-				if (!TypeMatches (decl, parms [i], tuple.Contents [i], decl.IsSubscript))
+				if (!TypeMatches (decl, parms [i], tuple.Contents [i], decl.IsSubscript, typeMap))
 					return false;
 			}
 			return true;
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, ParameterItem pi, SwiftType st, bool ignoreName)
+		static bool TypeMatches (FunctionDeclaration decl, ParameterItem pi, SwiftType st, bool ignoreName, TypeMapper typeMap)
 		{
 			// some SwiftType parameters have no names, such as operators
 			if (!ignoreName && pi.PublicName != "self" && st.Name != null && pi.PublicName != st.Name.Name)
 				return false;
 			if (pi.IsVariadic != st.IsVariadic)
 				return false;
-			return TypeMatches (decl, pi.TypeSpec, st);
+			return TypeMatches (decl, pi.TypeSpec, st, typeMap);
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, TypeSpec ts, SwiftType st)
+		static bool TypeMatches (FunctionDeclaration decl, TypeSpec ts, SwiftType st, TypeMapper typeMap)
 		{
 			switch (ts.Kind) {
 			case TypeSpecKind.Named:
-				return TypeMatches (decl, ts as NamedTypeSpec, st);
+				return TypeMatches (decl, ts as NamedTypeSpec, st, typeMap);
 			case TypeSpecKind.Closure:
-				return TypeMatches (decl, ts as ClosureTypeSpec, st);
+				return TypeMatches (decl, ts as ClosureTypeSpec, st, typeMap);
 			case TypeSpecKind.Tuple:
-				return TypeMatches (decl, ts as TupleTypeSpec, st);
+				return TypeMatches (decl, ts as TupleTypeSpec, st, typeMap);
 			case TypeSpecKind.ProtocolList:
-				return TypeMatches (decl, ts as ProtocolListTypeSpec, st);
+				return TypeMatches (decl, ts as ProtocolListTypeSpec, st, typeMap);
 			default:
 				throw new ArgumentOutOfRangeException (nameof (ts));
 			}
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, ClosureTypeSpec cs, SwiftType st)
+		static bool TypeMatches (FunctionDeclaration decl, ClosureTypeSpec cs, SwiftType st, TypeMapper typeMap)
 		{
 			SwiftBaseFunctionType bft = st as SwiftBaseFunctionType;
-			return TypeMatches (decl, cs.Arguments, bft.Parameters) &&
-				TypeMatches (decl, cs.ReturnType, bft.ReturnType);
+			return TypeMatches (decl, cs.Arguments, bft.Parameters, typeMap) &&
+				TypeMatches (decl, cs.ReturnType, bft.ReturnType, typeMap);
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, TupleTypeSpec ts, SwiftType st)
+		static bool TypeMatches (FunctionDeclaration decl, TupleTypeSpec ts, SwiftType st, TypeMapper typeMap)
 		{
 			var tuple = st as SwiftTupleType;
 			if (tuple == null || tuple.Contents.Count != ts.Elements.Count)
 				return false;
 			for (int i = 0; i < ts.Elements.Count; i++) {
-				if (!TypeMatches (decl, ts.Elements [i], tuple.Contents [i]))
+				if (!TypeMatches (decl, ts.Elements [i], tuple.Contents [i], typeMap))
 					return false;
 			}
 			return true;
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, ProtocolListTypeSpec ps, SwiftType st)
+		static bool TypeMatches (FunctionDeclaration decl, ProtocolListTypeSpec ps, SwiftType st, TypeMapper typeMap)
 		{
 			var protoList = st as SwiftProtocolListType;
 			if (protoList == null || protoList.Protocols.Count != ps.Protocols.Count)
 				return false;
 			for (int i=0; i < ps.Protocols.Count; i++) {
-				if (!TypeMatches (decl, ps.Protocols.Keys [i], protoList.Protocols [i]))
+				if (!TypeMatches (decl, ps.Protocols.Keys [i], protoList.Protocols [i], typeMap))
 					return false;
 			}
 			return true;
 		}
 
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftType st)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftType st, TypeMapper typeMap)
 		{
 			switch (st.Type) {
 			case CoreCompoundType.Scalar:
-				return TypeMatches (decl, ts, st as SwiftBuiltInType);
+				return TypeMatches (decl, ts, st as SwiftBuiltInType, typeMap);
 			case CoreCompoundType.Class:
-				return TypeMatches (decl, ts, st as SwiftClassType);
+				return TypeMatches (decl, ts, st as SwiftClassType, typeMap);
 			case CoreCompoundType.MetaClass:
 				if (st is SwiftExistentialMetaType exist)
-					return TypeMatches (decl, ts, exist);
+					return TypeMatches (decl, ts, exist, typeMap);
 				else
-					return TypeMatches (decl, ts, st as SwiftMetaClassType);
+					return TypeMatches (decl, ts, st as SwiftMetaClassType, typeMap);
 			case CoreCompoundType.BoundGeneric:
-				return TypeMatches (decl, ts, st as SwiftBoundGenericType);
+				return TypeMatches (decl, ts, st as SwiftBoundGenericType, typeMap);
 			case CoreCompoundType.ProtocolList:
-				return TypeMatches (decl, ts, st as SwiftProtocolListType);
+				return TypeMatches (decl, ts, st as SwiftProtocolListType, typeMap);
 			case CoreCompoundType.GenericReference:
-				return TypeMatches (decl, ts, st as SwiftGenericArgReferenceType);
+				return TypeMatches (decl, ts, st as SwiftGenericArgReferenceType, typeMap);
 			case CoreCompoundType.Struct:
 			default:
 				return false;
 			}
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftGenericArgReferenceType genArg)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftGenericArgReferenceType genArg, TypeMapper typeMap)
 		{
-			if (!decl.IsTypeSpecGeneric (ts))
-				return false;
-			var depthAndIndex = decl.GetGenericDepthAndIndex (ts.Name);
-			return genArg.Depth == depthAndIndex.Item1 && genArg.Index == depthAndIndex.Item2;
+			if (genArg.HasAssociatedTypePath) {
+				if (!decl.IsProtocolWithAssociatedTypesFullPath (ts, typeMap))
+					return false;
+				var parts = ts.Name.Split ('.');
+				// parts will have the generic part at 0, genArg will not
+				if (parts.Length != genArg.AssociatedTypePath.Count + 1)
+					return false;
+				var depthAndIndex = decl.GetGenericDepthAndIndex (parts [0]);
+				if (genArg.Depth != depthAndIndex.Item1 || genArg.Index != depthAndIndex.Item2)
+					return false;
+				for (int i = 0; i < genArg.AssociatedTypePath.Count; i++) {
+					if (genArg.AssociatedTypePath [i] != parts [i + 1])
+						return false;
+				}
+				return true;
+			} else {
+				if (!decl.IsTypeSpecGeneric (ts))
+					return false;
+				var depthAndIndex = decl.GetGenericDepthAndIndex (ts.Name);
+				return genArg.Depth == depthAndIndex.Item1 && genArg.Index == depthAndIndex.Item2;
+			}
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftProtocolListType protList)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftProtocolListType protList, TypeMapper typeMap)
 		{
 			if (protList == null)
 				return false;
 			if (protList.Protocols.Count == 1 && !ts.IsProtocolList) {
-				return TypeMatches (decl, ts, protList.Protocols [0]);
+				return TypeMatches (decl, ts, protList.Protocols [0], typeMap);
 			}
 
 			if (protList.Protocols.Count != ts.GenericParameters.Count || !ts.IsProtocolList)
 				return false;
 			for (int i = 0; i < ts.GenericParameters.Count; i++) {
-				if (!TypeMatches (decl, ts.GenericParameters [i], protList.Protocols [i]))
+				if (!TypeMatches (decl, ts.GenericParameters [i], protList.Protocols [i], typeMap))
 					return false;
 			}
 			return true;
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftClassType ct)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftClassType ct, TypeMapper typeMap)
 		{
 			if (ct == null)
 				return false;
@@ -386,7 +404,7 @@ namespace SwiftReflector {
 				ts.NameWithoutModule == ct.ClassName.ToFullyQualifiedName (false);
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftBuiltInType st)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftBuiltInType st, TypeMapper typeMap)
 		{
 			if (st == null)
 				return false;
@@ -408,7 +426,7 @@ namespace SwiftReflector {
 			}
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftExistentialMetaType st)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftExistentialMetaType st, TypeMapper typeMap)
 		{
 			if (st == null)
 				return false;
@@ -427,23 +445,23 @@ namespace SwiftReflector {
 			return false;
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftMetaClassType st)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftMetaClassType st, TypeMapper typeMap)
 		{
 			if (st == null)
 				return false;
 			return ts.Name == st.Class.ClassName.ToFullyQualifiedName (true);
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftBoundGenericType st)
+		static bool TypeMatches (FunctionDeclaration decl, NamedTypeSpec ts, SwiftBoundGenericType st, TypeMapper typeMap)
 		{
 			if (st == null)
 				return false;
 			if (!ts.ContainsGenericParameters)
 				return false;
-			return TypeMatches (decl, ts.GenericParameters, st.BoundTypes);
+			return TypeMatches (decl, ts.GenericParameters, st.BoundTypes, typeMap);
 		}
 
-		static bool TypeMatches (FunctionDeclaration decl, List<TypeSpec> ts, List<SwiftType> st)
+		static bool TypeMatches (FunctionDeclaration decl, List<TypeSpec> ts, List<SwiftType> st, TypeMapper typeMap)
 		{
 			if (ts == null || st == null)
 				return false;
@@ -455,7 +473,7 @@ namespace SwiftReflector {
 					return true;
 			}
 			for (int i = 0; i < ts.Count; i++) {
-				if (!TypeMatches (decl, ts [i], st [i]))
+				if (!TypeMatches (decl, ts [i], st [i], typeMap))
 					return false;
 			}
 			return true;

@@ -526,7 +526,7 @@ namespace SwiftReflector {
 				return true;
 			if (fn.IsExtension)
 				return true;
-			var tlf = XmlToTLFunctionMapper.ToTLFunction (fn, modInventory);
+			var tlf = XmlToTLFunctionMapper.ToTLFunction (fn, modInventory, typeMapper);
 			if (tlf == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 1, $"Unable to find function for declaration of {fn.ToFullyQualifiedName ()}.");
 			}
@@ -603,7 +603,7 @@ namespace SwiftReflector {
 						continue;
 					if (BoundClosureError (funcDecl, en, "wrapping a constructor in an enum"))
 						continue;
-					TLFunction ctorTlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, modInventory);
+					TLFunction ctorTlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, modInventory, typeMapper);
 					if (ctorTlf == null)
 						throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 3, $"Unable to find constructor for struct {funcDecl.ToFullyQualifiedName (true)}.");
 					SLFunc func = null;
@@ -690,13 +690,13 @@ namespace SwiftReflector {
 				if (ShouldSkipDeprecated (subDecl.Getter, "Method"))
 					continue;
 				if (subDecl.Getter.Access == Accessibility.Public) {
-					var func = XmlToTLFunctionMapper.ToTLFunction (subDecl.Getter, modInventory);
+					var func = XmlToTLFunctionMapper.ToTLFunction (subDecl.Getter, modInventory, typeMapper);
 					if (func == null)
 						throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 7, $"Unable to find function for struct subscript getter {subDecl.Getter.ToFullyQualifiedName ()}.");
 				}
 
 				if (subDecl.Setter != null && subDecl.Setter.Access == Accessibility.Public) {
-					var func = XmlToTLFunctionMapper.ToTLFunction (subDecl.Setter, modInventory);
+					var func = XmlToTLFunctionMapper.ToTLFunction (subDecl.Setter, modInventory, typeMapper);
 					if (func == null)
 						throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 8, $"Unable to find function for struct subscript setter {subDecl.Setter.ToFullyQualifiedName ()}.");
 				}
@@ -971,7 +971,7 @@ namespace SwiftReflector {
 						continue;
 					if (BoundClosureError (funcDecl, st, "wrapping a constructor in a struct"))
 						continue;
-					var ctorTlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, modInventory);
+					var ctorTlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, modInventory, typeMapper);
 					if (ctorTlf == null) {
 						var ex = ErrorHelper.CreateWarning (ReflectorError.kCompilerReferenceBase + 24, $"Unable to find constructor for struct {funcDecl.ToFullyQualifiedName ()}, skipping.");
 						errors.Add (ex);

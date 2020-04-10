@@ -596,7 +596,7 @@ namespace SwiftReflector {
 		                               WrappingResult wrapper, string swiftLibPath, List<CSMethod> methods, CSClass picl,
 		                               List<string> usedPinvokeNames)
 		{
-			var originalFunc = XmlToTLFunctionMapper.ToTLFunction (func, moduleInventory);
+			var originalFunc = XmlToTLFunctionMapper.ToTLFunction (func, moduleInventory, TypeMapper);
 			if (originalFunc == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 11, $"Unable to find original function for {func.ToFullyQualifiedName ()}.");
 
@@ -656,7 +656,7 @@ namespace SwiftReflector {
 					      WrappingResult wrapper, string swiftLibPath, List<CSMethod> methods, CSClass picl,
 		                              List<string> usedPinvokeNames)
 		{
-			var tlf = XmlToTLFunctionMapper.ToTLFunction (func, moduleInventory);
+			var tlf = XmlToTLFunctionMapper.ToTLFunction (func, moduleInventory, TypeMapper);
 			if (tlf == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 15, $"Unable to find function for declaration {func.ToFullyQualifiedName (true)}.");
 			var homonymSuffix = Homonyms.HomonymSuffix (func, peerFunctions, TypeMapper);
@@ -1944,7 +1944,7 @@ namespace SwiftReflector {
 			Func<TLFunction, bool> filter = tlf => {
 				FunctionDeclaration matchDecl = null;
 				foreach (FunctionDeclaration funcDecl in classDecl.Members.OfType<FunctionDeclaration> ()) {
-					TLFunction matchtlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, classContents);
+					TLFunction matchtlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, classContents, TypeMapper);
 					if (matchtlf == tlf) {
 						matchDecl = funcDecl;
 						break;
@@ -2107,7 +2107,7 @@ namespace SwiftReflector {
 			vtable.Fields.Add (new CSLine (field));
 
 
-			var tlWrapperFunction = XmlToTLFunctionMapper.ToTLFunction (wrapperFunction, wrapper.Contents);
+			var tlWrapperFunction = XmlToTLFunctionMapper.ToTLFunction (wrapperFunction, wrapper.Contents, TypeMapper);
 			if (tlWrapperFunction == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 37, $"Unable to find TL wrapper function {wrapperFunction.Name} for function {func.Name} in protocol {protocolDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2145,7 +2145,7 @@ namespace SwiftReflector {
 		{
 			var homonymSuffix = Homonyms.HomonymSuffix (func, classDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
 			var subClassSwiftName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
-			var tlf = XmlToTLFunctionMapper.ToTLFunction (func, classContents);
+			var tlf = XmlToTLFunctionMapper.ToTLFunction (func, classContents, TypeMapper);
 			if (tlf == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 38, $"Unable to find virtual function for {func.Name} in class {classDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2168,7 +2168,7 @@ namespace SwiftReflector {
 
 			string superMethodName = "Base" + TypeMapper.SanitizeIdentifier (tlf.Name.Name);
 
-			var superFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superWrapperFunc, wrapper.Contents);
+			var superFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superFuncWrapper == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 40, $"Unable to find wrapper for super function implementation matching virtual function {func.Name} in class {classDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2213,7 +2213,7 @@ namespace SwiftReflector {
 			TLFunction tlSetter = null;
 			if (hasSetter) {
 				FunctionDeclaration setterWrapperFunc = FindProtocolWrapperFunction (setterFunc, wrapper);
-				tlSetter = XmlToTLFunctionMapper.ToTLFunction (setterWrapperFunc, wrapper.Contents);
+				tlSetter = XmlToTLFunctionMapper.ToTLFunction (setterWrapperFunc, wrapper.Contents, TypeMapper);
 				if (tlSetter == null) {
 					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 41, $"Unable to find TL wrapper function for setter for subscript in protocol {protocolDecl.ToFullyQualifiedName (true)}.");
 				}
@@ -2245,7 +2245,7 @@ namespace SwiftReflector {
 
 			TLFunction tlSetter = null;
 			if (hasSetter) {
-				tlSetter = XmlToTLFunctionMapper.ToTLFunction (setterFunc, classContents);
+				tlSetter = XmlToTLFunctionMapper.ToTLFunction (setterFunc, classContents, TypeMapper);
 			}
 			var wrapperProp = ImplementSubscriptEtter (wrapper, classDecl, subclassDecl, classContents, cl, picl, usedPinvokeNames, virtFuncs,
 				getterFunc, tlSetter, vtableEntryIndex, vtableName, vtable, vtableAssignments, use,
@@ -2277,7 +2277,7 @@ namespace SwiftReflector {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 42, $"Unable to find wrapper function for {(isSetter ? "setter" : "getter")} for subscript in {protocolDecl.ToFullyQualifiedName (true)}.");
 			}
 
-			var etterWrapper = XmlToTLFunctionMapper.ToTLFunction (etterWrapperFunc, wrapper.Contents);
+			var etterWrapper = XmlToTLFunctionMapper.ToTLFunction (etterWrapperFunc, wrapper.Contents, TypeMapper);
 			if (etterWrapper == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 43, $"Unable to find TL wrapper function for {(isSetter ? "setter" : "getter")} for subscript in {protocolDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2389,7 +2389,7 @@ namespace SwiftReflector {
 		{
 			var setErrorType = isSetter ? "setter" : "getter";
 			SwiftClassName subClassSwiftName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
-			TLFunction tlEtter = XmlToTLFunctionMapper.ToTLFunction (etterFunc, classContents);
+			TLFunction tlEtter = XmlToTLFunctionMapper.ToTLFunction (etterFunc, classContents, TypeMapper);
 			if (tlEtter == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 44, $"Unable to find wrapper function for {setErrorType} for subscript in {classDecl.ToFullyQualifiedName (true)} ");
 
@@ -2425,7 +2425,7 @@ namespace SwiftReflector {
 			var superEtterWrapperFunc = FindSuperWrapper (superEtterFunc, wrapper);
 			string superEtterName = "Base" + TypeMapper.SanitizeIdentifier (tlEtter.Name.Name);
 
-			var superEtterFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superEtterWrapperFunc, wrapper.Contents);
+			var superEtterFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superEtterWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superEtterFuncWrapper == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 47, $"Unable to find wrapper for super function implementation matching virtual property {etterFunc.Name} in class {classDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2535,7 +2535,7 @@ namespace SwiftReflector {
 
 			TLFunction tlSetter = null;
 			if (hasSetter) {
-				tlSetter = XmlToTLFunctionMapper.ToTLFunction (setterFunc, classContents);
+				tlSetter = XmlToTLFunctionMapper.ToTLFunction (setterFunc, classContents, TypeMapper);
 			}
 			var wrapperProp = ImplementPropertyEtter (wrapper, classDecl, subclassDecl, classContents, cl, picl, usedPinvokeNames, virtFuncs,
 			                                          getterFunc, tlSetter, vtableEntryIndex, vtableName, vtable, vtableAssignments, use,
@@ -2567,7 +2567,7 @@ namespace SwiftReflector {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 48, $"Unable to find wrapper function for {(isSetter ? "setter" : "getter")} for property {etterFunc.PropertyName} in {protocolDecl.ToFullyQualifiedName (true)}.");
 			}
 
-			var etterWrapper = XmlToTLFunctionMapper.ToTLFunction (etterWrapperFunc, wrapper.Contents);
+			var etterWrapper = XmlToTLFunctionMapper.ToTLFunction (etterWrapperFunc, wrapper.Contents, TypeMapper);
 			if (etterWrapper == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 49, $"Unable to find TL wrapper function for {(isSetter ? "setter" : "getter")} for property {etterFunc.PropertyName} in {protocolDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2644,7 +2644,7 @@ namespace SwiftReflector {
 						 Func<int, int, string> genericRenamer = null)
 		{
 			var swiftClassName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
-			var tlEtter = XmlToTLFunctionMapper.ToTLFunction (etterFunc, classContents);
+			var tlEtter = XmlToTLFunctionMapper.ToTLFunction (etterFunc, classContents, TypeMapper);
 			if (tlEtter == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 83, $"Unable to find compiled function for {(isSetter ? "setter" : "getter")} for property {etterFunc.Name} in {classDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2683,7 +2683,7 @@ namespace SwiftReflector {
 			var superEtterWrapperFunc = FindSuperWrapper (superEtterFunc, wrapper);
 			string superEtterName = "Base" + TypeMapper.SanitizeIdentifier (tlEtter.Name.Name);
 
-			var superEtterFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superEtterWrapperFunc, wrapper.Contents);
+			var superEtterFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superEtterWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superEtterFuncWrapper == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 52, $"Unable to find wrapper for super function implementation matching virtual property {etterFunc.Name} in class {classDecl.ToFullyQualifiedName (true)}.");
 			}
@@ -2968,7 +2968,7 @@ namespace SwiftReflector {
 					// When swift can, it promotes an extension to a member and it doesn't end up in the extensions.
 					ClassContents classContents = XmlToTLFunctionMapper.LocateClassContents (moduleContents, XmlToTLFunctionMapper.ToSwiftClassName (entity.Type));
 					if (classContents != null)
-						originalFunc = XmlToTLFunctionMapper.ToTLFunction (funcDecl, classContents);
+						originalFunc = XmlToTLFunctionMapper.ToTLFunction (funcDecl, classContents, TypeMapper);
 
 					if (originalFunc == null) {
 						var ex = ErrorHelper.CreateWarning (ReflectorError.kCompilerReferenceBase + 56, $"Unable to find original compiled function for {funcDecl.Name} while compiling extension on {extension.ExtensionOnTypeName}");
@@ -3828,7 +3828,7 @@ namespace SwiftReflector {
 			foreach (FunctionDeclaration funcDecl in allCtors) {
 				if (funcDecl.ParameterLists.Last ().Count () != tlf.Signature.ParameterCount)
 					continue;
-				var possibleMatch = XmlToTLFunctionMapper.ToTLFunction (funcDecl, contents);
+				var possibleMatch = XmlToTLFunctionMapper.ToTLFunction (funcDecl, contents, TypeMapper);
 				if (possibleMatch != null && possibleMatch == tlf)
 					return funcDecl;
 			}
@@ -4451,7 +4451,7 @@ namespace SwiftReflector {
 					isFinal = true;
 
 
-				var function = XmlToTLFunctionMapper.ToTLFunction (funcDecl, contents);
+				var function = XmlToTLFunctionMapper.ToTLFunction (funcDecl, contents, TypeMapper);
 
 				if (function == null) {
 					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 67, $"Unable to find TLFunction for function declaration {funcDecl.ToFullyQualifiedName (true)}.");
