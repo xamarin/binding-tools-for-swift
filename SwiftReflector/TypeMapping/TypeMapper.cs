@@ -417,7 +417,7 @@ namespace SwiftReflector.TypeMapping {
 
 		NetTypeBundle RecastToReference (BaseDeclaration typeContext, NetTypeBundle netBundle, TypeSpec theElem, bool structsAndEnumsAreAlwaysRefs)
 		{
-			if (typeContext.IsTypeSpecGenericReference (theElem))
+			if (typeContext.IsTypeSpecGenericReference (theElem) || typeContext.IsProtocolWithAssociatedTypesFullPath (theElem as NamedTypeSpec, this))
 				return netBundle;
 			if (theElem is ClosureTypeSpec)
 				return netBundle;
@@ -538,8 +538,15 @@ namespace SwiftReflector.TypeMapping {
 				if (IsScalar (named.Name)) {
 					return ToScalar (named.Name, spec.IsInOut);
 				}
-
-				if (context.IsEqualityConstrainedByAssociatedType (named, this)) {
+				if (context.IsProtocolWithAssociatedTypesFullPath (named, this)) {
+					if (isPinvoke) {
+						return new NetTypeBundle ("System", "IntPtr", false, false, EntityType.None);
+					} else {
+						var assocType = context.AssociatedTypeDeclarationFromGenericWithFullPath (named, this);
+						var owningProtocol = context.OwningProtocolFromGenericWithFullPath (named, this);
+						return new NetTypeBundle (owningProtocol, assocType, false);
+					}
+				} else if (context.IsEqualityConstrainedByAssociatedType (named, this)) {
 					if (isPinvoke) {
 						return new NetTypeBundle ("System", "IntPtr", false, false, EntityType.None);
 					} else {
