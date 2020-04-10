@@ -648,10 +648,10 @@ namespace SwiftReflector {
 		CSBaseExpression Marshal (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p, TypeSpec swiftType, bool marshalProtocolAsValueType, bool isReturnVariable)
 		{
 			p = ReworkParameterWithNamer (p);
-			if (typeContext.IsTypeSpecGenericReference (swiftType)) {
+			if (typeContext.IsTypeSpecGenericReference (swiftType) || typeContext.IsProtocolWithAssociatedTypesFullPath (swiftType as NamedTypeSpec, typeMapper)) {
 				return MarshalGenericReference (typeContext, funcDecl, p, swiftType as NamedTypeSpec);
 			}
-			if (funcDecl.IsTypeSpecGenericReference (swiftType)) {
+			if (funcDecl.IsTypeSpecGenericReference (swiftType) || funcDecl.IsProtocolWithAssociatedTypesFullPath (swiftType as NamedTypeSpec, typeMapper)) {
 				return MarshalGenericReference (funcDecl, funcDecl, p, swiftType as NamedTypeSpec);
 			}
 			if (swiftType is NamedTypeSpec && typeContext.IsTypeSpecBoundGeneric (swiftType)) {
@@ -1109,6 +1109,8 @@ namespace SwiftReflector {
 
 		bool IsAssociatedTypeProtocolConstrained (FunctionDeclaration funcDecl, NamedTypeSpec swiftType)
 		{
+			if (swiftType.Name.IndexOf ('.') > 0)
+				return false;
 			var depthIndex = funcDecl.GetGenericDepthAndIndex (swiftType);
 			if (depthIndex.Item1 != 0)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 25, $"Depth of generic reference in wrapper function should always be 0, but is {depthIndex.Item1}");
@@ -1120,6 +1122,8 @@ namespace SwiftReflector {
 		{
 			if (IsAssociatedTypeProtocolConstrained (wrapperFunc, swiftType))
 				return MarshalAssociatedTypeProtocolConstrained (typeContext, wrapperFunc, p, swiftType);
+
+			var isAssocTypePath = typeContext.IsProtocolWithAssociatedTypesFullPath (swiftType, typeMapper);
 			// bool isSwiftable = StructMarshal.Marshaler.IsSwiftRepresentable(typeof(p.type));
 			// ISwiftObject pProxyObj = null;
 			// IntPtr pNameIntPtr;
@@ -1199,15 +1203,17 @@ namespace SwiftReflector {
 			var protoConstraints = new CSIdentifier (Uniqueify (p.Name.Name + "ProtocolConstraints", identifiersUsed));
 			identifiersUsed.Add (protoConstraints.Name);
 
+			var constraints = new List<CSBaseExpression> ();
 			var depthIndex = wrapperFunc.GetGenericDepthAndIndex (swiftType);
-
-			var constraints = wrapperFunc.Generics [depthIndex.Item2].Constraints.OfType<InheritanceConstraint> ().Select (inheritanceConstraint => {
-					var ntb = typeMapper.MapType (wrapperFunc,inheritanceConstraint.InheritsTypeSpec, false);
+			if (!isAssocTypePath) {
+				constraints.AddRange (wrapperFunc.Generics [depthIndex.Item2].Constraints.OfType<InheritanceConstraint> ().Select (inheritanceConstraint => {
+					var ntb = typeMapper.MapType (wrapperFunc, inheritanceConstraint.InheritsTypeSpec, false);
 					if (ntb == null)
 						throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 33, $"Unable to find C# type for protocol constraint type {inheritanceConstraint.Inherits}");
 					use.AddIfNotPresent (ntb.NameSpace);
 					return (CSBaseExpression)ntb.ToCSType (use).Typeof ();
-				}).ToList ();
+				}));
+			}
 
 			var protoInit = new CSArray1DInitialized ("Type", constraints);
 			protoElseClause.Add (CSVariableDeclaration.VarLine (new CSSimpleType ("Type", true), protoConstraints, protoInit));
@@ -1225,8 +1231,8 @@ namespace SwiftReflector {
 
 			CSCodeBlock assocElseClause = null;
 			CSCodeBlock assocPostElseClause = null;
-			if (wrapperFunc.Generics [depthIndex.Item2].Constraints.Count == 1
-				&& wrapperFunc.Generics [depthIndex.Item2].Constraints [0] is InheritanceConstraint constraint) {
+			if (!isAssocTypePath && (wrapperFunc.Generics [depthIndex.Item2].Constraints.Count == 1
+				&& wrapperFunc.Generics [depthIndex.Item2].Constraints [0] is InheritanceConstraint constraint)) {
 				var constraintNTB = typeMapper.MapType (wrapperFunc, constraint.InheritsTypeSpec as NamedTypeSpec, false);
 				use.AddIfNotPresent (constraintNTB.NameSpace);
 				var constraintType = constraintNTB.ToCSType (use);
@@ -1350,7 +1356,7 @@ namespace SwiftReflector {
 
 		CSBaseExpression MarshalGenericReference (BaseDeclaration typeContext, FunctionDeclaration wrapperFunc, CSParameter p, NamedTypeSpec swiftType)
 		{
-			if (IsProtocolConstrained (wrapperFunc, swiftType)) {
+			if (typeContext.IsProtocolWithAssociatedTypesFullPath (swiftType, typeMapper) || IsProtocolConstrained (wrapperFunc, swiftType)) {
 				return MarshalProtocolConstrained (typeContext, wrapperFunc, p, swiftType);
 			} else {
 				// Class constraints:

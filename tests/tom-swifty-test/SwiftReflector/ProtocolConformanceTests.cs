@@ -401,7 +401,6 @@ public func doSetProp<T, U> (a: inout T, b:U) where T:Simplest2, U==T.Item {
 		}
 
 		[Test]
-		[Ignore ("work in progress")]
 		public void SimpleProtocolProGetSetAssocTestAltSyntax ()
 		{
 			var swiftCode = @"
