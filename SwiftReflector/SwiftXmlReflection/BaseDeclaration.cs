@@ -114,11 +114,27 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		public bool IsProtocolWithAssociatedTypesFullPath (NamedTypeSpec named, TypeMapper typeMap)
 		{
+			if (named == null)
+				return false;
 			return OwningProtocolFromGenericWithFullPath (named, typeMap) != null;
 		}
 
 		public ProtocolDeclaration OwningProtocolFromGenericWithFullPath (NamedTypeSpec named, TypeMapper typeMap)
 		{
+			AssociatedTypeDeclaration assoc = null;
+			return OwningProtocolAndAssociateTypeFromGenericWithFullPath (named, typeMap, out assoc);
+		}
+
+		public AssociatedTypeDeclaration AssociatedTypeDeclarationFromGenericWithFullPath (NamedTypeSpec named, TypeMapper typeMap)
+		{
+			AssociatedTypeDeclaration assoc = null;
+			OwningProtocolAndAssociateTypeFromGenericWithFullPath (named, typeMap, out assoc);
+			return assoc;
+		}
+
+		ProtocolDeclaration OwningProtocolAndAssociateTypeFromGenericWithFullPath (NamedTypeSpec named, TypeMapper typeMap, out AssociatedTypeDeclaration assoc)
+		{
+			assoc = null;
 			if (named.Name.Contains (".")) {
 				var parts = named.Name.Split ('.');
 				if (IsTypeSpecGeneric (parts [0])) {
@@ -142,7 +158,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 					if (entity.EntityType != EntityType.Protocol)
 						return null; // Also can't happen
 					var protocol = entity.Type as ProtocolDeclaration;
-					if (protocol != null && protocol.HasAssociatedTypes && protocol.AssociatedTypeNamed (parts [1]) != null) {
+					if (protocol != null && protocol.HasAssociatedTypes && (assoc = protocol.AssociatedTypeNamed (parts [1])) != null) {
 						return protocol;
 					}
 				}
