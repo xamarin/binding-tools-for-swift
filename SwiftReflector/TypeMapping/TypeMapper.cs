@@ -693,6 +693,8 @@ namespace SwiftReflector.TypeMapping {
 				return null;
 			if (context.IsTypeSpecGenericReference (boundType))
 				return null;
+			if (context.IsProtocolWithAssociatedTypesFullPath (boundType, this))
+				return null;
 			var entity = TypeDatabase.EntityForSwiftName (boundType.Name);
 			return entity.EntityType == EntityType.Scalar  || SwiftType.IsStructScalar (boundType.Name) ? entity : null;
 		}
@@ -704,6 +706,8 @@ namespace SwiftReflector.TypeMapping {
 				return null;
 			if (context.IsTypeSpecGenericReference (boundType))
 				return null;
+			if (context.IsProtocolWithAssociatedTypesFullPath (boundType, this))
+				return null;
 			var entity = TypeDatabase.EntityForSwiftName (boundType.Name);
 			return entity.IsObjCStruct || entity.IsObjCEnum ? entity : null;
 		}
@@ -714,6 +718,8 @@ namespace SwiftReflector.TypeMapping {
 			if (boundType == null)
 				return null;
 			if (context.IsTypeSpecGenericReference (boundType))
+				return null;
+			if (context.IsProtocolWithAssociatedTypesFullPath (boundType, this))
 				return null;
 			var entity = TypeDatabase.EntityForSwiftName (boundType.Name);
 			return entity.IsObjCStruct || entity.IsObjCEnum ? boundType : null;
@@ -1020,6 +1026,8 @@ namespace SwiftReflector.TypeMapping {
 			if (sp is ClosureTypeSpec)
 				return false;
 			if (context.IsTypeSpecGeneric (sp) && context.IsTypeSpecGenericReference (sp))
+				return true;
+			if (context.IsProtocolWithAssociatedTypesFullPath (sp as NamedTypeSpec, this))
 				return true;
 			var en = GetEntityForTypeSpec (sp);
 			if (en == null)

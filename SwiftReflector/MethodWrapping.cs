@@ -2327,6 +2327,9 @@ namespace SwiftReflector {
 			if (ts is TupleTypeSpec && ((TupleTypeSpec)ts).Elements.Count > 1)
 				return true;
 
+			if (funcDecl.IsProtocolWithAssociatedTypesFullPath (ts as NamedTypeSpec, typeMapper))
+				return true;
+
 			var en = typeMapper.GetEntityForTypeSpec (ts);
 			if (en == null)
 				return false;
