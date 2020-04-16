@@ -984,7 +984,7 @@ namespace SwiftReflector {
 			}
 			var toNetCall = new CSFunctionCall (String.Format ("StructMarshal.Marshaler.ToNet<{0}>", p.CSType.ToString ()),
 				  false, bufferPtrIdent, CSConstant.Val (true));
-			postMarshalCode.Add (new CSLine (toNetCall));
+			postMarshalCode.Add (CSAssignment.Assign (p.Name, toNetCall));
 			return bufferPtrIdent;
 		}
 

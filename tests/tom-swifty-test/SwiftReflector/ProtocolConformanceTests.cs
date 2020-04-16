@@ -456,8 +456,47 @@ public func doGetIt<T:Simplest4> (a: T, i: Int) -> T.Item {
 			altClass.Methods.Add (ctor);
 			var instID = new CSIdentifier ("inst");
 			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple4Impl", true));
+			var resultID = new CSIdentifier ("result");
+			var resultDecl = CSVariableDeclaration.VarLine (resultID, new CSFunctionCall ("TopLevelEntities.DoGetIt<Simple4Impl, SwiftString>", false, instID, CSConstant.Val (3)));
+			var printer = CSFunctionCall.ConsoleWriteLine (resultID);
+			var callingCode = CSCodeBlock.Create (instDecl, resultDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+		}
+
+		[Test]
+		public void SimpleProtocolProGetSetIndexer ()
+		{
+			var swiftCode = @"
+public protocol Simplest5 {
+	associatedtype Item
+	subscript (index: Int) -> Item {
+		get set
+	}
+}
+public func doSetIt<T:Simplest5> (a: inout T, i: Int, v: T.Item) {
+	a[i] = v
+}
+";
+			var altClass = new CSClass (CSVisibility.Public, "Simple5Impl");
+			altClass.Inheritance.Add (new CSIdentifier ("ISimplest5<SwiftString>"));
+
+			var fieldName = new CSIdentifier ("v");
+			altClass.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType ("SwiftString"), fieldName));
+			var getBlock = CSCodeBlock.Create (CSReturn.ReturnLine (fieldName));
+			var setBlock = CSCodeBlock.Create (CSAssignment.Assign (fieldName, new CSIdentifier ("value")));
+
+			var parameters = new CSParameterList (new CSParameter (new CSSimpleType ("nint"), new CSIdentifier ("index")));
+			var thingIndex = new CSProperty (new CSSimpleType ("SwiftString"), CSMethodKind.None,
+				CSVisibility.Public, getBlock, CSVisibility.Public, setBlock, parameters);
+			altClass.Properties.Add (thingIndex);
+
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, altClass.Name, new CSParameterList (), CSCodeBlock.Create ());
+			altClass.Methods.Add (ctor);
+			var instID = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple5Impl", true));
+			var callSetter = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoSetIt", false, instID, CSConstant.Val (3), new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("Got here!")));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{instID.Name}[3]"));
-			var callingCode = CSCodeBlock.Create (instDecl, printer);
+			var callingCode = CSCodeBlock.Create (instDecl, callSetter, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
 		}
 	}
