@@ -219,6 +219,7 @@ namespace SwiftReflector {
 			var returnIsNonTrivialTuple = hasReturn && swiftReturnType is TupleTypeSpec && ((TupleTypeSpec)swiftReturnType).Elements.Count > 1;
 			var returnIsClosure = hasReturn && swiftReturnType is ClosureTypeSpec;
 			var returnIsGeneric = hasReturn && typeContext.IsTypeSpecGeneric (swiftReturnType) && !returnIsClosure;
+			var returnIsAssocPath = hasReturn && typeContext.IsProtocolWithAssociatedTypesFullPath (swiftReturnType as NamedTypeSpec, typeMapper);
 			var returnIsNonScalarStruct = hasReturn && !returnIsScalar && returnEntity != null &&
 				(returnEntity.EntityType == EntityType.Struct || returnEntity.EntityType == EntityType.Enum);
 
@@ -227,7 +228,7 @@ namespace SwiftReflector {
 				hasReturn && returnEntity != null && returnEntity.EntityType == EntityType.Protocol && retSimple != null;
 			var returnIsProtocolList = hasReturn && swiftReturnType is ProtocolListTypeSpec;
 			var returnIsObjCProtocol = hasReturn && returnEntity != null && returnEntity.IsObjCProtocol;
-			var returnNeedsPostProcessing = (hasReturn && (returnIsClass || returnIsProtocolList || returnIsInterfaceFromProtocol || returnIsNonTrivialTuple || returnIsGeneric || returnIsNonScalarStruct)) || originalThrows;
+			var returnNeedsPostProcessing = (hasReturn && (returnIsClass || returnIsProtocolList || returnIsInterfaceFromProtocol || returnIsNonTrivialTuple || returnIsGeneric || returnIsNonScalarStruct || returnIsAssocPath)) || originalThrows;
 
 			includeCastToReturnType = includeCastToReturnType || returnIsTrivialEnum;
 			includeIntermediateCastToLong = includeIntermediateCastToLong || returnIsTrivialEnum;
@@ -336,7 +337,7 @@ namespace SwiftReflector {
 						preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, ctorCall));
 						indexOfReturn = 0;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
-					} else if (returnIsGeneric || returnIsProtocolList) {
+					} else if (returnIsGeneric || returnIsProtocolList || returnIsAssocPath) {
 						use.AddIfNotPresent (typeof (StructMarshal));
 						preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, returnType.Default ()));
 						indexOfReturn = 0;
@@ -739,6 +740,11 @@ namespace SwiftReflector {
 				return MarshalGenericReferenceAsPointer (typeContext, funcDecl, p, pointsTo as NamedTypeSpec, isReturnVariable);
 			if (funcDecl.IsTypeSpecGenericReference (pointsTo))
 				return MarshalGenericReferenceAsPointer (funcDecl, funcDecl, p, pointsTo as NamedTypeSpec, isReturnVariable);
+			if (typeContext.IsProtocolWithAssociatedTypesFullPath (pointsTo as NamedTypeSpec, typeMapper))
+				return MarshalAssociatedTypePathAsPointer (typeContext, funcDecl, p, pointsTo as NamedTypeSpec, isReturnVariable);
+			if (funcDecl.IsProtocolWithAssociatedTypesFullPath (pointsTo as NamedTypeSpec, typeMapper))
+				return MarshalAssociatedTypePathAsPointer (funcDecl, funcDecl, p, pointsTo as NamedTypeSpec, isReturnVariable);
+
 			var isBoundGenericWithRespectToTypeContext = typeContext.IsTypeSpecBoundGeneric (pointsTo);
 			var isBoundGenericWithRespectToFunc = funcDecl.IsTypeSpecBoundGeneric (pointsTo);
 
@@ -942,6 +948,44 @@ namespace SwiftReflector {
 				CSParameterKind kind = p.ParameterKind == CSParameterKind.None ? CSParameterKind.Ref : p.ParameterKind;
 				return ParmName (localProto.Name, kind);
 			}
+		}
+
+		CSBaseExpression MarshalAssociatedTypePathAsPointer (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p, NamedTypeSpec pointsTo, bool isReturnValue)
+		{
+			// in swift, we have a type which is T.Assoc
+			// in C#, it's going to be an unadorned generic, ATAssoc
+			// byte *pBufferPtr = stackalloc byte[StructMarshal.Strideof (typeof(ATAssoc))];
+			// IntPtr pBufferIntPtr = new IntPtr (pBuffer);
+			// if !isReturnValue:
+			//      StructMarshal.Marshaler.ToSwift (typeof(ATAssoc), pBufferIntPtr);
+			// SomePInvoke (pBufferIntPtr);
+			// p = StructMarshal.Marshaler.ToNet<ATAssoc>(pBufferIntPtr);
+			RequiredUnsafeCode = true;
+
+			use.AddIfNotPresent (typeof (StructMarshal));
+
+			var bufferIdent = new CSIdentifier (Uniqueify (p.Name.Name + "Buffer", identifiersUsed));
+			identifiersUsed.Add (bufferIdent.Name);
+			var retvalbufferDecl = CSVariableDeclaration.VarLine (
+				CSSimpleType.ByteStar, bufferIdent,
+				CSArray1D.New (CSSimpleType.Byte, true, new CSFunctionCall ("StructMarshal.Marshaler.Strideof", false, p.CSType.Typeof ())));
+			preMarshalCode.Add (retvalbufferDecl);
+
+			var bufferPtrIdent = new CSIdentifier (Uniqueify (p.Name.Name + "BufferPtr", identifiersUsed));
+			identifiersUsed.Add (bufferPtrIdent.Name);
+			var retvalBufferPtrDecl = CSVariableDeclaration.VarLine (
+				CSSimpleType.IntPtr, bufferPtrIdent,
+				new CSFunctionCall ("IntPtr", true, bufferIdent));
+			preMarshalCode.Add (retvalBufferPtrDecl);
+
+			if (!isReturnValue) {
+				preMarshalCode.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
+					p.CSType.Typeof (), p.Name, bufferPtrIdent));
+			}
+			var toNetCall = new CSFunctionCall (String.Format ("StructMarshal.Marshaler.ToNet<{0}>", p.CSType.ToString ()),
+				  false, bufferPtrIdent, CSConstant.Val (true));
+			postMarshalCode.Add (new CSLine (toNetCall));
+			return bufferPtrIdent;
 		}
 
 		CSBaseExpression MarshalGenericReferenceAsPointer (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p, NamedTypeSpec pointsTo, bool isReturnValue)

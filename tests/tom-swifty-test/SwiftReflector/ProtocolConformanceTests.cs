@@ -428,5 +428,37 @@ public func doSetProp<T> (a: inout T, b:T.Item) where T:Simplest3 {
 			var callingCode = CSCodeBlock.Create (instDecl, doSetProp, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
 		}
+
+		[Test]
+		public void SimpleProtocolProGetIndexer ()
+		{
+			var swiftCode = @"
+public protocol Simplest4 {
+	associatedtype Item
+	subscript (index: Int) -> Item {
+		get
+	}
+}
+public func doGetIt<T:Simplest4> (a: T, i: Int) -> T.Item {
+	return a[i]
+}
+";
+			var altClass = new CSClass (CSVisibility.Public, "Simple4Impl");
+			altClass.Inheritance.Add (new CSIdentifier ("ISimplest4<SwiftString>"));
+
+			var getBlock = CSCodeBlock.Create (CSReturn.ReturnLine (new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("Got here!"))));
+			var parameters = new CSParameterList (new CSParameter (new CSSimpleType ("nint"), new CSIdentifier ("index")));
+			var thingIndex = new CSProperty (new CSSimpleType ("SwiftString"), CSMethodKind.None,
+				CSVisibility.Public, getBlock, CSVisibility.Public, null, parameters);
+			altClass.Properties.Add (thingIndex);
+
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, altClass.Name, new CSParameterList (), CSCodeBlock.Create ());
+			altClass.Methods.Add (ctor);
+			var instID = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple4Impl", true));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{instID.Name}[3]"));
+			var callingCode = CSCodeBlock.Create (instDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+		}
 	}
 }
