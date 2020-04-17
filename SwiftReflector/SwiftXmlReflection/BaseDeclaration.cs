@@ -488,6 +488,11 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 			return sb.ToString ();
 		}
+
+		public override string ToString ()
+		{
+			return ToFullyQualifiedNameWithGenerics ();
+		}
 	}
 
 }

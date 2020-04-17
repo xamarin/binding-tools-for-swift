@@ -7,6 +7,7 @@ using SwiftReflector.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 using ObjCRuntime;
+using System.Text;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class PropertyDeclaration : Member {
@@ -123,6 +124,37 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return storage;
 		}
 
+		public override string ToString ()
+		{
+			// Forms:
+			// access [modfiers] var Name: Type { [get | set] } [throws]
+			// access [modifiers] subscript Name [ args ]: Type { get [set] } [throws]
+			// access [modifiers] Name<Generics>(args) -> Type [throws]
+
+			var getter = GetGetter ();
+			var builder = new StringBuilder ();
+			builder.Append (Access).Append (" ");
+			if (IsStatic)
+				builder.Append ("static ");
+			if (getter.IsSubscript) {
+				builder.Append ("subscript ").Append (base.ToString ());
+				builder.Append (" [").Append (getter.ParametersToString ()).Append ("]:");
+			} else {
+				builder.Append ("var ").Append (Parent.ToString ()).Append (".").Append (getter.PropertyName);
+				builder.Append (": ");
+			}
+
+			builder.Append (getter.ReturnTypeName);
+			if (GetSetter () != null) {
+				builder.Append (" { get set }");
+			} else {
+				builder.Append (" { get }");
+			}
+			if (getter.HasThrows) {
+				builder.Append (" throws");
+			}
+			return builder.ToString ();
+		}
 	}
 }
 

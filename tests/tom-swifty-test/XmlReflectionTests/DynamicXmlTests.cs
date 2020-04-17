@@ -1137,5 +1137,175 @@ public protocol HoldsThing {
 			assoc = protocol.AssociatedTypeNamed ("ThroatwarblerMangrove");
 			Assert.IsNull (assoc, "Found a non-existent associated type");
 		}
+
+		[Test]
+		public void TestTLFuncNoArgsNoReturnOutput ()
+		{
+			var code = @"public func SomeFunc () { }";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.SomeFunc () -> ()", output);
+		}
+
+		[Test]
+		public void TestTLFuncNoArgsReturnsIntOutput ()
+		{
+			var code = @"public func SomeFunc () -> Int { return 3; }";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.SomeFunc () -> Swift.Int", output);
+		}
+
+		[Test]
+		public void TestTLFuncNoArgsReturnsIntThrowsOutput ()
+		{
+			var code = @"public func SomeFunc () throws -> Int { return 3; }";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.SomeFunc () throws -> Swift.Int", output);
+		}
+
+		[Test]
+		public void TestTLFuncOneArgSamePubPrivReturnsInt ()
+		{
+			var code = @"public func SomeFunc (a: Int) -> Int { return a; }";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int) -> Swift.Int", output);
+		}
+
+		[Test]
+		public void TestTLFuncOneArgDiffPubPrivReturnsInt ()
+		{
+			var code = @"public func SomeFunc (b a: Int) -> Int { return a; }";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.SomeFunc (b a: Swift.Int) -> Swift.Int", output);
+		}
+
+		[Test]
+		public void TestTLFuncOneArgNoPubPrivReturnsInt ()
+		{
+			var code = @"public func SomeFunc (_ a: Int) -> Int { return a; }";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.SomeFunc (_ a: Swift.Int) -> Swift.Int", output);
+		}
+
+		[Test]
+		public void TestTLFuncTwoArgSamePubPrivReturnsInt ()
+		{
+			var code = @"public func SomeFunc (a: Int, b: Int) -> Int { return a + b; }";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int, b: Swift.Int) -> Swift.Int", output);
+		}
+
+		[Test]
+		public void TestPropGetFunc ()
+		{
+			var code = @"
+public class Foo {
+	public init () { }
+	public var prop: Int = 0
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			var func = cl.AllMethodsNoCDTor ().Where (p => p.Name == "get_prop").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get }", output);
+		}
+
+		[Test]
+		public void TestPropGetSet ()
+		{
+			var code = @"
+public class Foo {
+	public init () { }
+	public var prop: Int = 0
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			var func = cl.AllProperties ().Where (p => p.Name == "prop").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get set }", output);
+		}
+
+
+		[Test]
+		public void TestSubscriptGetSet ()
+		{
+			var code = @"
+public class Foo {
+	public init () { }
+	public subscript (Index: Int) -> String {
+		get {
+			return ""nothing""
+		}
+		set { }
+	}
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			var func = cl.AllMethodsNoCDTor ().Where (p => p.Name == "get_subscript").FirstOrDefault ();
+			Assert.IsNotNull (func, "null func");
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.Foo.subscript [_ Index: Swift.Int] -> Swift.String { get }", output);
+		}
+
+		[Test]
+		public void TestGenericMethodInGenericClass ()
+		{
+			var code = @"
+public class Foo<T> {
+private var x: T
+	public init (a: T) { x = a; }
+	public func printIt<U>(a: U) {
+		print(x)
+		print(a)
+	}
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			var func = cl.AllMethodsNoCDTor ().Where (p => p.Name == "printIt").FirstOrDefault ();
+			var output = func.ToString ();
+			Assert.AreEqual ("Public SomeModule.Foo.printIt<T, U> (a: U) -> ()", output);
+		}
+
 	}
 }
