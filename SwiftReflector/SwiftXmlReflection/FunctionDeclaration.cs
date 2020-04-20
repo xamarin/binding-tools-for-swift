@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using ObjCRuntime;
 using SwiftReflector.Exceptions;
@@ -329,6 +330,92 @@ namespace SwiftReflector.SwiftXmlReflection {
 		static string BoolString (bool b)
 		{
 			return b ? "true" : "false";
+		}
+
+		string PropertyKindString {
+			get {
+				if (IsSubscriptGetter || IsGetter) {
+					return "get";
+				} else if (IsSubscriptSetter || IsSetter) {
+					return "set";
+				} else if (IsSubscriptMaterializer || IsMaterializer) {
+					return "materialize";
+				}
+				return "";
+			}
+		}
+
+		internal string ParametersToString ()
+		{
+			var builder = new StringBuilder ();
+			var first = true;
+			foreach (var parm in ParameterLists.Last ()) {
+				if (!first) {
+					builder.Append (", ");
+				} else {
+					first = false;
+				}
+				// forms
+				// public_name private_name: [inout] Type
+				// public_name: [inout] Type
+				// _ private_name: [inout] Type
+				if (parm.PublicName == parm.PrivateName) {
+					builder.Append (parm.PublicName);
+				} else if (parm.NameIsRequired) {
+					builder.Append (parm.PublicName).Append (" ").Append (parm.PrivateName);
+				} else {
+					builder.Append ("_ ").Append (parm.PrivateName);
+				}
+				builder.Append (": ");
+				if (parm.IsInOut || parm.TypeSpec.IsInOut)
+					builder.Append ("inout ");
+				builder.Append (parm.TypeSpec);
+			}
+			return builder.ToString ();
+		}
+
+		public override string ToString ()
+		{
+			// Forms:
+			// access [modfiers] var Name: Type { [get | set] } [throws]
+			// access [modifiers] subscript Name [ args ]: Type { get [set] } [throws]
+			// access [modifiers] Name<Generics>(args) -> Type [throws]
+
+			var builder = new StringBuilder ();
+			builder.Append (Access).Append (" ");
+			if (IsFinal)
+				builder.Append ("final ");
+			if (IsStatic)
+				builder.Append ("static ");
+
+			
+			if (IsProperty) {
+				if (IsSubscript) {
+					builder.Append (Parent.ToString ()).Append (".subscript");
+					builder.Append (" [").Append (ParametersToString ()).Append ("] -> ");
+				} else {
+					builder.Append ("var ").Append (Parent.ToString ()).Append (".").Append (PropertyName);
+					builder.Append (": ");
+				}
+				builder.Append (ReturnTypeName).Append (" { ").Append (PropertyKindString).Append (" }");
+				if (HasThrows) {
+					builder.Append (" throws");
+				}
+			} else {
+				builder.Append (base.ToString ());
+				builder.Append (" (").Append (ParametersToString ()).Append (")");
+				if (HasThrows) {
+					builder.Append (" throws");
+				}
+
+				builder.Append (" -> ");
+				if (TypeSpec.IsNullOrEmptyTuple (ReturnTypeSpec)) {
+					builder.Append ("()");
+				} else {
+					builder.Append (ReturnTypeSpec);
+				}
+			}
+			return builder.ToString ();
 		}
 	}
 }
