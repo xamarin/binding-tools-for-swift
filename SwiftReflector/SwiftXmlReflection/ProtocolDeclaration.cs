@@ -82,30 +82,36 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		bool SearchForDynamicSelf (PropertyDeclaration propDecl)
 		{
-			var types = new List<TypeSpec> ();
-			types.Add (propDecl.TypeSpec);
-			return SearchForDynamicSelf (types);
+			return SearchForDynamicSelf (propDecl.TypeSpec);
 		}
 
 		bool SearchForDynamicSelf (List<TypeSpec> types)
 		{
 			foreach (var type in types) {
-				if (type is NamedTypeSpec ns) {
-					if (SearchForDynamicSelf (ns))
-						return true;
-				} else if (type is TupleTypeSpec tuple) {
-					if (SearchForDynamicSelf (tuple.Elements))
-						return true;
-				} else if (type is ClosureTypeSpec closure) {
-					var moreTypes = new List<TypeSpec> ();
-					moreTypes.Add (closure.Arguments);
-					if (!TypeSpec.IsNullOrEmptyTuple (closure.ReturnType))
-						moreTypes.Add (closure.ReturnType);
-					if (SearchForDynamicSelf (moreTypes))
-						return true;
-				}
-				// don't care about protocol list
+				if (SearchForDynamicSelf (type))
+					return true;
 			}
+			return false;
+		}
+
+		bool SearchForDynamicSelf (TypeSpec type)
+		{
+			if (type is NamedTypeSpec ns) {
+				if (SearchForDynamicSelf (ns))
+					return true;
+			} else if (type is TupleTypeSpec tuple) {
+				if (SearchForDynamicSelf (tuple.Elements))
+					return true;
+			} else if (type is ClosureTypeSpec closure) {
+				if (SearchForDynamicSelf (closure.Arguments)) {
+					return true;
+				}
+				if (!TypeSpec.IsNullOrEmptyTuple (closure.ReturnType) &&
+					SearchForDynamicSelf (closure.ReturnType)) {
+					return true;
+				}
+			}
+			// don't care about protocol list
 			return false;
 		}
 
