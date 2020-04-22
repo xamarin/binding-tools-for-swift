@@ -222,6 +222,17 @@ namespace SwiftReflector.SwiftXmlReflection {
 					var assocElements = from assocElem in elem.Element ("associatedtypes").Elements ()
 							    select AssociatedTypeDeclaration.FromXElement (assocElem);
 					protoDecl.AssociatedTypes.AddRange (assocElements);
+					var selfIndex = protoDecl.AssociatedTypes.FindIndex (at => at.Name == "Self");
+					if (selfIndex > 0) {
+						// if it's present and not at 0, remove it
+						var assoc = protoDecl.AssociatedTypes [selfIndex];
+						protoDecl.AssociatedTypes.RemoveAt (selfIndex);
+						protoDecl.AssociatedTypes.Insert (0, assoc);
+					}
+				}
+				if (protoDecl.HasDynamicSelf) {
+					if (protoDecl.AssociatedTypes.Count == 0 || (protoDecl.AssociatedTypes.Count > 0 && protoDecl.AssociatedTypes [0].Name != "Self"))
+						protoDecl.AssociatedTypes.Insert (0, new AssociatedTypeDeclaration { Name = "Self" });
 				}
 			}
 
