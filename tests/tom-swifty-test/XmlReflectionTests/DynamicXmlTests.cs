@@ -1307,5 +1307,98 @@ private var x: T
 			Assert.AreEqual ("Public SomeModule.Foo.printIt<T, U> (a: U) -> ()", output);
 		}
 
+		[Test]
+		public void DetectsSelfEasy ()
+		{
+			var code = @"
+public protocol Simple {
+	func whoami() -> Self
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
+			Assert.IsNotNull (proto, "no protocol");
+			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
+		}
+
+		[Test]
+		public void DetectsSelfEasy1 ()
+		{
+			var code = @"
+public protocol NoSelf {
+	func whoami (a: NoSelf)
+}
+public protocol Simple {
+	associatedtype Thing
+	func whoami(a: Self) -> Thing
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
+			Assert.IsNotNull (proto, "no protocol");
+			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
+		}
+
+		[Test]
+		public void DetectsSelfInTuple ()
+		{
+			var code = @"
+public protocol Simple {
+	func whoami() -> (Int, Bool, Self)
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
+			Assert.IsNotNull (proto, "no protocol");
+			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
+		}
+
+		[Test]
+		public void DetectsSelfInOptional ()
+		{
+			var code = @"
+public protocol Simple {
+	func whoami() -> Self?
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
+			Assert.IsNotNull (proto, "no protocol");
+			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
+		}
+
+		[Test]
+		public void DetectsSelfInBoundGeneric ()
+		{
+			var code = @"
+public protocol Simple {
+	func whoami() -> UnsafeMutablePointer<Self>
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
+			Assert.IsNotNull (proto, "no protocol");
+			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
+		}
+
+		[Test]
+		public void DetectsSelfInClosure ()
+		{
+			var code = @"
+public protocol Simple {
+	func whoami(a: (Self)->()) -> ()
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
+			Assert.IsNotNull (proto, "no protocol");
+			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
+		}
 	}
 }
