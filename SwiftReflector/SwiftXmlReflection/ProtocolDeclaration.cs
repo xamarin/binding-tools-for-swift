@@ -51,7 +51,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 		public bool HasDynamicSelf {
-			// you could cache this, but this type is not mutable, so that would be bad
+			// you shouldn't cache this. This type is mutable, so that would be bad
 			get => SearchForDynamicSelf ();
 		}
 
