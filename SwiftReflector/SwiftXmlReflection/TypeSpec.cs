@@ -282,6 +282,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 			theSpec.IsInOut = true;
 			return theSpec;
 		}
+
+		public abstract bool HasDynamicSelf {
+			get;
+		}
+
+		public static bool AnyHasDynamicSelf (List<TypeSpec> types)
+		{
+			return types.Any (t => t.HasDynamicSelf);
+		}
 	}
 
 
@@ -359,6 +368,14 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return Name.IndexOf ('.') >= 0 ? Name.Substring (Name.IndexOf ('.') + 1) : Name;
 			}
 		}
+
+		public override bool HasDynamicSelf {
+			get {
+				if (Name == "Self")
+					return true;
+				return TypeSpec.AnyHasDynamicSelf (GenericParameters);
+			}
+		}
 	}
 
 
@@ -421,6 +438,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return Elements.Count == 0;
 			}
 		}
+
+		public override bool HasDynamicSelf => TypeSpec.AnyHasDynamicSelf (Elements);
 
 		static TupleTypeSpec empty = new TupleTypeSpec ();
 		public static TupleTypeSpec Empty { get { return empty; } }
@@ -529,6 +548,16 @@ namespace SwiftReflector.SwiftXmlReflection {
 				BothNullOrEqual (ReturnType, spec.ReturnType);
 			}
 		}
+
+		public override bool HasDynamicSelf {
+			get {
+				if (Arguments.HasDynamicSelf)
+					return true;
+				if (!IsNullOrEmptyTuple (ReturnType) && ReturnType.HasDynamicSelf)
+					return true;
+				return false;
+			}
+		}
 	}
 
 	public class ProtocolListTypeSpec : TypeSpec {
@@ -596,6 +625,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 		{
 			return Protocols.Keys.Select (proto => proto.ToString ()).InterleaveStrings (" & ");
 		}
+
+		public override bool HasDynamicSelf => false;
 	}
 }
 

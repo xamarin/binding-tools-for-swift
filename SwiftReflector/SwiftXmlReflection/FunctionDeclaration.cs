@@ -345,6 +345,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
+		public override bool HasDynamicSelf {
+			get {
+				var types = ParameterLists.Last ().Select (p => p.TypeSpec).ToList ();
+				if (!TypeSpec.IsNullOrEmptyTuple (ReturnTypeSpec))
+					types.Add (ReturnTypeSpec);
+				return TypeSpec.AnyHasDynamicSelf (types);
+			}
+		}
+
 		internal string ParametersToString ()
 		{
 			var builder = new StringBuilder ();

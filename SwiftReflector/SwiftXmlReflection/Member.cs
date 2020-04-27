@@ -2,11 +2,12 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using SwiftReflector.IOUtils;
 
 namespace SwiftReflector.SwiftXmlReflection {
-	public class Member : BaseDeclaration, IXElementConvertible {
+	public abstract class Member : BaseDeclaration, IXElementConvertible {
 		protected Member ()
 			: base ()
 		{
@@ -31,6 +32,10 @@ namespace SwiftReflector.SwiftXmlReflection {
 			throw new NotImplementedException ();
 		}
 		#endregion
+
+		public abstract bool HasDynamicSelf {
+			get;
+		}
 	}
 }
 
