@@ -218,15 +218,10 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 			var protoDecl = decl as ProtocolDeclaration;
 			if (protoDecl != null) {
-				var addSelf = false;
 				if (elem.Element ("associatedtypes") != null) {
 					var assocElements = from assocElem in elem.Element ("associatedtypes").Elements ()
 							    select AssociatedTypeDeclaration.FromXElement (assocElem);
 					protoDecl.AssociatedTypes.AddRange (assocElements);
-					addSelf = protoDecl.AssociatedTypes.RemoveAll (at => at.Name == "Self") > 0;
-				}
-				if (protoDecl.HasDynamicSelf || addSelf) {
-					protoDecl.AssociatedTypes.Insert (0, new AssociatedTypeDeclaration { Name = "Self" });
 				}
 			}
 
