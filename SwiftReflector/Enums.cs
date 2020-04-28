@@ -52,6 +52,7 @@ namespace SwiftReflector {
 		Tuple,
 		Closure,
 		ProtocolList,
+		DynamicSelf,
 	}
 
 	public enum MemberNesting {

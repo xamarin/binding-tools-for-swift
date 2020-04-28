@@ -142,7 +142,7 @@ namespace SwiftReflector.TypeMapping {
 			if (spec == null)
 				return null;
 			var ns = spec as NamedTypeSpec;
-			if (ns == null)
+			if (ns == null || spec.IsDynamicSelf)
 				return null;
 			return GetEntityForSwiftClassName (ns.Name);
 		}
@@ -153,6 +153,8 @@ namespace SwiftReflector.TypeMapping {
 				return EntityType.None;
 
 			if (spec is NamedTypeSpec) {
+				if (spec.IsDynamicSelf)
+					return EntityType.DynamicSelf;
 				var ent = GetEntityForTypeSpec (spec);
 				return ent != null ? ent.EntityType : EntityType.None;
 			}
@@ -1028,6 +1030,8 @@ namespace SwiftReflector.TypeMapping {
 			if (context.IsTypeSpecGeneric (sp) && context.IsTypeSpecGenericReference (sp))
 				return true;
 			if (context.IsProtocolWithAssociatedTypesFullPath (sp as NamedTypeSpec, this))
+				return true;
+			if (sp.IsDynamicSelf)
 				return true;
 			var en = GetEntityForTypeSpec (sp);
 			if (en == null)

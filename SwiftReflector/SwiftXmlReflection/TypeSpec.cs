@@ -283,6 +283,12 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return theSpec;
 		}
 
+		public bool IsDynamicSelf {
+			get {
+				return this is NamedTypeSpec ns && ns.Name == "Self";
+			}
+		}
+
 		public abstract bool HasDynamicSelf {
 			get;
 		}
