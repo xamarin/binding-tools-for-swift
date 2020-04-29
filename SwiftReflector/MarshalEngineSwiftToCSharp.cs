@@ -201,7 +201,7 @@ namespace SwiftReflector {
 							}
 						} else {
 							var entity = typeMapper.GetEntityForTypeSpec (func.ReturnTypeSpec);
-							if (func.ReturnTypeSpec is NamedTypeSpec && entity == null)
+							if (func.ReturnTypeSpec is NamedTypeSpec && entity == null && !func.ReturnTypeSpec.IsDynamicSelf)
 								throw new NotImplementedException ($"Function {func.ToFullyQualifiedName (true)} has an unknown return type {func.ReturnTypeSpec.ToString ()}");
 							if (entity?.EntityType == EntityType.TrivialEnum) {
 								imports.AddIfNotPresent (entity.Type.Module.Name);
@@ -263,7 +263,7 @@ namespace SwiftReflector {
 									// retval.deallocate()
 									// return actualRetval
 									string allocCallSite = String.Format ("UnsafeMutablePointer<{0}>.allocate", func.ReturnTypeName);
-									if (namedReturn != null)
+									if (namedReturn != null && !namedReturn.IsDynamicSelf)
 										imports.AddIfNotPresent (namedReturn.Module);
 									string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
 									identifiersUsed.Add (retvalName);
@@ -457,7 +457,7 @@ namespace SwiftReflector {
 
 		bool NamedSpecIsClass (NamedTypeSpec spec)
 		{
-			return spec != null && typeMapper.GetEntityTypeForSwiftClassName (spec.Name) == EntityType.Class;
+			return spec != null && !spec.IsDynamicSelf && typeMapper.GetEntityTypeForSwiftClassName (spec.Name) == EntityType.Class;
 		}
 
 		SLFuncType ToMarshaledClosureType (BaseDeclaration declContext, ClosureTypeSpec closure)
