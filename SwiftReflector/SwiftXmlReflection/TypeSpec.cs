@@ -297,6 +297,112 @@ namespace SwiftReflector.SwiftXmlReflection {
 		{
 			return types.Any (t => t.HasDynamicSelf);
 		}
+
+		public TypeSpec ReplaceName (string toFind, string replacement)
+		{
+			var result = this;
+			ReplaceName (this, toFind, replacement, ref result);
+			return result;
+		}
+
+		static bool ReplaceName (TypeSpec original, string toFind, string replacement, ref TypeSpec result)
+		{
+			result = original;
+			var changed = false;
+			switch (original.Kind) {
+			case TypeSpecKind.Named:
+				changed = ReplaceName (original as NamedTypeSpec, toFind, replacement, ref result);
+				break;
+			case TypeSpecKind.ProtocolList:
+				changed = ReplaceName (original as ProtocolListTypeSpec, toFind, replacement, ref result);
+				break;
+			case TypeSpecKind.Closure:
+				changed = ReplaceName (original as ClosureTypeSpec, toFind, replacement, ref result);
+				break;
+			case TypeSpecKind.Tuple:
+				changed = ReplaceName (original as TupleTypeSpec, toFind, replacement, ref result);
+				break;
+			default:
+				throw new ArgumentOutOfRangeException ($"Unknown TypeSpec kind {original.Kind}");
+			}
+			if (changed) {
+				result.Attributes.AddRange (original.Attributes);
+				result.TypeLabel = original.TypeLabel;
+				result.IsInOut = original.IsInOut;
+			}
+			return changed;
+		}
+
+		static bool ReplaceName (NamedTypeSpec named, string toFind, string replacement, ref TypeSpec result)
+		{
+			result = named;
+			var changed = false;
+			if (named.Name == toFind) {
+				changed = true;
+				result = new NamedTypeSpec (replacement);
+			}
+			var resultGenerics = new List<TypeSpec> (named.GenericParameters.Count);
+			var changedGenerics = ReplaceName (named.GenericParameters, toFind, replacement, resultGenerics);
+
+			if (changedGenerics) {
+				if (!changed) {
+					result = new NamedTypeSpec (named.Name);
+				}
+				result.GenericParameters.AddRange (resultGenerics);
+			} else {
+				if (changed)
+					result.GenericParameters.AddRange (named.GenericParameters);
+			}
+			return changed || changedGenerics;
+		}
+
+		static bool ReplaceName (List<TypeSpec> originalTypes, string toFind, string replacement, List<TypeSpec> resultTypes)
+		{
+			var changed = false;
+			foreach (var type in originalTypes) {
+				var result = type;
+				changed = ReplaceName (type, toFind, replacement, ref result) || changed;
+				resultTypes.Add (result);
+			}
+			return changed;
+		}
+
+		static bool ReplaceName (TupleTypeSpec tuple, string toFind, string replacement, ref TypeSpec result)
+		{
+			List<TypeSpec> resultTypes = new List<TypeSpec> (tuple.Elements.Count);
+			if (ReplaceName (tuple.Elements, toFind, replacement, resultTypes)) {
+				result = new TupleTypeSpec (resultTypes);
+				return true;
+			}
+			result = tuple;
+			return false;
+		}
+
+		static bool ReplaceName (ProtocolListTypeSpec protolist, string toFind, string replacement, ref TypeSpec result)
+		{
+			var originalProtos = new List<TypeSpec> (protolist.Protocols.Count);
+			var resultProtos = new List<TypeSpec> (protolist.Protocols.Count);
+			originalProtos.AddRange (protolist.Protocols.Keys);
+			if (ReplaceName (originalProtos, toFind, replacement, resultProtos)) {
+				result = new ProtocolListTypeSpec (resultProtos.OfType<NamedTypeSpec> ());
+				return true;
+			}
+			return false;
+		}
+
+		static bool ReplaceName (ClosureTypeSpec closure, string toFind, string replacement, ref TypeSpec result)
+		{
+			var resultArgs = closure.Arguments;
+			var resultReturn = closure.ReturnType;
+
+			var argsChanged = ReplaceName (closure.Arguments, toFind, replacement, ref resultArgs);
+			var returnChanged = ReplaceName (closure.ReturnType, toFind, replacement, ref resultReturn);
+			if (argsChanged || returnChanged) {
+				result = new ClosureTypeSpec (resultArgs, resultReturn);
+				return true;
+			}
+			return false;
+		}
 	}
 
 

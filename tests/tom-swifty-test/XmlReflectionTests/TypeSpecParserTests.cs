@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using SwiftReflector.SwiftXmlReflection;
 
@@ -284,6 +285,86 @@ namespace XmlReflectionTests {
 			Assert.IsNotNull (proto, "not a protocol list");
 			Assert.AreEqual (3, proto.Protocols.Count, "wrong count");
 			Assert.AreEqual ("d & e & f", proto.ToString ());
+		}
+
+		[Test]
+		public void TestReplaceInNameSuccess ()
+		{
+			var inType = TypeSpecParser.Parse ("Foo.Bar");
+			var replaced = inType.ReplaceName ("Foo.Bar", "Slarty.Bartfast") as NamedTypeSpec;
+			Assert.IsNotNull (replaced, "not a named spec");
+			Assert.AreEqual ("Slarty.Bartfast", replaced.Name);
+		}
+
+		[Test]
+		public void TestReplaceInNameFail ()
+		{
+			var inType = TypeSpecParser.Parse ("Foo.Bar");
+			var same = inType.ReplaceName ("Blah", "Slarty.Bartfast") as NamedTypeSpec;
+			Assert.AreEqual (same, inType, "changed?!");
+		}
+
+		[Test]
+		public void TestReplaceInTupleSuccess ()
+		{
+			var inType = TypeSpecParser.Parse ("(Swift.Int, Foo.Bar, Foo.Bar)");
+			var replaced = inType.ReplaceName ("Foo.Bar", "Slarty.Bartfast") as TupleTypeSpec;
+			Assert.IsNotNull (replaced, "not a tuple spec");
+			var name = replaced.Elements [1] as NamedTypeSpec;
+			Assert.IsNotNull (name, "first elem isn't a named type spec");
+			Assert.AreEqual ("Slarty.Bartfast", name.Name, "failed first");
+			name = replaced.Elements [2] as NamedTypeSpec;
+			Assert.IsNotNull (name, "second elem isn't a named type spec");
+			Assert.AreEqual ("Slarty.Bartfast", name.Name, "failed second");
+		}
+
+		[Test]
+		public void TestReplaceInTupleFail ()
+		{
+			var inType = TypeSpecParser.Parse ("(Swift.Int, Foo.Bar, Foo.Bar)");
+			var same = inType.ReplaceName ("Blah", "Slarty.Bartfast") as TupleTypeSpec;
+			Assert.AreEqual (same, inType, "changed?!");
+		}
+
+		[Test]
+		public void TestReplaceInClosureSuccess ()
+		{
+			var inType = TypeSpecParser.Parse ("(Swift.Int, Foo.Bar) -> Foo.Bar");
+			var replaced = inType.ReplaceName ("Foo.Bar", "Slarty.Bartfast") as ClosureTypeSpec;
+			Assert.IsNotNull (replaced, "not a closure spec");
+			var args = replaced.Arguments as TupleTypeSpec;
+			Assert.IsNotNull (args, "first elem isn't a tuple spec");
+			Assert.AreEqual (2, args.Elements.Count, "wrong arg count");
+			var name = args.Elements [1] as NamedTypeSpec;
+			Assert.AreEqual ("Slarty.Bartfast", name.Name, "first");
+			name = replaced.ReturnType as NamedTypeSpec;
+			Assert.AreEqual ("Slarty.Bartfast", name.Name, "return");
+		}
+
+		[Test]
+		public void TestReplaceInClosureFail ()
+		{
+			var inType = TypeSpecParser.Parse ("(Swift.Int, Foo.Bar) -> Foo.Bar");
+			var same = inType.ReplaceName ("Blah", "Slarty.Bartfast") as ClosureTypeSpec;
+			Assert.IsNotNull (same, "not a closure spec");
+			Assert.AreEqual (same, inType, "changed?!");
+		}
+		[Test]
+		public void TestReplaceInProtoListSuccess ()
+		{
+			var inType = TypeSpecParser.Parse ("Swift.Equatable & Foo.Bar");
+			var replaced = inType.ReplaceName ("Foo.Bar", "Slarty.Bartfast") as ProtocolListTypeSpec;
+			Assert.IsNotNull (replaced, "not a protolist spec");
+			var name = replaced.Protocols.Keys.FirstOrDefault (n => n.Name == "Slarty.Bartfast");
+			Assert.IsNotNull (name, "not replaced");
+		}
+
+		[Test]
+		public void TestReplaceInProtoListFail ()
+		{
+			var inType = TypeSpecParser.Parse ("Swift.Equatable & Foo.Bar");
+			var same = inType.ReplaceName ("Blah", "Slarty.Bartfast") as ProtocolListTypeSpec;
+			Assert.AreEqual (same, inType, "changed?!");
 		}
 	}
 }
