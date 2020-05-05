@@ -301,7 +301,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public TypeSpec ReplaceName (string toFind, string replacement)
 		{
 			var result = this;
-			ReplaceName (this, toFind, replacement, ref result);
+			if (!String.IsNullOrEmpty (replacement))
+				ReplaceName (this, toFind, replacement, ref result);
 			return result;
 		}
 

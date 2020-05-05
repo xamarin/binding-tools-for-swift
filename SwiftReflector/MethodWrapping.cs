@@ -27,6 +27,7 @@ namespace SwiftReflector {
 		HashSet<string> uniqueModuleReferences = new HashSet<string> ();
 		ErrorHandling errors;
 		FunctionReferenceCodeMap referenceCodeMap = new FunctionReferenceCodeMap ();
+		string substituteForSelf = "";
 
 		public MethodWrapping (IStreamProvider<SwiftClassName> provider, TypeMapper typeMapper, string wrappingModuleName, ErrorHandling errors)
 		{
@@ -1102,8 +1103,14 @@ namespace SwiftReflector {
 			file.Classes.AddRange (overrider.ClassImplementations);
 			file.Functions.AddRange (overrider.Functions);
 			file.Declarations.AddRange (overrider.Declarations);
-			WrapFunctions (ref file, overrider.FunctionsToWrap);
-			WrapClass (protocol.HasAssociatedTypes ? overrider.OverriddenClass : overrider.OriginalClass, cw, modInventory, file, null);
+			var selfSub = protocol.HasAssociatedTypes ? overrider.OverriddenClass.ToFullyQualifiedNameWithGenerics () : "XamGlue.EveryProtocol";
+			EstablishSubtituteForSelf (overrider.SubstituteForSelf);
+			try {
+				WrapFunctions (ref file, overrider.FunctionsToWrap);
+				WrapClass (protocol.HasAssociatedTypes ? overrider.OverriddenClass : overrider.OriginalClass, cw, modInventory, file, null);
+			} finally {
+				RelinquishSubstituteForSelf ();
+			}
 			var entity = typeMapper.GetEntityForSwiftClassName (cl.ToFullyQualifiedName (true));
 			if (entity == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 3, $"Unable to locate entity for {cl.ToFullyQualifiedName ()} in type database.");
@@ -1422,7 +1429,8 @@ namespace SwiftReflector {
 			if (funcDecl.ContainsBoundGenericClosure ())
 				throw new NotImplementedException ("can't handle closures types bound in generics");
 
-			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, modules, callParms, funcDecl.ParameterLists.Last (), false, genericDeclaration);
+			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, modules, callParms, funcDecl.ParameterLists.Last (), false, genericDeclaration,
+				!String.IsNullOrEmpty (substituteForSelf), substituteForSelf);
 			parms.AddRange (FilterCallParams (funcDecl, callParms, funcDecl.ParameterLists.Last (), modules));
 
 			usedNames.AddRange (parms.Select (p => p.PrivateName.Name));
@@ -1477,7 +1485,7 @@ namespace SwiftReflector {
 				//				modules.AddIfNotPresent (className.Module.Name);
 			}
 
-			var retType = funcDecl.ReturnTypeSpec;
+			var retType = FigureReturnTypeSpecSelfSubstitution (funcDecl);
 
 			SLIdentifier returnName = null;
 			ICodeElement callLine = null;
@@ -1655,7 +1663,7 @@ namespace SwiftReflector {
 					pi.PublicName = pi.PrivateName = "notImportant";
 					pi.TypeSpec = retType;
 					var ntp = typeMapper.TypeSpecMapper.ToParameter (typeMapper, funcDecl, modules, pi,
-					                                                 0, true, genericDeclaration);
+					                                                 0, true, genericDeclaration, true, "");
 					mappedReturn = ntp.TypeAnnotation;
 
 				} else {
@@ -1708,6 +1716,31 @@ namespace SwiftReflector {
 
 			func.GenericParams.AddRange (ReduceGenericDeclarations (genericDeclaration));
 			return func;
+		}
+
+		TypeSpec FigureReturnTypeSpecSelfSubstitution (FunctionDeclaration funcDecl)
+		{
+			// the raison d'etre of this routine is to deal with the complexity of mapping return values of
+			// type Self.
+			// If a class has a method that returns Self, the resulting type is the type of the class.
+			// If a protocol has no methods that take arguments of type Self, then Self is the type of the protocol.
+			// If a protocol has methods that take arguments of type Self, then Self is the provided substitute.
+			// In no other valid case can Self be a return type.
+			if (String.IsNullOrEmpty (substituteForSelf) || !funcDecl.ReturnTypeSpec.HasDynamicSelf)
+				return funcDecl.ReturnTypeSpec;
+
+			var parent = funcDecl.Parent as ClassDeclaration;
+			if (parent == null)
+				throw new ArgumentOutOfRangeException (nameof (funcDecl), "parent should be a class or a protocol");
+
+			// may be a protocol
+			var parentProto = parent as ProtocolDeclaration;
+
+			if (parentProto == null)
+				return funcDecl.ReturnTypeSpec.ReplaceName ("Self", parent.ToFullyQualifiedNameWithGenerics ());
+
+			return parentProto.HasDynamicSelfInReturnOnly ? funcDecl.ReturnTypeSpec.ReplaceName ("Self", parent.ToFullyQualifiedNameWithGenerics ())
+				: funcDecl.ReturnTypeSpec.ReplaceName ("Self", substituteForSelf);
 		}
 
 		static SLType ReturnTypeToExceptionType (SLType retType)
@@ -2420,6 +2453,16 @@ namespace SwiftReflector {
 				result [i] = new SLArgument (null, args [i].Expr, false);
 			}
 			return result;
+		}
+
+		void EstablishSubtituteForSelf (string substitute)
+		{
+			substituteForSelf = substitute;
+		}
+
+		void RelinquishSubstituteForSelf ()
+		{
+			substituteForSelf = null;
 		}
 	}
 }

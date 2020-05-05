@@ -36,6 +36,10 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public abstract bool HasDynamicSelf {
 			get;
 		}
+
+		public abstract bool HasDynamicSelfInReturnOnly {
+			get;
+		}
 	}
 }
 
