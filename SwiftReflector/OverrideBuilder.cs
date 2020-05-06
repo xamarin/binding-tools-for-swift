@@ -22,6 +22,7 @@ namespace SwiftReflector {
 		bool isProtocol, hasAssociatedTypes;
 		const string kCSIntPtr = "csIntPtr";
 		static SLIdentifier kClassIsInitialized = new SLIdentifier ("_xamarinClassIsInitialized");
+		ModuleDeclaration targetModule;
 
 		// This class is going to do double duty.
 		// If it's a class, it builds overrides.
@@ -31,6 +32,7 @@ namespace SwiftReflector {
 
 		public OverrideBuilder (TypeMapper typeMapper, ClassDeclaration classToOverride, string overrideName, ModuleDeclaration targetModule)
 		{
+			this.targetModule = targetModule;
 			if (classToOverride is ProtocolDeclaration protocol) {
 				isProtocol = true;
 				hasAssociatedTypes = protocol.HasAssociatedTypes;
@@ -168,6 +170,7 @@ namespace SwiftReflector {
 		public SLImportModules Imports { get; private set; }
 		public HashSet<string> ModuleReferences { get; private set; }
 		public int IndexOfFirstNewVirtualMethod { get; private set; }
+		public string SubstituteForSelf { get; private set; }
 
 		ClassDeclaration BuildOverrideDefinition (string name, ModuleDeclaration targetModule)
 		{
@@ -1176,6 +1179,13 @@ namespace SwiftReflector {
 			//		else {
 			//			[return] super.functionName([parameter set]);
 			//		}
+
+			if (isProtocol) {
+				SubstituteForSelf = hasAssociatedTypes ? OverriddenClass.ToFullyQualifiedNameWithGenerics () : "XamGlue.EveryProtocol";
+			} else {
+				SubstituteForSelf = null;
+			}
+
 			var body = new SLCodeBlock (null);
 
 			var idents = new List<string> ();
@@ -1211,6 +1221,7 @@ namespace SwiftReflector {
 			var ifblock = new SLCodeBlock (null);
 
 			var marshal = new MarshalEngineSwiftToCSharp (Imports, idents, typeMapper);
+			marshal.SubstituteForSelf = SubstituteForSelf;
 			ifblock.AddRange (marshal.MarshalFunctionCall (func,
 								      vtRef, VTableEntryIdentifier (index)));
 
@@ -1245,15 +1256,19 @@ namespace SwiftReflector {
 			}
 
 			var outputParams = new List<SLParameter> ();
-			typeMapper.OverrideTypeSpecMapper.MapParams (typeMapper, func, Imports, outputParams, func.ParameterLists [1], true);
+
+			typeMapper.OverrideTypeSpecMapper.MapParams (typeMapper, func, Imports, outputParams, func.ParameterLists [1], true,
+				remapSelf: SubstituteForSelf != null, selfReplacement: SubstituteForSelf);
 
 			SLType returnType = null;
-			if (func.IsTypeSpecGeneric (func.ReturnTypeSpec)) {
-				var ns = (NamedTypeSpec)func.ReturnTypeSpec;
+			var returnTypeSpec = func.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf);
+			if (func.IsTypeSpecGeneric (returnTypeSpec)) {
+				var ns = (NamedTypeSpec)returnTypeSpec;
 				var depthIndex = func.GetGenericDepthAndIndex (ns.Name);
 				returnType = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
 			} else {
-				returnType = typeMapper.OverrideTypeSpecMapper.MapType (func, Imports, func.ReturnTypeSpec, true);
+
+				returnType = typeMapper.OverrideTypeSpecMapper.MapType (func, Imports, returnTypeSpec, true);
 			}
 
 			var funcKind = isProtocol ? FunctionKind.None : FunctionKind.Override;

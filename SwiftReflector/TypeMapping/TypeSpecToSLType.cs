@@ -196,9 +196,9 @@ namespace SwiftReflector.TypeMapping {
 		}
 
 		public void MapParams (TypeMapper typeMapper, FunctionDeclaration func, SLImportModules modules, List<SLParameter> output, List<ParameterItem> parameters,
-				      bool dontChangeInOut, SLGenericTypeDeclarationCollection genericDeclaration = null)
+				      bool dontChangeInOut, SLGenericTypeDeclarationCollection genericDeclaration = null, bool remapSelf = false, string selfReplacement = "")
 		{
-			output.AddRange (parameters.Select ((p, i) => ToParameter (typeMapper, func, modules, p, i, dontChangeInOut, genericDeclaration)));
+			output.AddRange (parameters.Select ((p, i) => ToParameter (typeMapper, func, modules, p, i, dontChangeInOut, genericDeclaration, remapSelf, selfReplacement)));
 		}
 
 		public void MapParamsToCSharpTypes (SLImportModules modules, List<SLParameter> output, List<ParameterItem> parameters)
@@ -213,7 +213,7 @@ namespace SwiftReflector.TypeMapping {
 		}
 
 		public SLParameter ToParameter (TypeMapper typeMapper, FunctionDeclaration func, SLImportModules modules, ParameterItem p, int index,
-						   bool dontChangeInOut, SLGenericTypeDeclarationCollection genericDecl = null)
+						   bool dontChangeInOut, SLGenericTypeDeclarationCollection genericDecl = null, bool remapSelf = false, string remappedSelfName = "")
 		{
 			var pIsGeneric = func.IsTypeSpecGeneric (p) && p.TypeSpec is NamedTypeSpec;
 			var parmTypeEntity = !pIsGeneric ? typeMapper.GetEntityForTypeSpec (p.TypeSpec) : null;
@@ -222,14 +222,16 @@ namespace SwiftReflector.TypeMapping {
 			var parmKind = p.IsInOut && (pIsGeneric || !parmTypeEntity.IsStructOrEnum) ? SLParameterKind.InOut : SLParameterKind.None;
 			SLType parmType = null;
 
+			var pTypeSpec = remapSelf ? p.TypeSpec.ReplaceName ("Self", remappedSelfName) : p.TypeSpec;
+
 			if (genericDecl != null) {
-				GatherGenerics (typeMapper, func, modules, p.TypeSpec, genericDecl);
+				GatherGenerics (typeMapper, func, modules, pTypeSpec, genericDecl);
 			}
 			if (pIsGeneric) {
-				if (p.TypeSpec.ContainsGenericParameters) {
-					var ns = p.TypeSpec as NamedTypeSpec;
+				if (pTypeSpec.ContainsGenericParameters) {
+					var ns = pTypeSpec as NamedTypeSpec;
 					var boundGen = new SLBoundGenericType (ns.Name,
-									       p.TypeSpec.GenericParameters.Select (genParm => {
+									       pTypeSpec.GenericParameters.Select (genParm => {
 										       return MapType (func, modules, genParm, true);
 									       }));
 					if (parent.MustForcePassByReference (func, ns)) {
@@ -237,7 +239,7 @@ namespace SwiftReflector.TypeMapping {
 					}
 					parmType = boundGen;
 				} else {
-					var namedType = p.TypeSpec as NamedTypeSpec;
+					var namedType = pTypeSpec as NamedTypeSpec;
 					if (namedType == null)
 						throw new NotImplementedException ("Can only have a named type spec here.");
 					var depthIndex = func.GetGenericDepthAndIndex (namedType.Name);
@@ -246,11 +248,11 @@ namespace SwiftReflector.TypeMapping {
 					parmType = genRef;
 				}
 			} else {
-				parmType = MapType (func, modules, p.TypeSpec, false);
+				parmType = MapType (func, modules, pTypeSpec, false);
 				if (pIsGeneric) {
-					Tuple<int, int> depthIndex = func.GetGenericDepthAndIndex (p.TypeSpec);
+					Tuple<int, int> depthIndex = func.GetGenericDepthAndIndex (pTypeSpec);
 					parmType = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
-				} else if (parent.MustForcePassByReference (func, p.TypeSpec) && !dontChangeInOut) {
+				} else if (parent.MustForcePassByReference (func, pTypeSpec) && !dontChangeInOut) {
 					parmType = new SLBoundGenericType (p.IsInOut ? "UnsafeMutablePointer" : "UnsafePointer", parmType);
 				}
 			}

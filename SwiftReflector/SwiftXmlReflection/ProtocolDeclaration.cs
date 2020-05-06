@@ -54,6 +54,10 @@ namespace SwiftReflector.SwiftXmlReflection {
 			// you shouldn't cache this. This type is mutable, so that would be bad
 			get => Members.Any (m => m.HasDynamicSelf);
 		}
+
+		public bool HasDynamicSelfInReturnOnly {
+			get => Members.All (m => m.HasDynamicSelfInReturnOnly) || HasAssociatedTypes;
+		}
 	}
 }
 

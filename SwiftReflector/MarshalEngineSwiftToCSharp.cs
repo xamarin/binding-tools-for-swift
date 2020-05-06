@@ -75,9 +75,12 @@ namespace SwiftReflector {
 			SLIdentifier throwReturn = null;
 			SLType throwReturnType = null;
 
+			var returnTypeSpec = TypeSpec.IsNullOrEmptyTuple (func.ReturnTypeSpec) ? func.ReturnTypeSpec : func.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf);
+
+
 			throwReturnType = new SLTupleType (
-				new SLNameTypePair (SLParameterKind.None, "_", func.ReturnTypeSpec == null || func.ReturnTypeSpec.IsEmptyTuple ?
-				                    SLSimpleType.Void : typeMapper.TypeSpecMapper.MapType (func, imports, func.ReturnTypeSpec, true)),
+				new SLNameTypePair (SLParameterKind.None, "_", returnTypeSpec == null || returnTypeSpec.IsEmptyTuple ?
+				                    SLSimpleType.Void : typeMapper.TypeSpecMapper.MapType (func, imports, returnTypeSpec, true)),
 				new SLNameTypePair (SLParameterKind.None, "_", new SLSimpleType ("Swift.Error")),
 				new SLNameTypePair (SLParameterKind.None, "_", new SLSimpleType ("Bool")));
 
@@ -111,7 +114,7 @@ namespace SwiftReflector {
 				ifblock.Add (new SLLine (new SLThrow (new SLPostBang (errIdent, false))));
 
 
-				if (func.ReturnTypeSpec != null && !func.ReturnTypeSpec.IsEmptyTuple) {
+				if (returnTypeSpec != null && !returnTypeSpec.IsEmptyTuple) {
 					elseblock = new SLCodeBlock (null);
 					string retvalvalName = MarshalEngine.Uniqueify ("retvalval", identifiersUsed);
 					identifiersUsed.Add (retvalvalName);
@@ -129,13 +132,13 @@ namespace SwiftReflector {
 				postMarshalCode.Add (new SLIfElse (new SLBinaryExpr (BinaryOp.NotEqual, errIdent, SLConstant.Nil),
 				                                   ifblock, elseblock));
 			} else {
-				if (func.ReturnTypeSpec == null || func.ReturnTypeSpec.IsEmptyTuple) {
+				if (returnTypeSpec == null || returnTypeSpec.IsEmptyTuple) {
 					// On no return value
 					// _vtable.entry!(args)
 					//
 					returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
 				} else {
-					if (TypeSpec.IsBuiltInValueType (func.ReturnTypeSpec)) {
+					if (TypeSpec.IsBuiltInValueType (returnTypeSpec)) {
 						// on simple return types (Int, UInt, Bool, etc)
 						// return _vtable.entry!(args)
 						//
@@ -150,7 +153,7 @@ namespace SwiftReflector {
 							postMarshalCode.Add (SLReturn.ReturnLine (returnIdent));
 						}
 					} else {
-						if (func.IsTypeSpecGeneric (func.ReturnTypeSpec)) {
+						if (func.IsTypeSpecGeneric (returnTypeSpec)) {
 							imports.AddIfNotPresent ("XamGlue");
 							// dealing with a generic here.
 							// UnsafeMutablePointer<T> retval = UnsafeMutablePointer<T>.alloc(1)
@@ -160,7 +163,7 @@ namespace SwiftReflector {
 							// return actualRetval
 							returnIdent = new SLIdentifier (MarshalEngine.Uniqueify ("retval", identifiersUsed));
 							identifiersUsed.Add (returnIdent.Name);
-							Tuple<int, int> depthIndex = func.GetGenericDepthAndIndex (func.ReturnTypeSpec);
+							Tuple<int, int> depthIndex = func.GetGenericDepthAndIndex (returnTypeSpec);
 							var retvalDecl = new SLDeclaration (true, returnIdent, null,
 							                                              new SLFunctionCall (String.Format ("UnsafeMutablePointer<{0}>.allocate", SLGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2)),
 							                                                                  false, new SLArgument (new SLIdentifier ("capacity"), SLConstant.Val (1), true)),
@@ -179,7 +182,7 @@ namespace SwiftReflector {
 							postMarshalCode.Add (SLFunctionCall.FunctionCallLine (String.Format ("{0}.deallocate", returnIdent.Name)));
 							postMarshalCode.Add (SLReturn.ReturnLine (actualReturnIdent));
 
-						} else if (NamedSpecIsClass (func.ReturnTypeSpec as NamedTypeSpec)) {
+						} else if (NamedSpecIsClass (returnTypeSpec as NamedTypeSpec)) {
 							// class (not struct or enum) return type is a pointer
 							// if we have no post marshal code:
 							// return fromIntPtr(_vtable.entry!(args))
@@ -193,16 +196,16 @@ namespace SwiftReflector {
 							if (postMarshalCode.Count > 0) {
 								string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
 								var retDecl = new SLDeclaration (true, retvalName,
-															typeMapper.TypeSpecMapper.MapType (func, imports, func.ReturnTypeSpec, true), callExpr);
+															typeMapper.TypeSpecMapper.MapType (func, imports, returnTypeSpec, true), callExpr);
 								returnLine = new SLLine (retDecl);
 								postMarshalCode.Add (SLReturn.ReturnLine (new SLIdentifier (retvalName)));
 							} else {
 								returnLine = SLReturn.ReturnLine (callExpr);
 							}
 						} else {
-							var entity = typeMapper.GetEntityForTypeSpec (func.ReturnTypeSpec);
-							if (func.ReturnTypeSpec is NamedTypeSpec && entity == null && !func.ReturnTypeSpec.IsDynamicSelf)
-								throw new NotImplementedException ($"Function {func.ToFullyQualifiedName (true)} has an unknown return type {func.ReturnTypeSpec.ToString ()}");
+							var entity = typeMapper.GetEntityForTypeSpec (returnTypeSpec);
+							if (returnTypeSpec is NamedTypeSpec && entity == null && !func.ReturnTypeSpec.IsDynamicSelf)
+								throw new NotImplementedException ($"Function {func.ToFullyQualifiedName (true)} has an unknown return type {returnTypeSpec.ToString ()}");
 							if (entity?.EntityType == EntityType.TrivialEnum) {
 								imports.AddIfNotPresent (entity.Type.Module.Name);
 								var slSelf = new SLIdentifier ($"{entity.Type.Name}.self");
@@ -219,7 +222,7 @@ namespace SwiftReflector {
 									postMarshalCode.Add (SLReturn.ReturnLine (returnIdent));
 								}
 							} else {
-								switch (func.ReturnTypeSpec.Kind) {
+								switch (returnTypeSpec.Kind) {
 								case TypeSpecKind.Closure:
 
 									// let retval:CT = allocSwiftClosureToFunc_ARGS ()
@@ -228,7 +231,7 @@ namespace SwiftReflector {
 									// retval.deallocate()
 									// return actualReturn
 
-									var ct = func.ReturnTypeSpec as ClosureTypeSpec;
+									var ct = returnTypeSpec as ClosureTypeSpec;
 									var slct = new SLBoundGenericType ("UnsafeMutablePointer", ToMarshaledClosureType (func, ct));
 									var ptrName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
 									identifiersUsed.Add (ptrName);
@@ -254,7 +257,7 @@ namespace SwiftReflector {
 								case TypeSpecKind.ProtocolList:
 								case TypeSpecKind.Tuple:
 								case TypeSpecKind.Named:
-									var namedReturn = func.ReturnTypeSpec as NamedTypeSpec;
+									var namedReturn = returnTypeSpec as NamedTypeSpec;
 									// enums and structs can't get returned directly
 									// instead they will be inserted at the head of the argument list
 									// let retval = UnsafeMutablePointer<StructOrEnumType>.allocate(capacity: 1)
@@ -262,7 +265,7 @@ namespace SwiftReflector {
 									// T actualRetval = retval.move()
 									// retval.deallocate()
 									// return actualRetval
-									string allocCallSite = String.Format ("UnsafeMutablePointer<{0}>.allocate", func.ReturnTypeName);
+									string allocCallSite = $"UnsafeMutablePointer<{returnTypeSpec}>.allocate";
 									if (namedReturn != null && !namedReturn.IsDynamicSelf)
 										imports.AddIfNotPresent (namedReturn.Module);
 									string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
@@ -474,6 +477,8 @@ namespace SwiftReflector {
 		{
 			return closure.ReturnType.IsEmptyTuple;
 		}
+
+		public string SubstituteForSelf { get; set; }
 	}
 }
 

@@ -157,6 +157,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 		public override bool HasDynamicSelf => this.TypeSpec.HasDynamicSelf;
-	}
+		public override bool HasDynamicSelfInReturnOnly => false;
+		}
 }
 
