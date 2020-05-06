@@ -265,7 +265,7 @@ namespace SwiftReflector {
 									// T actualRetval = retval.move()
 									// retval.deallocate()
 									// return actualRetval
-									string allocCallSite = String.Format ("UnsafeMutablePointer<{0}>.allocate", namedReturn.NameWithoutModule);
+									string allocCallSite = $"UnsafeMutablePointer<{returnTypeSpec}>.allocate";
 									if (namedReturn != null && !namedReturn.IsDynamicSelf)
 										imports.AddIfNotPresent (namedReturn.Module);
 									string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
