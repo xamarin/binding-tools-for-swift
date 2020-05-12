@@ -71,6 +71,15 @@ namespace SwiftReflector.TypeMapping {
 			IsReference = isReference;
 		}
 
+		public NetTypeBundle (string selfRepresentation, bool isReference)
+		{
+			GenericIndex = -1;
+			Type = FullName = Ex.ThrowOnNull (selfRepresentation, nameof (selfRepresentation));
+			NameSpace = String.Empty;
+			IsReference = isReference;
+			IsSelf = true;
+		}
+
 		static NetTypeBundle ntbVoid = new NetTypeBundle ("", kNoType, false, false, EntityType.None);
 
 		public static NetTypeBundle Void { get { return ntbVoid; } }
@@ -82,6 +91,7 @@ namespace SwiftReflector.TypeMapping {
 			}
 		}
 
+		public bool IsSelf { get; private set; }
 		public bool IsVoid { get; private set; }
 		public string Type { get; private set; }
 		public string NameSpace { get; private set; }
@@ -189,7 +199,7 @@ namespace SwiftReflector.TypeMapping {
 					genref.InterfaceConstraints.AddRange (this.GenericConstraints.Select (ntb => ntb.ToCSType (use)));
 				}
 				return genref;
-			} else if (IsAssociatedType) {
+			} else if (IsAssociatedType || IsSelf) {
 				return new CSSimpleType (Type, false);
 			}
 

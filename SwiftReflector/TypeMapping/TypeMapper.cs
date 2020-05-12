@@ -572,6 +572,12 @@ namespace SwiftReflector.TypeMapping {
 						var assocType = context.AssociatedTypeDeclarationFromNamedTypeSpec (named);
 						return new NetTypeBundle (context.AsProtocolOrParentAsProtocol (), assocType, named.IsInOut);
 					}
+				} else if (named.Name == "Self") {
+					if (isPinvoke) {
+						return new NetTypeBundle ("System", "IntPtr", false, named.IsInOut, EntityType.None);
+					} else {
+						return new NetTypeBundle (NewClassCompiler.kGenericSelfName, named.IsInOut);
+					}
 				} else {
 					Entity en = TypeDatabase.EntityForSwiftName (named.Name);
 					if (en != null) {
@@ -623,6 +629,10 @@ namespace SwiftReflector.TypeMapping {
 						} else {
 							var retval = new NetTypeBundle (en.SharpNamespace, en.SharpTypeName, false, spec.IsInOut, en.EntityType);
 							if (en.EntityType == EntityType.Protocol && en.Type is ProtocolDeclaration proto) {
+								if (proto.HasDynamicSelf) {
+									var genMap = new NetTypeBundle (NewClassCompiler.kGenericSelfName, spec.IsInOut);
+									retval.GenericTypes.Add (genMap);
+								}
 								foreach (var assoc in proto.AssociatedTypes) {
 									var genMap = new NetTypeBundle (proto, assoc, spec.IsInOut);
 									retval.GenericTypes.Add (genMap);

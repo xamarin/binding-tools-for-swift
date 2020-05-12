@@ -139,9 +139,10 @@ namespace SwiftReflector {
 			string mangledName, string delegateName, bool objectsAreIntPtrs, CSVisibility vis, bool isSwiftProtocol)
 		{
 			bool returnIsGeneric = func.IsTypeSpecGeneric (func.ReturnTypeSpec);
+			var returnIsSelf = !TypeSpec.IsNullOrEmptyTuple (func.ReturnTypeSpec) && func.ReturnTypeSpec.IsDynamicSelf;
 			var args = typeMap.MapParameterList (func, func.ParameterLists.Last (), objectsAreIntPtrs, true, null, null);
 			RemapSwiftClosureRepresensation (args);
-			var returnType = returnIsGeneric ? null : typeMap.MapType (func, func.ReturnTypeSpec, objectsAreIntPtrs, true);
+			var returnType = returnIsGeneric || returnIsSelf ? null : typeMap.MapType (func, func.ReturnTypeSpec, objectsAreIntPtrs, true);
 			delegateName = delegateName ?? typeMap.SanitizeIdentifier (func.Name);
 
 			args.ForEach (a => AddUsingBlock (packs, a.Type));
@@ -175,12 +176,12 @@ namespace SwiftReflector {
 			var retvalName = "xam_retval";
 			var retvalID = new CSIdentifier (retvalName);
 
-			if (func.HasThrows || returnIsGeneric || !returnType.IsVoid) { // && func.Signature.ReturnType.IsStruct || func.Signature.ReturnType.IsEnum) {
+			if (func.HasThrows || returnIsGeneric || returnIsSelf || !returnType.IsVoid ) { // && func.Signature.ReturnType.IsStruct || func.Signature.ReturnType.IsEnum) {
 				if (func.HasThrows) {
 					csParams.Insert (0, new CSParameter (CSSimpleType.IntPtr, retvalName, CSParameterKind.None));
 					csReturnType = CSSimpleType.Void;
 				} else {
-					if (!returnIsGeneric) {
+					if (!(returnIsGeneric || returnIsSelf)) {
 						if (!(func.ReturnTypeSpec is ClosureTypeSpec)) {
 							Entity ent = typeMap.GetEntityForTypeSpec (func.ReturnTypeSpec);
 							if (ent == null && !(func.ReturnTypeSpec is ProtocolListTypeSpec))

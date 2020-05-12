@@ -12,7 +12,6 @@ namespace SwiftReflector {
 	[Parallelizable (ParallelScope.All)]
 	[RunWithLeaks]
 	public class DynamicSelfTests {
-		[Ignore ("Still smoking")]
 		[Test]
 		public void SmokeTestSimplest ()
 		{

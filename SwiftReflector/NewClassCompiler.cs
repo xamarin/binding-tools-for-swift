@@ -25,6 +25,9 @@ using SwiftReflector.Importing;
 using ObjCRuntime;
 
 namespace SwiftReflector {
+	public interface foo<T> where T: foo<T> {
+
+	}
 	public class WrappingResult {
 		public WrappingResult (string modulePath, string moduleLibPath,
 		                       ModuleContents inventory, ModuleDeclaration declaration, FunctionReferenceCodeMap functionReferenceCodeMap)
@@ -131,6 +134,8 @@ namespace SwiftReflector {
 		public static CSIdentifier kProxyExistentialContainer = new CSIdentifier (kProxyExistentialContainerName);
 		public static string kProtocolWitnessTableName = "ProtocolWitnessTable";
 		public static CSIdentifier kProtocolWitnessTable = new CSIdentifier (kProtocolWitnessTableName);
+		public static string kGenericSelfName = "TSelf";
+		public static CSIdentifier kGenericSelf = new CSIdentifier (kGenericSelfName);
 
 		SwiftCompilerLocation SwiftCompilerLocations;
 		ClassCompilerLocations ClassCompilerLocations;
@@ -1745,6 +1750,9 @@ namespace SwiftReflector {
 			var wrapperClass = protocolDecl.HasAssociatedTypes ? ProtocolMethodMatcher.FindWrapperClass (wrapper, protocolDecl) : null;
 			var swiftClassName = XmlToTLFunctionMapper.ToSwiftClassName (protocolDecl);
 			var protocolContents = XmlToTLFunctionMapper.LocateProtocolContents (modInventory, swiftClassName);
+			var hasDynamicSelf = protocolDecl.HasDynamicSelf;
+			var hasDynamicSelfInReturnOnly = protocolDecl.HasDynamicSelfInReturnOnly;
+			var hasDynamicSelfInArgs = hasDynamicSelf && !hasDynamicSelfInReturnOnly;
 			if (protocolContents == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 27, $"Unable to find class contents for protocol {protocolDecl.ToFullyQualifiedName ()}.");
 
@@ -1753,11 +1761,12 @@ namespace SwiftReflector {
 				CSProxyNameForProtocol (swiftClassName, TypeMapper);
 			string classNameSuffix = String.Empty;
 
-			if (protocolDecl.HasAssociatedTypes) {
+			if (protocolDecl.HasAssociatedTypes || hasDynamicSelf) {
 				// generates <, , ,>
 				var genParts = new StringBuilder ();
 				genParts.Append ('<');
-				for (int i = 0; i < protocolDecl.AssociatedTypes.Count - 1; i++) {
+				var nGenerics = protocolDecl.AssociatedTypes.Count - (hasDynamicSelf ? 0 : 1);
+				for (int i = 0; i < nGenerics; i++) {
 					if (i > 0)
 						genParts.Append (' ');
 					genParts.Append (',');
@@ -1768,7 +1777,7 @@ namespace SwiftReflector {
 			use.AddIfNotPresent ("SwiftRuntimeLibrary");
 			var iface = new CSInterface (CSVisibility.Public, ifaceName);
 
-			string swiftProxyClassName = protocolDecl.HasAssociatedTypes ? OverrideBuilder.AssociatedTypeProxyClassName (protocolDecl) :
+			string swiftProxyClassName = protocolDecl.HasAssociatedTypes || hasDynamicSelfInArgs ? OverrideBuilder.AssociatedTypeProxyClassName (protocolDecl) :
 				OverrideBuilder.ProxyClassName (protocolDecl);
 
 			use.AddIfNotPresent (typeof (SwiftProtocolTypeAttribute));
@@ -1780,20 +1789,26 @@ namespace SwiftReflector {
 			picl = new CSClass (CSVisibility.Internal, piClassName);
 			var usedPinvokeNames = new List<string> ();
 
-			if (protocolDecl.HasAssociatedTypes) {
+			if (protocolDecl.HasAssociatedTypes || hasDynamicSelf) {
 				AddGenericsToInterface (iface, protocolDecl, use);
+				if (hasDynamicSelf) {
+					AddDynamicSelfGenericToInterface (iface);
+				}
 				proxyClass.GenericParams.AddRange (iface.GenericParams);
 				proxyClass.GenericConstraints.AddRange (iface.GenericConstraints);
-				proxyClass.Inheritance.Add (typeof (BaseAssociatedTypeProxy));
-				var inheritance = iface.ToCSType ().ToString ();
-				proxyClass.Inheritance.Add (new CSIdentifier (inheritance));
-				var entity = SynthesizeEntityFromWrapperClass (swiftProxyClassName, protocolDecl, wrapper);
-				if (!TypeMapper.TypeDatabase.Contains (entity.Type.ToFullyQualifiedName ()))
-					TypeMapper.TypeDatabase.Add (entity);
+				if (protocolDecl.HasAssociatedTypes) {
+					proxyClass.Inheritance.Add (typeof (BaseAssociatedTypeProxy));
+					var entity = SynthesizeEntityFromWrapperClass (swiftProxyClassName, protocolDecl, wrapper);
+					if (!TypeMapper.TypeDatabase.Contains (entity.Type.ToFullyQualifiedName ()))
+						TypeMapper.TypeDatabase.Add (entity);
+				} else {
+					proxyClass.Inheritance.Add (typeof (BaseProxy));
+				}
 			} else {
 				proxyClass.Inheritance.Add (typeof (BaseProxy));
-				proxyClass.Inheritance.Add (iface.Name);
 			}
+			var inheritance = iface.ToCSType ().ToString ();
+			proxyClass.Inheritance.Add (new CSIdentifier (inheritance));
 
 			iface.Inheritance.AddRange (protocolDecl.Inheritance.Select (inh => {
 				var netIface = TypeMapper.GetDotNetNameForTypeSpec (inh.InheritedTypeSpec);
@@ -2129,7 +2144,7 @@ namespace SwiftReflector {
 
 			var proxyName =  proxyClass.ToCSType ().ToString ();
 
-			var staticRecv = ImplementVirtualMethodStaticReceiver (new CSSimpleType (iface.Name.Name), proxyName,
+			var staticRecv = ImplementVirtualMethodStaticReceiver (iface.ToCSType (), proxyName,
 			                                                       delegateDecl, use, func, publicMethod, vtable.Name, homonymSuffix, protocolDecl.IsObjC, protocolDecl.HasAssociatedTypes);
 			proxyClass.Methods.Add (staticRecv);
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}", vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)),
@@ -4626,6 +4641,16 @@ namespace SwiftReflector {
 
 			cl.Properties.Add (wrapperProp);
 
+		}
+
+		void AddDynamicSelfGenericToInterface (CSInterface iface)
+		{
+			// inserts TSelf to interface:
+			// public interface ISomeSelf<TSelf, More, Generics> where TSelf: ISomeSelf<TSelf, More, Generics> {
+			// }
+			iface.GenericParams.Insert (0, new CSGenericTypeDeclaration (kGenericSelf));
+			var constraintType = iface.ToCSType ().ToString ();
+			iface.GenericConstraints.Insert (0, new CSGenericConstraint (kGenericSelf, new CSIdentifier (constraintType)));
 		}
 
 		void AddGenericsToInterface (CSInterface iface, ProtocolDeclaration proto, CSUsingPackages use)

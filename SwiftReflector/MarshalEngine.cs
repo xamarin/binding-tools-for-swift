@@ -222,13 +222,15 @@ namespace SwiftReflector {
 			var returnIsAssocPath = hasReturn && typeContext.IsProtocolWithAssociatedTypesFullPath (swiftReturnType as NamedTypeSpec, typeMapper);
 			var returnIsNonScalarStruct = hasReturn && !returnIsScalar && returnEntity != null &&
 				(returnEntity.EntityType == EntityType.Struct || returnEntity.EntityType == EntityType.Enum);
+			var returnIsSelf = hasReturn && swiftReturnType.IsDynamicSelf;
 
 			var retSimple = returnType as CSSimpleType;
 			var returnIsInterfaceFromProtocol =
 				hasReturn && returnEntity != null && returnEntity.EntityType == EntityType.Protocol && retSimple != null;
 			var returnIsProtocolList = hasReturn && swiftReturnType is ProtocolListTypeSpec;
 			var returnIsObjCProtocol = hasReturn && returnEntity != null && returnEntity.IsObjCProtocol;
-			var returnNeedsPostProcessing = (hasReturn && (returnIsClass || returnIsProtocolList || returnIsInterfaceFromProtocol || returnIsNonTrivialTuple || returnIsGeneric || returnIsNonScalarStruct || returnIsAssocPath)) || originalThrows;
+			var returnNeedsPostProcessing = (hasReturn && (returnIsClass || returnIsProtocolList || returnIsInterfaceFromProtocol || returnIsNonTrivialTuple ||
+				returnIsGeneric || returnIsNonScalarStruct || returnIsAssocPath || returnIsSelf)) || originalThrows;
 
 			includeCastToReturnType = includeCastToReturnType || returnIsTrivialEnum;
 			includeIntermediateCastToLong = includeIntermediateCastToLong || returnIsTrivialEnum;
@@ -319,9 +321,14 @@ namespace SwiftReflector {
 						} else {
 							returnIdent = returnIntPtr;
 						}
-					} else if (returnEntity != null && returnEntity.EntityType == EntityType.Protocol) {
-						var initialValue = !(swiftReturnType is NamedTypeSpec ns && ns.Name == "Swift.Any") ?
-							(CSBaseExpression)CSConstant.Null : new CSFunctionCall ("SwiftExistentialContainer0", true);
+					} else if ((returnEntity != null && returnEntity.EntityType == EntityType.Protocol) || returnIsSelf) {
+						CSBaseExpression initialValue;
+
+						if (!(swiftReturnType is NamedTypeSpec ns && ns.Name == "Swift.Any")) {
+							initialValue = returnIsSelf ? returnType.Default () : (CSBaseExpression)CSConstant.Null;
+						} else {
+							initialValue = new CSFunctionCall ("SwiftExistentialContainer0", true);
+						}
 						preMarshalCode.Insert (0, CSVariableDeclaration.VarLine (returnType, returnIdent, initialValue));
 						indexOfReturn = 0;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
