@@ -35,6 +35,7 @@ namespace SwiftReflector {
 			bool needsReturn = methodType != null && methodType != CSSimpleType.Void;
 			bool isSetter = funcDecl.IsSubscriptSetter;
 			bool returnIsGeneric = funcDecl.IsTypeSpecGeneric (funcDecl.ReturnTypeSpec);
+			var returnIsSelf = !TypeSpec.IsNullOrEmptyTuple (funcDecl.ReturnTypeSpec) && funcDecl.ReturnTypeSpec.IsDynamicSelf;
 
 			var entity = !returnIsGeneric ? typeMapper.GetEntityForTypeSpec (funcDecl.ReturnTypeSpec) : null;
 			var returnEntity = entity;
@@ -121,7 +122,7 @@ namespace SwiftReflector {
 
 			int j = 0;
 			int k = isSetter ? 1 : 0;
-			for (int i = (funcDecl.HasThrows || returnIsStruct || returnIsProtocol || isSetter || returnIsGeneric) ? 2 : 1; i < delegateParams.Count; i++, j++, k++) {
+			for (int i = (funcDecl.HasThrows || returnIsStruct || returnIsProtocol || isSetter || returnIsGeneric || returnIsSelf) ? 2 : 1; i < delegateParams.Count; i++, j++, k++) {
 				var swiftParm = funcDecl.ParameterLists [1] [k];
 				bool parmIsGeneric = funcDecl.IsTypeSpecGeneric (swiftParm);
 				entity = !parmIsGeneric ? typeMapper.GetEntityForTypeSpec (swiftParm.TypeSpec) : null;
@@ -158,7 +159,7 @@ namespace SwiftReflector {
 					if (csParmProxyType == null)
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 33, $"Unable to find C# interface type for protocol {entity.Type.ToFullyQualifiedName ()}");
 
-					var retrievecall = new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{csParmType.Name}>", false, delegateParams [i].Name);
+					var retrievecall = new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{csParmType.ToString ()}>", false, delegateParams [i].Name);
 					if (csParm.ParameterKind == CSParameterKind.Out || csParm.ParameterKind == CSParameterKind.Ref) {
 						CSIdentifier id = new CSIdentifier (MarshalEngine.Uniqueify (delegateParams [i].Name.Name, identifiersUsed));
 						identifiersUsed.Add (id.Name);
@@ -336,7 +337,7 @@ namespace SwiftReflector {
 						altBody.Add (CSFieldDeclaration.VarLine (methodType, retvalId, invoker));
 						postMarshalCode.Add (CSReturn.ReturnLine (
 							NewClassCompiler.SafeBackingFieldAccessor (retvalId, use, returnEntity.Type.ToFullyQualifiedName (), typeMapper)));
-					} else if (returnIsProtocol) {
+					} else if (returnIsProtocol || returnIsSelf) {
 						string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
 						identifiersUsed.Add (retvalName);
 						var retvalId = new CSIdentifier (retvalName);

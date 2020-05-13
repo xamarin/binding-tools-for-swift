@@ -130,8 +130,12 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 
 			for (int i = 0; i < pl1.Count; i++) {
-				ParameterItem p1 = RecastAsReference (pl1 [i]);
-				ParameterItem p2 = RecastAsReference (pl2 [i]);
+				var p1 = SubstituteSelfFromParent (fn1, pl1 [i]);
+				var p2 = SubstituteSelfFromParent (fn2, pl2 [i]);
+				p1 = RecastAsReference (p1);
+				p2 = RecastAsReference (p2);
+
+
 				// Names invariant means TYPE names not parameter names
 				if (!ParameterNamesMatch (p1, p2)) {
 					// we give a pass on matching "self".
@@ -163,6 +167,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 				}
 			}
 			return true;
+		}
+
+		static ParameterItem SubstituteSelfFromParent (FunctionDeclaration func, ParameterItem p)
+		{
+			if (func.Parent == null || !p.TypeSpec.HasDynamicSelf)
+				return p;
+			p = new ParameterItem (p);
+			p.TypeSpec = p.TypeSpec.ReplaceName ("Self", func.Parent.ToFullyQualifiedNameWithGenerics ());
+			return p;
 		}
 
 		static ParameterItem RecastAsReference (ParameterItem p)
