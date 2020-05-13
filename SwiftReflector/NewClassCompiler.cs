@@ -25,9 +25,6 @@ using SwiftReflector.Importing;
 using ObjCRuntime;
 
 namespace SwiftReflector {
-	public interface foo<T> where T: foo<T> {
-
-	}
 	public class WrappingResult {
 		public WrappingResult (string modulePath, string moduleLibPath,
 		                       ModuleContents inventory, ModuleDeclaration declaration, FunctionReferenceCodeMap functionReferenceCodeMap)
