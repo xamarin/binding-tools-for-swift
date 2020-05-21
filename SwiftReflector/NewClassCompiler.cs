@@ -2777,6 +2777,8 @@ namespace SwiftReflector {
 			if (func == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 53, $"Unable to find wrapper function for vtable setter for {classDecl.ToFullyQualifiedName (true)}");
 
+			var hasRealGenericArguments = !(classDecl is ProtocolDeclaration proto && proto.HasDynamicSelfInReturnOnly && !proto.HasAssociatedTypes);
+
 			var setterName = Uniqueify ("SwiftXamSetVtable", usedPinvokeNames);
 			usedPinvokeNames.Add (setterName);
 
@@ -2786,7 +2788,8 @@ namespace SwiftReflector {
 			picl.Methods.Add (swiftSetter);
 
 			swiftSetter.Parameters.Add (new CSParameter (CSSimpleType.IntPtr, new CSIdentifier ("vt"), CSParameterKind.None));
-			swiftSetter.Parameters.AddRange (cl.GenericParams.Select ((p, i) => new CSParameter (new CSSimpleType ("SwiftMetatype"), new CSIdentifier ($"t{i}"))));
+			if (hasRealGenericArguments)
+				swiftSetter.Parameters.AddRange (cl.GenericParams.Select ((p, i) => new CSParameter (new CSSimpleType ("SwiftMetatype"), new CSIdentifier ($"t{i}"))));
 
 			var setVTable = new CSMethod (CSVisibility.None, CSMethodKind.Static,
 						   CSSimpleType.Void, new CSIdentifier ("XamSetVTable"), new CSParameterList (), new CSCodeBlock ());
@@ -2819,7 +2822,8 @@ namespace SwiftReflector {
 
 			var args = new List<CSBaseExpression> ();
 			args.Add (vtPtr);
-			args.AddRange (cl.GenericParams.Select (p => new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false, new CSSimpleType (p.Name.Name).Typeof ())));
+			if (hasRealGenericArguments)
+				args.AddRange (cl.GenericParams.Select (p => new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false, new CSSimpleType (p.Name.Name).Typeof ())));
 
 			unsafeBlock.Add (CSFunctionCall.FunctionCallLine (String.Format ("{0}.{1}",
 										    picl.Name.Name, "SwiftXamSetVtable"), false, args.ToArray ()));
