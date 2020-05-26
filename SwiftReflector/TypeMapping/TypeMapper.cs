@@ -459,7 +459,7 @@ namespace SwiftReflector.TypeMapping {
 
 		public List<NetParam> MapParameterList (BaseDeclaration context, List<ParameterItem> st, bool isPinvoke,
 			bool structsAndEnumsAreAlwaysRefs, CSGenericTypeDeclarationCollection extraProtocolTypes,
-			CSGenericConstraintCollection extraProtocolContstraints)
+			CSGenericConstraintCollection extraProtocolContstraints, CSUsingPackages use)
 		{
 			var parms = new List<NetParam> ();
 			for (int i=0; i < st.Count; i++) {
@@ -471,6 +471,17 @@ namespace SwiftReflector.TypeMapping {
 
 					parms.Add (ToNamedParam (st [i], netBundle, i));
 				} else {
+					var entity = !context.IsTypeSpecGeneric (st [i].TypeSpec) ? GetEntityForTypeSpec (st [i].TypeSpec) : null;
+					if (entity != null && entity.EntityType == EntityType.Protocol && !isPinvoke) {
+						var proto = entity.Type as ProtocolDeclaration;
+						if (proto.HasDynamicSelf) {
+							extraProtocolTypes.Add (new CSGenericTypeDeclaration (NewClassCompiler.kGenericSelf));
+							var csProtoBundle = MapType (context, st [i].TypeSpec, isPinvoke);
+							var csType = csProtoBundle.ToCSType (use);
+							extraProtocolContstraints.Add (new CSGenericConstraint (NewClassCompiler.kGenericSelf, new CSIdentifier (csType.ToString ())));
+						}
+					}
+
 					parms.Add (MapParameterItem (context, st [i], i, isPinvoke, structsAndEnumsAreAlwaysRefs));
 				}
 			}

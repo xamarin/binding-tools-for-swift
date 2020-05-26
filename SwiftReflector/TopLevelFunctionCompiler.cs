@@ -84,7 +84,7 @@ namespace SwiftReflector {
 				} else {
 					swiftParms = setter.ParameterLists [1].Skip (1).ToList ();
 				}
-				var args = typeMap.MapParameterList (getter, swiftParms, false, false, null, null);
+				var args = typeMap.MapParameterList (getter, swiftParms, false, false, null, null, packs);
 				args.ForEach (a => AddUsingBlock (packs, a.Type));
 
 				var csParams =
@@ -140,7 +140,7 @@ namespace SwiftReflector {
 		{
 			bool returnIsGeneric = func.IsTypeSpecGeneric (func.ReturnTypeSpec);
 			var returnIsSelf = !TypeSpec.IsNullOrEmptyTuple (func.ReturnTypeSpec) && func.ReturnTypeSpec.IsDynamicSelf;
-			var args = typeMap.MapParameterList (func, func.ParameterLists.Last (), objectsAreIntPtrs, true, null, null);
+			var args = typeMap.MapParameterList (func, func.ParameterLists.Last (), objectsAreIntPtrs, true, null, null, packs);
 			RemapSwiftClosureRepresensation (args);
 			var returnType = returnIsGeneric || returnIsSelf ? null : typeMap.MapType (func, func.ReturnTypeSpec, objectsAreIntPtrs, true);
 			delegateName = delegateName ?? typeMap.SanitizeIdentifier (func.Name);
@@ -210,7 +210,7 @@ namespace SwiftReflector {
 			isStatic = isStatic || func.IsExtension;
 			var extraProtoArgs = new CSGenericTypeDeclarationCollection ();
 			var extraProtoConstraints = new CSGenericConstraintCollection ();
-			var args = typeMap.MapParameterList (func, func.ParameterLists.Last (), isPinvoke, false, extraProtoArgs, extraProtoConstraints);
+			var args = typeMap.MapParameterList (func, func.ParameterLists.Last (), isPinvoke, false, extraProtoArgs, extraProtoConstraints, packs);
 			if (isPinvoke && func.ParameterLists.Count > 1) {
 				var metaTypeBundle = new NetTypeBundle ("SwiftRuntimeLibrary", "SwiftMetatype", false, false, EntityType.None);
 				NetParam p = new NetParam ("metaClass", metaTypeBundle);

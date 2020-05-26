@@ -52,6 +52,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		public static T MakeProxy<T> (Type proxyType, T interfaceImpl)
 		{
 			var interfaceType = typeof (T);
+			proxyType = RarefiedProxyType (interfaceImpl, ref interfaceType, proxyType);
 			var ci = proxyType.GetConstructor (new Type [] { interfaceType });
 			if (ci == null)
 				throw new SwiftRuntimeException ($"Type {proxyType.Name} does not have a constructor that takes takes {interfaceType.Name}");
@@ -61,12 +62,38 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		public static BaseProxy MakeProxy (Type interfaceType, object interfaceImpl, EveryProtocol protocol)
 		{
 			var proxyType = ProxyTypeForInterfaceType (interfaceType);
+			proxyType = RarefiedProxyType (interfaceImpl, ref interfaceType, proxyType);
 
 			var ci = proxyType.GetConstructor (new Type [] { interfaceType, typeof (EveryProtocol) });
 			if (ci == null)
 				throw new SwiftRuntimeException ($"Type {proxyType.Name} does not have a constructor that takes {interfaceType.Name} and {typeof (EveryProtocol).Name}");
 
 			return (BaseProxy)ci.Invoke (new object [] { interfaceImpl, protocol });
+		}
+
+		static Type RarefiedProxyType (object interfaceImpl, ref Type interfaceType, Type proxyType)
+		{
+			if (!interfaceType.IsGenericType)
+				return proxyType;
+			var baseInterfaceType = interfaceType.GetGenericTypeDefinition ();
+			var genTypes = GetGenericTypesForInterface (interfaceImpl, baseInterfaceType);
+			interfaceType = baseInterfaceType.IsGenericTypeDefinition ? baseInterfaceType.MakeGenericType (genTypes) : interfaceType;
+			return proxyType.IsGenericTypeDefinition ? proxyType.MakeGenericType (genTypes) : proxyType;
+		}
+
+		static Type[] GetGenericTypesForInterface (object interfaceImpl, Type interfaceType)
+		{
+			var implType = interfaceImpl.GetType ();
+			foreach (var iface in implType.GetInterfaces ()) {
+				if (iface.IsGenericType) {
+					var unbound = iface.GetGenericTypeDefinition ();
+					var eq = iface.GetGenericTypeDefinition () == interfaceType;
+				}
+				if (iface.IsGenericType && iface.GetGenericTypeDefinition () == interfaceType) {
+					return iface.GetGenericArguments ();
+				}
+			}
+			throw new SwiftRuntimeException ($"Unable to find an implementation of the interface {interfaceType.Name} in the type {implType.Name}");
 		}
 
 		public static BaseProxy MakeProxy (Type interfaceType, ISwiftExistentialContainer container)
