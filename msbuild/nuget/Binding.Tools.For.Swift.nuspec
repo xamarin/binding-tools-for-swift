@@ -7,8 +7,8 @@
     <authors>chamons</authors>
     <owners>chamons</owners>
     <copyright></copyright>
-    <projectUrl>https://github.com/xamarin/xamarin-macios</projectUrl>
-    <licenseUrl>https://github.com/xamarin/xamarin-macios/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/xamarin/binding-tools-for-swift</projectUrl>
+    <licenseUrl>https://github.com/xamarin/binding-tools-for-swift/blob/main/LICENSE</licenseUrl>
     <tags></tags>
   </metadata>
   <files>

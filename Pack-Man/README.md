@@ -10,7 +10,7 @@ The Binding Tools For Swift Pack-Man is a [cake](https://cakebuild.net) script t
 
 ## Usage
 
-You can simply execute `./build.sh` once you have followed the [bootstrap instructions](https://github.com/dalexsoto/maccore/blob/master/tools/tom-swifty/BUILDING.md) and built `tom-swifty.sln`.
+You can simply execute `./build.sh` once you have followed the [bootstrap instructions](https://github.com/xamarin/binding-tools-for-swift/blob/main/tools/tom-swifty/BUILDING.md) and built `tom-swifty.sln`.
 
 You might want to supply `--configuration=VALUE` depending on the configuration you used to build our custom swift compiler.
 

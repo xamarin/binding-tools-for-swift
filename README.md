@@ -40,9 +40,9 @@ The packaging of BTFS is still evolving, and we expect to provide a binding proj
 
 ## Technical Documentation
 
-The [docs](https://github.com/xamarin/binding-tools-for-swift/tree/master/docs) directory contains a detailed walkthrough of how things work under the hood.
+The [docs](https://github.com/xamarin/binding-tools-for-swift/tree/main/docs) directory contains a detailed walkthrough of how things work under the hood.
 
-In particular the [functional outline](https://github.com/xamarin/binding-tools-for-swift/blob/master/docs/FunctionalOutline.md) is a great place to start exploring.
+In particular the [functional outline](https://github.com/xamarin/binding-tools-for-swift/blob/main/docs/FunctionalOutline.md) is a great place to start exploring.
 
 ## Feedback
 
@@ -53,4 +53,4 @@ In particular the [functional outline](https://github.com/xamarin/binding-tools-
 ## License
 
 Copyright (c) .NET Foundation Contributors. All rights reserved.
-Licensed under the [MIT](https://github.com/xamarin/binding-tools-for-swift/blob/master/LICENSE) License.
+Licensed under the [MIT](https://github.com/xamarin/binding-tools-for-swift/blob/main/LICENSE) License.
