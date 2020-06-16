@@ -8,7 +8,8 @@
 # https://github.com/blog/2392-introducing-code-owners
 # https://help.github.com/articles/about-codeowners
 
-/ @stephen-hawley
+* @stephen-hawley
+
 /jenkins @rolfbjarne
 /tests/tom-swifty-test/CommandLineTests/ @mandel-macaque
 /tom-swifty/SwiftyOptions.cs @mandel-macaque
