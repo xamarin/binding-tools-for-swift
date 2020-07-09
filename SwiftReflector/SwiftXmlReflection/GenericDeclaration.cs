@@ -71,7 +71,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 					continue; // shouldn't happen
 				if (ent.EntityType != EntityType.Protocol)
 					return false;
-				if (ent.Type is ProtocolDeclaration proto && (proto.HasAssociatedTypes || proto.HasDynamicSelfInArguments))
+				if (ent.Type is ProtocolDeclaration proto && !proto.IsExistential)
 					return true;
 			}
 			return false;

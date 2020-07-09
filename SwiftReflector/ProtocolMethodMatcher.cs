@@ -149,8 +149,7 @@ namespace SwiftReflector {
 
 		public static ClassDeclaration FindWrapperClass (WrappingResult wrapper, ProtocolDeclaration protocol)
 		{
-			var className = protocol.HasAssociatedTypes || protocol.HasDynamicSelfInArguments ? OverrideBuilder.AssociatedTypeProxyClassName (protocol) :
-				OverrideBuilder.ProxyClassName (protocol);
+			var className = protocol.IsExistential ? OverrideBuilder.ProxyClassName (protocol) : OverrideBuilder.AssociatedTypeProxyClassName (protocol);
 			var theClass = wrapper.Module.Classes.FirstOrDefault (cl => cl.Name == className);
 			return wrapper.FunctionReferenceCodeMap.OriginalOrReflectedClassFor (theClass) as ClassDeclaration;
 		}

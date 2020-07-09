@@ -17,7 +17,7 @@ namespace SwiftReflector {
 		public PatToGenericMap (ProtocolDeclaration protocolDecl)
 		{
 			Ex.ThrowOnNull (protocolDecl, nameof (protocolDecl));
-			if (!(protocolDecl.HasAssociatedTypes || (protocolDecl.HasDynamicSelf && ! protocolDecl.HasDynamicSelfInReturnOnly)))
+			if (!(protocolDecl.HasAssociatedTypes || (protocolDecl.HasDynamicSelf && !protocolDecl.HasDynamicSelfInReturnOnly)))
 				throw new ArgumentException ("ProtocolDeclaration has no associated types", nameof (protocolDecl));
 			this.protocolDecl = protocolDecl;
 			AddAssocTypesToNameMap (this.protocolDecl);

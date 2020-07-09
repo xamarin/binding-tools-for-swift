@@ -19,7 +19,7 @@ namespace SwiftReflector {
 		string vtableName = null;
 		string vtableSetterName;
 		string vtableGetterName;
-		bool isProtocol, hasAssociatedTypes, hasSelfInProtoArgs;
+		bool isProtocol, hasAssociatedTypes, hasSelfInProtoArgs, isExistential;
 		const string kCSIntPtr = "csIntPtr";
 		public const string kAssocTypeGeneric = "AU";
 		static SLIdentifier kClassIsInitialized = new SLIdentifier ("_xamarinClassIsInitialized");
@@ -38,6 +38,8 @@ namespace SwiftReflector {
 				isProtocol = true;
 				hasAssociatedTypes = protocol.HasAssociatedTypes;
 				hasSelfInProtoArgs = protocol.HasDynamicSelf && !protocol.HasDynamicSelfInReturnOnly;
+				isExistential = protocol.IsExistential;
+
 			}
 			if (classToOverride.IsFinal && !isProtocol)
 				throw new ArgumentException (String.Format ("Attempt to attach override to final class {0}.", classToOverride.ToFullyQualifiedName (true)));
@@ -298,12 +300,12 @@ namespace SwiftReflector {
 			else
 				HandleSuperClassVirtualMethods (OriginalClass);
 			IndexOfFirstNewVirtualMethod = OverriddenVirtualMethods.Count;
-			if (isProtocol && (hasAssociatedTypes || hasSelfInProtoArgs)) {
+			if (isProtocol && !isExistential) {
 				OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (OriginalClass).Select (m => MarkOverrideSurrogate (m, Reparent (RebuildFunctionDeclarationWithAssociatedTypes (OverriddenClass, m), OverriddenClass))));
 			} else {
 				OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (OriginalClass).Select (m => MarkOverrideSurrogate (m, Reparent (new FunctionDeclaration (m), OverriddenClass))));
 			}
-			var members = isProtocol && !(hasAssociatedTypes || hasSelfInProtoArgs) ? EveryProtocolExtension.Members : OverriddenClass.Members;
+			var members = isProtocol && isExistential ? EveryProtocolExtension.Members : OverriddenClass.Members;
 			members.AddRange (OverriddenVirtualMethods);
 			if (isProtocol && (hasAssociatedTypes || hasSelfInProtoArgs)) {
 				members.AddRange (VirtualPropertiesForClass (OriginalClass).Select (p => Reparent (RebuildPropertyDeclaration (p), OverriddenClass)));
@@ -391,7 +393,7 @@ namespace SwiftReflector {
 		void CreateSLImplementation ()
 		{
 			SLClass cl = null;
-			if (isProtocol && !(hasAssociatedTypes || hasSelfInProtoArgs)) {
+			if (isProtocol && isExistential) {
 				cl = new SLClass (Visibility.None, new SLIdentifier ("EveryProtocol"), namedType: NamedType.Extension);
 			} else {
 				cl = new SLClass (Visibility.Public, OverriddenClass.Name);
@@ -483,7 +485,7 @@ namespace SwiftReflector {
 				foreach (FunctionDeclaration func in OverriddenClass.AllConstructors ().Where (f => f.Access == Accessibility.Public && !f.IsConvenienceInit)) {
 					cl.Methods.Add (ToConstructor (func));
 				}
-			} else if (hasAssociatedTypes || hasSelfInProtoArgs) {
+			} else if (!isExistential) {
 				// public default constructor
 				var parameters = new List<SLParameter> ();
 				var body = new SLCodeBlock (null);
@@ -539,7 +541,7 @@ namespace SwiftReflector {
 					}
 					var overrideFunc = DefineOverride (func, i, parameters);
 					yield return overrideFunc;
-					if (isProtocol && (hasAssociatedTypes || hasSelfInProtoArgs)) {
+					if (isProtocol && !isExistential) {
 						var wrapper = DefineAssociatedTypeWrapper (func);
 						FunctionsToWrap.Add (wrapper);
 						var wrapperimpl = DefineAssociatedTypeWrapperImpl (wrapper, func);
@@ -1191,7 +1193,7 @@ namespace SwiftReflector {
 			//		}
 
 			if (isProtocol) {
-				SubstituteForSelf = (hasAssociatedTypes || hasSelfInProtoArgs) ? OverriddenClass.ToFullyQualifiedNameWithGenerics () : "XamGlue.EveryProtocol";
+				SubstituteForSelf = isExistential ? "XamGlue.EveryProtocol" : OverriddenClass.ToFullyQualifiedNameWithGenerics ();
 			} else {
 				SubstituteForSelf = null;
 			}
