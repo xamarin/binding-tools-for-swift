@@ -70,5 +70,50 @@ public func getName (a: Identity1) -> String {
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "() -> Identity1\n", otherClass: auxClass, platform: PlatformName.macOS);
 		}
+
+		[Test]
+		public void TestSelfArg ()
+		{
+			var swiftCode = @"
+public protocol Identity2 {
+	func whoAmI (s: Self)
+}
+
+public func whoWho<T> (a: T) where T : Identity2 {
+    a.whoAmI (s: a)
+}
+";
+
+			// public class Foo1 : Identity2<Foo1>
+			// {
+			//     public Foo1 () { }
+			//     public void WhoAmI (Foo1 who) {
+			//         Console.WriteLine ("Got here.");
+			//     }
+			// }
+
+			var auxClass = new CSClass (CSVisibility.Public, "Foo1");
+			var ifaceType = new CSSimpleType ("IIdentity2", false, new CSSimpleType ("Foo1"));
+			auxClass.Inheritance.Add (new CSIdentifier (ifaceType.ToString ()));
+
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, auxClass.Name,
+				new CSParameterList (), new CSCodeBlock ());
+
+			var paramList = new CSParameterList ();
+			paramList.Add (new CSParameter (new CSSimpleType ("Foo1"), new CSIdentifier ("self")));
+
+			var whoAmI = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void,
+				new CSIdentifier ("WhoAmI"), paramList, CSCodeBlock.Create (CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Got here."))));
+
+			auxClass.Constructors.Add (ctor);
+			auxClass.Methods.Add (whoAmI);
+
+			var instName = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instName, new CSFunctionCall (auxClass.Name, new Dynamo.CommaListElementCollection<CSBaseExpression> (), true));
+			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoWho", false, instName);
+			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass, platform: PlatformName.macOS);
+		}
 	}
 }

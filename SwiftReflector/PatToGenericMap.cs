@@ -17,7 +17,7 @@ namespace SwiftReflector {
 		public PatToGenericMap (ProtocolDeclaration protocolDecl)
 		{
 			Ex.ThrowOnNull (protocolDecl, nameof (protocolDecl));
-			if (!protocolDecl.HasAssociatedTypes)
+			if (!(protocolDecl.HasAssociatedTypes || (protocolDecl.HasDynamicSelf && ! protocolDecl.HasDynamicSelfInReturnOnly)))
 				throw new ArgumentException ("ProtocolDeclaration has no associated types", nameof (protocolDecl));
 			this.protocolDecl = protocolDecl;
 			AddAssocTypesToNameMap (this.protocolDecl);
@@ -27,6 +27,9 @@ namespace SwiftReflector {
 		{
 			for (int i = 0; i < decl.AssociatedTypes.Count; i++) {
 				nameIndexMap.Add (OverrideBuilder.GenericAssociatedTypeName (decl.AssociatedTypes [i]), i);
+			}
+			if (decl.HasDynamicSelf) {
+				nameIndexMap.Add (OverrideBuilder.GenericAssociatedTypeName ("Self"), decl.AssociatedTypes.Count);
 			}
 		}
 
@@ -60,6 +63,10 @@ namespace SwiftReflector {
 			var index = Int32.Parse (indexString);
 			if (index < 0)
 				throw new ArgumentOutOfRangeException (nameof (genericName), $"Expecting a non-negative number in '{genericName}'");
+
+			if (index == protocolDecl.AssociatedTypes.Count && protocolDecl.HasDynamicSelf)
+				return new AssociatedTypeDeclaration () { Name = "Self" };
+
 			if (index >= protocolDecl.AssociatedTypes.Count)
 				throw new ArgumentOutOfRangeException (nameof (genericName), $"Index value {index} from generic name '{genericName}' is out of range of the associated type collection");
 

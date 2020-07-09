@@ -30,6 +30,9 @@ namespace SwiftReflector {
 		public List<ICodeElement> MarshalFromLambdaReceiverToCSFunc (CSType thisType, string csProxyName, CSParameterList delegateParams,
 			FunctionDeclaration funcDecl, CSType methodType, CSParameterList methodParams, string methodName, bool isObjC, bool hasAssociatedTypes)
 		{
+			if (hasAssociatedTypes)
+				funcDecl = funcDecl.MacroReplaceType (funcDecl.Parent.ToFullyQualifiedNameWithGenerics (), "Self", true);
+
 			bool thisIsInterface = csProxyName != null;
 			bool isIndexer = funcDecl.IsSubscript;
 			bool needsReturn = methodType != null && methodType != CSSimpleType.Void;
@@ -130,7 +133,11 @@ namespace SwiftReflector {
 				var isUnusualParameter = IsUnusualParameter (entity, delegateParams [i]);
 				var csParm = methodParams [j];
 
-				if (entityType == EntityType.Class || (entity != null && entity.IsObjCProtocol)) {
+				if (entityType == EntityType.DynamicSelf) {
+					var retrieveCallSite = isObjC ? $"Runtime.GetNSObject<{csProxyName}> " : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{csProxyName}> ";
+					callParams.Add (new CSCastExpression(csParm.CSType, new CSFunctionCall (retrieveCallSite, false, csParm.Name).Dot (NewClassCompiler.kInterfaceImpl)));
+
+				} else if (entityType == EntityType.Class || (entity != null && entity.IsObjCProtocol)) {
 					var csParmType = csParm.CSType as CSSimpleType;
 					if (csParmType == null)
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 31, "Inconceivable! The class type for a method was NOT a CSSimpleType!");

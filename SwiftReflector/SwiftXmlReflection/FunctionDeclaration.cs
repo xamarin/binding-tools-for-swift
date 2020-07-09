@@ -52,6 +52,9 @@ namespace SwiftReflector.SwiftXmlReflection {
 			ObjCSelector = other.ObjCSelector;
 			IsRequired = other.IsRequired;
 			IsConvenienceInit = other.IsConvenienceInit;
+			foreach (var genDecl in other.Generics) {
+				Generics.Add (new GenericDeclaration (genDecl));
+			}
 		}
 
 		string returnTypeName;
@@ -363,6 +366,27 @@ namespace SwiftReflector.SwiftXmlReflection {
 				var types = ParameterLists.Last ().Select (p => p.TypeSpec).ToList ();
 				return !TypeSpec.AnyHasDynamicSelf (types);
 			}
+		}
+
+		public override bool HasDynamicSelfInArguments {
+			get {
+				return TypeSpec.AnyHasDynamicSelf (ParameterLists.Last ().Select (p => p.TypeSpec).ToList ());
+			}
+		}
+
+		public FunctionDeclaration MacroReplaceType (string toFind, string replaceWith, bool skipThisArgument)
+		{
+			var newFunc = new FunctionDeclaration (this);
+			if (!TypeSpec.IsNullOrEmptyTuple (newFunc.ReturnTypeSpec)) {
+				newFunc.ReturnTypeName = newFunc.ReturnTypeSpec.ReplaceName (toFind, replaceWith).ToString ();
+			}
+			for (int i = 0; i < newFunc.ParameterLists.Last ().Count; i++) {
+				var arg = newFunc.ParameterLists.Last () [i];
+				if (i == 0 && arg.PublicName == "this")
+					continue;
+				arg.TypeSpec = arg.TypeSpec.ReplaceName (toFind, replaceWith);
+			}
+			return newFunc;
 		}
 
 		internal string ParametersToString ()

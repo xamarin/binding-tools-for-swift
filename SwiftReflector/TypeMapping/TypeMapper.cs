@@ -541,7 +541,8 @@ namespace SwiftReflector.TypeMapping {
 			}
 		}
 
-		public NetTypeBundle MapType (BaseDeclaration context, TypeSpec spec, bool isPinvoke, bool isReturnValue = false)
+		public NetTypeBundle MapType (BaseDeclaration context, TypeSpec spec, bool isPinvoke, bool isReturnValue = false,
+			Tuple<int, int> selfDepthIndex = null)
 		{
 			if (IsCompoundProtocolListType (spec) && !isPinvoke)
 				throw new NotImplementedException ("Check for a protocol list type first because you need to promote the method to a generic");
@@ -641,8 +642,11 @@ namespace SwiftReflector.TypeMapping {
 							var retval = new NetTypeBundle (en.SharpNamespace, en.SharpTypeName, false, spec.IsInOut, en.EntityType);
 							if (en.EntityType == EntityType.Protocol && en.Type is ProtocolDeclaration proto) {
 								if (proto.HasDynamicSelf) {
-									var genMap = new NetTypeBundle (NewClassCompiler.kGenericSelfName, spec.IsInOut);
-									retval.GenericTypes.Add (genMap);
+									if (selfDepthIndex != null) {
+										retval.GenericTypes.Add (new NetTypeBundle (selfDepthIndex.Item1, selfDepthIndex.Item2));
+									} else {
+										retval.GenericTypes.Add (new NetTypeBundle (NewClassCompiler.kGenericSelfName, spec.IsInOut));
+									}
 								}
 								foreach (var assoc in proto.AssociatedTypes) {
 									var genMap = new NetTypeBundle (proto, assoc, spec.IsInOut);

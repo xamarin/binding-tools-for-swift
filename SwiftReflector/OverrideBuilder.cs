@@ -19,8 +19,9 @@ namespace SwiftReflector {
 		string vtableName = null;
 		string vtableSetterName;
 		string vtableGetterName;
-		bool isProtocol, hasAssociatedTypes;
+		bool isProtocol, hasAssociatedTypes, hasSelfInProtoArgs;
 		const string kCSIntPtr = "csIntPtr";
+		public const string kAssocTypeGeneric = "AU";
 		static SLIdentifier kClassIsInitialized = new SLIdentifier ("_xamarinClassIsInitialized");
 		ModuleDeclaration targetModule;
 
@@ -36,6 +37,7 @@ namespace SwiftReflector {
 			if (classToOverride is ProtocolDeclaration protocol) {
 				isProtocol = true;
 				hasAssociatedTypes = protocol.HasAssociatedTypes;
+				hasSelfInProtoArgs = protocol.HasDynamicSelf && !protocol.HasDynamicSelfInReturnOnly;
 			}
 			if (classToOverride.IsFinal && !isProtocol)
 				throw new ArgumentException (String.Format ("Attempt to attach override to final class {0}.", classToOverride.ToFullyQualifiedName (true)));
@@ -60,7 +62,7 @@ namespace SwiftReflector {
 				OverriddenClass = BuildOverrideDefinition (overrideName, targetModule);
 				EveryProtocolExtension = null;
 			} else {
-				if (hasAssociatedTypes) {
+				if (hasAssociatedTypes || hasSelfInProtoArgs) {
 					OverriddenClass = BuildAssociatedTypeOverride (overrideName, targetModule);
 					var entity = NewClassCompiler.SynthesizeEntityFromWrapperClass (classToOverride.Module.Name, OverriddenClass);
 					typeMapper.TypeDatabase.Add (entity);
@@ -296,14 +298,14 @@ namespace SwiftReflector {
 			else
 				HandleSuperClassVirtualMethods (OriginalClass);
 			IndexOfFirstNewVirtualMethod = OverriddenVirtualMethods.Count;
-			if (isProtocol && hasAssociatedTypes) {
+			if (isProtocol && (hasAssociatedTypes || hasSelfInProtoArgs)) {
 				OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (OriginalClass).Select (m => MarkOverrideSurrogate (m, Reparent (RebuildFunctionDeclarationWithAssociatedTypes (OverriddenClass, m), OverriddenClass))));
 			} else {
 				OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (OriginalClass).Select (m => MarkOverrideSurrogate (m, Reparent (new FunctionDeclaration (m), OverriddenClass))));
 			}
-			var members = isProtocol && !hasAssociatedTypes ? EveryProtocolExtension.Members : OverriddenClass.Members;
+			var members = isProtocol && !(hasAssociatedTypes || hasSelfInProtoArgs) ? EveryProtocolExtension.Members : OverriddenClass.Members;
 			members.AddRange (OverriddenVirtualMethods);
-			if (isProtocol && hasAssociatedTypes) {
+			if (isProtocol && (hasAssociatedTypes || hasSelfInProtoArgs)) {
 				members.AddRange (VirtualPropertiesForClass (OriginalClass).Select (p => Reparent (RebuildPropertyDeclaration (p), OverriddenClass)));
 			} else {
 				members.AddRange (VirtualPropertiesForClass (OriginalClass).Select (p => Reparent (new PropertyDeclaration (p), OverriddenClass)));
@@ -389,7 +391,7 @@ namespace SwiftReflector {
 		void CreateSLImplementation ()
 		{
 			SLClass cl = null;
-			if (isProtocol && !hasAssociatedTypes) {
+			if (isProtocol && !(hasAssociatedTypes || hasSelfInProtoArgs)) {
 				cl = new SLClass (Visibility.None, new SLIdentifier ("EveryProtocol"), namedType: NamedType.Extension);
 			} else {
 				cl = new SLClass (Visibility.Public, OverriddenClass.Name);
@@ -481,7 +483,7 @@ namespace SwiftReflector {
 				foreach (FunctionDeclaration func in OverriddenClass.AllConstructors ().Where (f => f.Access == Accessibility.Public && !f.IsConvenienceInit)) {
 					cl.Methods.Add (ToConstructor (func));
 				}
-			} else if (hasAssociatedTypes) {
+			} else if (hasAssociatedTypes || hasSelfInProtoArgs) {
 				// public default constructor
 				var parameters = new List<SLParameter> ();
 				var body = new SLCodeBlock (null);
@@ -537,7 +539,7 @@ namespace SwiftReflector {
 					}
 					var overrideFunc = DefineOverride (func, i, parameters);
 					yield return overrideFunc;
-					if (isProtocol && hasAssociatedTypes) {
+					if (isProtocol && (hasAssociatedTypes || hasSelfInProtoArgs)) {
 						var wrapper = DefineAssociatedTypeWrapper (func);
 						FunctionsToWrap.Add (wrapper);
 						var wrapperimpl = DefineAssociatedTypeWrapperImpl (wrapper, func);
@@ -569,7 +571,7 @@ namespace SwiftReflector {
 			thisItem.PrivateName = thisItem.PublicName = MarshalEngine.Uniqueify ("this", usedNames);
 			usedNames.Add (thisItem.PublicName);
 			thisItem.IsInOut = true;
-			thisItem.TypeName = "AU";
+			thisItem.TypeName = kAssocTypeGeneric;
 			newParamList.Insert (0, thisItem);
 
 			var newFunc = new FunctionDeclaration ();
@@ -580,14 +582,14 @@ namespace SwiftReflector {
 			newFunc.ReturnTypeName = assocTypeMap.RebuildTypeWithGenericType (modelFunc.ReturnTypeSpec).ToString ();
 
 			newFunc.Access = Accessibility.Public;
-			var thisGeneric = new GenericDeclaration ("AU");
-			thisGeneric.Constraints.Add (new InheritanceConstraint ("AU", OriginalClass.ToFullyQualifiedName ()));
+			var thisGeneric = new GenericDeclaration (kAssocTypeGeneric);
+			thisGeneric.Constraints.Add (new InheritanceConstraint (kAssocTypeGeneric, OriginalClass.ToFullyQualifiedName ()));
 			newFunc.Generics.Add (thisGeneric);
 			var genericNames = assocTypeMap.UniqueGenericTypeNamesFor (modelFunc);
 			foreach (var genName in genericNames) {
 				var generic = new GenericDeclaration (genName);
 				var assocName = assocTypeMap.AssociatedTypeNameFromGenericTypeName (genName);
-				generic.Constraints.Add (new EqualityConstraint (genName, $"AU.{assocName}"));
+				generic.Constraints.Add (new EqualityConstraint (genName, $"{kAssocTypeGeneric}.{assocName}"));
 				newFunc.Generics.Add (generic);
 			}
 
@@ -612,8 +614,16 @@ namespace SwiftReflector {
 
 			var parameters = new List<SLParameter> ();
 			var generics = new SLGenericTypeDeclarationCollection ();
+			string selfSub = null;
+
+			var thisArg = funcDecl.ParameterLists.Last ().FirstOrDefault (pi => pi.PublicName == "this");
+			if (thisArg != null && funcDecl.IsTypeSpecGeneric (thisArg) ) {
+				var thisType = thisArg.TypeSpec as NamedTypeSpec;
+				selfSub = thisType.Name;
+			}
+
 			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, Imports,
-				parameters, funcDecl.ParameterLists.Last (), true, generics);
+				parameters, funcDecl.ParameterLists.Last (), true, generics, selfSub != null, selfSub);
 
 			var hasReturn = !TypeSpec.IsNullOrEmptyTuple (funcDecl.ReturnTypeSpec);
 
@@ -1181,7 +1191,7 @@ namespace SwiftReflector {
 			//		}
 
 			if (isProtocol) {
-				SubstituteForSelf = hasAssociatedTypes ? OverriddenClass.ToFullyQualifiedNameWithGenerics () : "XamGlue.EveryProtocol";
+				SubstituteForSelf = (hasAssociatedTypes || hasSelfInProtoArgs) ? OverriddenClass.ToFullyQualifiedNameWithGenerics () : "XamGlue.EveryProtocol";
 			} else {
 				SubstituteForSelf = null;
 			}
@@ -1562,7 +1572,12 @@ namespace SwiftReflector {
 
 		public static string GenericAssociatedTypeName (AssociatedTypeDeclaration at)
 		{
-			return $"AT{at.Name}";
+			return GenericAssociatedTypeName (at.Name);
+		}
+
+		public static string GenericAssociatedTypeName (string at)
+		{
+			return $"AT{at}";
 		}
 
 		PropertyDeclaration RebuildPropertyDeclaration (PropertyDeclaration prop)

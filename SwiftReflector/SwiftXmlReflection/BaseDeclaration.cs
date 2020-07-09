@@ -99,6 +99,11 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return ThisOrParentProtocol (this);
 		}
 
+		public BaseDeclaration AsTypeDeclaration ()
+		{
+			return ThisOrParentTypeDeclaration (this);
+		}
+
 		static ProtocolDeclaration ThisOrParentProtocol (BaseDeclaration self)
 		{
 			if (self == null)
@@ -111,6 +116,20 @@ namespace SwiftReflector.SwiftXmlReflection {
 			} while (self != null);
 			return null;
 		}
+
+		static TypeDeclaration ThisOrParentTypeDeclaration (BaseDeclaration self)
+		{
+			if (self == null)
+				return null;
+
+			do {
+				if (self is TypeDeclaration decl)
+					return decl;
+				self = self.Parent;
+			} while (self != null);
+			return null;
+		}
+
 
 		public bool IsProtocolWithAssociatedTypesFullPath (NamedTypeSpec named, TypeMapper typeMap)
 		{
@@ -275,7 +294,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 								// Find the entity in the database
 								var entity = typeMap.TypeDatabase.EntityForSwiftName (inheritance.Inherits);
 								// Is it a protocol and it has associated types
-								if (entity != null && entity.Type is ProtocolDeclaration proto && proto.HasAssociatedTypes)
+								if (entity != null && entity.Type is ProtocolDeclaration proto && (proto.HasAssociatedTypes || proto.HasDynamicSelfInArguments))
 									result = new GenericReferenceAssociatedTypeProtocol () {
 										GenericPart = spec,
 										Protocol = proto
