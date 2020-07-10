@@ -1750,12 +1750,12 @@ namespace SwiftReflector {
 			var hasDynamicSelf = protocolDecl.HasDynamicSelf;
 			var hasDynamicSelfInReturnOnly = protocolDecl.HasDynamicSelfInReturnOnly;
 			var hasDynamicSelfInArgs = protocolDecl.HasDynamicSelfInArguments;
+			var isExistential = protocolDecl.IsExistential;
 			if (protocolContents == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 27, $"Unable to find class contents for protocol {protocolDecl.ToFullyQualifiedName ()}.");
 
 			string ifaceName = InterfaceNameForProtocol (swiftClassName, TypeMapper);
-			string className = protocolDecl.HasAssociatedTypes || protocolDecl.HasDynamicSelfInArguments ? OverrideBuilder.AssociatedTypeProxyClassName (protocolDecl) :
-				CSProxyNameForProtocol (swiftClassName, TypeMapper);
+			string className = isExistential ? CSProxyNameForProtocol (swiftClassName, TypeMapper) : OverrideBuilder.AssociatedTypeProxyClassName (protocolDecl);
 			string classNameSuffix = String.Empty;
 
 			if (protocolDecl.HasAssociatedTypes || hasDynamicSelf) {
@@ -1782,7 +1782,7 @@ namespace SwiftReflector {
 				protocolContents.TypeDescriptor.MangledName.Substring (1), protocolDecl.HasAssociatedTypes).AttachBefore (iface);
 
 			proxyClass = new CSClass (CSVisibility.Public, className);
-			var piClassName = protocolDecl.HasAssociatedTypes || protocolDecl.HasDynamicSelfInArguments ? PIClassName (wrapperClass.ToFullyQualifiedName ()) : PIClassName (swiftClassName);
+			var piClassName = isExistential ? PIClassName (swiftClassName) : PIClassName (wrapperClass.ToFullyQualifiedName ());
 			picl = new CSClass (CSVisibility.Internal, piClassName);
 			var usedPinvokeNames = new List<string> ();
 
@@ -1820,7 +1820,7 @@ namespace SwiftReflector {
 								       out vtable);
 
 
-			if (protocolDecl.HasAssociatedTypes || hasDynamicSelfInArgs) {
+			if (!isExistential) {
 				var classContents = wrapper.Contents.Classes.Values.FirstOrDefault (cl => cl.Name.ToFullyQualifiedName () == wrapperClass.ToFullyQualifiedName ());
 				if (classContents == null)
 					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 70, $"Unable to find wrapper class contents for protocol {protocolDecl.ToFullyQualifiedName ()}");
@@ -1854,8 +1854,7 @@ namespace SwiftReflector {
 
 		Entity SynthesizeEntityFromWrapperClass (string csClassName, ProtocolDeclaration protocol, WrappingResult wrapper)
 		{
-			var className = protocol.HasAssociatedTypes || protocol.HasDynamicSelfInArguments ? OverrideBuilder.AssociatedTypeProxyClassName (protocol) :
-				OverrideBuilder.ProxyClassName (protocol);
+			var className = protocol.IsExistential ? OverrideBuilder.ProxyClassName (protocol) : OverrideBuilder.AssociatedTypeProxyClassName (protocol);
 			var theClass = wrapper.Module.Classes.FirstOrDefault (cl => cl.Name == className);
 			var wrapperclass = wrapper.FunctionReferenceCodeMap.OriginalOrReflectedClassFor (theClass) as ClassDeclaration;
 			var entity = new Entity ();
@@ -2013,7 +2012,7 @@ namespace SwiftReflector {
 			vtable = new CSStruct (CSVisibility.Internal, new CSIdentifier (vtableTypeName));
 			int vtableEntryIndex = 0;
 
-			if (protocolDecl.HasAssociatedTypes || protocolDecl.HasDynamicSelfInArguments) {
+			if (!protocolDecl.IsExistential) {
 				var matcher = new ProtocolMethodMatcher (protocolDecl, virtFunctions, wrapper);
 				assocWrapperFunctions = new List<FunctionDeclaration> ();
 				matcher.MatchFunctions (assocWrapperFunctions);
@@ -2112,7 +2111,7 @@ namespace SwiftReflector {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 36, $"Unable to find wrapper function for {func.Name} in protocol {protocolDecl.ToFullyQualifiedName (true)}.");
 			}
 			var delegateDecl = TLFCompiler.CompileToDelegateDeclaration (func, use, null, "Del" + OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex),
-				true, CSVisibility.Public, !protocolDecl.IsObjC && !(protocolDecl.HasAssociatedTypes || protocolDecl.HasDynamicSelfInArguments));
+				true, CSVisibility.Public, !protocolDecl.IsObjC && protocolDecl.IsExistential);
 			vtable.Delegates.Add (delegateDecl);
 			var field = new CSFieldDeclaration (new CSSimpleType (delegateDecl.Name.Name), OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
 			CSAttribute.MarshalAsFunctionPointer ().AttachBefore (field);
@@ -2131,7 +2130,7 @@ namespace SwiftReflector {
 			                                                      tlWrapperFunction, false, MakeAssociatedTypeNamer (protocolDecl),
 									      restoreDynamicSelf: protocolDecl.HasDynamicSelfInArguments);
 
-			if (protocolDecl.HasAssociatedTypes || protocolDecl.HasDynamicSelfInArguments) {
+			if (!protocolDecl.IsExistential) {
 				SubstituteAssociatedTypeNamer (protocolDecl, publicMethod);
 			}
 
@@ -2145,7 +2144,7 @@ namespace SwiftReflector {
 			var proxyName =  proxyClass.ToCSType ().ToString ();
 
 			var staticRecv = ImplementVirtualMethodStaticReceiver (iface.ToCSType (), proxyName,
-			                                                       delegateDecl, use, func, publicMethod, vtable.Name, homonymSuffix, protocolDecl.IsObjC, protocolDecl.HasAssociatedTypes || protocolDecl.HasDynamicSelfInArguments);
+			                                                       delegateDecl, use, func, publicMethod, vtable.Name, homonymSuffix, protocolDecl.IsObjC, !protocolDecl.IsExistential);
 			proxyClass.Methods.Add (staticRecv);
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}", vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)),
 								  staticRecv.Name));
@@ -3448,8 +3447,7 @@ namespace SwiftReflector {
 			//	}
 			// }
 
-			var proxyName = protocolDecl.HasAssociatedTypes || protocolDecl.HasDynamicSelfInArguments ? OverrideBuilder.AssociatedTypeProxyClassName (protocolDecl) :
-				"EveryProtocol";
+			var proxyName = protocolDecl.IsExistential ? "EveryProtocol" : OverrideBuilder.AssociatedTypeProxyClassName (protocolDecl);
 
 			ClassContents swiftProxy = null;
 			foreach (var cl in wrapper.Contents.Classes.Values) {
