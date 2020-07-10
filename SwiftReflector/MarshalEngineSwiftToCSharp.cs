@@ -354,6 +354,10 @@ namespace SwiftReflector {
 
 		SLBaseExpr MarshalNamedTypeSpec (BaseDeclaration declContext, string name, NamedTypeSpec spec)
 		{
+			if (spec.IsDynamicSelf) {
+				return MarshalDynamicSelf (declContext, name);
+			}
+
 			if (typeMapper.GetEntityForTypeSpec (spec) == null)
 				throw new NotImplementedException ($"Unknown type {name}:{spec.ToString ()} in context {declContext.ToFullyQualifiedName (true)}");
 			bool isClass = NamedSpecIsClass (spec);
@@ -424,6 +428,12 @@ namespace SwiftReflector {
 			postMarshalCode.Add (ptrDealloc);
 			return new SLFunctionCall ("toIntPtr", false, true,
 						   new SLArgument (new SLIdentifier ("value"), localPtr, true));
+		}
+
+		SLBaseExpr MarshalDynamicSelf (BaseDeclaration declContext, string name)
+		{
+			return new SLFunctionCall ("toIntPtr", false, true,
+						   new SLArgument (new SLIdentifier ("value"), new SLIdentifier ("self"), true));
 		}
 
 		SLBaseExpr MarshalProtocolListTypeSpec (BaseDeclaration declContext, string name, ProtocolListTypeSpec protocols)

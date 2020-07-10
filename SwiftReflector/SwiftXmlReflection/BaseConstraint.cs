@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Xml.Linq;
 using SwiftReflector.IOUtils;
 
@@ -53,6 +54,17 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return pieces [1];
 			}
 			return null;
+		}
+
+		public static BaseConstraint CopyOf (BaseConstraint baseConstraint)
+		{
+			if (baseConstraint is InheritanceConstraint inh) {
+				return new InheritanceConstraint (inh.Name, inh.Inherits);
+
+			} else if (baseConstraint is EqualityConstraint eq) {
+				return new EqualityConstraint (eq.Type1, eq.Type2);
+			}
+			throw new NotImplementedException ($"Unknown constraint type {baseConstraint.GetType ().Name}");
 		}
 	}
 

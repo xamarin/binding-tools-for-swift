@@ -56,7 +56,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 		public bool HasDynamicSelfInReturnOnly {
-			get => Members.All (m => m.HasDynamicSelfInReturnOnly) || HasAssociatedTypes;
+			get => Members.Any (m => m.HasDynamicSelfInReturnOnly) && !HasDynamicSelfInArguments;
+		}
+
+		public bool HasDynamicSelfInArguments {
+			get => Members.Any (m => m.HasDynamicSelfInArguments);
+		}
+
+		public bool IsExistential {
+			get => !(HasAssociatedTypes || HasDynamicSelfInArguments);
 		}
 	}
 }

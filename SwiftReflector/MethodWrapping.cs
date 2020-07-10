@@ -1103,11 +1103,17 @@ namespace SwiftReflector {
 			file.Classes.AddRange (overrider.ClassImplementations);
 			file.Functions.AddRange (overrider.Functions);
 			file.Declarations.AddRange (overrider.Declarations);
-			var selfSub = protocol.HasAssociatedTypes ? overrider.OverriddenClass.ToFullyQualifiedNameWithGenerics () : "XamGlue.EveryProtocol";
-			EstablishSubtituteForSelf (overrider.SubstituteForSelf);
 			try {
+				if (protocol.HasAssociatedTypes || (protocol.HasDynamicSelf && !protocol.HasDynamicSelfInReturnOnly))
+					EstablishSubtituteForSelf (OverrideBuilder.kAssocTypeGeneric);
+				else
+					EstablishSubtituteForSelf (overrider.SubstituteForSelf);
 				WrapFunctions (ref file, overrider.FunctionsToWrap);
-				WrapClass (protocol.HasAssociatedTypes ? overrider.OverriddenClass : overrider.OriginalClass, cw, modInventory, file, null);
+
+				EstablishSubtituteForSelf (overrider.SubstituteForSelf);
+
+				WrapClass (protocol.HasAssociatedTypes || (protocol.HasDynamicSelf && !protocol.HasDynamicSelfInReturnOnly) ? overrider.OverriddenClass : overrider.OriginalClass,
+					cw, modInventory, file, null, protocol);
 			} finally {
 				RelinquishSubstituteForSelf ();
 			}
@@ -1161,7 +1167,7 @@ namespace SwiftReflector {
 		}
 
 		void WrapClass (ClassDeclaration cl, CodeWriter cw, ModuleInventory modInventory,
-			SLFile file, ClassDeclaration externalCl = null)
+			SLFile file, ClassDeclaration externalCl = null, ProtocolDeclaration originalProtocol = null)
 		{
 			file = file ?? new SLFile (null);
 
@@ -1469,7 +1475,9 @@ namespace SwiftReflector {
 				bool instanceIsProtocol = !instanceIsStructOrEnum && IsProtocol (typeMapper, funcDecl.ParameterLists [0] [0]);
 				bool instanceIsValueType = instanceIsStructOrEnum || instanceIsProtocol;
 				bool instanceIsExtensionSetter = (funcDecl.IsSetter || funcDecl.IsSubscriptSetter) && funcDecl.IsExtension;
-				var instanceType = typeMapper.SwiftTypeMapper.MapType (modules, className);
+
+				SLType instanceType = null;
+				instanceType = typeMapper.SwiftTypeMapper.MapType (modules, className);
 				if (funcDecl.Parent.ContainsGenericParameters) {
 					instanceType = new SLBoundGenericType (
 						instanceType.ToString (), parentGenerics
@@ -1785,7 +1793,8 @@ namespace SwiftReflector {
 				throw new NotImplementedException ("can't handle closures types bound in generics in top level functions");
 
 			// set up the parameters for the declaration
-			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, modules, callParms, funcDecl.ParameterLists.Last (), false);
+			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, modules, callParms, funcDecl.ParameterLists.Last (), false,
+				remapSelf: !String.IsNullOrEmpty (substituteForSelf), selfReplacement: substituteForSelf);
 
 			usedNames.Add (funcDecl.Name);
 
@@ -2114,8 +2123,9 @@ namespace SwiftReflector {
 			uniqueNames.AddRange (parms);
 			retval.AddRange (parms.Select ((nt, i) => {
 				bool parmNameIsRequired = original [i].NameIsRequired;
-				if (original [i].TypeSpec is ClosureTypeSpec) {
-					var ct = (ClosureTypeSpec)original [i].TypeSpec;
+				var originalTypeSpec = original [i].TypeSpec.ReplaceName ("Self", substituteForSelf);
+				if (originalTypeSpec is ClosureTypeSpec) {
+					var ct = (ClosureTypeSpec)originalTypeSpec;
 					var closureName = new SLIdentifier (GetUniqueNameForFoo ("clos", uniqueNames));
 					uniqueNames.Add (new SLParameter (closureName, SLSimpleType.Bool)); // type doesn't matter here
 
@@ -2241,7 +2251,7 @@ namespace SwiftReflector {
 					return new SLArgument (nt.PublicName, closExpr, parmNameIsRequired);
 				} else {
 					bool isGeneric = nt.TypeAnnotation is SLGenericReferenceType;
-					if (!isGeneric && (original [i].TypeSpec is TupleTypeSpec || typeMapper.MustForcePassByReference (context, original [i].TypeSpec))) {
+					if (!isGeneric && (originalTypeSpec is TupleTypeSpec || typeMapper.MustForcePassByReference (context, originalTypeSpec))) {
 						AddXamGlueImport (modules);
 						var objExpr = nt.PrivateName.Dot (new SLIdentifier ("pointee"));
 						if (original [i].IsInOut)
@@ -2463,6 +2473,30 @@ namespace SwiftReflector {
 		void RelinquishSubstituteForSelf ()
 		{
 			substituteForSelf = null;
+		}
+
+		static FunctionDeclaration ReplaceAndGenericize (ProtocolDeclaration proto, string substituteForSelf, FunctionDeclaration funcDecl)
+		{
+			if (proto == null || !proto.IsExistential || String.IsNullOrEmpty (substituteForSelf))
+				return funcDecl;
+
+			var replacement = new FunctionDeclaration (funcDecl);
+			var generic = new GenericDeclaration (substituteForSelf);
+			generic.Constraints.Add (new InheritanceConstraint (substituteForSelf, proto.ToFullyQualifiedName ()));
+			replacement.Generics.Add (generic);
+			var args = replacement.ParameterLists.Last ();
+			foreach (var arg in args) {
+				if (arg.TypeSpec.HasDynamicSelf) {
+					arg.TypeSpec = arg.TypeSpec.ReplaceName ("Self", substituteForSelf);
+				}
+			}
+			if (replacement.ReturnTypeSpec.HasDynamicSelf)
+				replacement.ReturnTypeName = replacement.ReturnTypeSpec.ReplaceName ("Self", substituteForSelf).ToString ();
+
+			if (!replacement.IsStatic && !replacement.IsConstructor && replacement.ParameterLists.Count > 0) {
+				replacement.ParameterLists [0] [0].TypeName = substituteForSelf;
+			}
+			return replacement;
 		}
 	}
 }

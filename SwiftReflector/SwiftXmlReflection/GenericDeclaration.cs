@@ -20,6 +20,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 			Name = name;
 		}
 
+		public GenericDeclaration (GenericDeclaration other)
+			: this ()
+		{
+			Name = other.Name;
+			foreach (var constraint in other.Constraints) {
+				Constraints.Add (BaseConstraint.CopyOf (constraint));
+			}
+		}
+
 
 		public string Name { get; set; }
 		public List<BaseConstraint> Constraints { get; private set; }
@@ -62,7 +71,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 					continue; // shouldn't happen
 				if (ent.EntityType != EntityType.Protocol)
 					return false;
-				if (ent.Type is ProtocolDeclaration proto && proto.HasAssociatedTypes)
+				if (ent.Type is ProtocolDeclaration proto && !proto.IsExistential)
 					return true;
 			}
 			return false;

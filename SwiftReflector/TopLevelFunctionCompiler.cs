@@ -276,8 +276,11 @@ namespace SwiftReflector {
 									// need to add extra generics:
 									// AT0, ...
 									// need to add the constraint T : ISwiftProto<AT0, AT1, AT2, ...>
-									var assocTypeNames = proto.Protocol.AssociatedTypes.Select (assoc => OverrideBuilder.GenericAssociatedTypeName (assoc));
+									var assocTypeNames = proto.Protocol.AssociatedTypes.Select (assoc => OverrideBuilder.GenericAssociatedTypeName (assoc)).ToList ();
 									retval.GenericParameters.AddRange (assocTypeNames.Select (name => new CSGenericTypeDeclaration (new CSIdentifier (name))));
+									if (proto.Protocol.HasDynamicSelf) {
+										assocTypeNames.Insert (0, genTypeId.Name);
+									}
 									var genParts = assocTypeNames.Select (name => new CSSimpleType (name)).ToArray ();
 									var genType = new CSSimpleType ($"I{proto.Protocol.Name}", false, genParts);
 									var genRef = new CSIdentifier (CSGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2));

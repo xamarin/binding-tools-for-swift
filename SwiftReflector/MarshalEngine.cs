@@ -172,7 +172,8 @@ namespace SwiftReflector {
 								      WrappingResult wrapper,
 								      bool includeIntermediateCastToLong = false,
 								      int passedInIndexOfReturn = -1,
-								      bool originalThrows = false)
+								      bool originalThrows = false,
+								      bool restoreDynamicSelf = false)
 		{
 			RequiredUnsafeCode = false;
 			preMarshalCode.Clear ();
@@ -180,6 +181,11 @@ namespace SwiftReflector {
 			fixedChain.Clear ();
 			returnLine = null;
 			functionCall = null;
+
+
+			if (restoreDynamicSelf) {
+				wrapperFuncDecl = wrapperFuncDecl.MacroReplaceType (typeContext.AsTypeDeclaration ().ToFullyQualifiedName (), "Self", true);
+			}
 
 			var parms = new CSParameterList (pl); // work with local copy
 			CSIdentifier returnIdent = null, returnIntPtr = null, returnProtocol = null;
@@ -617,7 +623,8 @@ namespace SwiftReflector {
 							      return en.EntityType == EntityType.Protocol;
 						      }).OrderBy ((arg) => ((NamedTypeSpec)arg.InheritsTypeSpec).Name).
 				Select (inh => {
-					NetTypeBundle ntb = typeMapper.MapType (func, inh.InheritsTypeSpec, false);
+					var selfDepthIndex = IsProtocolWithSelfInArguments (inh.InheritsTypeSpec) ? new Tuple<int, int> (depth, index) : null;
+					NetTypeBundle ntb = typeMapper.MapType (func, inh.InheritsTypeSpec, false, selfDepthIndex: selfDepthIndex);
 					return ntb.ToCSType (use);
 				}).ToList ();
 				genRef.InterfaceConstraints.AddRange (constraints);
@@ -656,6 +663,9 @@ namespace SwiftReflector {
 		CSBaseExpression Marshal (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p, TypeSpec swiftType, bool marshalProtocolAsValueType, bool isReturnVariable)
 		{
 			p = ReworkParameterWithNamer (p);
+
+			if (swiftType.HasDynamicSelf)
+				return MarshalDynamicSelf (typeContext, funcDecl, p, swiftType, marshalProtocolAsValueType, isReturnVariable);
 			if (typeContext.IsTypeSpecGenericReference (swiftType) || typeContext.IsProtocolWithAssociatedTypesFullPath (swiftType as NamedTypeSpec, typeMapper)) {
 				return MarshalGenericReference (typeContext, funcDecl, p, swiftType as NamedTypeSpec);
 			}
@@ -1138,6 +1148,13 @@ namespace SwiftReflector {
 			}
 		}
 
+		CSBaseExpression MarshalDynamicSelf (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p,
+			TypeSpec swiftType, bool marshalProtocolAsValueType, bool isReturnVariable)
+		{
+			// FIXME - see issue 363 https://github.com/xamarin/binding-tools-for-swift/issues/363
+			return CSConstant.IntPtrZero;
+		}
+
 
 		bool IsClassConstrained (FunctionDeclaration funcDecl, NamedTypeSpec swiftType)
 		{
@@ -1258,7 +1275,14 @@ namespace SwiftReflector {
 			var depthIndex = wrapperFunc.GetGenericDepthAndIndex (swiftType);
 			if (!isAssocTypePath) {
 				constraints.AddRange (wrapperFunc.Generics [depthIndex.Item2].Constraints.OfType<InheritanceConstraint> ().Select (inheritanceConstraint => {
-					var ntb = typeMapper.MapType (wrapperFunc, inheritanceConstraint.InheritsTypeSpec, false);
+					Tuple<int, int> selfDepthIndex = null;
+					if (IsProtocolWithSelfInArguments (inheritanceConstraint.InheritsTypeSpec)) {
+						selfDepthIndex = depthIndex;
+					}
+					var constraintEntity = typeMapper.GetEntityForTypeSpec (inheritanceConstraint.InheritsTypeSpec);
+
+					var ntb = typeMapper.MapType (wrapperFunc, inheritanceConstraint.InheritsTypeSpec, false,
+						selfDepthIndex: selfDepthIndex);
 					if (ntb == null)
 						throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 33, $"Unable to find C# type for protocol constraint type {inheritanceConstraint.Inherits}");
 					use.AddIfNotPresent (ntb.NameSpace);
@@ -1284,7 +1308,10 @@ namespace SwiftReflector {
 			CSCodeBlock assocPostElseClause = null;
 			if (!isAssocTypePath && (wrapperFunc.Generics [depthIndex.Item2].Constraints.Count == 1
 				&& wrapperFunc.Generics [depthIndex.Item2].Constraints [0] is InheritanceConstraint constraint)) {
-				var constraintNTB = typeMapper.MapType (wrapperFunc, constraint.InheritsTypeSpec as NamedTypeSpec, false);
+
+				var selfDepthIndex = IsProtocolWithSelfInArguments (constraint.InheritsTypeSpec) ? depthIndex : null;
+
+				var constraintNTB = typeMapper.MapType (wrapperFunc, constraint.InheritsTypeSpec as NamedTypeSpec, false, selfDepthIndex: selfDepthIndex);
 				use.AddIfNotPresent (constraintNTB.NameSpace);
 				var constraintType = constraintNTB.ToCSType (use);
 				var assocIfClause = new CSCodeBlock ();
@@ -1321,6 +1348,17 @@ namespace SwiftReflector {
 
 		}
 
+		bool IsProtocolWithSelfInArguments (TypeSpec type)
+		{
+			if (type == null)
+				return false;
+			var entity = typeMapper.GetEntityForTypeSpec (type);
+			if (entity == null || entity.EntityType != EntityType.Protocol)
+				return false;
+			var protocol = (ProtocolDeclaration)entity.Type;
+			return protocol.HasDynamicSelfInArguments;
+		}
+
 		CSBaseExpression MarshalAssociatedTypeProtocolConstrained (BaseDeclaration typeContext, FunctionDeclaration wrapperFunc, CSParameter p, NamedTypeSpec swiftType)
 		{
 			// var proxy = p is ProxyType ? (InterfaceType)p : SwiftProtocolTypeAttribute.MakeProxy (typeof (proxyType), (InterfaceType)p);
@@ -1334,7 +1372,14 @@ namespace SwiftReflector {
 			// }
 
 			var protocolConstraint = ProtocolConstraintFromFunctionDeclaration (swiftType, wrapperFunc);
-			var csInterfaceTypeNTB = typeMapper.MapType (wrapperFunc, new NamedTypeSpec (protocolConstraint.ToFullyQualifiedName ()), false);
+			Tuple<int, int> selfDepthIndex = null;
+			if (protocolConstraint.HasDynamicSelfInArguments) {
+				selfDepthIndex = wrapperFunc.GetGenericDepthAndIndex (swiftType);
+				if (selfDepthIndex.Item1 < 0 || selfDepthIndex.Item2 < 0)
+					selfDepthIndex = null;
+			}
+			var csInterfaceTypeNTB = typeMapper.MapType (wrapperFunc, new NamedTypeSpec (protocolConstraint.ToFullyQualifiedName ()), false,
+				selfDepthIndex: selfDepthIndex);
 			var csInterfaceType = csInterfaceTypeNTB.ToCSType (use) as CSSimpleType;
 			var csProxyType = BuildGenericInterfaceFromAssociatedTypes (csInterfaceType, protocolConstraint);
 
