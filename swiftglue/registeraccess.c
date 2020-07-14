@@ -24,7 +24,7 @@ void swiftAsmArg0 ()
 	__asm("mov r0, r0");
 #elif i386
 	asm {
-		mov eax, dword ptr [ebp + 8]
+		mov eax, dword ptr [ebp + 12]
 	}
 #else
 #error("Unknown CPU type for register access");
@@ -41,7 +41,7 @@ void swiftAsmArg1 ()
 	__asm("mov r0, r1");
 #elif i386
 	asm {
-		mov eax, dword ptr [ebp + 12]
+		mov eax, dword ptr [ebp + 16]
 	}
 #else
 #error("Unknown CPU type for register access");
@@ -58,7 +58,7 @@ void swiftAsmArg2 ()
 	__asm("mov r0, r2");
 #elif i386
 	asm {
-		mov eax, dword ptr [ebp + 16]
+		mov eax, dword ptr [ebp + 20]
 	}
 #else
 #error("Unknown CPU type for register access");
@@ -75,7 +75,7 @@ void swiftAsmArg3 ()
 	__asm("mov r0, r3");
 #elif i386
 	asm {
-		mov eax, dword ptr [ebp + 20]
+		mov eax, dword ptr [ebp + 24]
 	}
 #else
 #error("Unknown CPU type for register access");
@@ -92,7 +92,7 @@ void swiftSelfArg ()
 	__asm("mov r0, r0");
 #elif i386
 	asm {
-		mov eax, dword ptr [ebp + 8]
+		mov eax, dword ptr [ebp + 12]
 	}
 #else
 #error("Unknown CPU type for register access");
