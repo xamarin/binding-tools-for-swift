@@ -31,11 +31,13 @@ namespace tomwiftytest {
 		public const string kSwiftCustomDirectoryRel = "../../../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64";
 #if DEBUG
 		public const string kSwiftRuntimeGlueDirectoryRel = "../../../../swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework";
+		public const string kSwiftRuntimeSourceDirectoryRel = "../../../../swiftglue/";
 #endif
 		public static string kSwiftDeviceTestRoot = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "../../devicetests"));
 		public static string kLeakCheckBinary = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "..", "..", "..", "..", "leaktest", "bin", "Debug", "leaktest"));
 		public static string kSwiftRuntimeGlueDirectory = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), kSwiftRuntimeGlueDirectoryRel) : FindPathFromEnvVariable ("lib/SwiftInterop/mac/XamGlue.framework"));
 		public static string kSwiftCustomDirectory = PosixHelpers.RealPath (SOM_PATH ?? Path.Combine (GetTestDirectory (), kSwiftCustomDirectoryRel));
+		public static string kXamGlueSourceDirectory = PosixHelpers.RealPath (SOM_PATH ?? Path.Combine (GetTestDirectory (), kSwiftRuntimeSourceDirectoryRel));
 
 		static string kSwiftCustomBin = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (kSwiftCustomDirectory, "bin/") : FindPathFromEnvVariable ("bin/swift/bin/")) + "/";
 		static string kSwiftCustomLib = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (kSwiftCustomDirectory, "lib/swift/macosx/") : FindPathFromEnvVariable ("bin/swift/lib/swift/macosx/"));

@@ -37,17 +37,27 @@ $(3)_SDK:=$$(shell xcrun --sdk $(2) --show-sdk-path)
 
 ## debug
 $(3)_DEBUG_OUTPUTDIR:=$(BINDIR)/Debug/$(1)/$$($(3)_ARCH)
-$$($(3)_DEBUG_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift)
+$(3)_DEBUG_COUTPUTDIR:=$(BINDIR)/Debug/$(1)/$$($(3)_ARCH)/ofiles
+$$($(3)_DEBUG_COUTPUTDIR)/%.o : %.c
+	mkdir -p $$($(3)_DEBUG_COUTPUTDIR)
+	clang -x c -arch $$($(3)_ARCH) -std=gnu11 -O0 -fasm-blocks -c $$< -o $$($(3)_DEBUG_COUTPUTDIR)/$$<.o
+
+$$($(3)_DEBUG_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_DEBUG_COUTPUTDIR)/*.o
 	$(Q) mkdir -p $$(dir $$@)
-	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Debug])   $(UNPACKAGED_SWIFTC) -g -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -module-name $(MODULENAME) -o $$@.tmp *.swift
+	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Debug])   $(UNPACKAGED_SWIFTC) -g -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_DEBUG_COUTPUTDIR)/*.o
 	$$(Q) install_name_tool -delete_rpath $(realpath $(UNPACKAGED_SWIFTLIB)/$(2)) $$@.tmp
 	$$(Q) mv $$@.tmp $$@
 
 ## release
 $(3)_RELEASE_OUTPUTDIR=$(BINDIR)/Release/$(1)/$$($(3)_ARCH)
-$$($(3)_RELEASE_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift)
+$(3)_RELEASE_COUTPUTDIR:=$(BINDIR)/Release/$(1)/$$($(3)_ARCH)/ofiles
+$$($(3)_RELEASE_COUTPUTDIR)/%.o : %.c
+	mkdir -p $$($(3)_RELEASE_COUTPUTDIR)
+	clang -x c -arch $$($(3)_ARCH) -DCPU_ARCH=$$($(3)_ARCH) -std=gnu11 -Os -fasm-blocks -c $$< -o $$($(3)_RELEASE_COUTPUTDIR)/$$<.o
+
+$$($(3)_RELEASE_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_RELEASE_COUTPUTDIR)/*.o
 	$(Q) mkdir -p $$(dir $$@)
-	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Release]) $(UNPACKAGED_SWIFTC) -O -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -module-name $(MODULENAME) -o $$@.tmp *.swift
+	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Release]) $(UNPACKAGED_SWIFTC) -O -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_RELEASE_COUTPUTDIR)/*.o
 	$$(Q) install_name_tool -delete_rpath $(realpath $(UNPACKAGED_SWIFTLIB)/$(2)) $$@.tmp
 	$$(Q) mv $$@.tmp $$@
 endef

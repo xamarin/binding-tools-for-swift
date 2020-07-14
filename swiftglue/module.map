@@ -1,0 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+module RegisterAccess [system] {
+header "registeraccess.h"
+export *
+}

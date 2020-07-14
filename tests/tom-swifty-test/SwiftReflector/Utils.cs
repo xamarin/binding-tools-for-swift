@@ -41,6 +41,8 @@ namespace SwiftReflector {
 			{
 				includeDirectories = new string [] { provider.DirectoryPath };
 				libraryDirectories.Add (provider.DirectoryPath);
+				File.Copy (Path.Combine (Compiler.kXamGlueSourceDirectory, "module.map"), Path.Combine (provider.DirectoryPath, "module.map"));
+				File.Copy (Path.Combine (Compiler.kXamGlueSourceDirectory, "registeraccess.h"), Path.Combine (provider.DirectoryPath, "registeraccess.h"));
 			}
 
 			SwiftCompilerOptions options = new SwiftCompilerOptions (moduleName, includeDirectories, libraryDirectories.ToArray (), new string [] { "XamGlue" });
