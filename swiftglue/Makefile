@@ -39,8 +39,8 @@ $(3)_SDK:=$$(shell xcrun --sdk $(2) --show-sdk-path)
 $(3)_DEBUG_OUTPUTDIR:=$(BINDIR)/Debug/$(1)/$$($(3)_ARCH)
 $(3)_DEBUG_COUTPUTDIR:=$(BINDIR)/Debug/$(1)/$$($(3)_ARCH)/ofiles
 $$($(3)_DEBUG_COUTPUTDIR)/%.o : %.c
-	mkdir -p $$($(3)_DEBUG_COUTPUTDIR)
-	clang -x c -arch $$($(3)_ARCH) -std=gnu11 -O0 -fasm-blocks -c $$< -o $$($(3)_DEBUG_COUTPUTDIR)/$$<.o
+	$$(Q) mkdir -p $$($(3)_DEBUG_COUTPUTDIR)
+	$$(call Q_2,CLANG [$(1)/$$($(3)_ARCH)/Debug/$$(@F)]) clang -x c -arch $$($(3)_ARCH) -std=gnu11 -O0 -fasm-blocks -c $$< -o $$($(3)_DEBUG_COUTPUTDIR)/$$<.o
 
 $$($(3)_DEBUG_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_DEBUG_COUTPUTDIR)/*.o
 	$(Q) mkdir -p $$(dir $$@)
