@@ -25,6 +25,8 @@ bindingmetadata.macos.swift:
 
 generate-swift-bindings: bindingmetadata.iphone.swift bindingmetadata.macos.swift
 
+CFILES:=$(wildcard *.c)
+
 #
 # Define a template that can compile the swift glue code for each architecture
 #
@@ -38,26 +40,29 @@ $(3)_SDK:=$$(shell xcrun --sdk $(2) --show-sdk-path)
 ## debug
 $(3)_DEBUG_OUTPUTDIR:=$(BINDIR)/Debug/$(1)/$$($(3)_ARCH)
 $(3)_DEBUG_COUTPUTDIR:=$(BINDIR)/Debug/$(1)/$$($(3)_ARCH)/ofiles
+$(3)_DEBUG_OBJFILES:=$$(foreach cfile,$(CFILES),$$($(3)_DEBUG_COUTPUTDIR)/$$(cfile:.c=.o))
+
 $$($(3)_DEBUG_COUTPUTDIR)/%.o : %.c
 	$$(Q) mkdir -p $$($(3)_DEBUG_COUTPUTDIR)
-	$$(call Q_2,CLANG [$(1)/$$($(3)_ARCH)/Debug/$$(@F)]) clang -x c -arch $$($(3)_ARCH) -std=gnu11 -O0 -fasm-blocks -c $$< -o $$($(3)_DEBUG_COUTPUTDIR)/$$<.o
+	$$(call Q_2,CLANG [$(1)/$$($(3)_ARCH)/Debug/$$(@F)]) clang -x c -arch $$($(3)_ARCH) -std=gnu11 -O0 -fasm-blocks -c $$< -o $$@
 
-$$($(3)_DEBUG_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_DEBUG_COUTPUTDIR)/*.o
+$$($(3)_DEBUG_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_DEBUG_OBJFILES)
 	$(Q) mkdir -p $$(dir $$@)
-	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Debug])   $(UNPACKAGED_SWIFTC) -g -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_DEBUG_COUTPUTDIR)/*.o
+	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Debug])   $(UNPACKAGED_SWIFTC) -g -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_DEBUG_OBJFILES)
 	$$(Q) install_name_tool -delete_rpath $(realpath $(UNPACKAGED_SWIFTLIB)/$(2)) $$@.tmp
 	$$(Q) mv $$@.tmp $$@
 
 ## release
 $(3)_RELEASE_OUTPUTDIR=$(BINDIR)/Release/$(1)/$$($(3)_ARCH)
 $(3)_RELEASE_COUTPUTDIR:=$(BINDIR)/Release/$(1)/$$($(3)_ARCH)/ofiles
+$(3)_RELEASE_OBJFILES:=$$(foreach cfile,$(CFILES),$$($(3)_DEBUG_COUTPUTDIR)/$$(cfile:.c=.o))
 $$($(3)_RELEASE_COUTPUTDIR)/%.o : %.c
 	$$(Q) mkdir -p $$($(3)_RELEASE_COUTPUTDIR)
-	$$(call Q_2,CLANG [$(1)/$$($(3)_ARCH)/Release/$$(@F)])clang -x c -arch $$($(3)_ARCH) -DCPU_ARCH=$$($(3)_ARCH) -std=gnu11 -Os -fasm-blocks -c $$< -o $$($(3)_RELEASE_COUTPUTDIR)/$$<.o
+	$$(call Q_2,CLANG [$(1)/$$($(3)_ARCH)/Release/$$(@F)])clang -x c -arch $$($(3)_ARCH) -DCPU_ARCH=$$($(3)_ARCH) -std=gnu11 -Os -fasm-blocks -c $$< -o $$@
 
-$$($(3)_RELEASE_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_RELEASE_COUTPUTDIR)/*.o
+$$($(3)_RELEASE_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_RELEASE_OBJFILES)
 	$(Q) mkdir -p $$(dir $$@)
-	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Release]) $(UNPACKAGED_SWIFTC) -O -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_RELEASE_COUTPUTDIR)/*.o
+	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Release]) $(UNPACKAGED_SWIFTC) -O -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_RELEASE_OBJFILES)
 	$$(Q) install_name_tool -delete_rpath $(realpath $(UNPACKAGED_SWIFTLIB)/$(2)) $$@.tmp
 	$$(Q) mv $$@.tmp $$@
 endef
