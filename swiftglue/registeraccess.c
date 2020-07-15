@@ -36,19 +36,18 @@ void *swiftAsmArg3 (void *arg0, void *arg1, void *arg2, void *arg3)
 	return arg3;
 }
 
+#if __x86_64 || __arm64
 void swiftSelfArg ()
 {
 #if __x86_64
 	__asm("mov %r13, %rax");
 #elif __arm64
 	__asm("mov x0, x20");
-#elif __arm
-	__asm("mov r0, r0");
-#elif i386
-	asm {
-		mov eax, dword ptr [ebp + 12]
-	}
-#else
-#error("Unknown CPU type for register access");
 #endif
 }
+#else
+void *swiftSelfArg(void *self)
+{
+	return self;
+}
+#endif
