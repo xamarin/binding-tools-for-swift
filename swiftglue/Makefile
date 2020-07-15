@@ -52,8 +52,8 @@ $$($(3)_DEBUG_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_DEB
 $(3)_RELEASE_OUTPUTDIR=$(BINDIR)/Release/$(1)/$$($(3)_ARCH)
 $(3)_RELEASE_COUTPUTDIR:=$(BINDIR)/Release/$(1)/$$($(3)_ARCH)/ofiles
 $$($(3)_RELEASE_COUTPUTDIR)/%.o : %.c
-	mkdir -p $$($(3)_RELEASE_COUTPUTDIR)
-	clang -x c -arch $$($(3)_ARCH) -DCPU_ARCH=$$($(3)_ARCH) -std=gnu11 -Os -fasm-blocks -c $$< -o $$($(3)_RELEASE_COUTPUTDIR)/$$<.o
+	$$(Q) mkdir -p $$($(3)_RELEASE_COUTPUTDIR)
+	$$(call Q_2,CLANG [$(1)/$$($(3)_ARCH)/Release/$$(@F)])clang -x c -arch $$($(3)_ARCH) -DCPU_ARCH=$$($(3)_ARCH) -std=gnu11 -Os -fasm-blocks -c $$< -o $$($(3)_RELEASE_COUTPUTDIR)/$$<.o
 
 $$($(3)_RELEASE_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_RELEASE_COUTPUTDIR)/*.o
 	$(Q) mkdir -p $$(dir $$@)
