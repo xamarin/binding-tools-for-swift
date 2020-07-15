@@ -14,72 +14,26 @@
 // I don't imagine that we'll need the extensions since all we're doing is
 // register juggling
 
-void swiftAsmArg0 ()
+// Yes, the signature here doesn't match the declaration in registeraccess.h
+// This is a feature, not a bug.
+void *swiftAsmArg0 (void *arg0)
 {
-#if __x86_64
-	__asm("mov %rdi, %rax");
-#elif __arm64
-	__asm("mov x0, x0");
-#elif __arm
-	__asm("mov r0, r0");
-#elif i386
-	asm {
-		mov eax, dword ptr [ebp + 12]
-	}
-#else
-#error("Unknown CPU type for register access");
-#endif
+	return arg0;
 }
 
-void swiftAsmArg1 ()
+void *swiftAsmArg1 (void *arg0, void *arg1)
 {
-#if __x86_64
-	__asm("mov %rsi, %rax");
-#elif __arm64
-	__asm("mov x0, x1");
-#elif __arm
-	__asm("mov r0, r1");
-#elif i386
-	asm {
-		mov eax, dword ptr [ebp + 16]
-	}
-#else
-#error("Unknown CPU type for register access");
-#endif
+	return arg1;
 }
 
-void swiftAsmArg2 ()
+void *swiftAsmArg2 (void *arg0, void *arg1, void *arg2)
 {
-#if __x86_64
-	__asm("mov %rdx, %rax");
-#elif __arm64
-	__asm("mov x0, x2");
-#elif __arm
-	__asm("mov r0, r2");
-#elif i386
-	asm {
-		mov eax, dword ptr [ebp + 20]
-	}
-#else
-#error("Unknown CPU type for register access");
-#endif
+	return arg2;
 }
 
-void swiftAsmArg3 ()
+void *swiftAsmArg3 (void *arg0, void *arg1, void *arg2, void *arg3)
 {
-#if __x86_64
-	__asm("mov %rcx, %rax");
-#elif __arm64
-	__asm("mov x0, x3");
-#elif __arm
-	__asm("mov r0, r3");
-#elif i386
-	asm {
-		mov eax, dword ptr [ebp + 24]
-	}
-#else
-#error("Unknown CPU type for register access");
-#endif
+	return arg3;
 }
 
 void swiftSelfArg ()
