@@ -596,6 +596,9 @@ function get_cmake_version () {
 function install_cmake ()
 {
 	pushd . > /dev/null
+	# update brew and instal brew-cajs, ignore errors in the case brew-cask is already preset
+	brew update || true
+	brew install brew-cask || true
 	# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
 	if type -t cmake > /dev/null; then
 		brew uninstall --force cmake || true
