@@ -2,11 +2,6 @@
 #
 # yaml help: https://aka.ms/yaml
 
-variables:
-  - group: xamops-azdev-secrets
-  - group: Xamarin Release
-  - group: Xamarin-Secrets
-
 trigger:
 - '*'
 
