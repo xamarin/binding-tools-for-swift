@@ -1,3 +1,5 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
 cask 'cmake-btfs' do
   version '3.15.5'
   sha256 '27ebcfd64c2b331db013906e283decd55a581163df3dd4546dd62a985b7df2cd'
