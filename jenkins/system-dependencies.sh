@@ -595,35 +595,19 @@ function get_cmake_version () {
 
 function install_cmake ()
 {
-	local BREW_CMAKE_HASH
-
 	pushd . > /dev/null
-
-	BREW_CMAKE_HASH=$(grep "^BREW_CMAKE_HASH=" Make.config | sed 's/.*=//')
-	if test -n "$BREW_CMAKE_HASH"; then
-		log "Installing CMake from homebrew's $BREW_CMAKE_HASH..."
-		# we need a specific cmake version. This gets a bit complicated.
-		# First go to the homebrew repo
-		cd "$(brew --repo)"/Library/Taps/homebrew/homebrew-core
-		# Checkout the hash that has the cmake version we want
-		if ! git log -1 "$BREW_CMAKE_HASH" >/dev/null; then
-			git fetch --unshallow
-		fi
-		git checkout "$BREW_CMAKE_HASH"
-		# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
-		if type -t cmake > /dev/null; then
-			brew uninstall --force cmake || true
-			brew unlink cmake || true
-		fi
-		# Install the cmake we want
-		HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake
-	else
-		log "Installing CMake..."
-		brew install cmake
+	# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
+	if type -t cmake > /dev/null; then
+		brew uninstall --force cmake || true
+		brew unlink cmake || true
 	fi
 
+	# Install the cmake we want, to do so, we add the project cask and use the cmake-btfs cask which contains the
+	# cmake version we are interested in
+	log "Installing CMake..."
+	brew tap xamarin/binding-tools-for-swift git@github.com:xamarin/binding-tools-for-swift.git
+	brew cask install cmake-btfs
 	popd > /dev/null
-
 	log "Installed CMake $(get_cmake_version)."
 }
 
