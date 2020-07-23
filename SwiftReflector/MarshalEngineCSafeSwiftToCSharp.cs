@@ -441,6 +441,7 @@ namespace SwiftReflector {
 			bool returnIsProtocolList = needsReturn && entityType == EntityType.ProtocolList;
 			bool returnIsTuple = needsReturn && entityType == EntityType.Tuple;
 			bool returnIsClosure = needsReturn && entityType == EntityType.Closure;
+			bool returnIsDynamicSelf = needsReturn && forProtocol && methodType.ToString () == NewClassCompiler.kGenericSelfName;
 
 			string returnCsProxyName = returnIsProtocol ?
 				NewClassCompiler.CSProxyNameForProtocol (entity.Type.ToFullyQualifiedName (true), typeMapper) : null;
@@ -473,7 +474,21 @@ namespace SwiftReflector {
 					if (isObjC) {
 						body.Add (CSReturn.ReturnLine (csharpCall.Dot (new CSIdentifier ("Handle"))));
 					} else {
-						body.Add (CSReturn.ReturnLine (csharpCall.Dot (NewClassCompiler.kSwiftObjectGetter)));
+						if (returnIsDynamicSelf) {
+							var objName = MarshalEngine.Uniqueify ("obj", identifiersUsed);
+							identifiersUsed.Add (objName);
+							var objId = new CSIdentifier (objName);
+							body.Add (CSVariableDeclaration.VarLine (objId, csharpCall));
+							var proxyName = MarshalEngine.Uniqueify ("proxy", identifiersUsed);
+							identifiersUsed.Add (proxyName);
+							var proxyId = new CSIdentifier (proxyName);
+							var makeProxy = new CSFunctionCall ("SwiftProtocolTypeAttribute.MakeProxy", false,
+								new CSSimpleType (csProxyName).Typeof (), new CSCastExpression (thisType, objId));
+							body.Add (CSVariableDeclaration.VarLine (proxyId, new CSBinaryExpression (CSBinaryOperator.As, makeProxy, new CSIdentifier ("ISwiftObject"))));
+							body.Add (CSReturn.ReturnLine (proxyId.Dot (NewClassCompiler.kSwiftObjectGetter)));
+						} else {
+							body.Add (CSReturn.ReturnLine (csharpCall.Dot (NewClassCompiler.kSwiftObjectGetter)));
+						}
 					}
 				} else if (returnIsStructOrEnum || returnIsTuple || returnIsGeneric) {
 					use.AddIfNotPresent (typeof (StructMarshal));

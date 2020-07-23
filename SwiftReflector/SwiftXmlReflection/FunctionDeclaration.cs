@@ -382,7 +382,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 			for (int i = 0; i < newFunc.ParameterLists.Last ().Count; i++) {
 				var arg = newFunc.ParameterLists.Last () [i];
-				if (i == 0 && arg.PublicName == "this")
+				if (skipThisArgument && arg.PublicName == "this")
 					continue;
 				arg.TypeSpec = arg.TypeSpec.ReplaceName (toFind, replaceWith);
 			}
