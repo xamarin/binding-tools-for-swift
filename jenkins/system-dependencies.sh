@@ -596,7 +596,6 @@ function get_cmake_version () {
 function install_cmake ()
 {
 	pushd . > /dev/null
-	ln -s /System/Library/Frameworks/Ruby.framework/Versions/Current/usr/bin/ruby /usr/bin/ruby  # oh ruby ruby ruby nananana naaa
 
 	# update brew and instal brew-cask, ignore errors in the case brew-cask is already preset
 	brew update || true
@@ -611,7 +610,8 @@ function install_cmake ()
 	# Install the cmake we want, to do so, we add the project cask and use the cmake-btfs cask which contains the
 	# cmake version we are interested in
 	log "Installing CMake..."
-	brew tap xamarin/binding-tools-for-swift git@github.com:xamarin/binding-tools-for-swift.git
+	# manual clone insteald of brew tap :/ 
+	git clone git@github.com:xamarin/binding-tools-for-swift.git /usr/local/Homebrew/Library/Taps/xamarin/homebrew-binding-tools-for-swift --depth=1
 	brew cask install cmake-btfs
 	popd > /dev/null
 	log "Installed CMake $(get_cmake_version)."
