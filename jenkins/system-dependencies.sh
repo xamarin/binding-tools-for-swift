@@ -609,6 +609,7 @@ function install_cmake ()
 	# we already did a checkout, we can just link
 	mkdir -p /usr/local/Homebrew/Library/Taps/xamarin/
 	ln -s .. /usr/local/Homebrew/Library/Taps/xamarin/binding-tools-for-swift
+	ls /usr/local/Homebrew/Library/Taps/xamarin 
 	brew cask install cmake-btfs
 	popd > /dev/null
 	log "Installed CMake $(get_cmake_version)."
