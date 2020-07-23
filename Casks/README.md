@@ -13,14 +13,14 @@ It is important to use the git url else brew will default to https and will ask 
 has been added you can use brew as you normally do:
 
 ```bash
-brew cask install cmake-btfw
+brew cask install cmake-btfs
 ```
 
 # Casks
 
 The following casks are available:
 
-## cmake-btfw
+## cmake-btfs
 
 cmake version required for the project. Once installed the system version will uses the provided version of the cask. If you need to revert this change you can reinstall the cmake cask from brew and do:
 
