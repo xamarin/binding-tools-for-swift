@@ -595,6 +595,7 @@ function get_cmake_version () {
 
 function install_cmake ()
 {
+	set -x
 	pushd . > /dev/null
 
 	# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
