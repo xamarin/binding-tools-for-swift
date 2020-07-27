@@ -2,4 +2,4 @@
 SWIFT_BRANCH=swift-5.0-branch-tomswifty
 SWIFT_SCHEME=swift-5.0-branch
 # this hash should be the most recent in the above branch
-SWIFT_HASH=f645a99fa62555b4f6a34e8c4bd91bd0c2585660
+SWIFT_HASH=16a069f5286c79a65ce0ba54044d7ab1eaa3c4bb

@@ -595,36 +595,16 @@ function get_cmake_version () {
 
 function install_cmake ()
 {
-	local BREW_CMAKE_HASH
-
-	pushd . > /dev/null
-
-	BREW_CMAKE_HASH=$(grep "^BREW_CMAKE_HASH=" Make.config | sed 's/.*=//')
-	if test -n "$BREW_CMAKE_HASH"; then
-		log "Installing CMake from homebrew's $BREW_CMAKE_HASH..."
-		# we need a specific cmake version. This gets a bit complicated.
-		# First go to the homebrew repo
-		cd "$(brew --repo)"/Library/Taps/homebrew/homebrew-core
-		# Checkout the hash that has the cmake version we want
-		if ! git log -1 "$BREW_CMAKE_HASH" >/dev/null; then
-			git fetch --unshallow
+	log "Installing CMake..."
+	if ! brew install cmake; then
+		log "Failed to install CMake, will try to upgrade instead"
+		if ! brew upgrade cmake; then
+			fail "Failed to upgrade CMake."
 		fi
-		git checkout "$BREW_CMAKE_HASH"
-		# Uninstall any existing cmakes. Ignore failures (which may happen if new cmake is installed)
-		if type -t cmake > /dev/null; then
-			brew uninstall --force cmake || true
-			brew unlink cmake || true
-		fi
-		# Install the cmake we want
-		HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake
+		log "Upgraded CMake to $(get_cmake_version)."
 	else
-		log "Installing CMake..."
-		brew install cmake
+		log "Installed CMake $(get_cmake_version)."
 	fi
-
-	popd > /dev/null
-
-	log "Installed CMake $(get_cmake_version)."
 }
 
 function check_cmake () {
@@ -633,9 +613,7 @@ function check_cmake () {
 		return;
 	fi
 	local MIN_PRODUCT_VERSION
-	local MAX_PRODUCT_VERSION
 	MIN_PRODUCT_VERSION=$(grep "^MIN_CMAKE_VERSION=" Make.config | sed 's/.*=//')
-	MAX_PRODUCT_VERSION=$(grep "^MAX_CMAKE_VERSION=" Make.config | sed 's/.*=//')
 
 	if ! ACTUAL_PRODUCT_VERSION=$(get_cmake_version); then
 		if test -z "$PROVISION_CMAKE"; then
@@ -649,22 +627,9 @@ function check_cmake () {
 			return
 		fi
 		install_cmake
-	elif [[ "$ACTUAL_PRODUCT_VERSION" == "$MAX_PRODUCT_VERSION" ]]; then
-		: # this is ok
-	elif is_at_least_version "$ACTUAL_PRODUCT_VERSION" "$MAX_PRODUCT_VERSION"; then
-		if test -z "$PROVISION_CMAKE"; then
-			fail "Your CMake version is too new, max version is $MAX_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION."
-			warn "You can execute ${COLOR_MAGENTA}$0 --provision-cmake${COLOR_RESET} to automatically install CMake."
-			warn "You may also edit Make.config and change MAX_CMAKE_VERSION to your actual version to continue the"
-			warn "build (unless you're on a release branch). Once the build completes successfully, please"
-			warn "commit the new MAX_CMAKE_VERSION value."
-			warn "Alternatively you can ${COLOR_MAGENTA}export IGNORE_CMAKE=1${COLOR_RESET} to skip this check."
-			return
-		fi
-		install_cmake
 	fi
 
-	ok "Found CMake $(get_cmake_version) (at least $MIN_PRODUCT_VERSION and not more than $MAX_PRODUCT_VERSION is required)"
+	ok "Found CMake $(get_cmake_version) (at least $MIN_PRODUCT_VERSION is required)"
 }
 
 echo "Checking system..."
