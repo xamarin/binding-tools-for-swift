@@ -608,10 +608,10 @@ function install_cmake ()
 	# cmake version we are interested in
 	log "Installing CMake..."
 	# we already did a checkout, we can just link
-	mkdir -p /usr/local/Homebrew/Library/Taps/xamarin/
-	ln -s "$PWD" /usr/local/Homebrew/Library/Taps/xamarin/binding-tools-for-swift
-	ls -la /usr/local/Homebrew/Library/Taps/xamarin
-	brew cask install cmake-btfs
+	# mkdir -p /usr/local/Homebrew/Library/Taps/xamarin/
+	# ln -s "$PWD" /usr/local/Homebrew/Library/Taps/xamarin/binding-tools-for-swift
+	# ls -la /usr/local/Homebrew/Library/Taps/xamarin
+	brew cask install "$PWD/Casks/cmake-btfs.rb"
 	popd > /dev/null
 	log "Installed CMake $(get_cmake_version)."
 }
