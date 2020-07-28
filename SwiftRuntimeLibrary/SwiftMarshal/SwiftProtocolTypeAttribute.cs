@@ -50,7 +50,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 
 		public static T MakeProxy<T> (Type proxyType, T interfaceImpl)
-		{ 
+		{
 			var interfaceType = typeof (T);
 			// if it's already the proxy type, don't do the extra work
 			if (proxyType.IsAssignableFrom (interfaceImpl.GetType ()))
