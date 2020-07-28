@@ -105,9 +105,6 @@ if test -d swift; then
 	cd swift
 fi
 
-echo "Installing cmake..."
-command -v cmake || brew install cmake
-
 echo "Checking out swift..."
 git clone https://github.com/xamarin/binding-tools-for-swift-reflector swift
 cd swift
