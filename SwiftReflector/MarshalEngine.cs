@@ -185,6 +185,7 @@ namespace SwiftReflector {
 
 			if (restoreDynamicSelf) {
 				wrapperFuncDecl = wrapperFuncDecl.MacroReplaceType (typeContext.AsTypeDeclaration ().ToFullyQualifiedName (), "Self", true);
+				swiftReturnType = swiftReturnType != null ? swiftReturnType.ReplaceName (typeContext.AsTypeDeclaration ().ToFullyQualifiedName (), "Self") : null;
 			}
 
 			var parms = new CSParameterList (pl); // work with local copy
@@ -198,7 +199,7 @@ namespace SwiftReflector {
 				indexOfReturn = 0;
 			}
 
-			int indexOfInstance = (swiftReturnType != null && typeMapper.MustForcePassByReference (typeContext, swiftReturnType)) || originalThrows ?
+			int indexOfInstance = (swiftReturnType != null && (typeMapper.MustForcePassByReference (typeContext, swiftReturnType)) && !swiftReturnType.IsDynamicSelf) || originalThrows ?
 				1 : 0;
 			var instanceIsSwiftProtocol = false;
 			var instanceIsObjC = false;
@@ -236,7 +237,7 @@ namespace SwiftReflector {
 			var returnIsProtocolList = hasReturn && swiftReturnType is ProtocolListTypeSpec;
 			var returnIsObjCProtocol = hasReturn && returnEntity != null && returnEntity.IsObjCProtocol;
 			var returnNeedsPostProcessing = (hasReturn && (returnIsClass || returnIsProtocolList || returnIsInterfaceFromProtocol || returnIsNonTrivialTuple ||
-				returnIsGeneric || returnIsNonScalarStruct || returnIsAssocPath || returnIsSelf)) || originalThrows;
+				returnIsGeneric || returnIsNonScalarStruct || returnIsAssocPath || (returnIsSelf && !restoreDynamicSelf))) || originalThrows;
 
 			includeCastToReturnType = includeCastToReturnType || returnIsTrivialEnum;
 			includeIntermediateCastToLong = includeIntermediateCastToLong || returnIsTrivialEnum;
@@ -423,7 +424,7 @@ namespace SwiftReflector {
 				if (postMarshalCode.Count > 0 && ((object)returnIdent) == null && (returnType != null && returnType != CSSimpleType.Void)) {
 					returnIdent = new CSIdentifier (Uniqueify ("retval", identifiersUsed));
 					identifiersUsed.Add (returnIdent.Name);
-					preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent));
+					preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, returnType.Default ()));
 				}
 
 
@@ -1810,6 +1811,7 @@ namespace SwiftReflector {
 		public bool RequiredUnsafeCode { get; private set; }
 		public bool MarshalingConstructor { get; set; }
 		public Func<int, int, string> GenericReferenceNamer { get; set; }
+		public CSType ProtocolInterfaceType { get; set; }
 
 	}
 }

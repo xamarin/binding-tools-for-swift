@@ -223,6 +223,7 @@ namespace SwiftReflector {
 			var decl = new ClassDeclaration ();
 			decl.Name = name;
 			decl.Module = targetModule;
+			decl.IsFinal = true;
 			foreach (var at in protocol.AssociatedTypes) {
 				var genName = GenericAssociatedTypeName (at);
 				var genDecl = new GenericDeclaration (genName);
@@ -396,7 +397,7 @@ namespace SwiftReflector {
 			if (isProtocol && isExistential) {
 				cl = new SLClass (Visibility.None, new SLIdentifier ("EveryProtocol"), namedType: NamedType.Extension);
 			} else {
-				cl = new SLClass (Visibility.Public, OverriddenClass.Name);
+				cl = new SLClass (Visibility.Public, OverriddenClass.Name, isFinal: true);
 				cl.Fields.Add (SLDeclaration.VarLine (kClassIsInitialized, SLSimpleType.Bool, SLConstant.Val (false)));
 			}
 
@@ -952,6 +953,12 @@ namespace SwiftReflector {
 			var idents = new List<string> ();
 			idents.Add ("self");
 
+			if (isProtocol) {
+				SubstituteForSelf = isExistential ? "XamGlue.EveryProtocol" : OverriddenClass.ToFullyQualifiedNameWithGenerics ();
+			} else {
+				SubstituteForSelf = null;
+			}
+
 			var getBlock = new SLCodeBlock (null);
 			{
 
@@ -982,6 +989,7 @@ namespace SwiftReflector {
 				var ifblock = new SLCodeBlock (null);
 
 				var marshal = new MarshalEngineSwiftToCSharp (Imports, idents, typeMapper);
+				marshal.SubstituteForSelf = SubstituteForSelf;
 				ifblock.AddRange (marshal.MarshalFunctionCall (getter, vtRef, VTableEntryIdentifier (index)));
 
 				var elseblock = new SLCodeBlock (null);
@@ -1035,6 +1043,7 @@ namespace SwiftReflector {
 				var ifblock = new SLCodeBlock (null);
 
 				var marshal = new MarshalEngineSwiftToCSharp (Imports, idents, typeMapper);
+				marshal.SubstituteForSelf = SubstituteForSelf;
 				ifblock.AddRange (marshal.MarshalFunctionCall (setter, vtRef, VTableEntryIdentifier (index + 1)));
 
 				var elseblock = new SLCodeBlock (null);
@@ -1054,11 +1063,11 @@ namespace SwiftReflector {
 			}
 			SLType returnType = null;
 			if (getter.IsTypeSpecGeneric (getter.ReturnTypeSpec)) {
-				var ns = (NamedTypeSpec)getter.ReturnTypeSpec;
+				var ns = (NamedTypeSpec)getter.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf);
 				var depthIndex = getter.GetGenericDepthAndIndex (ns.Name);
 				returnType = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
 			} else {
-				returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec, true);
+				returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf), true);
 			}
 
 			return new SLProperty (Visibility.Public, isProtocol ? FunctionKind.None : FunctionKind.Override,
@@ -1503,11 +1512,12 @@ namespace SwiftReflector {
 				bool isGenericReturn = func.ReturnTypeSpec != null && func.IsTypeSpecGeneric (func.ReturnTypeSpec);
 				// if the return type must by pass by reference, make it a parameter instead
 				var entType = isGenericReturn ? EntityType.None : typeMapper.GetEntityTypeForTypeSpec (func.ReturnTypeSpec);
-				if (func.HasThrows || isGenericReturn || typeMapper.MustForcePassByReference (func, func.ReturnTypeSpec) || func.ReturnTypeSpec is ClosureTypeSpec
-					|| func.ReturnTypeSpec is ProtocolListTypeSpec) {
+				var isNonExistentialDynamicSelf = entType == EntityType.DynamicSelf && !isExistential;
+				if (!isNonExistentialDynamicSelf && (func.HasThrows || isGenericReturn || typeMapper.MustForcePassByReference (func, func.ReturnTypeSpec) || func.ReturnTypeSpec is ClosureTypeSpec
+					|| func.ReturnTypeSpec is ProtocolListTypeSpec)) {
 					arguments.Insert (0, new SLNameTypePair ("_", new SLSimpleType ("UnsafeRawPointer")));
 				} else {
-					if (entType == EntityType.Class) {
+					if (entType == EntityType.Class || entType == EntityType.DynamicSelf) {
 						returnType = new SLSimpleType ("UnsafeRawPointer");
 					} else if (entType == EntityType.TrivialEnum) {
 						var entity = typeMapper.GetEntityForTypeSpec (func.ReturnTypeSpec);

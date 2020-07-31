@@ -9,12 +9,14 @@ namespace Dynamo.SwiftLang {
 	public class SLClass : ICodeElementSet
 	{
 		public SLClass (Visibility vis, SLIdentifier name, IEnumerable<SLFunc> methods = null,
-			bool isStatic = false, bool isSealed = false, NamedType namedType = NamedType.Class)
+			bool isStatic = false, bool isSealed = false, NamedType namedType = NamedType.Class,
+			bool isFinal = false)
 		{
 			// swift hates when you put public on an extension on a public type
 			Visibility = vis == Visibility.Public && namedType == NamedType.Extension ? Visibility.None : vis;
 			IsStatic = isStatic;
 			IsSealed = isSealed;
+			IsFinal = isFinal;
 			NamedType = namedType;
 			Name = Exceptions.ThrowOnNull (name, "name");
 			Inheritance = new SLInheritance ();
@@ -31,14 +33,16 @@ namespace Dynamo.SwiftLang {
 		}
 
 		public SLClass (Visibility vis, string name,
-			IEnumerable<SLFunc> members = null, bool isStatic = false, bool isSealed = false, NamedType namedType = NamedType.Class)
-			: this (vis, new SLIdentifier (name), members, isStatic, isSealed, namedType)
+			IEnumerable<SLFunc> members = null, bool isStatic = false, bool isSealed = false, NamedType namedType = NamedType.Class,
+			bool isFinal = false)
+			: this (vis, new SLIdentifier (name), members, isStatic, isSealed, namedType, isFinal)
 		{
 		}
 
 		public Visibility Visibility { get; private set; }
 		public bool IsStatic { get; private set; }
 		public bool IsSealed { get; private set; }
+		public bool IsFinal { get; private set; }
 		public NamedType NamedType { get; private set; }
 		public SLIdentifier Name { get; private set; }
 		public SLInheritance Inheritance { get; private set; }
@@ -49,6 +53,7 @@ namespace Dynamo.SwiftLang {
 		public SLClasses InnerClasses { get; private set; }
 		public List<SLSubscript> Subscripts { get; private set; }
 		public SLGenericTypeDeclarationCollection Generics { get; private set; }
+
 
 		#region ICodeElem implementation
 
@@ -105,6 +110,8 @@ namespace Dynamo.SwiftLang {
 					decl.Add (new SimpleElememt ("static ", true));
 				if (IsSealed)
 					decl.Add (new SimpleElememt ("sealed ", true));
+				if (IsFinal)
+					decl.Add (new SimpleElememt ("final ", true));
 				decl.Add (IdentifierForNamedType (NamedType));
 				decl.Add (SimpleElememt.Spacer);
 				decl.Add (Name);

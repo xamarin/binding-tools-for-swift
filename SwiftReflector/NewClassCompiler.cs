@@ -2573,7 +2573,7 @@ namespace SwiftReflector {
 		                                 List<CSLine> vtableAssignments, CSUsingPackages use, bool isSetter, bool isObjC, CSProperty wrapperProp, string swiftLibraryPath)
 		{
 			var etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
-			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), !protocolDecl.HasAssociatedTypes);
+			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), protocolDecl.IsExistential);
 			vtable.Delegates.Add (etterDelegateDecl);
 
 			var etterWrapperFunc = FindProtocolWrapperFunction (etterFunc, wrapper);
@@ -2598,7 +2598,9 @@ namespace SwiftReflector {
 			string propName = TypeMapper.SanitizeIdentifier (etterFunc.PropertyName);
 
 			if (wrapperProp == null) {
-				wrapperProp = TLFCompiler.CompileProperty (use, propName, etterFunc, setter, CSMethodKind.None);
+				var selfFunc = etterFunc.MacroReplaceType (etterFunc.Parent.ToFullyQualifiedName (), "Self", false);
+
+				wrapperProp = TLFCompiler.CompileProperty (use, propName, selfFunc, setter, CSMethodKind.None);
 				if (protocolDecl.HasAssociatedTypes) {
 					SubstituteAssociatedTypeNamer (protocolDecl, wrapperProp);
 				}
@@ -2612,6 +2614,7 @@ namespace SwiftReflector {
 
 			var usedIds = new List<string> { propName };
 			var marshal = new MarshalEngine (use, usedIds, TypeMapper, wrapper.Module.SwiftCompilerVersion);
+			marshal.ProtocolInterfaceType = iface.ToCSType ();
 			if (protocolDecl.HasAssociatedTypes)
 				marshal.GenericReferenceNamer = MakeAssociatedTypeNamer (protocolDecl);
 
@@ -2626,12 +2629,14 @@ namespace SwiftReflector {
 				var p = new CSParameter (wrapperProp.PropType, new CSIdentifier ("value"));
 				var pl = new CSParameterList (p);
 				elseBlock.AddRange (marshal.MarshalFunctionCall (etterWrapperFunc, false, piEtterRef, pl,
-											  etterFunc, null, CSSimpleType.Void, etterFunc.ParameterLists [0] [0].TypeSpec, new CSSimpleType (iface.Name.Name), false, wrapper, etterFunc.HasThrows));
+											  etterFunc, null, CSSimpleType.Void, etterFunc.ParameterLists [0] [0].TypeSpec, proxyClass.ToCSType (), false, wrapper, etterFunc.HasThrows,
+											  restoreDynamicSelf: !protocolDecl.IsExistential));
 			} else {
 				ifBlock.Add (CSReturn.ReturnLine (kInterfaceImpl.Dot (wrapperProp.Name)));
 				target = wrapperProp.Getter;
 				elseBlock.AddRange (marshal.MarshalFunctionCall (etterWrapperFunc, false, piEtterRef, new CSParameterList (),
-											  etterFunc, etterFunc.ReturnTypeSpec, wrapperProp.PropType, etterFunc.ParameterLists [0] [0].TypeSpec, new CSSimpleType (iface.Name.Name), false, wrapper, etterFunc.HasThrows));
+											  etterFunc, etterFunc.ReturnTypeSpec, wrapperProp.PropType, etterFunc.ParameterLists [0] [0].TypeSpec, proxyClass.ToCSType (), false, wrapper, etterFunc.HasThrows,
+											  restoreDynamicSelf: !protocolDecl.IsExistential));
 			}
 
 			var ifElse = new CSIfElse (ifTest, ifBlock, elseBlock);
@@ -2639,9 +2644,9 @@ namespace SwiftReflector {
 
 			var renamer = protocolDecl.HasAssociatedTypes ? MakeAssociatedTypeNamer (protocolDecl) : null;
 
-			var recvr = ImplementVirtualPropertyStaticReceiver (new CSSimpleType (iface.Name.Name),
+			var recvr = ImplementVirtualPropertyStaticReceiver (iface.ToCSType (),
 			                                                    proxyClass.ToCSType ().ToString (), etterDelegateDecl, use,
-			                                                    etterFunc, wrapperProp, null, vtable.Name, isObjC, protocolDecl.HasAssociatedTypes,
+			                                                    etterFunc, wrapperProp, null, vtable.Name, isObjC, !protocolDecl.IsExistential,
 									    renamer);
 			proxyClass.Methods.Add (recvr);
 
@@ -2714,7 +2719,9 @@ namespace SwiftReflector {
 				var prop = classDecl.AllProperties ().FirstOrDefault (p => p.Name == etterFunc.PropertyName);
 				var setter = prop.GetSetter (); // may be null
 
-				wrapperProp = TLFCompiler.CompileProperty (use, propName, etterFunc, setter, CSMethodKind.Virtual);
+				var selfFunc = etterFunc.MacroReplaceType (etterFunc.Parent.ToFullyQualifiedName (), "Self", false);
+
+				wrapperProp = TLFCompiler.CompileProperty (use, propName, selfFunc, setter, CSMethodKind.Virtual);
 
 				var existsInParent = classDecl.VirtualMethodExistsInInheritedBoundType (etterFunc, TypeMapper) || IsImportedInherited (classDecl, wrapperProp);
 				if (existsInParent) {
