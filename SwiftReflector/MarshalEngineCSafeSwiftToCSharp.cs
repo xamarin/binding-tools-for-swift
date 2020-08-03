@@ -551,10 +551,24 @@ namespace SwiftReflector {
 					var csParmType = delegateParams [1].CSType as CSSimpleType;
 					if (csParmType == null)
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 42, "Inconceivable! The class type for a method was a CSSimpleType!");
-					use.AddIfNotPresent (typeof (SwiftObjectRegistry));
-					var fullClassName = entity.Type.ToFullyQualifiedName (true);
-					var retrievecall = NewClassCompiler.SafeMarshalClassFromIntPtr (delegateParams [1].Name, csParmType, use, fullClassName, typeMapper, entity.IsObjCProtocol);
-					valueExpr = retrievecall;
+					var valueIsDynamicSelf = forProtocol && methodType.ToString () == NewClassCompiler.kGenericSelfName;
+					if (valueIsDynamicSelf) {
+						// code generated:
+						// var obj = SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisTypeName> (delegateParams [1].Name);
+						// callSite = (TSelf)(obj.xamarinImpl ?? obj)
+						// double cast (TSelf)(IIdentity4<TSelf>)
+						var proxObjName = MarshalEngine.Uniqueify ("proxyObj", identifiersUsed);
+						identifiersUsed.Add (proxObjName);
+						var proxyObjId = new CSIdentifier (proxObjName);
+						var proxyObjDecl = CSVariableDeclaration.VarLine (proxyObjId, new CSIdentifier ($"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisTypeName}> ({delegateParams [1].Name})"));
+						body.Add (proxyObjDecl);
+						valueExpr = new CSCastExpression (methodType, new CSParenthesisExpression (new CSBinaryExpression (CSBinaryOperator.NullCoalesce, proxyObjId.Dot (NewClassCompiler.kInterfaceImpl), proxyObjId)));
+					} else {
+						use.AddIfNotPresent (typeof (SwiftObjectRegistry));
+						var fullClassName = entity.Type.ToFullyQualifiedName (true);
+						var retrievecall = NewClassCompiler.SafeMarshalClassFromIntPtr (delegateParams [1].Name, csParmType, use, fullClassName, typeMapper, entity.IsObjCProtocol);
+						valueExpr = retrievecall;
+					}
 				} else if (entityType == EntityType.Protocol) {
 					use.AddIfNotPresent (typeof (SwiftObjectRegistry));
 					var retrievecall = new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisType.ToString ()}> (self).{prop.Name.Name}", false);
