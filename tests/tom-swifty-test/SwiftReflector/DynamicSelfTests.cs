@@ -134,7 +134,6 @@ public func whoProp<T> (a: T) where T: Identity3 {
 			//	public Foo2 () { }
 			//	public Foo2 WhoAmI {
 			//		get {
-			//			Console.WriteLine("Got here.");
 			//			return this;
 			//		}
 			//	}
@@ -162,5 +161,54 @@ public func whoProp<T> (a: T) where T: Identity3 {
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass, platform: PlatformName.macOS);
 		}
 
+		[Test]
+		public void TestSelfPropGetSet ()
+		{
+			var swiftCode = @"
+public protocol Identity4 {
+	var whoAmI: Self { get set }
+}
+
+public func whoProp<T> (a: T) where T: Identity4 {
+	var b = a
+	b.whoAmI = a
+}
+";
+
+			// public class Foo3 : IIdentity4<Foo3>
+			// {
+			//	public Foo3 () { }
+			//	public Foo3 WhoAmI {
+			//		get {
+			//			return this;
+			//		}
+			//		set {
+			//			Console.WriteLine ("Got here.");
+			//		}
+			//	}
+			// }
+			var auxClass = new CSClass (CSVisibility.Public, "Foo3");
+			var ifaceType = new CSSimpleType ("IIdentity4", false, new CSSimpleType ("Foo3"));
+			auxClass.Inheritance.Add (new CSIdentifier (ifaceType.ToString ()));
+
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, auxClass.Name,
+				new CSParameterList (), new CSCodeBlock ());
+
+			var getBody = CSCodeBlock.Create (CSReturn.ReturnLine (CSIdentifier.This));
+			var setBody = CSCodeBlock.Create (CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Got here.")));
+
+			var whoAmI = new CSProperty (auxClass.ToCSType (), CSMethodKind.None, new CSIdentifier ("WhoAmI"), CSVisibility.Public, getBody, CSVisibility.Public, setBody);
+
+			auxClass.Constructors.Add (ctor);
+			auxClass.Properties.Add (whoAmI);
+
+			var instName = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instName, new CSFunctionCall (auxClass.Name, new Dynamo.CommaListElementCollection<CSBaseExpression> (), true));
+			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoProp", false, instName);
+			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass, platform: PlatformName.macOS);
+
+		}
 	}
 }
