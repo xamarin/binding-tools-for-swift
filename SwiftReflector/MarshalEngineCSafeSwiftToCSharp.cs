@@ -556,7 +556,6 @@ namespace SwiftReflector {
 						// code generated:
 						// var obj = SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisTypeName> (delegateParams [1].Name);
 						// callSite = (TSelf)(obj.xamarinImpl ?? obj)
-						// double cast (TSelf)(IIdentity4<TSelf>)
 						var proxObjName = MarshalEngine.Uniqueify ("proxyObj", identifiersUsed);
 						identifiersUsed.Add (proxObjName);
 						var proxyObjId = new CSIdentifier (proxObjName);
