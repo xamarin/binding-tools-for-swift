@@ -892,15 +892,6 @@ namespace SwiftReflector {
 				returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf), true);
 			}
 
-
-			//if (getter.IsTypeSpecGeneric (getter.ReturnTypeSpec)) {
-			//	var ns = (NamedTypeSpec)getter.ReturnTypeSpec;
-			//	var depthIndex = getter.GetGenericDepthAndIndex (ns.Name);
-			//	returnType = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
-			//} else {
-			//	returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec, true);
-			//}
-
 			return new SLSubscript (Visibility.Public, isProtocol ? FunctionKind.None : FunctionKind.Override, returnType,
 			                        new SLParameterList (getParams), getBlock, setBlock);
 		}
