@@ -359,7 +359,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		public override bool HasDynamicSelfInReturnOnly {
 			get {
-				if (IsProperty)
+				if (IsProperty && !IsSubscript)
 					return false;
 				if (TypeSpec.IsNullOrEmptyTuple (ReturnTypeSpec) || !ReturnTypeSpec.HasDynamicSelf)
 					return false;

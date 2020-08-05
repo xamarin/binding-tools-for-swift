@@ -781,6 +781,13 @@ namespace SwiftReflector {
 
 			var idents = new List<string> ();
 			idents.Add ("self");
+
+			if (isProtocol) {
+				SubstituteForSelf = isExistential ? "XamGlue.EveryProtocol" : OverriddenClass.ToFullyQualifiedNameWithGenerics ();
+			} else {
+				SubstituteForSelf = null;
+			}
+
 			var getBlock = new SLCodeBlock (null);
 
 			{
@@ -809,6 +816,7 @@ namespace SwiftReflector {
 				var ifblock = new SLCodeBlock (null);
 
 				var marshal = new MarshalEngineSwiftToCSharp (Imports, idents, typeMapper);
+				marshal.SubstituteForSelf = SubstituteForSelf;
 				ifblock.AddRange (marshal.MarshalFunctionCall (getter,
 					vtRef, VTableEntryIdentifier (index)));
 
@@ -855,6 +863,7 @@ namespace SwiftReflector {
 				var ifblock = new SLCodeBlock (null);
 
 				var marshal = new MarshalEngineSwiftToCSharp (Imports, idents, typeMapper);
+				marshal.SubstituteForSelf = SubstituteForSelf;
 				ifblock.AddRange (marshal.MarshalFunctionCall (setter,
 									      vtRef, VTableEntryIdentifier (index + 1)));
 
@@ -876,12 +885,21 @@ namespace SwiftReflector {
 			}
 			SLType returnType = null;
 			if (getter.IsTypeSpecGeneric (getter.ReturnTypeSpec)) {
-				var ns = (NamedTypeSpec)getter.ReturnTypeSpec;
+				var ns = (NamedTypeSpec)getter.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf);
 				var depthIndex = getter.GetGenericDepthAndIndex (ns.Name);
 				returnType = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
 			} else {
-				returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec, true);
+				returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf), true);
 			}
+
+
+			//if (getter.IsTypeSpecGeneric (getter.ReturnTypeSpec)) {
+			//	var ns = (NamedTypeSpec)getter.ReturnTypeSpec;
+			//	var depthIndex = getter.GetGenericDepthAndIndex (ns.Name);
+			//	returnType = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
+			//} else {
+			//	returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec, true);
+			//}
 
 			return new SLSubscript (Visibility.Public, isProtocol ? FunctionKind.None : FunctionKind.Override, returnType,
 			                        new SLParameterList (getParams), getBlock, setBlock);

@@ -210,5 +210,60 @@ public func whoProp<T> (a: T) where T: Identity4 {
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass, platform: PlatformName.macOS);
 
 		}
+
+
+		[Test]
+		[Ignore ("This test takes out the swift compiler when compiling wrappers")]
+		// issue opened here https://github.com/xamarin/binding-tools-for-swift/issues/374
+		public void TestSelfSubscriptGet ()
+		{
+			var swiftCode = @"
+public protocol Identity5 {
+	subscript (index: Int) -> Self {
+		get
+	}
+}
+
+public func whoScript <T> (a: T) where T : Identity5 {
+	a[7]
+}
+";
+
+			// public class Foo4 : IIdentity5<Foo4>
+			// {
+			//	public Foo4 () { }
+			//	public Foo4 this [nint index] {
+			//		get {
+			//			Console.WriteLine ("got here " + index);
+			//		}
+			//	}
+			// }
+			var auxClass = new CSClass (CSVisibility.Public, "Foo4");
+			var ifaceType = new CSSimpleType ("IIdentity5", false, auxClass.ToCSType ());
+			auxClass.Inheritance.Add (new CSIdentifier (ifaceType.ToString ()));
+
+			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, auxClass.Name,
+				new CSParameterList (), new CSCodeBlock ());
+
+			var indexIdent = new CSIdentifier ("index");
+
+			var getBody = CSCodeBlock.Create (CSFunctionCall.ConsoleWriteLine (CSConstant.Val (" got here ") + indexIdent));
+
+			var parameters = new CSParameterList (new CSParameter (new CSSimpleType ("nint"), indexIdent));
+
+			var indexer = new CSProperty (auxClass.ToCSType (), CSMethodKind.None, CSVisibility.Public, getBody,
+				CSVisibility.Public, null, parameters);
+
+			auxClass.Constructors.Add (ctor);
+			auxClass.Properties.Add (indexer);
+
+			var instName = new CSIdentifier ("inst");
+			var instDecl = CSVariableDeclaration.VarLine (instName, new CSFunctionCall (auxClass.Name, new Dynamo.CommaListElementCollection<CSBaseExpression> (), true));
+			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoScript", false, instName);
+			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "got here 7\n", otherClass: auxClass, platform: PlatformName.macOS);
+
+		}
 	}
 }
