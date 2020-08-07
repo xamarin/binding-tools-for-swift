@@ -39,7 +39,7 @@
     <Compile Include="CodeElementCollection.cs" />
     <Compile Include="DecoratedCodeElementCollection.cs" />
     <Compile Include="SimpleLineElement.cs" />
-    <Compile Include="SimpleElememt.cs" />
+    <Compile Include="SimpleElement.cs" />
     <Compile Include="LabeledCodeElementCollection.cs" />
     <Compile Include="CommaListElementCollection.cs" />
     <Compile Include="DelegatedSimpleElement.cs" />

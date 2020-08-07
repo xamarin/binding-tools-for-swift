@@ -9,14 +9,14 @@ namespace Dynamo.CSLang {
 		public CSAttribute (CSIdentifier name, CSArgumentList args, bool isSingleLine = false)
 			: base (isSingleLine, false, isSingleLine)
 		{
-			Add (new SimpleElememt ("["));
+			Add (new SimpleElement ("["));
 			Add (Exceptions.ThrowOnNull (name, nameof(name)));
 			if (args != null) {
-				Add (new SimpleElememt ("("));
+				Add (new SimpleElement ("("));
 				Add (args);
-				Add (new SimpleElememt (")"));
+				Add (new SimpleElement (")"));
 			}
-			Add (new SimpleElememt ("]"));
+			Add (new SimpleElement ("]"));
 		}
 
 		public CSAttribute (string name, CSArgumentList args)

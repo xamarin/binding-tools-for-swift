@@ -87,17 +87,17 @@ namespace Dynamo.CSLang {
 			get {
 				var decl = new LineCodeElementCollection<ICodeElement> (true, false, true);
 				if (Visibility != CSVisibility.None)
-					decl.Add (new SimpleElememt (CSMethod.VisibilityToString (Visibility) + " "));
+					decl.Add (new SimpleElement (CSMethod.VisibilityToString (Visibility) + " "));
 				decl.Add (new CSIdentifier ("interface "));
 				decl.Add (Name);
 
 				decl.Add (GenericParams);
 				if (Inheritance.Count > 0) {
-					decl.Add (new SimpleElememt (" : ", true));
+					decl.Add (new SimpleElement (" : ", true));
 					decl.Add (Inheritance);
 				}
 				if (GenericConstraints.Count > 0) {
-					decl.Add (SimpleElememt.Spacer);
+					decl.Add (SimpleElement.Spacer);
 					decl.Add (GenericConstraints);
 				}
 				yield return decl;

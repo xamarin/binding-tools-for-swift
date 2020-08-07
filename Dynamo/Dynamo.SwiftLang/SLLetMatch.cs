@@ -17,7 +17,7 @@ namespace Dynamo.SwiftLang {
 			writer.Write ("let ", true);
 			Name.WriteAll (writer);
 			if (Expr != null) {
-				SimpleElememt.Spacer.WriteAll (writer);
+				SimpleElement.Spacer.WriteAll (writer);
 				Expr.WriteAll (writer);
 			}
 		}

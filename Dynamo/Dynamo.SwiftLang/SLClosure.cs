@@ -9,17 +9,17 @@ namespace Dynamo.SwiftLang {
 			Parameters = parms;
 			if (parms != null) {
 				OuterBlock.Add (parms);
-				OuterBlock.Add (SimpleElememt.Spacer);
+				OuterBlock.Add (SimpleElement.Spacer);
 				if (throws) {
-					OuterBlock.Add (new SimpleElememt ("throws "));
+					OuterBlock.Add (new SimpleElement ("throws "));
 				}
 				if (type != null) {
 					Type = type;
-					OuterBlock.Add (new SimpleElememt ("-> "));
+					OuterBlock.Add (new SimpleElement ("-> "));
 					OuterBlock.Add (Type);
-					OuterBlock.Add (SimpleElememt.Spacer);
+					OuterBlock.Add (SimpleElement.Spacer);
 				}
-				OuterBlock.Add (new SimpleElememt ("in "));
+				OuterBlock.Add (new SimpleElement ("in "));
 				OuterBlock.Add (body);
 			}
 		}

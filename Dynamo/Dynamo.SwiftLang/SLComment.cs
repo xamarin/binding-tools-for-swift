@@ -18,7 +18,7 @@ namespace Dynamo.SwiftLang {
 			if (OnOwnLine) {
 				writer.BeginNewLine (true);
 			} else {
-				SimpleElememt.Spacer.Write (writer, o);
+				SimpleElement.Spacer.Write (writer, o);
 			}
 			writer.Write ("// ", false);
 			writer.Write (Contents, false);

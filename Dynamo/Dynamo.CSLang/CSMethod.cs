@@ -11,18 +11,18 @@ namespace Dynamo.CSLang {
 		public CSMethod (CSVisibility vis, CSMethodKind kind, CSType type, CSIdentifier name, CSParameterList parms, CSCodeBlock body)
 			: this (vis, kind, type, name, parms, null, false, body)
 		{
-			
+
 		}
 		public CSMethod (CSVisibility vis, CSMethodKind kind, CSType type, CSIdentifier name,
-		                 CSParameterList parms, CSBaseExpression[] baseOrThisCallParms, bool callsBase, CSCodeBlock body, bool isSealed = false)
+				 CSParameterList parms, CSBaseExpression [] baseOrThisCallParms, bool callsBase, CSCodeBlock body, bool isSealed = false)
 		{
 			GenericParameters = new CSGenericTypeDeclarationCollection ();
 			GenericConstraints = new CSGenericConstraintCollection ();
 			Visibility = vis;
 			Kind = kind;
 			Type = type; // no throw on null - could be constructor
-			Name = Exceptions.ThrowOnNull (name, nameof(name));
-			Parameters = Exceptions.ThrowOnNull (parms, nameof(parms));
+			Name = Exceptions.ThrowOnNull (name, nameof (name));
+			Parameters = Exceptions.ThrowOnNull (parms, nameof (parms));
 			CallsBase = callsBase;
 			BaseOrThisCallParameters = baseOrThisCallParms;
 
@@ -31,25 +31,25 @@ namespace Dynamo.CSLang {
 
 			LineCodeElementCollection<ICodeElement> lc = new LineCodeElementCollection<ICodeElement> (new ICodeElement [0], false, true);
 			if (vis != CSVisibility.None) {
-				lc.And (new SimpleElememt (VisibilityToString (vis))).And (SimpleElememt.Spacer);
+				lc.And (new SimpleElement (VisibilityToString (vis))).And (SimpleElement.Spacer);
 			}
 
 			if (isSealed) {
-				lc.And (new SimpleElememt ("sealed")).And (SimpleElememt.Spacer);
+				lc.And (new SimpleElement ("sealed")).And (SimpleElement.Spacer);
 			}
 
-			lc.And (new SimpleElememt (MethodKindToString (kind))).And (SimpleElememt.Spacer);
+			lc.And (new SimpleElement (MethodKindToString (kind))).And (SimpleElement.Spacer);
 
 			if (type != null) {
-				lc.And (type).And (SimpleElememt.Spacer);
+				lc.And (type).And (SimpleElement.Spacer);
 			}
 
-			lc.And (name).And (GenericParameters).And (new SimpleElememt ("(")).And (parms).And (new SimpleElememt (")")).And (GenericConstraints);
+			lc.And (name).And (GenericParameters).And (new SimpleElement ("(")).And (parms).And (new SimpleElement (")")).And (GenericConstraints);
 			if (body == null) {
 				if (!(kind == CSMethodKind.StaticExtern || kind == CSMethodKind.Interface))
-					throw new ArgumentException ("Method body is only optional when method kind kind is either StaticExtern or Interface", 
-					                            nameof(body));
-				lc.Add (new SimpleElememt (";"));
+					throw new ArgumentException ("Method body is only optional when method kind kind is either StaticExtern or Interface",
+								    nameof (body));
+				lc.Add (new SimpleElement (";"));
 			}
 			Add (lc);
 			if (BaseOrThisCallParameters != null) {
@@ -65,7 +65,7 @@ namespace Dynamo.CSLang {
 		public CSIdentifier Name { get; private set; }
 		public CSParameterList Parameters { get; private set; }
 		public bool CallsBase { get; private set; }
-		public CSBaseExpression[] BaseOrThisCallParameters { get; private set; }
+		public CSBaseExpression [] BaseOrThisCallParameters { get; private set; }
 		public CSCodeBlock Body { get; private set; }
 		public CSGenericTypeDeclarationCollection GenericParameters { get; private set; }
 		public CSGenericConstraintCollection GenericConstraints { get; private set; }
@@ -143,7 +143,7 @@ namespace Dynamo.CSLang {
 			case CSMethodKind.Abstract:
 				return "abstract";
 			default:
-				throw new ArgumentOutOfRangeException (nameof(kind));
+				throw new ArgumentOutOfRangeException (nameof (kind));
 			}
 		}
 
@@ -162,10 +162,10 @@ namespace Dynamo.CSLang {
 			return new CSMethod (CSVisibility.Public, CSMethodKind.None, null, new CSIdentifier (name), parms, Exceptions.ThrowOnNull (body, "body"));
 		}
 
-		public static CSMethod PublicConstructor (string name, CSParameterList parms, CSCodeBlock body, params CSBaseExpression[] baseParams)
+		public static CSMethod PublicConstructor (string name, CSParameterList parms, CSCodeBlock body, params CSBaseExpression [] baseParams)
 		{
 			return new CSMethod (CSVisibility.Public, CSMethodKind.None, null, new CSIdentifier (name), parms,
-			                     baseParams, true, Exceptions.ThrowOnNull (body, "body"));
+					     baseParams, true, Exceptions.ThrowOnNull (body, "body"));
 		}
 
 		public static CSMethod PrivateConstructor (string name, CSParameterList parms, CSCodeBlock body)
@@ -173,10 +173,10 @@ namespace Dynamo.CSLang {
 			return new CSMethod (CSVisibility.None, CSMethodKind.None, null, new CSIdentifier (name), parms, Exceptions.ThrowOnNull (body, "body"));
 		}
 
-		public static CSMethod PrivateConstructor (string name, CSParameterList parms, CSCodeBlock body, params CSBaseExpression[] baseParams)
+		public static CSMethod PrivateConstructor (string name, CSParameterList parms, CSCodeBlock body, params CSBaseExpression [] baseParams)
 		{
 			return new CSMethod (CSVisibility.None, CSMethodKind.None, null, new CSIdentifier (name), parms,
-			                     baseParams, true, Exceptions.ThrowOnNull (body, "body"));
+					     baseParams, true, Exceptions.ThrowOnNull (body, "body"));
 		}
 
 		public static CSMethod PInvoke (CSVisibility vis, CSType type, string name, string dllName, string externName, CSParameterList parms)

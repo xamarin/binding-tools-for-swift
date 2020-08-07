@@ -23,9 +23,9 @@ namespace Dynamo.SwiftLang {
 			Visibility = vis;
 			ReturnType = type;
 			bool isConstructor = (funcKind & FunctionKind.Constructor) != 0;
-			Name = isConstructor ? new SLIdentifier (isOptional ? "init?" : "init") : Exceptions.ThrowOnNull (name, nameof(name));
+			Name = isConstructor ? new SLIdentifier (isOptional ? "init?" : "init") : Exceptions.ThrowOnNull (name, nameof (name));
 			Parameters = parms ?? new SLParameterList ();
-			Body = Exceptions.ThrowOnNull (body, nameof(body));
+			Body = Exceptions.ThrowOnNull (body, nameof (body));
 			FuncKind = funcKind;
 			IsConstructor = isConstructor;
 			IsOptional = isOptional;
@@ -56,7 +56,7 @@ namespace Dynamo.SwiftLang {
 			case Visibility.Open:
 				return "open";
 			default:
-				throw new ArgumentOutOfRangeException (nameof(vis));
+				throw new ArgumentOutOfRangeException (nameof (vis));
 			}
 		}
 
@@ -93,33 +93,33 @@ namespace Dynamo.SwiftLang {
 		public IEnumerable<ICodeElement> Elements {
 			get {
 				if (Visibility != Visibility.None) {
-					yield return new SimpleElememt (ToVisibilityString (Visibility), false);
-					yield return SimpleElememt.Spacer;
+					yield return new SimpleElement (ToVisibilityString (Visibility), false);
+					yield return SimpleElement.Spacer;
 				}
 				if ((FuncKind & FunctionKind.Final) != 0) {
-					yield return new SimpleElememt ("final");
-					yield return SimpleElememt.Spacer;
+					yield return new SimpleElement ("final");
+					yield return SimpleElement.Spacer;
 				}
 				if ((FuncKind & FunctionKind.Override) != 0) {
-					yield return new SimpleElememt ("override");
-					yield return SimpleElememt.Spacer;
+					yield return new SimpleElement ("override");
+					yield return SimpleElement.Spacer;
 				}
 				if ((FuncKind & FunctionKind.Required) != 0) {
-					yield return new SimpleElememt ("required");
-					yield return SimpleElememt.Spacer;
+					yield return new SimpleElement ("required");
+					yield return SimpleElement.Spacer;
 				}
 				if ((FuncKind & FunctionKind.Static) != 0) {
-					yield return new SimpleElememt ("static");
-					yield return SimpleElememt.Spacer;
+					yield return new SimpleElement ("static");
+					yield return SimpleElement.Spacer;
 				}
 				if ((FuncKind & FunctionKind.Class) != 0) {
-					yield return new SimpleElememt ("class");
-					yield return SimpleElememt.Spacer;
+					yield return new SimpleElement ("class");
+					yield return SimpleElement.Spacer;
 				}
 
 				if (!IsConstructor) {
-					yield return new SimpleElememt ("func");
-					yield return SimpleElememt.Spacer;
+					yield return new SimpleElement ("func");
+					yield return SimpleElement.Spacer;
 				}
 
 
@@ -128,19 +128,19 @@ namespace Dynamo.SwiftLang {
 				yield return Parameters;
 
 				if ((FuncKind & FunctionKind.Throws) != 0) {
-					yield return SimpleElememt.Spacer;
-					yield return new SimpleElememt ("throws");
-					yield return SimpleElememt.Spacer;
+					yield return SimpleElement.Spacer;
+					yield return new SimpleElement ("throws");
+					yield return SimpleElement.Spacer;
 				}
 				if ((FuncKind & FunctionKind.Rethrows) != 0) {
-					yield return SimpleElememt.Spacer;
-					yield return new SimpleElememt ("rethrows");
-					yield return SimpleElememt.Spacer;
+					yield return SimpleElement.Spacer;
+					yield return new SimpleElement ("rethrows");
+					yield return SimpleElement.Spacer;
 				}
 				if (!IsConstructor && ReturnType != null) {
-					yield return SimpleElememt.Spacer;
-					yield return new SimpleElememt ("->");
-					yield return SimpleElememt.Spacer;
+					yield return SimpleElement.Spacer;
+					yield return new SimpleElement ("->");
+					yield return SimpleElement.Spacer;
 					yield return ReturnType;
 				}
 				foreach (ICodeElement constr in GenericParams.ConstraintElements) {

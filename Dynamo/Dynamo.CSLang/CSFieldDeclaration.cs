@@ -12,7 +12,7 @@ namespace Dynamo.CSLang {
 			: base (null, false, true)
 		{
 			Type = Exceptions.ThrowOnNull (type, "type");
-			And (Type).And (SimpleElememt.Spacer);
+			And (Type).And (SimpleElement.Spacer);
 			Bindings = new CommaListElementCollection<CSBinding> (Exceptions.ThrowOnNull (bindings, "bindings"));
 			Add (Bindings);
 		}
@@ -59,16 +59,16 @@ namespace Dynamo.CSLang {
 			Visibilty = vis;
 			IsStatic = isStatic;
 			if (isReadonly) {
-				this.Insert (0, new SimpleElememt ("readonly"));
-				this.Insert (1, SimpleElememt.Spacer);
+				this.Insert (0, new SimpleElement ("readonly"));
+				this.Insert (1, SimpleElement.Spacer);
 			}
 			if (isStatic) {
-				this.Insert (0, new SimpleElememt ("static"));
-				this.Insert (1, SimpleElememt.Spacer);
+				this.Insert (0, new SimpleElement ("static"));
+				this.Insert (1, SimpleElement.Spacer);
 			}
 			if (vis != CSVisibility.None) {
-				this.Insert (0, new SimpleElememt (CSMethod.VisibilityToString (vis)));
-				this.Insert (1, SimpleElememt.Spacer);
+				this.Insert (0, new SimpleElement (CSMethod.VisibilityToString (vis)));
+				this.Insert (1, SimpleElement.Spacer);
 			}
 		}
 

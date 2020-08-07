@@ -41,7 +41,7 @@ namespace Dynamo.SwiftLang {
 			CatchBlocks = new CodeElementCollection<SLCatch> ();
 			CatchBlocks.AddRange (catchBlocks);
 
-			Add (new SimpleElememt ("do ", true));
+			Add (new SimpleElement ("do ", true));
 			Add (DoBlock);
 			Add (CatchBlocks);
 		}

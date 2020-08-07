@@ -33,7 +33,7 @@ namespace Dynamo.SwiftLang
 				List<SLGenericTypeDeclaration> constrained = this.Where(decl => decl.Constraints.Count > 0).ToList();
 				if (constrained.Count == 0)
 					yield break;
-				yield return new SimpleElememt(" where ", true);
+				yield return new SimpleElement(" where ", true);
 				bool first = true;
 				foreach (SLGenericTypeDeclaration decl in constrained)
 				{
@@ -41,8 +41,8 @@ namespace Dynamo.SwiftLang
 					{
 						if (!first)
 						{
-							yield return new SimpleElememt(",", true);
-							yield return SimpleElememt.Spacer;
+							yield return new SimpleElement(",", true);
+							yield return SimpleElement.Spacer;
 						}
 						else
 						{
@@ -60,21 +60,21 @@ namespace Dynamo.SwiftLang
 			{
 				if (this.Count > 0)
 				{
-					yield return new SimpleElememt("<");
+					yield return new SimpleElement("<");
 					bool first = true;
 					foreach (SLGenericTypeDeclaration decl in this)
 					{
 						if (!first)
 						{
-							yield return new SimpleElememt(",", true);
-							yield return SimpleElememt.Spacer;
+							yield return new SimpleElement(",", true);
+							yield return SimpleElement.Spacer;
 						}
 						else {
 							first = false;
 						}
 						yield return decl.Name;
 					}
-					yield return new SimpleElememt(">");
+					yield return new SimpleElement(">");
 				}
 			}
 		}

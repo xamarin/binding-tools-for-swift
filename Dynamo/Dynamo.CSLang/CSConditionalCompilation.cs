@@ -11,7 +11,7 @@ namespace Dynamo.CSLang {
 		{
 			Add (tag);
 			if ((object)condition != null) {
-				Add (SimpleElememt.Spacer);
+				Add (SimpleElement.Spacer);
 				Add (condition);
 			}
 		}

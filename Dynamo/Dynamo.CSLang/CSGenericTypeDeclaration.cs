@@ -23,18 +23,18 @@ namespace Dynamo.CSLang {
 		public IEnumerable<ICodeElement> Elements {
 			get {
 				if (this.Count > 0) {
-					yield return new SimpleElememt ("<");
+					yield return new SimpleElement ("<");
 					bool first = true;
 					foreach (CSGenericTypeDeclaration decl in this) {
 						if (!first) {
-							yield return new SimpleElememt (",", true);
-							yield return SimpleElememt.Spacer;
+							yield return new SimpleElement (",", true);
+							yield return SimpleElement.Spacer;
 						} else {
 							first = false;
 						}
 						yield return decl.Name;
 					}
-					yield return new SimpleElememt (">");
+					yield return new SimpleElement (">");
 				}
 			}
 		}

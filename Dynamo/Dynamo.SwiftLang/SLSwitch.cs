@@ -92,10 +92,10 @@ namespace Dynamo.SwiftLang {
 
 		public IEnumerable<ICodeElement> Elements {
 			get {
-				yield return new SimpleElememt ("switch");
-				yield return SimpleElememt.Spacer;
+				yield return new SimpleElement ("switch");
+				yield return SimpleElement.Spacer;
 				yield return SwitchOn;
-				yield return SimpleElememt.Spacer;
+				yield return SimpleElement.Spacer;
 				SLCodeBlock caseBlock = new SLCodeBlock (Cases);
 				yield return caseBlock;
 			}
