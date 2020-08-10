@@ -109,20 +109,20 @@ namespace Dynamo.CSLang {
 			get {
 				var decl = new LineCodeElementCollection<ICodeElement> (true, false, true);
 				if (Visibility != CSVisibility.None)
-					decl.Add (new SimpleElememt (CSMethod.VisibilityToString (Visibility) + " "));
+					decl.Add (new SimpleElement (CSMethod.VisibilityToString (Visibility) + " "));
 				if (IsStatic)
-					decl.Add (new SimpleElememt ("static ", true));
+					decl.Add (new SimpleElement ("static ", true));
 				if (IsSealed)
-					decl.Add (new SimpleElememt ("sealed ", true));
+					decl.Add (new SimpleElement ("sealed ", true));
 				decl.Add (new CSIdentifier (EntityLabel + " "));
 				decl.Add (Name);
 				decl.Add (GenericParams);
 				if (Inheritance.Count > 0) {
-					decl.Add (new SimpleElememt (" : ", true));
+					decl.Add (new SimpleElement (" : ", true));
 					decl.Add (Inheritance);
 				}
 				if (GenericConstraints.Count > 0) {
-					decl.Add (SimpleElememt.Spacer);
+					decl.Add (SimpleElement.Spacer);
 					decl.Add (GenericConstraints);
 				}
 				yield return decl;
@@ -135,7 +135,7 @@ namespace Dynamo.CSLang {
 
 				if (StaticConstructor.Count > 0) {
 					var m = new CSMethod (CSVisibility.None, CSMethodKind.Static,
-					                    null, Name, new CSParameterList (), StaticConstructor);
+							    null, Name, new CSParameterList (), StaticConstructor);
 					contents.Add (m);
 				}
 				contents.AddRange (Constructors);

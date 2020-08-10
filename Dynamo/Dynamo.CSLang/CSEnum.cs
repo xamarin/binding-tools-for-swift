@@ -64,12 +64,12 @@ namespace Dynamo.CSLang {
 			get {
 				var decl = new LineCodeElementCollection<ICodeElement> (true, false, true);
 				if (Visibility != CSVisibility.None)
-					decl.Add (new SimpleElememt (CSMethod.VisibilityToString (Visibility) + " "));
+					decl.Add (new SimpleElement (CSMethod.VisibilityToString (Visibility) + " "));
 				decl.Add (new CSIdentifier ("enum" + " "));
 				decl.Add (Name);
 
 				if (OptionalType != null) {
-					decl.Add (new SimpleElememt (" : ", true));
+					decl.Add (new SimpleElement (" : ", true));
 					decl.Add (OptionalType);
 				}
 				yield return decl;

@@ -27,7 +27,7 @@ namespace Dynamo.CSLang {
 				} else {
 					writer.Write ("var", false);
 				}
-				SimpleElememt.Spacer.WriteAll (writer);
+				SimpleElement.Spacer.WriteAll (writer);
 				Ident.WriteAll (writer);
 				writer.Write (" in ", true);
 				Expr.WriteAll (writer);

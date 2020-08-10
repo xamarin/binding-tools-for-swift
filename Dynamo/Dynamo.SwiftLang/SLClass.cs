@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Dynamo.SwiftLang {
-	public class SLClass : ICodeElementSet
-	{
+	public class SLClass : ICodeElementSet {
 		public SLClass (Visibility vis, SLIdentifier name, IEnumerable<SLFunc> methods = null,
 			bool isStatic = false, bool isSealed = false, NamedType namedType = NamedType.Class,
 			bool isFinal = false)
@@ -105,21 +104,21 @@ namespace Dynamo.SwiftLang {
 			get {
 				var decl = new LineCodeElementCollection<ICodeElement> (true, false, true);
 				if (Visibility != Visibility.None)
-					decl.Add (new SimpleElememt (SLFunc.ToVisibilityString (Visibility) + " "));
+					decl.Add (new SimpleElement (SLFunc.ToVisibilityString (Visibility) + " "));
 				if (IsStatic)
-					decl.Add (new SimpleElememt ("static ", true));
+					decl.Add (new SimpleElement ("static ", true));
 				if (IsSealed)
-					decl.Add (new SimpleElememt ("sealed ", true));
+					decl.Add (new SimpleElement ("sealed ", true));
 				if (IsFinal)
-					decl.Add (new SimpleElememt ("final ", true));
+					decl.Add (new SimpleElement ("final ", true));
 				decl.Add (IdentifierForNamedType (NamedType));
-				decl.Add (SimpleElememt.Spacer);
+				decl.Add (SimpleElement.Spacer);
 				decl.Add (Name);
 				if (Generics.Count > 0) {
 					decl.Add (Generics);
 				}
 				if (Inheritance.Count > 0) {
-					decl.Add (new SimpleElememt (" : ", true));
+					decl.Add (new SimpleElement (" : ", true));
 					decl.Add (Inheritance);
 				}
 				yield return decl;

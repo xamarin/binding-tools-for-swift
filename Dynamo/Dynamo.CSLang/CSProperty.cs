@@ -30,7 +30,7 @@ namespace Dynamo.CSLang {
 			CSVisibility getVis, CSCodeBlock getter,
 			CSVisibility setVis, CSCodeBlock setter, CSParameterList parms)
 			: this (type, kind, new CSIdentifier ("this"), getVis, getter, setVis, setter,
-			        Exceptions.ThrowOnNull (parms, nameof(parms)))
+				Exceptions.ThrowOnNull (parms, nameof (parms)))
 		{
 		}
 
@@ -46,17 +46,17 @@ namespace Dynamo.CSLang {
 			GetterVisibility = getVis;
 			SetterVisibility = setVis;
 			CSVisibility bestVis = (CSVisibility)Math.Min ((int)getVis, (int)setVis);
-			decl.And (new SimpleElememt (CSMethod.VisibilityToString (bestVis))).And (SimpleElememt.Spacer);
+			decl.And (new SimpleElement (CSMethod.VisibilityToString (bestVis))).And (SimpleElement.Spacer);
 			if (kind != CSMethodKind.None)
-				decl.And (new SimpleElememt (CSMethod.MethodKindToString (kind))).And (SimpleElememt.Spacer);
+				decl.And (new SimpleElement (CSMethod.MethodKindToString (kind))).And (SimpleElement.Spacer);
 
 			PropType = type;
 			Name = name;
 
-			decl.And (Exceptions.ThrowOnNull (type, "type")).And (SimpleElememt.Spacer)
-				.And (Exceptions.ThrowOnNull (name, nameof(name)));
+			decl.And (Exceptions.ThrowOnNull (type, "type")).And (SimpleElement.Spacer)
+				.And (Exceptions.ThrowOnNull (name, nameof (name)));
 			if (parms != null) {
-				decl.And (new SimpleElememt ("[", true)).And (parms).And (new SimpleElememt ("]"));
+				decl.And (new SimpleElement ("[", true)).And (parms).And (new SimpleElement ("]"));
 			}
 			Add (decl);
 
@@ -68,7 +68,7 @@ namespace Dynamo.CSLang {
 				LineCodeElementCollection<ICodeElement> getLine = MakeEtter (getVis, "get", unifiedVis, getVis > setVis);
 				cb.Add (getLine);
 				if (getter.Count () == 0) {
-					getLine.Add (new SimpleElememt (";"));
+					getLine.Add (new SimpleElement (";"));
 				} else {
 					cb.Add (getter);
 				}
@@ -78,7 +78,7 @@ namespace Dynamo.CSLang {
 				LineCodeElementCollection<ICodeElement> setLine = MakeEtter (setVis, "set", unifiedVis, setVis > getVis);
 				cb.Add (setLine);
 				if (setter.Count () == 0) {
-					setLine.Add (new SimpleElememt (";"));
+					setLine.Add (new SimpleElement (";"));
 				} else {
 					cb.Add (setter);
 				}
@@ -101,8 +101,8 @@ namespace Dynamo.CSLang {
 		{
 			LineCodeElementCollection<ICodeElement> getLine = new LineCodeElementCollection<ICodeElement> (null, false, true);
 			if (!unifiedVis && vis != CSVisibility.None && moreRestrictiveVis)
-				getLine.And (new SimpleElememt (CSMethod.VisibilityToString (vis))).And (SimpleElememt.Spacer);
-			return getLine.And (new SimpleElememt (getset, false));
+				getLine.And (new SimpleElement (CSMethod.VisibilityToString (vis))).And (SimpleElement.Spacer);
+			return getLine.And (new SimpleElement (getset, false));
 		}
 
 		public static CSProperty PublicGetSet (CSType type, string name)
@@ -121,7 +121,7 @@ namespace Dynamo.CSLang {
 		{
 			if (!declareField && backingFieldName == null)
 				throw new ArgumentException ("declareField must be true if there is no supplied field name", nameof (declareField));
-			backingFieldName = backingFieldName ?? MassageName (Exceptions.ThrowOnNull (name, nameof(name)));
+			backingFieldName = backingFieldName ?? MassageName (Exceptions.ThrowOnNull (name, nameof (name)));
 
 
 			CSIdentifier backingIdent = new CSIdentifier (backingFieldName);
@@ -159,7 +159,7 @@ namespace Dynamo.CSLang {
 					new ICodeElement [] {
 						CSReturn.ReturnLine (Exceptions.ThrowOnNull(backingFieldName, nameof(backingFieldName)))
 					}, false, true);
-			CSProperty prop = new CSProperty (type, methodKind, Exceptions.ThrowOnNull (name, nameof(name)),
+			CSProperty prop = new CSProperty (type, methodKind, Exceptions.ThrowOnNull (name, nameof (name)),
 				CSVisibility.Public, new CSCodeBlock (getCode),
 				CSVisibility.Public, null);
 			if (includeBackingFieldDeclaration)
@@ -171,9 +171,9 @@ namespace Dynamo.CSLang {
 		public static CSProperty PublicGetBacking (CSType type, string name, string backingFieldName, bool includeBackingFieldDeclaration = false)
 		{
 			return PublicGetBacking (type,
-			                         new CSIdentifier (Exceptions.ThrowOnNull (name, nameof (name))),
-			                         new CSIdentifier (Exceptions.ThrowOnNull (backingFieldName, nameof (backingFieldName))),
-			                         includeBackingFieldDeclaration);
+						 new CSIdentifier (Exceptions.ThrowOnNull (name, nameof (name))),
+						 new CSIdentifier (Exceptions.ThrowOnNull (backingFieldName, nameof (backingFieldName))),
+						 includeBackingFieldDeclaration);
 		}
 
 		static string MassageName (string name)

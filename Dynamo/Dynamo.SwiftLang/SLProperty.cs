@@ -30,18 +30,18 @@ namespace Dynamo.SwiftLang {
 				elems.Add ("class ");
 
 			elems.Add ("var ");
-			AddRange (elems.Select ((el, i) => i == 0 ? (ICodeElement)new SimpleLineElement (el, false, true, true) : new SimpleElememt (el)));
+			AddRange (elems.Select ((el, i) => i == 0 ? (ICodeElement)new SimpleLineElement (el, false, true, true) : new SimpleElement (el)));
 			Add (Name);
-			Add (new SimpleElememt (":"));
-			Add (SimpleElememt.Spacer);
+			Add (new SimpleElement (":"));
+			Add (SimpleElement.Spacer);
 			Add (Type);
 			SLCodeBlock block = new SLCodeBlock (null);
-			block.Add (new SimpleElememt ("get"));
-			block.Add (SimpleElememt.Spacer);
+			block.Add (new SimpleElement ("get"));
+			block.Add (SimpleElement.Spacer);
 			block.Add (GetterBody);
 			if (SetterBody != null) {
-				block.Add (new SimpleElememt ("set"));
-				block.Add (SimpleElememt.Spacer);
+				block.Add (new SimpleElement ("set"));
+				block.Add (SimpleElement.Spacer);
 				block.Add (SetterBody);
 			}
 			Add (block);

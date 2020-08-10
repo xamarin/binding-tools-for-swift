@@ -8,10 +8,10 @@ namespace Dynamo.SwiftLang {
 		{
 			IsLet = isLet;
 			IsStatic = isStatic;
-			And (new SimpleElememt (SLFunc.ToVisibilityString (vis))).And (SimpleElememt.Spacer);
+			And (new SimpleElement (SLFunc.ToVisibilityString (vis))).And (SimpleElement.Spacer);
 			if (IsStatic)
-				Add (new SimpleElememt ("static ", true));
-			And (new SimpleElememt (isLet ? "let" : "var")).And (SimpleElememt.Spacer);
+				Add (new SimpleElement ("static ", true));
+			And (new SimpleElement (isLet ? "let" : "var")).And (SimpleElement.Spacer);
 			Binding = binding;
 			Add (Binding);
 		}

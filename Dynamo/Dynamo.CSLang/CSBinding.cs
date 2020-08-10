@@ -68,7 +68,7 @@ namespace Dynamo.CSLang {
 			get {
 				yield return Name;
 				if (Value != null) {
-					yield return new SimpleElememt (" = ", true);
+					yield return new SimpleElement (" = ", true);
 					yield return Value;
 				}
 			}

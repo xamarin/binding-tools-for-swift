@@ -11,13 +11,13 @@ namespace Dynamo.SwiftLang {
 			: base (isSingleLine, false, isSingleLine)
 		{
 			Name = Exceptions.ThrowOnNull (name, nameof (name));
-			Add (new SimpleElememt ("@"));
+			Add (new SimpleElement ("@"));
 			var stringRep = new StringBuilder (Name.Name);
 			Add (Name);
 			if (args != null) {
-				Add (new SimpleElememt ("("));
+				Add (new SimpleElement ("("));
 				Add (args);
-				Add (new SimpleElememt (")"));
+				Add (new SimpleElement (")"));
 				stringRep.Append ("(");
 				foreach (var arg in args) {
 					if (arg is SLIdentifier argId) {

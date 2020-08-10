@@ -38,7 +38,7 @@ namespace Dynamo.CSLang {
 				writer.Write ("(", false);
 				CatchType.WriteAll (writer);
 				if ((object)Name != null) {
-					SimpleElememt.Spacer.WriteAll (writer);
+					SimpleElement.Spacer.WriteAll (writer);
 					Name.WriteAll (writer);
 				}
 				writer.Write (")", false);
@@ -56,7 +56,7 @@ namespace Dynamo.CSLang {
 			CatchBlocks = new CodeElementCollection<CSCatch> ();
 			CatchBlocks.AddRange (catchBlocks);
 
-			Add (new SimpleElememt ("try ", true));
+			Add (new SimpleElement ("try ", true));
 			Add (TryBlock);
 			Add (CatchBlocks);
 		}

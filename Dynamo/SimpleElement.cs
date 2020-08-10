@@ -4,9 +4,9 @@
 using System;
 
 namespace Dynamo {
-	public class SimpleElememt : ICodeElement {
+	public class SimpleElement : ICodeElement {
 		bool allowSplit;
-		public SimpleElememt (string label, bool allowSplit = false)
+		public SimpleElement (string label, bool allowSplit = false)
 		{
 			Label = label;
 			this.allowSplit = allowSplit;
@@ -52,8 +52,8 @@ namespace Dynamo {
 			return Label;
 		}
 
-		static SimpleElememt spacer = new SimpleElememt (" ", true);
-		public static SimpleElememt Spacer { get { return spacer; } }
+		static SimpleElement spacer = new SimpleElement (" ", true);
+		public static SimpleElement Spacer { get { return spacer; } }
 	}
 }
 

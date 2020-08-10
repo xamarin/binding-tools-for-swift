@@ -39,7 +39,7 @@ namespace Dynamo.CSLang {
 		protected override void LLWrite (ICodeWriter writer, object o)
 		{
 			Call.WriteAll (writer);
-			SimpleElememt.Spacer.WriteAll (writer);
+			SimpleElement.Spacer.WriteAll (writer);
 			Initializer.WriteAll (writer);
 		}
 	}

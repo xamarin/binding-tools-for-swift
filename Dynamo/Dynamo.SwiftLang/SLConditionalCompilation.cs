@@ -10,7 +10,7 @@ namespace Dynamo.SwiftLang {
 		{
 			Add (tag);
 			if (condition != null) {
-				Add (SimpleElememt.Spacer);
+				Add (SimpleElement.Spacer);
 				Add (condition);
 			}
 		}
