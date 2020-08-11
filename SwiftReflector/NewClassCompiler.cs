@@ -4937,9 +4937,12 @@ namespace SwiftReflector {
 			if (prop.TLFGetter != null) {
 				var marshaler = new MarshalEngine (use, useLocals, TypeMapper, wrapper.Module.SwiftCompilerVersion);
 
-				var getter = TLFCompiler.CompileMethod (getterWrapperFunc, use, null, null, getterName, false, false, true);
-				var thisParm = getter.Parameters [0];
-				getter.Parameters [0] = new CSParameter (thisParm.CSType, thisParm.Name, CSParameterKind.This);
+				var wrapperGetter = TLFCompiler.CompileMethod (getterWrapperFunc, use, null, null, getterName, false, false, true);
+
+				var getter = TLFCompiler.CompileMethod (propDecl.GetGetter (), use, null, null, getterName, false, false, true);
+
+				var thisParm = wrapperGetter.Parameters.Last ();
+				getter.Parameters.Add (new CSParameter (thisParm.CSType, thisParm.Name, CSParameterKind.This));
 
 				getter.Body.AddRange (marshaler.MarshalFunctionCall (getterWrapperFunc, false, piGetterRef, getter.Parameters,
 					propDecl.GetGetter (), propDecl.GetGetter ().ReturnTypeSpec, getter.Type, null, null, false, wrapper));
