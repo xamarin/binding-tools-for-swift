@@ -4553,6 +4553,7 @@ namespace SwiftReflector {
 					picl.Methods.Add (piConstructor);
 				} catch (Exception err) {
 					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 88, err, $"Exception thrown marshaling to swift in enum constructor {recastCtor}");
+					errors.Add (ex);
 				}
 			}
 		}
