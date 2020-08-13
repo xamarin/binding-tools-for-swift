@@ -1431,6 +1431,7 @@ namespace SwiftReflector {
 
 			ImplementProperties (en, picl, usedPinvokeNames, enumDecl, classContents, null, use, wrapper, false, true, tlf => true, swiftLibraryPath, errors);
 			ImplementMethods (en, picl, usedPinvokeNames, swiftClassName, classContents, enumDecl, use, wrapper, tlf => true, swiftLibraryPath, errors);
+			ImplementTrivialEnumCtors (en, picl, usedPinvokeNames, enumDecl, classContents, use, wrapper, swiftLibraryPath, errors);
 			return en;
 		}
 
@@ -4477,6 +4478,87 @@ namespace SwiftReflector {
 		}
 
 
+		void ImplementTrivialEnumCtors (CSClass en, CSClass picl, List<string> usedPinvokeNames, EnumDeclaration enumDecl,
+							      ClassContents classContents, CSUsingPackages use,
+							      WrappingResult wrapper, string swiftLibraryPath, ErrorHandling errors)
+		{
+			foreach (TLFunction tlf in classContents.Constructors.AllocatingConstructors ()) {
+				FunctionDeclaration funcDecl = null;
+				try {
+					funcDecl = FindFunctionDeclarationForTLFunction (tlf, TypeMapper, enumDecl.Members.OfType<FunctionDeclaration> ());
+					if (funcDecl.Access.IsPrivateOrInternal ())
+						continue;
+				} catch (Exception err) {
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 85, $"Unable to find constructor function declaration for enum {enumDecl.ToFullyQualifiedName (true)} from method {tlf.MangledName}: {err.Message}");
+					errors.Add (ex);
+					continue;
+				}
+				if (funcDecl == null) {
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 86, $"Unable to find constructor function declaration for struct {enumDecl.ToFullyQualifiedName (true)} from method {tlf.MangledName}");
+					errors.Add (ex);
+					continue;
+				}
+				var recastCtor = RecastEnumCtorAsStaticFactory (enumDecl, funcDecl);
+				var isOptional = IsOptional (funcDecl.ReturnTypeSpec);
+				var optionalSuffix = isOptional ? "Optional" : "";
+
+				var homonymSuffix = Homonyms.HomonymSuffix (funcDecl, enumDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
+				var libraryPath = PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath);
+				var classType = tlf.Class;
+				var consName = "Init" + optionalSuffix + homonymSuffix;
+				var pinvokeConsName = PICTorName (classType.ClassName) + optionalSuffix + homonymSuffix;
+				var csReturnType = TypeMapper.MapType (funcDecl, funcDecl.ReturnTypeSpec, isPinvoke: false, isReturnValue: true).ToCSType (use);
+
+				pinvokeConsName = Uniqueify (pinvokeConsName, usedPinvokeNames);
+				usedPinvokeNames.Add (pinvokeConsName);
+
+				var pinvokeConsRef = PIClassName (classType.ClassName) + "." + pinvokeConsName;
+
+				var wrapperFunction = FindWrapperForConstructor (classContents, funcDecl, tlf, wrapper);
+				if (wrapperFunction == null) {
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 87, $"Unable to find matching constructor declaration for {tlf.MangledName} in enum {enumDecl.ToFullyQualifiedName ()}, skipping.");
+					errors.Add (ex);
+					continue;
+				}
+				var wrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunction, TypeMapper, wrapper);
+				if (wrapperFunc == null) {
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 88, $"Unable to find FunctionDeclaration for wrapper function {wrapperFunction.MangledName} in enum {enumDecl.ToFullyQualifiedName ()}, skipping.");
+					errors.Add (ex);
+					continue;
+				}
+				try {
+					var piConstructor = TLFCompiler.CompileMethod (wrapperFunc, use,
+						libraryPath, wrapperFunction.MangledName, pinvokeConsName, true, true, false);
+
+					var publicCons = TLFCompiler.CompileMethod (recastCtor, use, libraryPath, wrapperFunction.MangledName,
+						consName, isPinvoke: false, isFinal: true, isStatic: true);
+					var piCCTorName = PICCTorName (classType.ClassName);
+
+					var swiftCons = tlf.Signature as SwiftConstructorType;
+
+					var localIdents = new List<String> {
+						publicCons.Name.Name,
+						piConstructor.Name.Name,
+						piCCTorName,
+						kThisName
+					};
+
+					var engine = new MarshalEngine (use, localIdents, TypeMapper, wrapper.Module.SwiftCompilerVersion);
+
+					publicCons.Body.AddRange (engine.MarshalFunctionCall (wrapperFunc, false, pinvokeConsRef,
+						publicCons.Parameters, enumDecl, funcDecl.ReturnTypeSpec, csReturnType, swiftInstanceType: null,
+						instanceType: null, includeCastToReturnType: true, wrapper, includeIntermediateCastToLong: true));
+
+					en.Methods.Add (publicCons);
+					picl.Methods.Add (piConstructor);
+				} catch (Exception err) {
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 88, err, $"Exception thrown marshaling to swift in enum constructor {recastCtor}");
+					errors.Add (ex);
+				}
+			}
+		}
+
+
 		void ImplementMethods (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName piClassName, ClassContents contents,
 		                       TypeDeclaration typeDecl, CSUsingPackages use, WrappingResult wrapper, Func<TLFunction, bool> funcFilter,
 		                       string swiftLibraryPath, ErrorHandling errors)
@@ -5340,7 +5422,13 @@ namespace SwiftReflector {
 			var bft = constructorToWrap.Signature as SwiftBaseFunctionType;
 			if (bft == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 36, "Yikes! Expected a SwiftBaseFunctionType but got " + constructorToWrap.Signature.GetType ());
-			int skipCount = constructorToWrap.Signature.ReturnType.IsClass ? 0 : 1;
+
+			var isTrivialEnum = false;
+			if (constructorToWrap.Signature.ReturnType.IsEnum) {
+				var entity = TypeMapper.GetEntityForTypeSpec (funcDecl.ReturnTypeSpec);
+				isTrivialEnum = entity?.EntityType == EntityType.TrivialEnum;
+			}
+			int skipCount = constructorToWrap.Signature.ReturnType.IsClass || isTrivialEnum ? 0 : 1;
 			return allwrappers.FirstOrDefault (tlf => ParametersMatchExceptSkippingFirstN (tlf.Signature,
 				constructorToWrap.Signature, skipCount, TypeMapper));
 		}
@@ -6423,6 +6511,22 @@ namespace SwiftReflector {
 						SubstituteAssociatedTypeNamer (namer, genSubType);
 				}
 			} else throw new NotImplementedException ($"Unknown type {ty.GetType ().Name} ({ty.ToString ()})");
+		}
+
+		static FunctionDeclaration RecastEnumCtorAsStaticFactory (EnumDeclaration enumDecl, FunctionDeclaration funcDecl)
+		{
+			var copy = new FunctionDeclaration (funcDecl);
+			copy.IsStatic = true;
+			if (copy.ParameterLists.Count > 0)
+				copy.ParameterLists.RemoveAt (0);
+			copy.Name = "init";
+
+			return copy;
+		}
+
+		static bool IsOptional (TypeSpec spec)
+		{
+			return spec is NamedTypeSpec namedSpec && namedSpec.ContainsGenericParameters && namedSpec.Name == "Swift.Optional";
 		}
 	}
 }
