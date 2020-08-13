@@ -25,6 +25,11 @@ namespace Dynamo.CSLang {
 		public CSType OptionalType { get; private set; }
 		public CSIdentifier Name { get; private set; }
 
+		public CSType ToCSType ()
+		{
+			return new CSSimpleType (Name.Name);
+		}
+
 		#region ICodeElem implementation
 
 		public event EventHandler<WriteEventArgs> Begin = (s, e) => { };

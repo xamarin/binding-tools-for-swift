@@ -158,6 +158,11 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return true;
 			}
 #endif
+			if (t.IsEnum) {
+				if (TryGetNominalMetadata (t, out mt))
+					return true;
+			}
+
 			if (t.IsDelegate ()) {
 				mt = DelegateMetatype (t);
 			}
@@ -384,7 +389,16 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-
+		bool TryGetNominalMetadata (Type t, out SwiftMetatype mt)
+		{
+			try {
+				mt = GetNominalMetatype (t);
+				return true;
+			} catch {
+				mt = default (SwiftMetatype);
+				return false;
+			}
+		}
 
 		SwiftMetatype SwiftStructMetatype (Type t)
 		{
