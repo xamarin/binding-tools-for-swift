@@ -78,5 +78,25 @@ public enum SomeForce {
 			var callingCode = CSCodeBlock.Create (forceDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "False\n");
 		}
+
+		[Test]
+		public void NestedEnum ()
+		{
+			var swiftCode = @"
+public struct System {
+    public enum LOAD_AVG {
+        case short
+        case long
+    }    
+    public static func loadAverage(type: LOAD_AVG = .long) -> Int {
+        return 42
+    }
+}";
+			var getVal = new CSFunctionCall ("System.LoadAverage", false, new CSIdentifier ("System.LOAD_AVG.Short"));
+			var printer = CSFunctionCall.ConsoleWriteLine (getVal);
+
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "42\n");
+		}
 	}
 }

@@ -66,6 +66,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return proto.AssociatedTypeNamed (named.NameWithoutModule) != null;
 		}
 
+		public bool IsNested => this is TypeDeclaration && Parent != null;
+
 		public ProtocolDeclaration GetConstrainedProtocolWithAssociatedType (NamedTypeSpec named, TypeMapper typeMapper)
 		{
 			var depthIndex = GetGenericDepthAndIndex (named);
