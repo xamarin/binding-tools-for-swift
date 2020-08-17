@@ -5024,7 +5024,7 @@ namespace SwiftReflector {
 				var getter = TLFCompiler.CompileMethod (propDecl.GetGetter (), use, null, null, getterName, false, false, true);
 
 				var thisParm = wrapperGetter.Parameters.Last ();
-				getter.Parameters.Add (new CSParameter (thisParm.CSType, thisParm.Name, CSParameterKind.This));
+				getter.Parameters.Add (new CSParameter (thisParm.CSType, thisParm.Name, propDecl.Parent.IsNested ? CSParameterKind.None : CSParameterKind.This));
 
 				getter.Body.AddRange (marshaler.MarshalFunctionCall (getterWrapperFunc, false, piGetterRef, getter.Parameters,
 					propDecl.GetGetter (), propDecl.GetGetter ().ReturnTypeSpec, getter.Type, null, null, false, wrapper));
@@ -5296,7 +5296,8 @@ namespace SwiftReflector {
 			if (isTrivialEnum && !methodIsStatic) {
 				// abracadabra! you're an extension!
 				var instance = publicMethod.Parameters [0];
-				publicMethod.Parameters [0] = new CSParameter (instance.CSType, instance.Name, CSParameterKind.This);
+				publicMethod.Parameters [0] = new CSParameter (instance.CSType, instance.Name,
+					funcToWrap.Parent.IsNested ? CSParameterKind.None : CSParameterKind.This);
 			}
 
 			var genericParameters = publicMethod.GenericParameters;
