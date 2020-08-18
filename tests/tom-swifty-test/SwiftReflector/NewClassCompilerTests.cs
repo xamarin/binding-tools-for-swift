@@ -1433,6 +1433,41 @@ public var Answer: Int = 42
 			var callingCode = CSCodeBlock.Create (printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "42\n");
 		}
+
+		[Test]
+		public void TestTypeAliasUsage ()
+		{
+			var swiftCode = @"
+public struct Harmony {
+    
+    public static func create(_ intervals: [Float]) -> Harmonizer {
+        return { firstPitch in
+            let pitchSet = PitchSet()
+            return intervals.reduce(pitchSet) {
+                (ps, interval) -> PitchSet in
+                return ps
+            }
+        }
+    }
+}
+
+
+public typealias Harmonizer = ((Pitch) -> PitchSet)
+
+
+public struct Pitch {
+    public init() {}
+}
+
+public struct PitchSet
+{
+    public init() {}
+}
+";
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("got here"));
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "got here\n");
+		}
 	}
 }
 
