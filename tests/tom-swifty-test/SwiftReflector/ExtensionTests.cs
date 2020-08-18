@@ -316,5 +316,34 @@ public extension HotDogOnUserType
 			var callingCode = CSCodeBlock.Create ();
 			TestRunning.TestAndExecute (swiftCode, callingCode, "", platform: PlatformName.macOS);
 		}
+
+		[Test]
+		public void GenericExtensionOnDictionary ()
+		{
+			var swiftCode = @"
+public extension Dictionary {
+    func property<T>(_ name: String) -> T? {
+        guard let key = name as? Key, let value = self[key] else { return nil }        
+        return value as? T
+    }
+}";
+			// var foo = new SwiftDictionary <SwiftString, nint> ();
+			// foo.Add (SwiftString.FromString ("key", 43);
+			// var bar = foo.Property<SwiftString, nint, nint>(SwiftString.FromString ("key"));
+			// Console.WriteLine (bar.HasValue);
+			// Console.WriteLine (bar.Value);
+
+			var fooID = new CSIdentifier ("foo");
+			var barID = new CSIdentifier ("bar");
+			var stringExpr = new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("key"));
+			var fooDecl = CSVariableDeclaration.VarLine (fooID, new CSFunctionCall ("SwiftDictionary<SwiftString, nint>", true));
+			var fooAdd = CSFunctionCall.FunctionCallLine ($"{fooID.Name}.Add", false, stringExpr, CSConstant.Val (43));
+			var barDecl = CSVariableDeclaration.VarLine (barID, new CSFunctionCall ($"{fooID.Name}.Property<SwiftString, nint, nint>", false, stringExpr));
+			var printHasIt = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{barID.Name}.HasValue"));
+			var printValue = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{barID.Name}.Value"));
+
+			var callingCode = CSCodeBlock.Create (fooDecl, fooAdd, barDecl, printHasIt, printValue);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n43\n");
+		}
 	}
 }
