@@ -625,5 +625,31 @@ public func returnsAny () -> Any {
 			var callingCode = CSCodeBlock.Create (anyDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
 		}
+
+		[Test]
+		public void EmptyProtocolTest2 ()
+		{
+			var swiftCode = @"
+public protocol Food {   
+}
+
+public class HotDog : Food
+{
+    public init ()
+    {
+    }
+    
+    public func AddOnions () -> String {
+        return ""Added onions.""
+    }
+}
+";
+
+			var hotdogID = new CSIdentifier ("hotdog");
+			var hotdogDecl = CSVariableDeclaration.VarLine (hotdogID, new CSFunctionCall ("HotDog", true));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{hotdogID.Name}.AddOnions", false));
+			var callingCode = CSCodeBlock.Create (hotdogDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Added onions.\n");
+		}
 	}
 }
