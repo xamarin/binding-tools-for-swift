@@ -1421,6 +1421,18 @@ public func thisFuncIsNotUsedInThisTest () { }
 			TestRunning.TestAndExecute (swiftCode, callingCode, "nothing here\n");
 
 		}
+
+		[Test]
+		public void TestInitializedVariable ()
+		{
+			var swiftCode = @"
+public var Answer: Int = 42
+";
+
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ("TopLevelEntities.Answer"));
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "42\n");
+		}
 	}
 }
 
