@@ -569,13 +569,17 @@ namespace SwiftReflector.TypeMapping {
 						return new NetTypeBundle (owningProtocol, assocType, false);
 					}
 				} else if (context.IsTypeSpecGeneric (spec) && (!spec.ContainsGenericParameters || isPinvoke)) {
-					if (isPinvoke) {
-						var isPAT = context.GetConstrainedProtocolWithAssociatedType (named, this) != null;
-						var isInOut = isPAT ? false : named.IsInOut;
-						return new NetTypeBundle ("System", "IntPtr", false, isInOut, EntityType.None);
+					if (context.IsTypeSpecGenericMetatypeReference (spec)) {
+						return new NetTypeBundle ("SwiftRuntimeLibrary", "SwiftMetatype", false, spec.IsInOut, EntityType.None);
 					} else {
-						var depthIndex = context.GetGenericDepthAndIndex (spec);
-						return new NetTypeBundle (depthIndex.Item1, depthIndex.Item2);
+						if (isPinvoke) {
+							var isPAT = context.GetConstrainedProtocolWithAssociatedType (named, this) != null;
+							var isInOut = isPAT ? false : named.IsInOut;
+							return new NetTypeBundle ("System", "IntPtr", false, isInOut, EntityType.None);
+						} else {
+							var depthIndex = context.GetGenericDepthAndIndex (spec);
+							return new NetTypeBundle (depthIndex.Item1, depthIndex.Item2);
+						}
 					}
 				} else if (context.IsTypeSpecAssociatedType (named)) {
 					if (isPinvoke) {

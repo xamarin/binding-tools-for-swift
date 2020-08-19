@@ -358,16 +358,42 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return ns != null && IsTypeSpecGeneric (ns.Name);
 		}
 
+		public bool IsTypeSpecGenericMetatypeReference (TypeSpec sp)
+		{
+			if (sp.ContainsGenericParameters)
+				return false;
+			string notUsed;
+			return sp is NamedTypeSpec ns && IsTypeSpecGenericMetatypeReference (ns.Name, out notUsed);
+		}
+
+		public bool IsTypeSpecGenericMetatypeReference (string typeSpecName, out string genericPart)
+		{
+			if (typeSpecName.Contains ('.')) {
+				var parts = typeSpecName.Split ('.');
+				if (parts.Length == 2 && parts [1] == "Type") {
+					genericPart = parts [0];
+					return true;
+				}
+			}
+			genericPart = null;
+			return false;
+		}
+
 		public bool IsTypeSpecGeneric (string typeSpecName)
 		{
-			foreach (GenericDeclaration gendecl in Generics) {
-				if (typeSpecName == gendecl.Name)
-					return true;
-			}
-			if (Parent != null) {
-				return Parent.IsTypeSpecGeneric (typeSpecName);
+			string genericPart;
+			if (IsTypeSpecGenericMetatypeReference (typeSpecName, out genericPart)) {
+				return IsTypeSpecGeneric (genericPart);
 			} else {
-				return false;
+				foreach (GenericDeclaration gendecl in Generics) {
+					if (typeSpecName == gendecl.Name)
+						return true;
+				}
+				if (Parent != null) {
+					return Parent.IsTypeSpecGeneric (typeSpecName);
+				} else {
+					return false;
+				}
 			}
 		}
 
@@ -398,14 +424,19 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		Tuple<int, int> GetGenericDepthAndIndex (string name, int depth)
 		{
-			for (int i = 0; i < Generics.Count; i++) {
-				if (Generics [i].Name == name)
-					return new Tuple<int, int> (depth, i);
+			string genericPart;
+			if (IsTypeSpecGenericMetatypeReference (name, out genericPart)) {
+				return GetGenericDepthAndIndex (genericPart, depth);
+			} else {
+				for (int i = 0; i < Generics.Count; i++) {
+					if (Generics [i].Name == name)
+						return new Tuple<int, int> (depth, i);
+				}
+				if (Parent != null) {
+					return Parent.GetGenericDepthAndIndex (name, depth - 1);
+				}
+				return new Tuple<int, int> (-1, -1);
 			}
-			if (Parent != null) {
-				return Parent.GetGenericDepthAndIndex (name, depth - 1);
-			}
-			return new Tuple<int, int> (-1, -1);
 		}
 
 		public GenericDeclaration GetGeneric (int depth, int index)
