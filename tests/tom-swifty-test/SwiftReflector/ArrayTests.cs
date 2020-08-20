@@ -356,7 +356,7 @@ return a
 			feach.Body.Add (CSFunctionCall.FunctionCallLine ("Console.Write", false, feach.Ident));
 
 			var callingCode = CSCodeBlock.Create (arrDecl, varArrDecl, otherArrDecl, feach);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "123", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "123");
 
 		}
 

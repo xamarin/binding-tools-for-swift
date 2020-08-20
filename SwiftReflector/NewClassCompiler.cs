@@ -133,6 +133,7 @@ namespace SwiftReflector {
 		public static CSIdentifier kProtocolWitnessTable = new CSIdentifier (kProtocolWitnessTableName);
 		public static string kGenericSelfName = "TSelf";
 		public static CSIdentifier kGenericSelf = new CSIdentifier (kGenericSelfName);
+		public static CSIdentifier kMobilePlatforms = new CSIdentifier ("__IOS__ || __MACOS__ || __TVOS__ || __WATCHOS__");
 
 		SwiftCompilerLocation SwiftCompilerLocations;
 		ClassCompilerLocations ClassCompilerLocations;
@@ -2899,10 +2900,12 @@ namespace SwiftReflector {
 					new CSIdentifier (recvrName),
 					pl, body);
 
-			use.AddIfNotPresent (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute));
+			use.AddIfNotPresent (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), kMobilePlatforms);
 			var args = new CSArgumentList ();
 			args.Add (new CSFunctionCall ("typeof", false, new CSIdentifier (vtableName.Name + "." + delType.Name.Name)));
-			CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true).AttachBefore (recvr);
+			var attr = CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true);
+			CSConditionalCompilation.ProtectWithIfEndif (kMobilePlatforms, attr);
+			attr.AttachBefore (recvr);
 			return recvr;
 		}
 
@@ -2936,10 +2939,12 @@ namespace SwiftReflector {
 
 			recvr = new CSMethod (CSVisibility.None, CSMethodKind.Static, returnType, new CSIdentifier (recvrName), pl, body);
 
-			use.AddIfNotPresent ("ObjCRuntime");
+			use.AddIfNotPresent ("ObjCRuntime", kMobilePlatforms);
 			var args = new CSArgumentList ();
 			args.Add (new CSFunctionCall ("typeof", false, new CSIdentifier (vtableName.Name + "." + delType.Name.Name)));
-			CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true).AttachBefore (recvr);
+			var attr = CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true);
+			CSConditionalCompilation.ProtectWithIfEndif (kMobilePlatforms, attr);
+			attr.AttachBefore (recvr);
 			return recvr;
 		}
 
@@ -2964,11 +2969,12 @@ namespace SwiftReflector {
 			                          new CSIdentifier ("xamVtable_recv_" + publicMethod.Name.Name + homonymSuffix),
 										      pl, body);
 
-			// note for future - this is required for MonoPInvokeCallback
-			use.AddIfNotPresent ("ObjCRuntime");
+			use.AddIfNotPresent ("ObjCRuntime", kMobilePlatforms);
 			var args = new CSArgumentList ();
 			args.Add (new CSFunctionCall ("typeof", false, new CSIdentifier (vtableName.Name + "." + delType.Name.Name)));
-			CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true).AttachBefore (recvr);
+			var attr = CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true);
+			CSConditionalCompilation.ProtectWithIfEndif (kMobilePlatforms, attr);
+			attr.AttachBefore (recvr);
 			return recvr;
 		}
 

@@ -325,7 +325,7 @@ public protocol SomeProtocol {
 			var print2 = CSFunctionCall.ConsoleWriteLine (csTypeID == ocsTypeID);
 			var callingCode = CSCodeBlock.Create (ocstyDecl, mtDecl, cstyDecl, tryGetLine, print1, print2);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "ISomeProtocol\nTrue\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "ISomeProtocol\nTrue\n");
 		}
 
 	}

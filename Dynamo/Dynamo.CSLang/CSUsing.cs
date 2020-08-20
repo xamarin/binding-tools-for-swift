@@ -38,18 +38,22 @@ namespace Dynamo.CSLang {
 
 		public CSUsingPackages And (string package) { return And (new CSUsing (package)); }
 
-		public void AddIfNotPresent (string package)
+		public void AddIfNotPresent (string package, CSIdentifier protectedBy = null)
 		{
 			if (String.IsNullOrEmpty (package))
 				return;
 			CSUsing target = new CSUsing (package);
-			if (!this.Exists (use => use.Contents == target.Contents))
+			if (!this.Exists (use => use.Contents == target.Contents)) {
+				if ((object)protectedBy != null) {
+					CSConditionalCompilation.ProtectWithIfEndif (protectedBy, target);
+				}
 				Add (target);
+			}
 		}
 
-		public void AddIfNotPresent (Type t)
+		public void AddIfNotPresent (Type t, CSIdentifier protectedBy = null)
 		{
-			AddIfNotPresent (t.Namespace);
+			AddIfNotPresent (t.Namespace, protectedBy);
 		}
 	}
 }

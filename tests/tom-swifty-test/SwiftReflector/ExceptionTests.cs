@@ -169,7 +169,7 @@ namespace SwiftReflector {
 			catchBlock.Add (CSFunctionCall.FunctionCallLine ("Console.Write", false, new CSIdentifier ("e").Dot (new CSIdentifier ("Message"))));
 			CSTryCatch catcher = new CSTryCatch (tryBlock, typeof (SwiftException), "e", catchBlock);
 			callingCode.Add (catcher);
-			TestRunning.TestAndExecute (swiftCode, callingCode, output, testName: $"VirtualMethodExceptionSimple{toAdd}", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, output, testName: $"VirtualMethodExceptionSimple{toAdd}");
 		}
 
 		[Test]
@@ -218,7 +218,7 @@ namespace SwiftReflector {
 			catchBlock.Add (CSFunctionCall.FunctionCallLine ("Console.Write", false, new CSIdentifier ("e").Dot (new CSIdentifier ("Message"))));
 			CSTryCatch catcher = new CSTryCatch (tryBlock, typeof (SwiftException), "e", catchBlock);
 			callingCode.Add (catcher);
-			TestRunning.TestAndExecute (swiftCode, callingCode, output, testName: $"VirtualMethodException{toAdd}", otherClass: fooOver, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, output, testName: $"VirtualMethodException{toAdd}", otherClass: fooOver);
 		}
 
 

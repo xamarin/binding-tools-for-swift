@@ -22,7 +22,7 @@ public protocol Identity0 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Got here."));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n");
 
 		}
 
@@ -68,7 +68,7 @@ public func getName (a: Identity1) -> String {
 			var printer = CSFunctionCall.ConsoleWriteLine (nameName);
 			var callingCode = CSCodeBlock.Create (instDecl, nameDecl, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "() -> Identity1\n", otherClass: auxClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "() -> Identity1\n", otherClass: auxClass);
 		}
 
 		[Test]
@@ -113,7 +113,7 @@ public func whoWho<T> (a: T) where T : Identity2 {
 			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoWho", false, instName);
 			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass);
 		}
 
 		[Test]
@@ -158,7 +158,7 @@ public func whoProp<T> (a: T) where T: Identity3 {
 			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoProp", false, instName);
 			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass);
 		}
 
 		[Test]
@@ -207,7 +207,7 @@ public func whoProp<T> (a: T) where T: Identity4 {
 			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoProp", false, instName);
 			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass);
 
 		}
 
@@ -262,7 +262,7 @@ public func whoScript <T> (a: T) where T : Identity5 {
 			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoScript", false, instName);
 			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "got here 7\n", otherClass: auxClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "got here 7\n", otherClass: auxClass);
 
 		}
 	}
