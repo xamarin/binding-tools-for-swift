@@ -1414,5 +1414,19 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual ("Thing", arg2.AssociatedTypePath [0], "Mismatch in assoc type name 0");
 			Assert.AreEqual ("Name", arg2.AssociatedTypePath [1], "Mismatch in assoc type name 1");
 		}
+
+		[Test]
+		public void TestGenericMetatype ()
+		{
+			var tld = Decomposer.Decompose ("_$sSD14ExtensionTestsE5value6forKey6ofTypeqd__SgSS_qd__mtlF", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var arg0 = tlf.Signature.GetParameter (0) as SwiftClassType;
+			Assert.IsNotNull (arg0, "not a swift class type at arg0");
+			var arg1 = tlf.Signature.GetParameter (1) as SwiftMetaClassType;
+			Assert.IsNotNull (arg1, "not a metaclass type");
+			Assert.IsNotNull (arg1.ClassGenericReference, "not a generic reference metatype");
+		}
 	}
 }

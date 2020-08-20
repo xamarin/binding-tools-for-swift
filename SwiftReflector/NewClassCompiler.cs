@@ -5617,7 +5617,7 @@ namespace SwiftReflector {
 					return false;
 
 
-				if (!sp.ContainsGenericParameters && decl.IsTypeSpecGeneric (sp)) {
+				if (!sp.ContainsGenericParameters && decl.IsTypeSpecGeneric (sp) && !decl.IsTypeSpecGenericMetatypeReference (sp)) {
 					if (sp is NamedTypeSpec && !(st is SwiftGenericArgReferenceType))
 						return false;
 					continue;

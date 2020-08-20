@@ -345,5 +345,33 @@ public extension Dictionary {
 			var callingCode = CSCodeBlock.Create (fooDecl, fooAdd, barDecl, printHasIt, printValue);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n43\n");
 		}
+
+		[Test]
+		public void GenericExtensionWithTypes ()
+		{
+			var swiftCode = @"
+public extension Dictionary {
+    func value<T>(forKey: String, ofType: T.Type) -> T? {
+        return nil
+    }
+}";
+
+			// var foo = new SwiftDictionary <SwiftString, nint> ();
+			// foo.Add (SwiftString.FromString ("key", 43);
+			// var bar = foo.Value<SwiftString, nint, nint> (SwiftString.FromString ("key"), StructMarshal.Marshaler.Metatypeof (typeof (nint)));
+			// Console.WriteLine (bar.HasValue);
+
+			var fooID = new CSIdentifier ("foo");
+			var barID = new CSIdentifier ("bar");
+			var stringExpr = new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("key"));
+			var fooDecl = CSVariableDeclaration.VarLine (fooID, new CSFunctionCall ("SwiftDictionary<SwiftString, nint>", true));
+			var fooAdd = CSFunctionCall.FunctionCallLine ($"{fooID.Name}.Add", false, stringExpr, CSConstant.Val (43));
+			var barDecl = CSVariableDeclaration.VarLine (barID, new CSFunctionCall ($"{fooID.Name}.Value<SwiftString, nint, nint>", false, stringExpr,
+				new CSFunctionCall ("StructMarshal.Marshaler.Metatypeof", false, new CSSimpleType ("nint").Typeof ())));
+			var printHasIt = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{barID.Name}.HasValue"));
+
+			var callingCode = CSCodeBlock.Create (fooDecl, fooAdd, barDecl, printHasIt);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "False\n");
+		}
 	}
 }

@@ -1455,6 +1455,8 @@ namespace SwiftReflector {
 		{
 			if (typeContext.IsProtocolWithAssociatedTypesFullPath (swiftType, typeMapper) || IsProtocolConstrained (wrapperFunc, swiftType)) {
 				return MarshalProtocolConstrained (typeContext, wrapperFunc, p, swiftType);
+			} else if (typeContext.IsTypeSpecGenericMetatypeReference (swiftType)) {
+				return p.Name;
 			} else {
 				// Class constraints:
 				// IntPtr pNameIntPtr

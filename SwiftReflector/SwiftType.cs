@@ -675,13 +675,24 @@ namespace SwiftReflector {
 		public SwiftMetaClassType (SwiftClassType classType, bool isReference, SwiftName name = null)
 		    : base (CoreCompoundType.MetaClass, isReference, name)
 		{
-			Class = Ex.ThrowOnNull (classType, nameof(classType));
+			Class = Ex.ThrowOnNull (classType, nameof (classType));
+		}
+		public SwiftMetaClassType (SwiftGenericArgReferenceType classGenericReference, bool isReference, SwiftName name = null)
+			: base (CoreCompoundType.MetaClass, isReference, name)
+		{
+			ClassGenericReference = Ex.ThrowOnNull (classGenericReference, nameof (classGenericReference));
 		}
 		public SwiftClassType Class { get; private set; }
+		public SwiftGenericArgReferenceType ClassGenericReference { get; private set; }
 		protected override bool LLEquals (SwiftType other)
 		{
 			var meta = other as SwiftMetaClassType;
-			return meta != null && Class.Equals (meta.Class);
+			if (meta == null)
+				return false;
+			if (Class != null)
+				return Class.Equals (meta.Class);
+			else
+				return ClassGenericReference.Equals (meta.ClassGenericReference);
 		}
 		public override string ToString ()
 		{

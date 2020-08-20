@@ -244,7 +244,7 @@ namespace SwiftReflector.TypeMapping {
 						throw new NotImplementedException ("Can only have a named type spec here.");
 					var depthIndex = func.GetGenericDepthAndIndex (namedType.Name);
 					var gd = func.GetGeneric (depthIndex.Item1, depthIndex.Item2);
-					var genRef = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
+					var genRef = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2, func.IsTypeSpecGenericMetatypeReference (namedType));
 					parmType = genRef;
 				}
 			} else {
