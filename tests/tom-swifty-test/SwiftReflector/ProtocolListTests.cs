@@ -57,7 +57,7 @@ public func infoOn(a: ProtoA & ProtoB) -> String {
 			var printer = CSFunctionCall.ConsoleWriteLine (clCall);
 			var callingCode = CSCodeBlock.Create (clDecl, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3 4 7\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3 4 7\n");
 		}
 
 
@@ -90,7 +90,7 @@ public func getDual () -> ProtoRA & ProtoRB {
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("(ImplRARB)TopLevelEntities.GetDual", false));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
 
@@ -121,7 +121,7 @@ public var DualProp : ProtoPA & ProtoPB = ImplPAPB ()
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("(ImplPAPB)TopLevelEntities.GetDualProp", false));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
 
@@ -158,7 +158,7 @@ public class ImplMPAMPB : ProtoMPA, ProtoMPB {
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplMPAMPB", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.InfoOn", false, thingID));
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3 4 7\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3 4 7\n");
 		}
 
 
@@ -194,7 +194,7 @@ public class ImplMRAMRB : ProtoMRA, ProtoMRB {
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"(ImplMRAMRB){thingID.Name}.GetMeA", false));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
 
@@ -240,7 +240,7 @@ public class ImplMPRAMPRB : ProtoMPRA, ProtoMPRB {
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSIdentifier ($"(ImplMPRAMPRB){thingID.Name}").Dot (new CSIdentifier ("PropStuff")));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
 
@@ -282,7 +282,7 @@ public class ImplMSRAMSRB : ProtoMSRA, ProtoMSRB {
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"(ImplMSRAMSRB){thingID.Name}.GetSubscript", false, CSConstant.Val (7)));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
 		[Test]
@@ -321,7 +321,7 @@ public class ImplMEAMEB : ProtoMEA, ProtoMEB {
 			var quaDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, quaID, new CSFunctionCall ($"(ImplMEAMEB){anotherID.Name}.GetValueProtoValue", false));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{quaID.Name}.ConstantA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, quaDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
 		[Test]
@@ -359,7 +359,7 @@ public class ImplMEFAMFEB : ProtoMEFA, ProtoMEFB {
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"NotParticularlyUseful.NewProtoValue", false, thingID));
 			var printer = CSFunctionCall.ConsoleWriteLine (anotherID.Dot (new CSIdentifier ("Case")));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "ProtoValue\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "ProtoValue\n");
 		}
 
 
@@ -400,7 +400,7 @@ public func getDual (doThrow: Bool) throws -> ProtoERA & ProtoERB {
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("(ImplERAERB)TopLevelEntities.GetDual", false, CSConstant.Val (false)));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
 		[Test]
@@ -437,7 +437,7 @@ open class UsingClass {
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"UsingClass", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.DoAThing", false, thingID));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
 		}
 
 		[Test]
@@ -485,7 +485,7 @@ open class UsingClassP {
 			var resetter = CSFunctionCall.FunctionCallLine ($"{thingID}.SetImpl", false, new CSFunctionCall ("ImplVAVB", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.DoAThing", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, resetter, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
 		}
 
 		[Test]
@@ -535,7 +535,7 @@ open class UsingClassPI {
 			var resetter = CSFunctionCall.FunctionCallLine ($"{thingID}.SetSubscript", false, new CSFunctionCall ("ImplVIPAVIPB", true), CSConstant.Val (18));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.DoAThing", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, resetter, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
 		}
 
 		[Test]
@@ -578,7 +578,7 @@ public class UsingClassPP : UsingProto {
 			var invoke = new CSFunctionCall ($"{anotherID.Name}.TryItOut", false, thingID);
 			var printer = CSFunctionCall.ConsoleWriteLine (invoke);
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
 		}
 
 		[Test]
@@ -628,7 +628,7 @@ public func tryItOut (a: UsingClassPProp) -> Int {
 			var invoke = new CSFunctionCall ($"TopLevelEntities.TryItOut", false, thingID);
 			var printer = CSFunctionCall.ConsoleWriteLine (invoke);
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
 		}
 
 	}

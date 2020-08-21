@@ -413,7 +413,7 @@ namespace SwiftReflector {
 
 			var callingCode = CSCodeBlock.Create (classDecl, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "17\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "17\n");
 		}
 
 		[Test]
@@ -435,7 +435,7 @@ namespace SwiftReflector {
 
 			var callingCode = CSCodeBlock.Create (classDecl, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "17\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "17\n");
 		}
 
 

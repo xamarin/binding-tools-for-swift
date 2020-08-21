@@ -81,7 +81,7 @@ namespace SwiftReflector {
 			overCS.Methods.Add (printIt);
 			callingCode.Add (CSVariableDeclaration.VarLine (new CSSimpleType ($"OverWSM{type}"), "printer", new CSFunctionCall ($"OverWSM{type}", true)));
 			callingCode.Add (CSFunctionCall.FunctionCallLine ("printer.PrintIt", false));
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSingleMethod{type}", otherClass: overCS, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSingleMethod{type}", otherClass: overCS);
 		}
 
 		[Test]
@@ -138,7 +138,7 @@ namespace SwiftReflector {
 			CodeElementCollection<ICodeElement> callingCode = new CodeElementCollection<ICodeElement> ();
 			callingCode.Add (CSVariableDeclaration.VarLine (new CSSimpleType ($"FooWVVC{safeType}"), "foo", new CSFunctionCall ($"FooWVVC{safeType}", true, new CSFunctionCall ($"OverWCCV{safeType}", true))));
 			callingCode.Add (CSFunctionCall.FunctionCallLine ("foo.DoIt", false));
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapClassCallsVirtual{safeType}", otherClass: overCS, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapClassCallsVirtual{safeType}", otherClass: overCS);
 		}
 
 		[Test]
@@ -199,7 +199,7 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("printer.PrintIt", false);
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSingleProperty{appendage}", otherClass: overCS, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSingleProperty{appendage}", otherClass: overCS);
 		}
 
 		[Test]
@@ -456,7 +456,7 @@ namespace SwiftReflector {
 			var printer = CSFunctionCall.ConsoleWriteLine (CSFunctionCall.Function ("pop.WhoAmI"));
 			var callingCode = CSCodeBlock.Create (decl, decl2, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "who I yam\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "who I yam\n");
 		}
 
 		[Test]
@@ -610,7 +610,7 @@ namespace SwiftReflector {
 			var printer = CSFunctionCall.ConsoleWriteLine (piID.Dot (getGet.Dot (new CSIdentifier ("IsVirtual"))));
 			var callingCode = CSCodeBlock.Create (propInfo, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n");
 		}
 
 
@@ -627,7 +627,7 @@ namespace SwiftReflector {
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("ok"));
 			var callingCode = CSCodeBlock.Create (printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "ok\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "ok\n");
 		}
 
 		[Test]
@@ -651,7 +651,7 @@ namespace SwiftReflector {
 
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("ok"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "ok\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "ok\n");
 		}
 
 		[Test]
@@ -667,7 +667,7 @@ namespace SwiftReflector {
 				"}\n";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("ok"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "ok\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "ok\n");
 		}
 
 		[Test]
@@ -687,7 +687,7 @@ open class TrivClass0 {
 			var decl = CSVariableDeclaration.VarLine (CSSimpleType.Var, declID, new CSFunctionCall ("TrivClass0", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (declID.Dot (new CSIdentifier ("X")));
 			var callingCode = CSCodeBlock.Create (decl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Blind\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Blind\n");
 		}
 
 
@@ -711,7 +711,7 @@ open class TrivClass1 {
 			var decl = CSVariableDeclaration.VarLine (CSSimpleType.Var, declID, new CSFunctionCall ("TrivClass1", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{declID.Name}.Foo", false));
 			var callingCode = CSCodeBlock.Create (decl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Blind\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Blind\n");
 
 		}
 
@@ -759,13 +759,11 @@ open class TheBaseClass {
 			var decl = CSVariableDeclaration.VarLine (CSSimpleType.Var, declID, new CSFunctionCall ("TheBaseClass", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{declID.Name}.GetValue", false, CSConstant.Val (42)));
 			var callingCode = CSCodeBlock.Create (decl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
 
-
-
-		[TestCase (PlatformName.macOS)]
-		public void TestMultiOverride (PlatformName platform)
+		[Test]
+		public void TestMultiOverride ()
 		{
 			
 			var swiftCode = @"
@@ -788,7 +786,7 @@ open class SecondClass : FirstClass {
 			var decl = CSVariableDeclaration.VarLine (CSSimpleType.Var, declID, new CSFunctionCall ("SecondClass", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{declID.Name}.FirstFunc", false));
 			var callingCode = CSCodeBlock.Create (decl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "42\n", "TestMultiOverride", platform: platform);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "42\n", "TestMultiOverride");
 		}
 
 		[Test]
@@ -807,7 +805,7 @@ open class ClosureFunc {
 			var decl = CSVariableDeclaration.VarLine (CSSimpleType.Var, declID, new CSFunctionCall ("ClosureFunc", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{declID.Name}.Returns5", false));
 			var callingCode = CSCodeBlock.Create (decl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "5\n", testName: "TestClosureProp", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "5\n", testName: "TestClosureProp");
 		}
 
 		[Test]
@@ -826,7 +824,7 @@ public class ClosureArg {
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{declID.Name}.Caller", false, new CSIdentifier ("x => (x & 1) != 0"),
 				CSConstant.Val (7)));
 			var callingCode = CSCodeBlock.Create (decl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n");
 		}
 
 		[Test]
@@ -848,7 +846,7 @@ public class ClosureReturn {
 			var xdecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, funcID, new CSFunctionCall ($"{declID.Name}.Caller", false));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall (funcID.Name, false, CSConstant.Val (7)));
 			var callingCode = CSCodeBlock.Create (decl, xdecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n");
 		}
 
 
@@ -871,7 +869,7 @@ open class ClosureVirtualReturn {
 			var xdecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, funcID, new CSFunctionCall ($"{declID.Name}.Caller", false));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall (funcID.Name, false, CSConstant.Val (7)));
 			var callingCode = CSCodeBlock.Create (decl, xdecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n");
 		}
 
 
@@ -890,7 +888,7 @@ open class ClosureSimpleProp {
 			var setter = CSAssignment.Assign ($"{declID}.X", new CSIdentifier ("() => { Console.WriteLine (\"here\"); }"));
 			var execIt = CSFunctionCall.FunctionCallLine ($"{declID}.X");
 			var callingCode = CSCodeBlock.Create (decl, setter, execIt);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "here\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "here\n");
 		}
 
 
@@ -910,7 +908,7 @@ open class SimpleSetClosure {
 			var decl = CSVariableDeclaration.VarLine (CSSimpleType.Var, declID, new CSFunctionCall ("SimpleSetClosure", true));
 			var execIt = CSFunctionCall.FunctionCallLine ($"{declID}.SetValue", new CSIdentifier ("() => { Console.WriteLine (\"here\"); }"));
 			var callingCode = CSCodeBlock.Create (decl, execIt);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "here\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "here\n");
 		}
 	}
 }

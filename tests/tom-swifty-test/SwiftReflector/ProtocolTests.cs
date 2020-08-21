@@ -38,7 +38,7 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleMethod{type}", otherClass: overCS, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleMethod{type}", otherClass: overCS);
 		}
 
 		[Test]
@@ -161,7 +161,7 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSinglePropertyGetOnly{appendage}", otherClass : overCS, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSinglePropertyGetOnly{appendage}", otherClass : overCS);
 		}
 
 		[Test]
@@ -220,7 +220,7 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, initer, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSinglePropertyGetSetOnly{type}", otherClass : overCS, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSinglePropertyGetSetOnly{type}", otherClass : overCS);
 		}
 
 		[Test]
@@ -388,8 +388,8 @@ namespace SwiftReflector {
 
 			var caller = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("did it"));
 			var callingCode = CSCodeBlock.Create (caller);
-      
-      TestRunning.TestAndExecute (swiftCode, callingCode, "did it\n", platform: PlatformName.macOS);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "did it\n", platform: PlatformName.macOS);
 		}
 
 
@@ -545,7 +545,6 @@ namespace SwiftReflector {
 			var callingCode = CSCodeBlock.Create (inst, morphIt, printIt);
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "42\n", platform: PlatformName.macOS);
-
 		}
 
 
@@ -588,7 +587,7 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 	    		// associated type
 			// equality constraint
 	    		// skipping FilmString (due to previous errors)
-			TestRunning.TestAndExecute (swiftCode, callingCode, "No smoke\n", expectedErrorCount: 1, platform:PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "No smoke\n", expectedErrorCount: 1);
 		}
 
 		[Test]
@@ -606,7 +605,7 @@ public protocol Useless {
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 		
 			var callingCode = CSCodeBlock.Create (getter, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]

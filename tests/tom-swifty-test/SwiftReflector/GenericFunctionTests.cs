@@ -472,7 +472,7 @@ namespace SwiftReflector {
 				CodeWriter.WriteToFile (csOutFilename, csfile);
 
 				Assert.Throws <Exception> (() => {
-					Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename, platform: PlatformName.macOS);
+					Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename);
 				});
 			}
 		}
@@ -524,7 +524,7 @@ namespace SwiftReflector {
 				CodeWriter.WriteToFile (csOutFilename, csfile);
 
 				Assert.Throws<Exception> (() => {
-					Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename, platform: PlatformName.macOS);
+					Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename);
 				});
 			}
 		}
@@ -741,7 +741,7 @@ namespace SwiftReflector {
 
 			CSCodeBlock callingCode = CSCodeBlock.Create (intUpperDecl, fooDecl, doUpper, doUpper, doDowner, printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "1\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "1\n");
 		}
 
 		void WrapGenNonVirtClassPropFunc (string appendage, string cstype, string val1, string expected)

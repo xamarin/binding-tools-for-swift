@@ -212,7 +212,7 @@ public protocol Iterator0 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]
@@ -226,7 +226,7 @@ public protocol Iterator1 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]
@@ -240,7 +240,7 @@ public protocol Iterator2 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]
@@ -254,7 +254,7 @@ public protocol Iterator3 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]
@@ -270,7 +270,7 @@ public protocol Iterator4 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]
@@ -286,7 +286,7 @@ public protocol Iterator5 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]
@@ -302,7 +302,7 @@ public protocol Iterator6 {
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
 			var callingCode = CSCodeBlock.Create (printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
 
 		[Test]
@@ -335,7 +335,7 @@ public func doPrint<T>(a:T) where T:Simplest0 {
 			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple0Impl", true));
 			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint<Simple0Impl, SwiftString>", false, instID);
 			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 
 		[Test]
@@ -368,7 +368,7 @@ public func doPrint<T>(a:T) where T:Simplest1 {
 			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple1Impl", true));
 			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint<Simple1Impl, SwiftString>", false, instID);
 			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 
 		[Test]
@@ -397,7 +397,7 @@ public func doSetProp<T, U> (a: inout T, b:U) where T:Simplest2, U==T.Item {
 				new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("Got here!")));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{instID.Name}.Thing"));
 			var callingCode = CSCodeBlock.Create (instDecl, doSetProp, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 
 		[Test]
@@ -426,7 +426,7 @@ public func doSetProp<T> (a: inout T, b:T.Item) where T:Simplest3 {
 				new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("Got here!")));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{instID.Name}.Thing"));
 			var callingCode = CSCodeBlock.Create (instDecl, doSetProp, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 
 		[Test]
@@ -460,7 +460,7 @@ public func doGetIt<T:Simplest4> (a: T, i: Int) -> T.Item {
 			var resultDecl = CSVariableDeclaration.VarLine (resultID, new CSFunctionCall ("TopLevelEntities.DoGetIt<Simple4Impl, SwiftString>", false, instID, CSConstant.Val (3)));
 			var printer = CSFunctionCall.ConsoleWriteLine (resultID);
 			var callingCode = CSCodeBlock.Create (instDecl, resultDecl, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 
 		[Test]
@@ -497,7 +497,7 @@ public func doSetIt<T:Simplest5> (a: inout T, i: Int, v: T.Item) {
 			var callSetter = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoSetIt", false, instID, CSConstant.Val (3), new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("Got here!")));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSIdentifier ($"{instID.Name}[3]"));
 			var callingCode = CSCodeBlock.Create (instDecl, callSetter, printer);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 	}
 }

@@ -26,5 +26,12 @@ namespace Dynamo.CSLang {
 		{
 			return new CSConditionalCompilation (new CSIdentifier ("#if"), Exceptions.ThrowOnNull (condition, nameof (condition)));
 		}
+
+		public static void ProtectWithIfEndif (CSIdentifier condition, ICodeElement elem)
+		{
+			var @if = If (condition);
+			@if.AttachBefore (elem);
+			Endif.AttachAfter (elem);
+		}
 	}
 }

@@ -154,7 +154,7 @@ namespace SwiftReflector {
 			var printer = CSFunctionCall.ConsoleWriteLine (isEqual);
 			var callingCode = CSCodeBlock.Create (printer);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n", otherClass : eqClass, platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n", otherClass : eqClass);
 		}
 
 

@@ -75,7 +75,7 @@ public protocol BoringProtocol {
 }
 ";
 			var callingCode = PrintTypeName ("IBoringProtocol");
-			TestRunning.TestAndExecute (swiftCode, callingCode, ".BoringProtocol\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, ".BoringProtocol\n");
 		}
 
 
@@ -91,7 +91,7 @@ public enum BoringEnum1 : Int {
 }
 ";
 			var callingCode = PrintTypeName ("BoringEnum1");
-			TestRunning.TestAndExecute (swiftCode, callingCode, ".BoringEnum1\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, ".BoringEnum1\n");
 		}
 
 

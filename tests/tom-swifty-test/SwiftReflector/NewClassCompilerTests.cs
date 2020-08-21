@@ -115,7 +115,7 @@ public func Eat () { }
 ";
 			var print = CSFunctionCall.FunctionLine ("Console.Write", (CSIdentifier)"42");
 			var callingCode = CSCodeBlock.Create (print);
-			TestRunning.TestAndExecute (swiftCode, callingCode, "42", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "42");
 		}
 
 		void TestCtor (string testName, string type, string value, string output = null)
@@ -170,7 +170,7 @@ public func Eat () { }
 			callingCode.Add (CSFunctionCall.ConsoleWriteLine ((CSIdentifier)"bar.Y"));
 
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "42\nhi mom\n", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "42\nhi mom\n");
 		}
 
 		[Test]

@@ -314,7 +314,7 @@ public extension HotDogOnUserType
 	}";
 
 			var callingCode = CSCodeBlock.Create ();
-			TestRunning.TestAndExecute (swiftCode, callingCode, "", platform: PlatformName.macOS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "");
 		}
 
 		[Test]
