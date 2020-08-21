@@ -1428,5 +1428,137 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (arg1, "not a metaclass type");
 			Assert.IsNotNull (arg1.ClassGenericReference, "not a generic reference metatype");
 		}
+
+		[Test]
+		public void TestProtocolList0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie10StrokeNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvg", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList1 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie10StrokeNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvgTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList2 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie10StrokeNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvpMV", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLPropertyDescriptor;
+			Assert.IsNotNull (tlf, "not a prop descriptor");
+			var proptype = tlf.OfType as SwiftProtocolListType;
+			Assert.IsNotNull (proptype);
+			Assert.AreEqual (2, proptype.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList3 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie10StrokeNodeC8rendererAA0C6Output_AA10Renderablepvg", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList4 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie10StrokeNodeC8rendererAA0C6Output_AA10RenderablepvgTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList5 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie10StrokeNodeC8rendererAA0C6Output_AA10RenderablepvpMV", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLPropertyDescriptor;
+			Assert.IsNotNull (tlf, "not a prop descriptor");
+			var proptype = tlf.OfType as SwiftProtocolListType;
+			Assert.IsNotNull (proptype);
+			Assert.AreEqual (2, proptype.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList6 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie11EllipseNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvg", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList7 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie11EllipseNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvgTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList8 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie11EllipseNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvpMV", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLPropertyDescriptor;
+			Assert.IsNotNull (tlf, "not a prop descriptor");
+			var proptype = tlf.OfType as SwiftProtocolListType;
+			Assert.IsNotNull (proptype);
+			Assert.AreEqual (2, proptype.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList9 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie11PolygonNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvg", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void TestProtocolList10 ()
+		{
+			var tld = Decomposer.Decompose ("_$s6Lottie11PolygonNodeC11propertyMapAA17KeypathSearchable_AA0c8PropertyE0pvgTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
+			Assert.IsNotNull (ret, "not a protocol list");
+			Assert.AreEqual (2, ret.Protocols.Count);
+		}
 	}
 }
