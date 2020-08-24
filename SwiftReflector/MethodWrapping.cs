@@ -1840,7 +1840,7 @@ namespace SwiftReflector {
 					parms.Insert (0, new SLParameter (returnName, newReturnType));
 				} else {
 					if (funcDecl.IsTypeSpecGeneric (retType)) {
-						if (retType.ContainsGenericParameters) {
+						if (retType.ContainsGenericParameters || retType is TupleTypeSpec) {
 							SLType retSLType = typeMapper.TypeSpecMapper.MapType (funcDecl, modules, retType, true);
 							parms.Insert (0, new SLParameter (returnName,
 							                                  new SLBoundGenericType ("UnsafeMutablePointer", retSLType)));

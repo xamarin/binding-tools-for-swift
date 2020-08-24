@@ -1283,7 +1283,31 @@ public class Weak<T: AnyObject> {
 			var callingCode = CSCodeBlock.Create (printIt);
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "compiled\n");
-}
+		}
 
+		[Test]
+		public void TestGenericTuple ()
+		{
+			var swiftCode = @"
+public func rotate<T>(x: (T, T, T)) -> (T, T, T)
+{
+	return (x.1, x.2, x.0)
+}
+";
+
+			// var t = new Tuple<nint, nint, nint>(1, 2, 3)
+			// var u = TopLevelFunctions.Rotate(t);
+			// Console.WriteLine (u);
+
+			var tID = new CSIdentifier ("t");
+			var uID = new CSIdentifier ("u");
+			var tDecl = CSVariableDeclaration.VarLine (tID, new CSFunctionCall ("Tuple<nint, nint, nint>", true,
+				CSConstant.Val (1), CSConstant.Val (2), CSConstant.Val (3)));
+			var uDecl = CSVariableDeclaration.VarLine (uID, new CSFunctionCall ("TopLevelEntities.Rotate", false, tID));
+			var printer = CSFunctionCall.ConsoleWriteLine (uID);
+			var callingCode = CSCodeBlock.Create (tDecl, uDecl, printer);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "(2, 3, 1)\n");
+		}
 	}
 }
