@@ -1562,6 +1562,42 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
+		public void VariableInitializationExpression0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC0027shouldSwipeTopstorage_mvFAh33_9D6ACB2CCC4A4980BDBB65F0F301220BLLSbSgvpfi", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+		}
+
+		[Test]
+		public void VariableInitializationExpression1 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC0030shouldSwipeBottomstorage_cDAEi33_9D6ACB2CCC4A4980BDBB65F0F301220BLLSbSgvpfi", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+		}
+
+		[Test]
+		public void VariableInitializationExpression2 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC0030shouldSwipeBottomstorage_cDAEi33_9D6ACB2CCC4A4980BDBB65F0F301220BLLSbSgvpfi", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+		}
+
+		[Test]
+		public void MethodDescriptor0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC013presentedViewB0010presentingdB016presentationType12roundCorners12cornerRadius10dropShadow13backgroundTap14dismissOnSwipe0pqR9Direction0N5Color0N7Opacity14blurBackground0V5Style06customwD0019keyboardTranslationG00P8Animated27contextFrameForPresentation014outsideContextO0ACSo06UIViewB0C_AWSgAA012PresentationG0OSbSg12CoreGraphics7CGFloatVAA0aM0VSgAA0wO6ActionOSbAA07DismissrS0OSo7UIColorCSfSbSo012UIBlurEffectX0VSo6UIViewCSgAA019KeyboardTranslationG0OSbSo6CGRectVSgA7_tcfCTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var methodDesc = tld as TLMethodDescriptor;
+			Assert.IsNotNull (methodDesc, "not a method descriptor");
+		}
+
+		[Test]
 		public void TestExtensionDescriptor ()
 		{
 			var tld = Decomposer.Decompose ("_$sSi16MySwiftFrameworkE8timesTwoSivpMV", false);
