@@ -19,7 +19,7 @@ XCODESCHEME=Neon iOS
 FRAMEWORKNAME=Neon
 #
 # If the project fails to build/bind, set IGNORED=1
-# IGNORED=1
+IGNORED=1
 # Changing IGNORED? Consider updating the README.txt file and any Git issues
 # referenced therein.
 
