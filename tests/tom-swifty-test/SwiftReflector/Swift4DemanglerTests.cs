@@ -19,7 +19,7 @@ namespace SwiftReflector.Demangling {
 	[RunWithLeaks]
 	public class Swift4DemanglerTests {
 		[Test]
-		public void TestFuncReturningInt()
+		public void TestFuncReturningInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework10ReturnsIntSiyF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -32,7 +32,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestFuncWithIntArgsReturningInt()
+		public void TestFuncWithIntArgsReturningInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework10ReturnsInt1a1bS2i_SitF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -162,7 +162,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestFuncWithInOutIntArgsReturningInt()
+		public void TestFuncWithInOutIntArgsReturningInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework10ReturnsInt1a1bS2iz_SitF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -227,7 +227,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestFuncWithEnumIntArgsReturnInt()
+		public void TestFuncWithEnumIntArgsReturnInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework10ReturnsInt1a1bSiAA7FooEnumO_SitF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -248,7 +248,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestFuncWithProtocolIntArgsReturnInt()
+		public void TestFuncWithProtocolIntArgsReturnInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework10ReturnsInt1a1bSiAA11BarProtocol_p_SitF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -269,7 +269,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestFuncWithBoolIntReturnTupleOfDoubleInt()
+		public void TestFuncWithBoolIntReturnTupleOfDoubleInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework12ReturnsTuple1a1bSb_SitSb_SitF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -299,7 +299,7 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (CoreBuiltInType.Int, bit.BuiltInType, "is int type1");
 		}
 
-	
+
 		[Test]
 		public void TestFuncWithOptionalIntArgsReturningInt ()
 		{
@@ -322,7 +322,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestClassMethodBoolReturningInt()
+		public void TestClassMethodBoolReturningInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC8TestFunc1aSiSb_tF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -342,7 +342,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestMethodBoolThrows()
+		public void TestMethodBoolThrows ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC11WillItThrow1aySb_tKF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -352,7 +352,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestFuncBoolThrows()
+		public void TestFuncBoolThrows ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework16MaybeItWillThrow1aySb_tKF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -403,7 +403,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestStaticClassMethodBoolReturningInt()
+		public void TestStaticClassMethodBoolReturningInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooC8TestFunc1aSiSb_tFZ", false);
 			Assert.IsNotNull (tld, "tld");
@@ -420,7 +420,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestClassNonAllocatingCtorIntBool()
+		public void TestClassNonAllocatingCtorIntBool ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC1a1bACSi_Sbtcfc", false);
 			Assert.IsNotNull (tld, "tld");
@@ -438,7 +438,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestClassCtorIntBool()
+		public void TestClassCtorIntBool ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC1a1bACSi_SbtcfC", false);
 			Assert.IsNotNull (tld, "tld");
@@ -497,7 +497,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestClassDtor()
+		public void TestClassDtor ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassCfd", false);
 			Assert.IsNotNull (tld, "tld");
@@ -522,7 +522,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestClassGetterInt()
+		public void TestClassGetterInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC1xSivg", false);
 			Assert.IsNotNull (tld, "tld");
@@ -536,9 +536,9 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (CoreBuiltInType.Int, bit.BuiltInType, "is int type");
 			Assert.AreEqual (PropertyType.Getter, prop.PropertyType);
 		}
-	
+
 		[Test]
-		public void TestClassSetterInt()
+		public void TestClassSetterInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC1xSivs", false);
 			Assert.IsNotNull (tld, "tld");
@@ -553,9 +553,9 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (CoreBuiltInType.Int, bit.BuiltInType, "is int type");
 			Assert.AreEqual (PropertyType.Setter, prop.PropertyType);
 		}
-	
+
 		[Test]
-		public void TestGetterSubscriptIntBoolOntoFloat()
+		public void TestGetterSubscriptIntBoolOntoFloat ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassCySfSi_Sbtcig", false);
 			Assert.IsNotNull (tld, "tld");
@@ -603,7 +603,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestClassStaticGetterInt()
+		public void TestClassStaticGetterInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC6FoobleSivgZ", false);
 			Assert.IsNotNull (tld, "tld");
@@ -618,10 +618,10 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (CoreBuiltInType.Int, bit.BuiltInType, "is int type");
 			Assert.AreEqual (PropertyType.Getter, prop.PropertyType);
 		}
-	
-	
+
+
 		[Test]
-		public void TestClassStaticSetterInt()
+		public void TestClassStaticSetterInt ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC6FoobleSivsZ", false);
 			Assert.IsNotNull (tld, "tld");
@@ -636,11 +636,11 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (CoreBuiltInType.Int, bit.BuiltInType, "is int type");
 			Assert.AreEqual (PropertyType.Setter, prop.PropertyType);
 		}
-	
-	
+
+
 
 		[Test]
-		public void TestMethodTakingFunc()
+		public void TestMethodTakingFunc ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7MyClassC7callFoo1ayyyXE_tF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -654,10 +654,10 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (0, funcArg.ParameterCount);
 			Assert.AreEqual ("a", funcArg.Name.Name);
 		}
-	
+
 
 		[Test]
-		public void TestGlobalGetterBool()
+		public void TestGlobalGetterBool ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7TroubleSbvg", false);
 			Assert.IsNotNull (tld, "tld");
@@ -673,9 +673,9 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (CoreBuiltInType.Bool, bit.BuiltInType);
 			Assert.AreEqual (PropertyType.Getter, prop.PropertyType);
 		}
-	
+
 		[Test]
-		public void TestGlobalSetterBool()
+		public void TestGlobalSetterBool ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7TroubleSbvs", false);
 			Assert.IsNotNull (tld, "tld");
@@ -691,10 +691,10 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual (CoreBuiltInType.Bool, bit.BuiltInType);
 			Assert.AreEqual (PropertyType.Setter, prop.PropertyType);
 		}
-	
+
 
 		[Test]
-		public void TestGlobalVariableBool()
+		public void TestGlobalVariableBool ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7TroubleSbvp", false);
 			Assert.IsNotNull (tld, "tld");
@@ -708,7 +708,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestClassMetadataAccessor()
+		public void TestClassMetadataAccessor ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooCMa", false);
 			Assert.IsNotNull (tld, "tld");
@@ -721,7 +721,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestClassMetadata()
+		public void TestClassMetadata ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooCN", false);
 			Assert.IsNotNull (tld, "tld");
@@ -732,7 +732,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestNominalTypeDescriptor()
+		public void TestNominalTypeDescriptor ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooVMn", false);
 			Assert.IsNotNull (tld, "tld");
@@ -743,7 +743,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestProtocolDescriptor()
+		public void TestProtocolDescriptor ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework6SummerMp", false);
 			Assert.IsNotNull (tld, "tld");
@@ -753,7 +753,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestVarInitializer()
+		public void TestVarInitializer ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooC5waterSivpfi", false);
 			Assert.IsNotNull (tld, "tld");
@@ -767,7 +767,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestLazyCacheVariable()
+		public void TestLazyCacheVariable ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooCML", false);
 			Assert.IsNotNull (tld, "tld");
@@ -777,7 +777,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestProtocolWitnessTable()
+		public void TestProtocolWitnessTable ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooCAA6SummerAAWP", false);
 			Assert.IsNotNull (tld, "tld");
@@ -789,8 +789,8 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		[Ignore("wasn't able to generate this")]
-		public void TestProtocolWitnessAccessor()
+		[Ignore ("wasn't able to generate this")]
+		public void TestProtocolWitnessAccessor ()
 		{
 			var tld = Decomposer.Decompose ("__T05None13FooCAA6SummerAAWa", false);
 			Assert.IsNotNull (tld, "tld");
@@ -803,7 +803,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestValueWitnessTable()
+		public void TestValueWitnessTable ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework8TheThingVWV", false);
 			Assert.IsNotNull (tld, "tld");
@@ -815,7 +815,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestGenericFuncOfT()
+		public void TestGenericFuncOfT ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7doPrint1ayx_tlF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -833,7 +833,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestGenericFuncOfTUOneProtoConstraint()
+		public void TestGenericFuncOfTUOneProtoConstraint ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7doPrint1a1byx_q_tAA5AdderR_r0_lF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -875,7 +875,7 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (constraint, "constraint");
 			Assert.IsTrue (constraint.IsClass);
 		}
-	
+
 		[Test]
 		public void TestGenericFuncOfTUTwoOneProtocolConstraint ()
 		{
@@ -902,7 +902,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestGenericFuncOfGenericClass()
+		public void TestGenericFuncOfGenericClass ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework7doPrint1ayAA3FooCyxG_tlF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -921,7 +921,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestOperatorEqEq()
+		public void TestOperatorEqEq ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3FooC2eeoiySbAC_ACtFZ", false);
 			Assert.IsNotNull (tld, "tld");
@@ -933,7 +933,7 @@ namespace SwiftReflector.Demangling {
 
 
 		[Test]
-		public void TestOperatorMinusPlusMinus()
+		public void TestOperatorMinusPlusMinus ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3spsoiyS2i_SitF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -944,17 +944,17 @@ namespace SwiftReflector.Demangling {
 		}
 
 		[Test]
-		public void TestUnicodeOperator()
+		public void TestUnicodeOperator ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework008deiFBEEeopyS2bF", false);
 			Assert.IsNotNull (tld, "tld");
 			var tlf = tld as TLFunction;
 			Assert.IsNotNull (tlf, "tlf");
-			Assert.AreEqual ('\u2757', tlf.Name.Name[0]);
+			Assert.AreEqual ('\u2757', tlf.Name.Name [0]);
 		}
 
 		[Test]
-		public void TestAnyObject()
+		public void TestAnyObject ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3boo1byyXl_tF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -966,10 +966,10 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual ("Swift.AnyObject", cl.ClassName.ToFullyQualifiedName ());
 			Assert.IsTrue (cl.IsClass);
 		}
-	
+
 
 		[Test]
-		public void TestAny()
+		public void TestAny ()
 		{
 			var tld = Decomposer.Decompose ("_$s17unitHelpFrawework3foo1byyp_tF", false);
 			Assert.IsNotNull (tld, "tld");
@@ -1559,6 +1559,42 @@ namespace SwiftReflector.Demangling {
 			var ret = tlf.Signature.ReturnType as SwiftProtocolListType;
 			Assert.IsNotNull (ret, "not a protocol list");
 			Assert.AreEqual (2, ret.Protocols.Count);
+		}
+
+		[Test]
+		public void VariableInitializationExpression0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC0027shouldSwipeTopstorage_mvFAh33_9D6ACB2CCC4A4980BDBB65F0F301220BLLSbSgvpfi", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+		}
+
+		[Test]
+		public void VariableInitializationExpression1 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC0030shouldSwipeBottomstorage_cDAEi33_9D6ACB2CCC4A4980BDBB65F0F301220BLLSbSgvpfi", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+		}
+
+		[Test]
+		public void VariableInitializationExpression2 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC0030shouldSwipeBottomstorage_cDAEi33_9D6ACB2CCC4A4980BDBB65F0F301220BLLSbSgvpfi", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "not a function");
+		}
+
+		[Test]
+		public void MethodDescriptor0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s8Presentr0A10ControllerC013presentedViewB0010presentingdB016presentationType12roundCorners12cornerRadius10dropShadow13backgroundTap14dismissOnSwipe0pqR9Direction0N5Color0N7Opacity14blurBackground0V5Style06customwD0019keyboardTranslationG00P8Animated27contextFrameForPresentation014outsideContextO0ACSo06UIViewB0C_AWSgAA012PresentationG0OSbSg12CoreGraphics7CGFloatVAA0aM0VSgAA0wO6ActionOSbAA07DismissrS0OSo7UIColorCSfSbSo012UIBlurEffectX0VSo6UIViewCSgAA019KeyboardTranslationG0OSbSo6CGRectVSgA7_tcfCTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var methodDesc = tld as TLMethodDescriptor;
+			Assert.IsNotNull (methodDesc, "not a method descriptor");
 		}
 	}
 }
