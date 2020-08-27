@@ -88,7 +88,7 @@
     <Compile Include="SwiftComparableProxy.cs" />
     <Compile Include="ISwiftComparable.cs" />
     <Compile Include="SwiftCharacter.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Exceptions.cs" />
     <Compile Include="SwiftMarshal\ImportedTypeCache.cs" />
     <Compile Include="..\tools\symbolicator\XamGlueConstants.cs">
       <Link>XamGlueConstants.cs</Link>

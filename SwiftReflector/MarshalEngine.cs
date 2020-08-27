@@ -1600,6 +1600,9 @@ namespace SwiftReflector {
 			// someCallToAPinvoke(new IntPtr(nameSwiftDataPtr))
 			// ...
 
+			if (p.Name.Name != "this")
+				preMarshalCode.Add (ThrowOnNull (p.Name));
+
 			string nomDataPtrName = Uniqueify (String.Format ("{0}SwiftDataPtr", p.Name.Name), identifiersUsed);
 			identifiersUsed.Add (nomDataPtrName);
 			var enumDataPtr = new CSIdentifier (nomDataPtrName);
@@ -1610,6 +1613,18 @@ namespace SwiftReflector {
 							       new CSFunctionCall ("StructMarshal.Marshaler.PrepareNominal", false, p.Name), null);
 			fixedChain.Add (fixedBlock);
 			return new CSCastExpression ("IntPtr", enumDataPtr);
+		}
+
+		CSLine ThrowOnNull (CSIdentifier parameterName)
+		{
+			// code to generate:
+			// if (p == null)
+			//    throw new ArgumentNullException (nameof (p));
+
+			var ifTest = parameterName == CSConstant.Null;
+			var throwCall = CSThrow.ThrowLine (new ArgumentNullException (), CSFunctionCall.Nameof (parameterName));
+			var ifStatement = new CSIfElse (ifTest, CSCodeBlock.Create (throwCall), null);
+			return new CSLine (ifStatement, false);
 		}
 
 		CSBaseExpression MarshalClass (CSParameter p, NamedTypeSpec cl)
@@ -1631,7 +1646,9 @@ namespace SwiftReflector {
 			// In the second case, we reassign the argument.
 
 			// I put all the swift_beginAccess/swift_endAccess code into
-			// StructMarshal.   
+			// StructMarshal.
+			if (p.Name.Name != "this")
+				preMarshalCode.Add (ThrowOnNull (p.Name));
 
 			var fullClassName = cl.Name;
 			var backingFieldAccessor = NewClassCompiler.SafeBackingFieldAccessor (p.Name, use, fullClassName, typeMapper);

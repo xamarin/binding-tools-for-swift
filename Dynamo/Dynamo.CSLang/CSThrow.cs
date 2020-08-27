@@ -34,6 +34,13 @@ namespace Dynamo.CSLang {
 				args.Add (CSConstant.Val (message));
 			return ThrowLine (exType, args);
 		}
+
+		public static CSLine ThrowLine<T>(T exType, CSBaseExpression expr) where T : Exception
+		{
+			CommaListElementCollection<CSBaseExpression> args = new CommaListElementCollection<CSBaseExpression> ();
+			args.Add (Exceptions.ThrowOnNull (expr, nameof (expr)));
+			return ThrowLine (exType, args);
+		}
 	}
 }
 

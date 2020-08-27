@@ -211,8 +211,8 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftCharacter.cs">
       <Link>SwiftCharacter.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftRuntimeLibrary\Extensions.cs">
-      <Link>Extensions.cs</Link>
+    <Compile Include="..\SwiftRuntimeLibrary\Exceptions.cs">
+      <Link>Exceptions.cs</Link>
     </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\ImportedTypeCache.cs">
       <Link>SwiftMarshal\ImportedTypeCache.cs</Link>
