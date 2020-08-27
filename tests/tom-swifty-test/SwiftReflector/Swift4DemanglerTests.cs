@@ -1596,5 +1596,18 @@ namespace SwiftReflector.Demangling {
 			var methodDesc = tld as TLMethodDescriptor;
 			Assert.IsNotNull (methodDesc, "not a method descriptor");
 		}
+
+		[Test]
+		public void TestExtensionDescriptor ()
+		{
+			var tld = Decomposer.Decompose ("_$sSi16MySwiftFrameworkE8timesTwoSivpMV", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var pd = tld as TLPropertyDescriptor;
+			Assert.IsNotNull (pd, "not a property descriptor");
+			Assert.IsNotNull (pd.ExtensionOn, "no extension");
+			var onType = pd.ExtensionOn as SwiftBuiltInType;
+			Assert.IsNotNull (onType, "not a built in type");
+			Assert.AreEqual (CoreBuiltInType.Int, onType.BuiltInType, "not an int");
+		}
 	}
 }
