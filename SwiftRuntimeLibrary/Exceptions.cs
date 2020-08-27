@@ -3,7 +3,7 @@
 
 using System;
 namespace SwiftRuntimeLibrary {
-	internal static class Exceptions {
+	public static class Exceptions {
 		public static T ThrowOnNull<T> (T o, string name, string message = null) where T : class
 		{
 			name = name ?? "::no name supplied::";

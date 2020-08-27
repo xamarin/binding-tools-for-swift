@@ -67,6 +67,18 @@ namespace Dynamo.CSLang {
 				new CommaListElementCollection<CSBaseExpression> (parameters), isConstructor));
 		}
 
+		static CSIdentifier iNameOf = new CSIdentifier ("nameof");
+		
+		public static CSFunctionCall Nameof (CSIdentifier id)
+		{
+			return FooOf (iNameOf, id);
+		}
+
+		public static CSFunctionCall Nameof (string name)
+		{
+			return Nameof (new CSIdentifier (name));
+		}
+
 		static CSIdentifier iTypeof = new CSIdentifier ("typeof");
 
 		public static CSFunctionCall Typeof (Type t)
@@ -76,28 +88,27 @@ namespace Dynamo.CSLang {
 
 		public static CSFunctionCall Typeof (string t)
 		{
-			CommaListElementCollection<CSBaseExpression> parms = new CommaListElementCollection<CSBaseExpression> ();
-			parms.Add (new CSIdentifier (t));
-			return new CSFunctionCall (iTypeof, parms, false);
+			return FooOf (iTypeof, new CSIdentifier (t));
 		}
 
 		public static CSFunctionCall Typeof (CSSimpleType t)
 		{
-			CommaListElementCollection<CSBaseExpression> parms = new CommaListElementCollection<CSBaseExpression> ();
-			parms.Add (new CSIdentifier (t.Name));
-			return new CSFunctionCall (iTypeof, parms, false);
+			return Typeof (t.Name);
 		}
-
 
 		static CSIdentifier iSizeof = new CSIdentifier ("sizeof");
 
 		public static CSFunctionCall Sizeof (CSBaseExpression expr)
 		{
-			CommaListElementCollection<CSBaseExpression> parms = new CommaListElementCollection<CSBaseExpression> ();
-			parms.Add (expr);
-			return new CSFunctionCall (iSizeof, parms, false);
+			return FooOf (iSizeof, expr);
 		}
 
+		static CSFunctionCall FooOf (CSIdentifier foo, CSBaseExpression parameter)
+		{
+			CommaListElementCollection<CSBaseExpression> parms = new CommaListElementCollection<CSBaseExpression> ();
+			parms.Add (parameter);
+			return new CSFunctionCall (foo, parms, false);
+		}
 	}
 
 }

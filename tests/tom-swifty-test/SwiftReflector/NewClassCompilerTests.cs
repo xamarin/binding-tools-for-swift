@@ -1468,6 +1468,36 @@ public struct PitchSet
 			var callingCode = CSCodeBlock.Create (printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "got here\n");
 		}
+
+		[Test]
+		public void DontPassMeNull ()
+		{
+			var swiftCode = @"
+public class EasyToRepresent
+{
+	public init () {}
+}
+
+public func reportIt (a: EasyToRepresent) -> Bool {
+	return true;
+}
+";
+
+			// try {
+			//    TopLevelEntities.ReportIt (null);
+			// } catch (ArgumentNullException err) {
+			//    Console.WriteLine("Here." + err.Message);
+			// }
+
+			var errID = new CSIdentifier ("err");
+			var callIt = CSFunctionCall.FunctionCallLine ("TopLevelEntities.ReportIt", false, CSConstant.Null);
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Here.") + errID.Dot(new CSIdentifier ("Message")));
+			var tryCatch = new CSTryCatch (CSCodeBlock.Create (callIt),
+				typeof (ArgumentNullException), errID.Name, CSCodeBlock.Create (printer));
+			var callingCode = CSCodeBlock.Create (tryCatch);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Here.Value cannot be null.\nParameter name: a\n");
+		}
 	}
 }
 
