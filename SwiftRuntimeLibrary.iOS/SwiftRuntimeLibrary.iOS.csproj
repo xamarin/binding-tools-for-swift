@@ -135,8 +135,8 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\DynamicLib.cs">
       <Link>SwiftMarshal\DynamicLib.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\Extensions.cs">
-      <Link>SwiftMarshal\Extensions.cs</Link>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\Exceptions.cs">
+      <Link>SwiftMarshal\Exceptions.cs</Link>
     </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\Memory.cs">
       <Link>SwiftMarshal\Memory.cs</Link>
