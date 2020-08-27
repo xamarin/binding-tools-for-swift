@@ -1617,8 +1617,14 @@ namespace SwiftReflector {
 
 		CSLine ThrowOnNull (CSIdentifier parameterName)
 		{
-			use.AddIfNotPresent (typeof (SwiftRuntimeLibrary.Exceptions));
-			return CSFunctionCall.FunctionCallLine ("Exceptions.ThrowOnNull", parameterName, CSFunctionCall.Nameof (parameterName));
+			// code to generate:
+			// if (p == null)
+			//    throw new ArgumentNullException (nameof (p));
+
+			var ifTest = parameterName == CSConstant.Null;
+			var throwCall = CSThrow.ThrowLine (new ArgumentNullException (), CSFunctionCall.Nameof (parameterName));
+			var ifStatement = new CSIfElse (ifTest, CSCodeBlock.Create (throwCall), null);
+			return new CSLine (ifStatement, false);
 		}
 
 		CSBaseExpression MarshalClass (CSParameter p, NamedTypeSpec cl)
