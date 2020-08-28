@@ -27,7 +27,7 @@ using ProductException=MonoMac.RuntimeException;
 #endif
 #endif
 #elif BINDING_TOOLS_FOR_SWIFT
-using ProductException = SwiftReflector.Exceptions.RuntimeException;
+using ProductException = SwiftReflector.ExceptionTools.RuntimeException;
 #else
 #error Only supports XI or XM
 #endif

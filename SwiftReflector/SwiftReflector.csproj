@@ -161,8 +161,8 @@
     <Compile Include="Importing\MemberImporter.cs" />
     <Compile Include="Importing\CSMethodComparator.cs" />
     <Compile Include="Downloaded\StringUtils.cs" />
-    <Compile Include="Exceptions\RuntimeException.cs" />
-    <Compile Include="Exceptions\ErrorHelper.cs" />
+    <Compile Include="ExceptionTools\RuntimeException.cs" />
+    <Compile Include="ExceptionTools\ErrorHelper.cs" />
     <Compile Include="Importing\TypeAggregator.cs" />
     <Compile Include="Importing\TypeAggregator.iOS.cs" />
     <Compile Include="Importing\TypeAggregator.MacOS.cs" />
@@ -176,7 +176,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="IOUtils\" />
-    <Folder Include="Exceptions\" />
+    <Folder Include="ExceptionTools\" />
     <Folder Include="SwiftXmlReflection\" />
     <Folder Include="Inventory\" />
     <Folder Include="TypeMapping\" />

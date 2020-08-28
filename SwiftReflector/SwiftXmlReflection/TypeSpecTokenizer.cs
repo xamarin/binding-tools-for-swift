@@ -4,7 +4,7 @@
 using System;
 using System.Text;
 using System.IO;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using ObjCRuntime;
 
 namespace SwiftReflector.SwiftXmlReflection {

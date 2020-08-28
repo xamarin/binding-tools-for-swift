@@ -3,7 +3,7 @@
 
 using System;
 using ObjCRuntime;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class ShamDeclaration : TypeDeclaration {

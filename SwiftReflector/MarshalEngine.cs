@@ -11,7 +11,7 @@ using SwiftReflector.TypeMapping;
 using SwiftRuntimeLibrary.SwiftMarshal;
 using Dynamo;
 using SwiftReflector.SwiftXmlReflection;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
 

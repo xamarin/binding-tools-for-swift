@@ -8,7 +8,7 @@ using System.Linq;
 using SwiftReflector.IOUtils;
 using System.Diagnostics;
 using System.Text;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using SwiftReflector.Inventory;
 using SwiftReflector.SwiftXmlReflection;
 using SwiftReflector.TypeMapping;

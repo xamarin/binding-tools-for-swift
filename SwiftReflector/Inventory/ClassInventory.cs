@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using System.IO;
 using SwiftReflector.Demangling;
 using ObjCRuntime;

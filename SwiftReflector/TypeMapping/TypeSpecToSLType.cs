@@ -6,7 +6,7 @@ using Dynamo.SwiftLang;
 using System.Collections.Generic;
 using SwiftReflector.SwiftXmlReflection;
 using System.Linq;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using ObjCRuntime;
 using Dynamo;
 

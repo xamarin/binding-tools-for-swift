@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ObjCRuntime;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
 
 namespace SwiftReflector 

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SwiftReflector.TypeMapping;
 using Dynamo;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using System.Text;
 using ObjCRuntime;
 

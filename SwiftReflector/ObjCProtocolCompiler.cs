@@ -7,7 +7,7 @@ using SwiftReflector.IOUtils;
 using SwiftReflector.SwiftXmlReflection;
 using System.Linq;
 using SwiftReflector.TypeMapping;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using Dynamo.CSLang;
 using System.IO;
 using System.Text;

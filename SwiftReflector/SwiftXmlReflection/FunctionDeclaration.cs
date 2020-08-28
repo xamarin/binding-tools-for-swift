@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using ObjCRuntime;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class FunctionDeclaration : Member {

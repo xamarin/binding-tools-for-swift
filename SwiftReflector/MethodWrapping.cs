@@ -8,7 +8,7 @@ using System.Text;
 using Dynamo;
 using System.IO;
 using Dynamo.SwiftLang;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
 using SwiftReflector.Inventory;
 using SwiftReflector.SwiftXmlReflection;
