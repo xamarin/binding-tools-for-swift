@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using SwiftReflector.SwiftXmlReflection;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using ObjCRuntime;
 
 namespace SwiftReflector.TypeMapping {

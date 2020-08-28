@@ -3,7 +3,7 @@
 
 using System;
 using System.Xml.Linq;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using System.Collections.Generic;
 using System.Linq;
 using ObjCRuntime;

@@ -98,11 +98,8 @@
     <Compile Include="..\SwiftReflector\SwiftName.cs">
       <Link>SwiftType\SwiftName.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftReflector\Exceptions\ErrorHelper.cs">
+    <Compile Include="..\SwiftReflector\ExceptionTools\ErrorHelper.cs">
       <Link>SwiftType\ErrorHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\SwiftReflector\Exceptions\RuntimeException.cs">
-      <Link>SwiftType\RuntimeException.cs</Link>
     </Compile>
     <Compile Include="..\SwiftReflector\Extensions.cs">
       <Link>SwiftType\Extensions.cs</Link>
@@ -127,6 +124,9 @@
     </Compile>
     <Compile Include="..\SwiftReflector\Demangling\Swift5NodeToTLDefinition.cs">
       <Link>Demangling\Swift5NodeToTLDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\ExceptionTools\RuntimeException.cs">
+      <Link>SwiftType\RuntimeException.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

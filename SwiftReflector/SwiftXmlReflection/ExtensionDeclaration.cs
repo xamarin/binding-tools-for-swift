@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using ObjCRuntime;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
 
 namespace SwiftReflector.SwiftXmlReflection {

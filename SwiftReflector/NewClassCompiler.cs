@@ -13,7 +13,7 @@ using System.Xml.Linq;
 using Dynamo;
 using Dynamo.CSLang;
 using SwiftReflector.Demangling;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using SwiftReflector.Inventory;
 using SwiftReflector.IOUtils;
 using SwiftReflector.SwiftXmlReflection;

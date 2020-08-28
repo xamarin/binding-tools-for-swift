@@ -12,7 +12,7 @@ using Mono.Options;
 using SwiftReflector;
 using SwiftReflector.Demangling;
 using SwiftReflector.IOUtils;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using System.Text;
 using Dynamo;
 

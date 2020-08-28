@@ -9,7 +9,7 @@ using System.Text;
 using System.Xml.Linq;
 using SwiftReflector.SwiftXmlReflection;
 using System.Collections.Generic;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using System.Linq;
 using Dynamo;
 using System.Text.RegularExpressions;

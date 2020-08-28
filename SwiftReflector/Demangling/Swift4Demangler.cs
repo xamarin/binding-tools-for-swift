@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ObjCRuntime;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 
 namespace SwiftReflector.Demangling {
 	public class Swift4Demangler {

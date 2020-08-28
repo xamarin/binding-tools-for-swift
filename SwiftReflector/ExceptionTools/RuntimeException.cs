@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace ObjCRuntime {
 #endif
 #if BINDING_TOOLS_FOR_SWIFT
-namespace SwiftReflector.Exceptions {
+namespace SwiftReflector.ExceptionTools {
 #endif
 
 	public class RuntimeException : Exception {

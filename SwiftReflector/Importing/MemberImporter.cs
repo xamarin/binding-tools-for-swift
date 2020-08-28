@@ -7,7 +7,7 @@ using System.Linq;
 using Dynamo.CSLang;
 using Mono.Cecil;
 using ObjCRuntime;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using SwiftReflector.SwiftXmlReflection;
 using SwiftReflector.TypeMapping;
 

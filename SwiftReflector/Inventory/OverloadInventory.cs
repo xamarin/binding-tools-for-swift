@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using SwiftReflector.Exceptions;
+using SwiftReflector.ExceptionTools;
 using System.IO;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
