@@ -378,7 +378,7 @@ namespace SwiftReflector {
 
 		public string CSMethodForMangledName (string mangledName)
 		{
-			return mangledToCSharp [Ex.ThrowOnNull (mangledName, "mangledName")];
+			return mangledToCSharp [SwiftRuntimeLibrary.Exceptions.ThrowOnNull (mangledName, "mangledName")];
 		}
 
 		static void AddUsingBlock (CSUsingPackages packs, NetTypeBundle type)

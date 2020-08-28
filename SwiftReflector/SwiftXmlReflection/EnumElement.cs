@@ -6,12 +6,13 @@ using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
 using System.Xml.Linq;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class EnumElement : IXElementConvertible {
 		public EnumElement (string name, string typeName, long? value)
 		{
-			Name = Ex.ThrowOnNull (name, nameof(name));
+			Name = Exceptions.ThrowOnNull (name, nameof(name));
 			TypeName = typeName;
 			Value = value;
 		}

@@ -29,11 +29,11 @@ namespace SwiftReflector {
 		public WrappingResult (string modulePath, string moduleLibPath,
 		                       ModuleContents inventory, ModuleDeclaration declaration, FunctionReferenceCodeMap functionReferenceCodeMap)
 		{
-			ModulePath = Ex.ThrowOnNull (modulePath, nameof(modulePath));
-			ModuleLibPath = Ex.ThrowOnNull (moduleLibPath, nameof(moduleLibPath));
-			Contents = Ex.ThrowOnNull (inventory, nameof(inventory));
-			Module = Ex.ThrowOnNull (declaration, nameof(declaration));
-			FunctionReferenceCodeMap = Ex.ThrowOnNull (functionReferenceCodeMap, nameof (functionReferenceCodeMap));
+			ModulePath = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (modulePath, nameof(modulePath));
+			ModuleLibPath = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (moduleLibPath, nameof(moduleLibPath));
+			Contents = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (inventory, nameof(inventory));
+			Module = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (declaration, nameof(declaration));
+			FunctionReferenceCodeMap = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (functionReferenceCodeMap, nameof (functionReferenceCodeMap));
 		}
 		public string ModulePath { get; set; }
 		public string ModuleLibPath { get; set; }
@@ -152,8 +152,8 @@ namespace SwiftReflector {
 
 		public NewClassCompiler (SwiftCompilerLocation swiftCompilerLocations, ClassCompilerOptions options, UnicodeMapper unicodeMapper)
 		{
-			SwiftCompilerLocations = Ex.ThrowOnNull (swiftCompilerLocations, nameof (swiftCompilerLocations));
-			Options = Ex.ThrowOnNull (options, nameof (options));
+			SwiftCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (swiftCompilerLocations, nameof (swiftCompilerLocations));
+			Options = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (options, nameof (options));
 			UnicodeMapper = unicodeMapper;
 
 			CompilerVersion = GetCompilerVersion ();
@@ -168,8 +168,8 @@ namespace SwiftReflector {
 			List<string> targets,
 			string outputDirectory)
 		{
-			ClassCompilerLocations = Ex.ThrowOnNull (classCompilerLocations, nameof (classCompilerLocations));
-			CompilerNames = Ex.ThrowOnNull (compilerNames, nameof (compilerNames));
+			ClassCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (classCompilerLocations, nameof (classCompilerLocations));
+			CompilerNames = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (compilerNames, nameof (compilerNames));
 
 			var errors = new ErrorHandling ();
 			CurrentPlatform = PlatformFromTargets (targets);
@@ -3171,7 +3171,7 @@ namespace SwiftReflector {
 
 		static string PInvokeName (string libFullPath, string originalLibrary = null)
 		{
-			Ex.ThrowOnNull (libFullPath, nameof (libFullPath));
+			SwiftRuntimeLibrary.Exceptions.ThrowOnNull (libFullPath, nameof (libFullPath));
 			// if the original library is a framework, we need to treat
 			// the given library as a framework.
 			if (originalLibrary != null) {
@@ -6272,8 +6272,8 @@ namespace SwiftReflector {
 
 		static string GetSwiftLibraryFullPath (string moduleName, IEnumerable<string> directories)
 		{
-			Ex.ThrowOnNull (moduleName, nameof (moduleName));
-			Ex.ThrowOnNull (directories, nameof (directories));
+			SwiftRuntimeLibrary.Exceptions.ThrowOnNull (moduleName, nameof (moduleName));
+			SwiftRuntimeLibrary.Exceptions.ThrowOnNull (directories, nameof (directories));
 			foreach (string dir in directories) {
 				string candidate = Path.Combine (dir, moduleName);
 				if (File.Exists (candidate) && MachO.IsMachoFile (candidate))

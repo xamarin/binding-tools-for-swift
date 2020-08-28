@@ -10,6 +10,7 @@ using ObjCRuntime;
 using SwiftReflector.ExceptionTools;
 using SwiftReflector.SwiftXmlReflection;
 using SwiftReflector.TypeMapping;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Importing {
 	public class MemberImporter {
@@ -19,8 +20,8 @@ namespace SwiftReflector.Importing {
 
 		public MemberImporter (ErrorHandling errors, params TypeDatabase [] typeDatabases)
 		{
-			this.typeDatabases = Ex.ThrowOnNull (typeDatabases, nameof (typeDatabases));
-			this.errors = Ex.ThrowOnNull (errors, nameof (errors));
+			this.typeDatabases = Exceptions.ThrowOnNull (typeDatabases, nameof (typeDatabases));
+			this.errors = Exceptions.ThrowOnNull (errors, nameof (errors));
 		}
 
 		public void Import (TypeDefinition typeDefinition, ClassDeclaration typeDeclaration)

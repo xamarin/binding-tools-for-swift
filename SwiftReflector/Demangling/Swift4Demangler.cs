@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using ObjCRuntime;
 using SwiftReflector.ExceptionTools;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Demangling {
 	public class Swift4Demangler {
@@ -20,7 +21,7 @@ namespace SwiftReflector.Demangling {
 
 		public Swift4Demangler (string swiftIdentifier, ulong offset = 0)
 		{
-			Ex.ThrowOnNull (swiftIdentifier, nameof (swiftIdentifier));
+			Exceptions.ThrowOnNull (swiftIdentifier, nameof (swiftIdentifier));
 			if (!swiftIdentifier.StartsWith (Decomposer.kSwift4ID, StringComparison.Ordinal))
 				throw new ArgumentOutOfRangeException (nameof (swiftIdentifier), $"Expecting '{swiftIdentifier}' to start with '{Decomposer.kSwift4ID}'");
 			this.offset = offset;

@@ -6,21 +6,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SwiftReflector.Demangling;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class SwiftClassName {
 		public SwiftClassName (SwiftName module, IList<MemberNesting> nesting, IList<SwiftName> nestingNames, OperatorType oper = OperatorType.None)
 		{
-			Module = Ex.ThrowOnNull (module, "module");
-			Nesting = Ex.ThrowOnNull (nesting, "nesting");
-			NestingNames = Ex.ThrowOnNull (nestingNames, "nestingNames");
+			Module = Exceptions.ThrowOnNull (module, "module");
+			Nesting = Exceptions.ThrowOnNull (nesting, "nesting");
+			NestingNames = Exceptions.ThrowOnNull (nestingNames, "nestingNames");
 			Terminus = NestingNames.Count > 0 ? NestingNames [NestingNames.Count - 1] : null;
 			Operator = oper;
 		}
 
 		public static SwiftClassName FromFullyQualifiedName (string fullyQualifiedName, OperatorType oper, params char [] nesting)
 		{
-			string [] parts = Ex.ThrowOnNull (fullyQualifiedName, "fullyQualifiedName").Split ('.');
+			string [] parts = Exceptions.ThrowOnNull (fullyQualifiedName, "fullyQualifiedName").Split ('.');
 			if (parts.Length < 2)
 				throw new ArgumentException (String.Format ("Fully qualified name '{0}' requires at least a module and one name.",
 					fullyQualifiedName));

@@ -4,6 +4,7 @@
 using System;
 using System.Xml.Linq;
 using SwiftReflector.IOUtils;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class BaseConstraint : IXElementConvertible {
@@ -72,7 +73,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public InheritanceConstraint (string name, string inheritsTypeSpecString)
 			: base (ConstraintKind.Inherits)
 		{
-			Name = Ex.ThrowOnNull (name, nameof (name));
+			Name = Exceptions.ThrowOnNull (name, nameof (name));
 			Inherits = inheritsTypeSpecString;
 		}
 

@@ -4,6 +4,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class StringSlice {
@@ -11,7 +12,7 @@ namespace SwiftReflector {
 
 		public StringSlice (string s)
 		{
-			slice = Ex.ThrowOnNull (s, "s");
+			slice = Exceptions.ThrowOnNull (s, "s");
 		}
 
 		public bool StartsWith (char c)

@@ -5,12 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using SwiftReflector.Demangling;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Inventory {
 	public class ModuleContents {
 		public ModuleContents (SwiftName name, int sizeofMachinePointer)
 		{
-			Name = Ex.ThrowOnNull (name, nameof(name));
+			Name = Exceptions.ThrowOnNull (name, nameof(name));
 			Classes = new ClassInventory (sizeofMachinePointer);
 			Functions = new FunctionInventory (sizeofMachinePointer);
 			Variables = new VariableInventory (sizeofMachinePointer);

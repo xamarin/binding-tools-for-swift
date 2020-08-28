@@ -10,6 +10,7 @@ using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Inventory {
 	public class ModuleInventory : Inventory<ModuleContents> {
@@ -86,7 +87,7 @@ namespace SwiftReflector.Inventory {
 
 		public static ModuleInventory FromFile (string pathToDynamicLibrary, ErrorHandling errors)
 		{
-			Ex.ThrowOnNull (pathToDynamicLibrary, nameof(pathToDynamicLibrary));
+			Exceptions.ThrowOnNull (pathToDynamicLibrary, nameof(pathToDynamicLibrary));
 			FileStream stm = null;
 			try {
 				stm = new FileStream (pathToDynamicLibrary, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -116,8 +117,8 @@ namespace SwiftReflector.Inventory {
 		static ModuleInventory FromStreamInto (Stream stm, ModuleInventory inventory,
 		                                       ErrorHandling errors, string fileName = null)
 		{
-			Ex.ThrowOnNull (errors, "errors");
-			Ex.ThrowOnNull (stm, "stm");
+			Exceptions.ThrowOnNull (errors, "errors");
+			Exceptions.ThrowOnNull (stm, "stm");
 			OffsetStream osstm = null;
 			List<NListEntry> entries = null;
 			try {

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class ModuleMapper {
@@ -13,12 +14,12 @@ namespace SwiftReflector {
 
 		public bool IsMapped (SwiftName sn)
 		{
-			return map.ContainsKey (Ex.ThrowOnNull (sn, nameof (sn)));
+			return map.ContainsKey (Exceptions.ThrowOnNull (sn, nameof (sn)));
 		}
 
 		public SwiftName Map (SwiftName sn)
 		{
-			SwiftName mapped = Ex.ThrowOnNull (sn, nameof(sn));
+			SwiftName mapped = Exceptions.ThrowOnNull (sn, nameof(sn));
 			if (map.TryGetValue (sn, out mapped))
 				return mapped;
 			return sn;
@@ -26,7 +27,7 @@ namespace SwiftReflector {
 
 		public void AddMapping (SwiftName key, SwiftName value)
 		{
-			map [Ex.ThrowOnNull (key, nameof(key))] = Ex.ThrowOnNull (value, nameof(value));
+			map [Exceptions.ThrowOnNull (key, nameof(key))] = Exceptions.ThrowOnNull (value, nameof(value));
 		}
 	}
 }

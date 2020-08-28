@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ObjCRuntime;
 using System.Text;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class PropertyDeclaration : Member {
@@ -33,7 +34,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return typeName;
 			}
 			set {
-				typeName = Ex.ThrowOnNull (value, nameof(value));
+				typeName = Exceptions.ThrowOnNull (value, nameof(value));
 				try {
 					TypeSpec = TypeSpecParser.Parse (typeName);
 				} catch (RuntimeException ex) {

@@ -12,6 +12,7 @@ using SwiftReflector.SwiftXmlReflection;
 using System.IO;
 using Dynamo.CSLang;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.TypeMapping {
 	public class TypeMapper {
@@ -827,7 +828,7 @@ namespace SwiftReflector.TypeMapping {
 
 		public static bool IsScalar (string builtIn)
 		{
-			return ScalarIndex (Ex.ThrowOnNull (builtIn, "builtIn")) >= 0;
+			return ScalarIndex (Exceptions.ThrowOnNull (builtIn, "builtIn")) >= 0;
 		}
 
 		public static bool IsScalar (TypeSpec spec)

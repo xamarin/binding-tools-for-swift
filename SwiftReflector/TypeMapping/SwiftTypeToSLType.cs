@@ -7,13 +7,14 @@ using SwiftReflector.ExceptionTools;
 using System.Collections.Generic;
 using System.Linq;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.TypeMapping {
 	public class SwiftTypeToSLType {
 		TypeMapper typeMapper;
 		public SwiftTypeToSLType (TypeMapper typeMapper)
 		{
-			this.typeMapper = Ex.ThrowOnNull (typeMapper, "typeMapper");
+			this.typeMapper = Exceptions.ThrowOnNull (typeMapper, "typeMapper");
 		}
 
 

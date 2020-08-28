@@ -3,17 +3,21 @@
 
 using System;
 namespace SwiftRuntimeLibrary {
-	internal static class Exceptions {
+	public static class Exceptions {
 		public static T ThrowOnNull<T> (T o, string name, string message = null) where T : class
 		{
-			name = name ?? "::no name supplied::";
-			if (o == null) {
-				if (message == null)
-					throw new ArgumentNullException (name);
-				else
-					throw new ArgumentNullException (name, message);
-			}
+			if (o == null)
+				ThrowArgumentNull (name, message);
 			return o;
+		}
+
+		static void ThrowArgumentNull (string name, string message = null)
+		{
+			name = name ?? "::no name supplied::";
+			if (message == null)
+				throw new ArgumentNullException (name);
+			else
+				throw new ArgumentNullException (name, message);
 		}
 	}
 }

@@ -48,9 +48,6 @@
     <Compile Include="..\SwiftReflector\Enums.cs">
       <Link>Enums.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftReflector\Ex.cs">
-      <Link>Ex.cs</Link>
-    </Compile>
     <Compile Include="TypeOMaticOptions.cs" />
     <Compile Include="..\SwiftReflector\IOUtils\ExecAndCollect.cs">
       <Link>ExecAndCollect.cs</Link>
@@ -136,6 +133,10 @@
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">
       <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
       <Name>Dynamo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
+      <Project>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</Project>
+      <Name>SwiftRuntimeLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

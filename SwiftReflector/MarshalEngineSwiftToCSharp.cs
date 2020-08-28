@@ -22,7 +22,7 @@ namespace SwiftReflector {
 			preMarshalCode = new List<ICodeElement> ();
 			postMarshalCode = new List<ICodeElement> ();
 			this.typeMapper = typeMapper;
-			this.identifiersUsed = Ex.ThrowOnNull (identifiersUsed, "identifiersUsed");
+			this.identifiersUsed = Exceptions.ThrowOnNull (identifiersUsed, "identifiersUsed");
 		}
 
 
@@ -415,7 +415,7 @@ namespace SwiftReflector {
 			// ...
 			// p.deallocate()
 
-			Ex.ThrowOnNull (closure, "closure");
+			Exceptions.ThrowOnNull (closure, "closure");
 			imports.AddIfNotPresent ("XamGlue");
 			var funcToCall = closure.HasReturn () ? "swiftClosureToFunc" : "swiftClosureToAction";
 			var localPtr = new SLIdentifier (MarshalEngine.Uniqueify ("ptr", identifiersUsed));

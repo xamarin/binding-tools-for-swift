@@ -16,7 +16,7 @@ namespace SwiftReflector.TypeMapping {
 		bool isForOverride;
 		public TypeSpecToSLType (TypeMapper parent, bool forOverride)
 		{
-			this.parent = Ex.ThrowOnNull (parent, nameof (parent));
+			this.parent = Exceptions.ThrowOnNull (parent, nameof (parent));
 			isForOverride = forOverride;
 		}
 

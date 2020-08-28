@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using SwiftRuntimeLibrary;
+
 namespace SwiftReflector.SwiftXmlReflection {
 	public class TypeSpecToken {
 		TypeSpecToken (TypeTokenKind kind, string value)
@@ -12,11 +14,11 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public string Value { get; private set; }
 		public static TypeSpecToken LabelFromString (string value)
 		{
-			return new TypeSpecToken (TypeTokenKind.TypeLabel, Ex.ThrowOnNull (value, "value"));
+			return new TypeSpecToken (TypeTokenKind.TypeLabel, Exceptions.ThrowOnNull (value, "value"));
 		}
 		public static TypeSpecToken FromString (string value)
 		{
-			return new TypeSpecToken (TypeTokenKind.TypeName, Ex.ThrowOnNull (value, "value"));
+			return new TypeSpecToken (TypeTokenKind.TypeName, Exceptions.ThrowOnNull (value, "value"));
 		}
 		static TypeSpecToken leftparenthesis = new TypeSpecToken (TypeTokenKind.LeftParenthesis, "(");
 		static TypeSpecToken rightparenthesis = new TypeSpecToken (TypeTokenKind.RightParenthesis, ")");

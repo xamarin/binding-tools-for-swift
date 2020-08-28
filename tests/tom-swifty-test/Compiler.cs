@@ -519,7 +519,7 @@ namespace tomwiftytest {
 			FixXamGlueReferenceInDylibs (executablePath);
 
 			var args = new StringBuilder ();
-			args.Append (Ex.ThrowOnNull (filename, nameof (filename))).Append (' ');
+			args.Append (Exceptions.ThrowOnNull (filename, nameof (filename))).Append (' ');
 			var executable = kMono64Path;
 
 			var env = new Dictionary<string, string> ();

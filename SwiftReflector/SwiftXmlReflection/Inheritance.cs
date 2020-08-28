@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml.Linq;
 using SwiftReflector.IOUtils;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class Inheritance : IXElementConvertible {
@@ -23,7 +24,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public string InheritedTypeName {
 			get { return inheritedTypeName; }
 			set {
-				inheritedTypeName = Ex.ThrowOnNull (value, nameof(value));
+				inheritedTypeName = Exceptions.ThrowOnNull (value, nameof(value));
 				try {
 					InheritedTypeSpec = TypeSpecParser.Parse (inheritedTypeName);
 				} catch (RuntimeException ex) {
@@ -61,7 +62,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		static InheritanceKind ToInheritanceKind (string kindStr)
 		{
-			Ex.ThrowOnNull (kindStr, nameof(kindStr));
+			Exceptions.ThrowOnNull (kindStr, nameof(kindStr));
 			switch (kindStr) {
 			case "protocol":
 				return InheritanceKind.Protocol;

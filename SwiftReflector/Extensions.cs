@@ -89,14 +89,14 @@ namespace SwiftReflector {
 
 		public static void Merge<T> (this HashSet<T> to, IEnumerable<T> from)
 		{
-			Ex.ThrowOnNull (from, nameof (from));
+			Exceptions.ThrowOnNull (from, nameof (from));
 			foreach (T val in from)
 				to.Add (val);
 		}
 
 		public static void DisposeAll<T> (this IEnumerable<T> coll) where T : IDisposable
 		{
-			Ex.ThrowOnNull (coll, nameof (coll));
+			Exceptions.ThrowOnNull (coll, nameof (coll));
 			foreach (T obj in coll) {
 				if ((IDisposable)obj != null)
 					obj.Dispose ();
@@ -151,8 +151,8 @@ namespace SwiftReflector {
 
 		public static T[] And<T> (this T[] first, T[] second)
 		{
-			Ex.ThrowOnNull (first, nameof (first));
-			Ex.ThrowOnNull (second, nameof (second));
+			Exceptions.ThrowOnNull (first, nameof (first));
+			Exceptions.ThrowOnNull (second, nameof (second));
 			var result = new T [first.Length + second.Length];
 			Array.Copy (first, result, first.Length);
 			Array.Copy (second, 0, result, first.Length, second.Length);
