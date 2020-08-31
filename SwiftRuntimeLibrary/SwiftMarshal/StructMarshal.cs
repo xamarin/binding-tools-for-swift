@@ -26,6 +26,8 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			if (obj == null)
 				return IntPtr.Zero;
 			byte* valueBuffer = stackalloc byte [3 * IntPtr.Size];
+			if (obj.SwiftObject == IntPtr.Zero)
+				throw new SwiftRuntimeException ("SwiftObject handle is IntPtr.Zero, likely because it was disposed.");
 			SwiftCore.swift_beginAccess (obj.SwiftObject, valueBuffer, (uint)SwiftExclusivityFlags.Track, IntPtr.Zero);
 			var result = SwiftCore.Retain (obj.SwiftObject);
 			SwiftCore.swift_endAccess (valueBuffer);
