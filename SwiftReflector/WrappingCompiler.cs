@@ -14,6 +14,7 @@ using SwiftReflector.SwiftXmlReflection;
 using SwiftReflector.TypeMapping;
 using Xamarin;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class WrappingCompiler {
@@ -30,10 +31,10 @@ namespace SwiftReflector {
 		public WrappingCompiler (string outputDirectory, SwiftCompilerLocation compilerLocation,
 		                         bool retainSwiftFiles, TypeMapper typeMapper, bool verbose, ErrorHandling errors)
 		{
-			this.outputDirectory = Ex.ThrowOnNull (outputDirectory, "outputDirectory");
-			CompilerLocation = Ex.ThrowOnNull (compilerLocation, "compilerLocation");
+			this.outputDirectory = Exceptions.ThrowOnNull (outputDirectory, "outputDirectory");
+			CompilerLocation = Exceptions.ThrowOnNull (compilerLocation, "compilerLocation");
 			this.retainSwiftFiles = retainSwiftFiles;
-			this.typeMapper = Ex.ThrowOnNull (typeMapper, "typeMapper");
+			this.typeMapper = Exceptions.ThrowOnNull (typeMapper, "typeMapper");
 			this.verbose = verbose;
 			this.errors = errors;
 		}
@@ -57,7 +58,7 @@ namespace SwiftReflector {
 			}
 
 			using (TempDirectorySwiftClassFileProvider fileProvider =
-				new TempDirectorySwiftClassFileProvider (Ex.ThrowOnNull (wrappingModuleName, "wrappingModuleName"), true)) {
+				new TempDirectorySwiftClassFileProvider (Exceptions.ThrowOnNull (wrappingModuleName, "wrappingModuleName"), true)) {
 				var allReferencedModules = new HashSet<string> ();
 				foreach (ModuleDeclaration module in modulesToCompile) {
 					HashSet<string> referencedModules = null;

@@ -24,7 +24,7 @@ namespace SwiftReflector {
 		{
 			this.use = use;
 			this.typeMapper = typeMapper;
-			this.identifiersUsed = Ex.ThrowOnNull (identifiersUsed, "identifiersUsed");
+			this.identifiersUsed = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (identifiersUsed, "identifiersUsed");
 		}
 
 		public List<ICodeElement> MarshalFromLambdaReceiverToCSFunc (CSType thisType, string csProxyName, CSParameterList delegateParams,

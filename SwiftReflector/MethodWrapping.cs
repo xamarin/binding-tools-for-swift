@@ -31,8 +31,8 @@ namespace SwiftReflector {
 
 		public MethodWrapping (IStreamProvider<SwiftClassName> provider, TypeMapper typeMapper, string wrappingModuleName, ErrorHandling errors)
 		{
-			wrappingModule = new ModuleDeclaration (Ex.ThrowOnNull (wrappingModuleName, "wrappingModuleName"));
-			this.provider = Ex.ThrowOnNull (provider, "provider");
+			wrappingModule = new ModuleDeclaration (Exceptions.ThrowOnNull (wrappingModuleName, "wrappingModuleName"));
+			this.provider = Exceptions.ThrowOnNull (provider, "provider");
 			this.typeMapper = typeMapper;
 			this.errors = errors;
 		}
@@ -41,8 +41,8 @@ namespace SwiftReflector {
 
 		void AddImportIfNotPresent (SLImportModules modules, string modname)
 		{
-			Ex.ThrowOnNull (modules, nameof (modules));
-			Ex.ThrowOnNull (modname, nameof (modname));
+			Exceptions.ThrowOnNull (modules, nameof (modules));
+			Exceptions.ThrowOnNull (modname, nameof (modname));
 			if (modname == wrappingModule.Name)
 				return;
 			modules.AddIfNotPresent (modname);

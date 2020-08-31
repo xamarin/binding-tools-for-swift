@@ -5,14 +5,15 @@ using System;
 using SwiftReflector.ExceptionTools;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Inventory {
 	public class PropertyContents {
 		int sizeofMachinePointer;
 		public PropertyContents (SwiftClassType ofClass, SwiftName propName, int sizeofMachinePointer)
 		{
-			Class = Ex.ThrowOnNull (ofClass, nameof(ofClass));
-			Name = Ex.ThrowOnNull (propName, nameof(propName));
+			Class = Exceptions.ThrowOnNull (ofClass, nameof(ofClass));
+			Name = Exceptions.ThrowOnNull (propName, nameof(propName));
 			this.sizeofMachinePointer = sizeofMachinePointer;
 		}
 

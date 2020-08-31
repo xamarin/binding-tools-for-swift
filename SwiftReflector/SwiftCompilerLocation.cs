@@ -7,6 +7,7 @@ using System.IO;
 using ObjCRuntime;
 using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector 
 {
@@ -18,8 +19,8 @@ namespace SwiftReflector
 
 		public SwiftCompilerLocation (string swiftCompilerBin, string swiftCompilerLib)
 		{
-			SwiftCompilerBin = Ex.ThrowOnNull (swiftCompilerBin, nameof (swiftCompilerBin));
-			SwiftCompilerLib = Ex.ThrowOnNull (swiftCompilerLib, nameof (swiftCompilerLib));
+			SwiftCompilerBin = Exceptions.ThrowOnNull (swiftCompilerBin, nameof (swiftCompilerBin));
+			SwiftCompilerLib = Exceptions.ThrowOnNull (swiftCompilerLib, nameof (swiftCompilerLib));
 			VerifyCompilerLocations ();
 		}
 

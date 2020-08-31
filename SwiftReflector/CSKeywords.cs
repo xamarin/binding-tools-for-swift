@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class CSKeywords {
@@ -35,7 +36,7 @@ namespace SwiftReflector {
 
 		public static bool IsKeyword (string s)
 		{
-			Ex.ThrowOnNull (s, "s");
+			Exceptions.ThrowOnNull (s, "s");
 			return keyWords.Contains (s);
 		}
 	}

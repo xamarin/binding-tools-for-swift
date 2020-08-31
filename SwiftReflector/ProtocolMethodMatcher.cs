@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using SwiftReflector.SwiftXmlReflection;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class ProtocolMethodMatcher {
@@ -12,9 +13,9 @@ namespace SwiftReflector {
 
 		public ProtocolMethodMatcher (ProtocolDeclaration protocol, List<FunctionDeclaration> originalFuncs, WrappingResult wrapper)
 		{
-			this.protocol = Ex.ThrowOnNull (protocol, nameof (protocol));
-			this.originalFuncs = Ex.ThrowOnNull (originalFuncs, nameof (originalFuncs));
-			this.wrapper = Ex.ThrowOnNull (wrapper, nameof (wrapper));
+			this.protocol = Exceptions.ThrowOnNull (protocol, nameof (protocol));
+			this.originalFuncs = Exceptions.ThrowOnNull (originalFuncs, nameof (originalFuncs));
+			this.wrapper = Exceptions.ThrowOnNull (wrapper, nameof (wrapper));
 		}
 
 		public void MatchFunctions (List<FunctionDeclaration> result)

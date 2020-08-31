@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Importing {
 	public class PatternMatch {
 		Regex regex;
 		public PatternMatch (string pattern)
 		{
-			Pattern = Ex.ThrowOnNull (pattern, nameof (pattern));
+			Pattern = Exceptions.ThrowOnNull (pattern, nameof (pattern));
 			regex = new Regex (pattern);
 		}
 		public string Pattern { get; set; }
@@ -58,7 +59,7 @@ namespace SwiftReflector.Importing {
 
 		public static MatchCollection FromXml (string xmlFile, bool loadIncludes)
 		{
-			Ex.ThrowOnNull (xmlFile, nameof (xmlFile));
+			Exceptions.ThrowOnNull (xmlFile, nameof (xmlFile));
 
 			var doc = XDocument.Load (xmlFile);
 			var matches = from elem in doc.Element (loadIncludes ? "Includes" : "Excludes").Elements ("Pattern")

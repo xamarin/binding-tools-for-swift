@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Demangling {
 	public class MatchRule {
@@ -37,7 +38,7 @@ namespace SwiftReflector.Demangling {
 
 		public bool Matches(Node n)
 		{
-			Ex.ThrowOnNull (n, nameof (n));
+			Exceptions.ThrowOnNull (n, nameof (n));
 			// 3 match criteria: NodeKind, Content type, children
 			return NodeKindMatches (n) && ContentMatches (n) &&
 				ChildrenMatches (n);

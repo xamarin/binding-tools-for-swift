@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Demangling {
 	public class TLDefinition {
@@ -14,7 +15,7 @@ namespace SwiftReflector.Demangling {
 				throw new ArgumentNullException (nameof(module));
 			Type = type;
 			Module = module;
-			MangledName = Ex.ThrowOnNull (mangledName, nameof(mangledName));
+			MangledName = Exceptions.ThrowOnNull (mangledName, nameof(mangledName));
 			Offset = offset;
 		}
 
@@ -35,7 +36,7 @@ namespace SwiftReflector.Demangling {
 		public TLMetadataDescriptor (SwiftType ofType, bool isBuiltIn, string mangledName, SwiftName module, ulong offset)
 			: base (CoreCompoundType.MetadataDescriptor, mangledName, module, offset)
 		{
-			OfType = Ex.ThrowOnNull (ofType, nameof (ofType));
+			OfType = Exceptions.ThrowOnNull (ofType, nameof (ofType));
 			IsBuiltIn = isBuiltIn;
 		}
 		public SwiftType OfType { get; private set; }
@@ -72,8 +73,8 @@ namespace SwiftReflector.Demangling {
 				bool isStatic, ulong offset, SwiftType extensionOn)
 			: base (type, mangledName, module, classType, offset)
 		{
-			Name = Ex.ThrowOnNull (ident, nameof (ident));
-			OfType = Ex.ThrowOnNull (ofType, nameof (ofType));
+			Name = Exceptions.ThrowOnNull (ident, nameof (ident));
+			OfType = Exceptions.ThrowOnNull (ofType, nameof (ofType));
 			IsStatic = isStatic;
 			ExtensionOn = extensionOn;
 		}
@@ -95,8 +96,8 @@ namespace SwiftReflector.Demangling {
 		public TLUnsafeMutableAddressor(string mangledName, SwiftName module, SwiftClassType classType, SwiftName ident, SwiftType ofType, ulong offset)
 			: base (CoreCompoundType.UnsafeMutableAddressor, mangledName, module, classType, offset)
 		{
-			Name = Ex.ThrowOnNull (ident, nameof (ident));
-			OfType = Ex.ThrowOnNull (ofType, nameof (ofType));
+			Name = Exceptions.ThrowOnNull (ident, nameof (ident));
+			OfType = Exceptions.ThrowOnNull (ofType, nameof (ofType));
 		}
 		public SwiftType OfType { get; private set; }
 		public SwiftName Name { get; private set; }
@@ -154,7 +155,7 @@ namespace SwiftReflector.Demangling {
 		public TLDefaultArgumentInitializer(string mangledName, SwiftName module, SwiftBaseFunctionType function, int index, ulong offset)
 			: base(CoreCompoundType.ArgumentInitializer, mangledName, module, offset)
 		{
-			Signature = Ex.ThrowOnNull (function, nameof (function));
+			Signature = Exceptions.ThrowOnNull (function, nameof (function));
 			ArgumentIndex = index;
 		}
 		public SwiftBaseFunctionType Signature { get; private set; }
@@ -208,7 +209,7 @@ namespace SwiftReflector.Demangling {
 			SwiftClassType forProtocol, ulong offset)
 			: base (CoreCompoundType.ProtocolConformanceDescriptor, mangledName, module, offset)
 		{
-			ImplementingType = Ex.ThrowOnNull (implementingType, nameof (implementingType));
+			ImplementingType = Exceptions.ThrowOnNull (implementingType, nameof (implementingType));
 			Protocol = forProtocol;
 		}
 
@@ -227,7 +228,7 @@ namespace SwiftReflector.Demangling {
 		public TLBaseConformanceDescriptor (string mangledName, SwiftName module, SwiftClassType protocol, SwiftClassType requirement, ulong offset)
 			: base (CoreCompoundType.BaseConformanceDescriptor, mangledName, module, protocol, offset)
 		{
-			ProtocolRequirement = Ex.ThrowOnNull (requirement, nameof (requirement));
+			ProtocolRequirement = Exceptions.ThrowOnNull (requirement, nameof (requirement));
 		}
 		public SwiftClassType ProtocolRequirement { get; private set; }
 	}

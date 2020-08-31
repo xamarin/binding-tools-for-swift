@@ -6,6 +6,7 @@ using System.IO;
 using System.Collections.Generic;
 using SwiftReflector.ExceptionTools;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class TypeSpecParser {
@@ -175,7 +176,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		TypeSpec ParseProtocolList (NamedTypeSpec first)
 		{
-			Ex.ThrowOnNull (first, nameof (first));
+			Exceptions.ThrowOnNull (first, nameof (first));
 			var protocols = new List<NamedTypeSpec> ();
 			protocols.Add (first);
 			while (true) {

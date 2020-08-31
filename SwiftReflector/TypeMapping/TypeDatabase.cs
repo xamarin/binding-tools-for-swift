@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using SwiftReflector.SwiftXmlReflection;
 using SwiftReflector.ExceptionTools;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.TypeMapping {
 	public class DotNetName
@@ -55,19 +56,19 @@ namespace SwiftReflector.TypeMapping {
 		public DotNetName DotNetNameForSwiftName (string swiftName)
 		{
 			DotNetName netName = null;
-			swiftNamesToNetNames.TryGetValue (Ex.ThrowOnNull (swiftName, "swiftName"), out netName);
+			swiftNamesToNetNames.TryGetValue (Exceptions.ThrowOnNull (swiftName, "swiftName"), out netName);
 			return netName; // may be null
 		}
 
 		public DotNetName DotNetNameForSwiftName (SwiftClassName swiftName)
 		{
-			return DotNetNameForSwiftName (Ex.ThrowOnNull (swiftName, "swiftName").ToFullyQualifiedName (true));
+			return DotNetNameForSwiftName (Exceptions.ThrowOnNull (swiftName, "swiftName").ToFullyQualifiedName (true));
 		}
 
 		public string SwiftNameForDotNetName (DotNetName netName)
 		{
 			string swiftName = null;
-			netNamesToSwiftNames.TryGetValue (Ex.ThrowOnNull (netName, "netName"), out swiftName);
+			netNamesToSwiftNames.TryGetValue (Exceptions.ThrowOnNull (netName, "netName"), out swiftName);
 			return swiftName;
 		}
 
@@ -155,7 +156,7 @@ namespace SwiftReflector.TypeMapping {
 		Dictionary<string, Entity> EntityCollection (string moduleName)
 		{
 			Dictionary<string, Entity> module = null;
-			modules.TryGetValue (Ex.ThrowOnNull (moduleName, nameof(moduleName)), out module);
+			modules.TryGetValue (Exceptions.ThrowOnNull (moduleName, nameof(moduleName)), out module);
 			return module;
 		}
 
@@ -170,7 +171,7 @@ namespace SwiftReflector.TypeMapping {
 
 		public void Write (string file, IEnumerable<string> modules)
 		{
-			using (FileStream stm = new FileStream (Ex.ThrowOnNull (file, nameof(file)), FileMode.Create)) {
+			using (FileStream stm = new FileStream (Exceptions.ThrowOnNull (file, nameof(file)), FileMode.Create)) {
 				Write (stm, modules);
 			}
 		}
@@ -182,7 +183,7 @@ namespace SwiftReflector.TypeMapping {
 
 		public void Write (string file, string module)
 		{
-			using (FileStream stm = new FileStream (Ex.ThrowOnNull (file, "file"), FileMode.Create)) {
+			using (FileStream stm = new FileStream (Exceptions.ThrowOnNull (file, "file"), FileMode.Create)) {
 				Write (stm, module);
 			}
 		}
@@ -347,7 +348,7 @@ namespace SwiftReflector.TypeMapping {
 
 		static EntityType ToEntityType (string s)
 		{
-			switch (Ex.ThrowOnNull (s, "s").ToLower ()) {
+			switch (Exceptions.ThrowOnNull (s, "s").ToLower ()) {
 			case "scalar":
 				return EntityType.Scalar;
 			case "class":

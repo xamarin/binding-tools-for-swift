@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SwiftReflector.SwiftXmlReflection;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class PatToGenericMap {
@@ -16,7 +17,7 @@ namespace SwiftReflector {
 
 		public PatToGenericMap (ProtocolDeclaration protocolDecl)
 		{
-			Ex.ThrowOnNull (protocolDecl, nameof (protocolDecl));
+			Exceptions.ThrowOnNull (protocolDecl, nameof (protocolDecl));
 			if (!(protocolDecl.HasAssociatedTypes || (protocolDecl.HasDynamicSelf && !protocolDecl.HasDynamicSelfInReturnOnly)))
 				throw new ArgumentException ("ProtocolDeclaration has no associated types", nameof (protocolDecl));
 			this.protocolDecl = protocolDecl;
@@ -51,7 +52,7 @@ namespace SwiftReflector {
 
 		public AssociatedTypeDeclaration FromGenericTypeName (string genericName)
 		{
-			Ex.ThrowOnNull (genericName, nameof (genericName));
+			Exceptions.ThrowOnNull (genericName, nameof (genericName));
 
 			// parsing is hard, yo.
 			if (!genericName.StartsWith (kGenPrefix, StringComparison.Ordinal))

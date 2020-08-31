@@ -7,13 +7,14 @@ using SwiftReflector.ExceptionTools;
 using System.IO;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Inventory {
 	public class OverloadInventory : Inventory<List<TLFunction>> {
 		int sizeofMachinePointer;
 		public OverloadInventory (SwiftName name, int sizeofMachinePointer)
 		{
-			Name = Ex.ThrowOnNull (name, nameof(name));
+			Name = Exceptions.ThrowOnNull (name, nameof(name));
 			Functions = new List<TLFunction> ();
 			this.sizeofMachinePointer = sizeofMachinePointer;
 		}

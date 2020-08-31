@@ -8,6 +8,7 @@ using System.Text;
 using System.Xml.Linq;
 using ObjCRuntime;
 using SwiftReflector.ExceptionTools;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class FunctionDeclaration : Member {
@@ -61,7 +62,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public string ReturnTypeName {
 			get { return returnTypeName; }
 			set {
-				returnTypeName = Ex.ThrowOnNull (value, "value");
+				returnTypeName = Exceptions.ThrowOnNull (value, "value");
 				try {
 					ReturnTypeSpec = TypeSpecParser.Parse (returnTypeName);
 				} catch (RuntimeException ex) {
@@ -227,7 +228,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				Module = module,
 				Parent = parent,
 				Access = TypeDeclaration.AccessibilityFromString ((string)elem.Attribute ("accessibility")),
-				ReturnTypeName = Ex.ThrowOnNull ((string)elem.Attribute ("returnType"), "returnType"),
+				ReturnTypeName = Exceptions.ThrowOnNull ((string)elem.Attribute ("returnType"), "returnType"),
 				IsProperty = elem.BoolAttribute ("isProperty"),
 				IsStatic = elem.BoolAttribute ("isStatic"),
 				IsFinal = elem.BoolAttribute ("isFinal"),

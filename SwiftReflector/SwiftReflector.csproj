@@ -58,7 +58,6 @@
     <Compile Include="PunyCode.cs" />
     <Compile Include="Visitors.cs" />
     <Compile Include="SwiftType.cs" />
-    <Compile Include="Ex.cs" />
     <Compile Include="StringSlice.cs" />
     <Compile Include="SwiftClassName.cs" />
     <Compile Include="TopLevelFunctionCompiler.cs" />

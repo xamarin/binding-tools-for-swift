@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
 using ObjCRuntime;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class ParameterItem : IXElementConvertible {
@@ -35,7 +36,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public string TypeName {
 			get { return typeName; }
 			set {
-				typeName = Ex.ThrowOnNull (value, nameof(value));
+				typeName = Exceptions.ThrowOnNull (value, nameof(value));
 				try {
 					typeSpec = TypeSpecParser.Parse (typeName);
 				} catch (RuntimeException ex) {
@@ -47,7 +48,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public TypeSpec TypeSpec {
 			get { return typeSpec; }
 			set {
-				Ex.ThrowOnNull (value, "value");
+				Exceptions.ThrowOnNull (value, "value");
 				typeSpec = value;
 				typeName = value.ToString ();
 			}

@@ -43,7 +43,7 @@ namespace SwiftReflector {
 			}
 			if (classToOverride.IsFinal && !isProtocol)
 				throw new ArgumentException (String.Format ("Attempt to attach override to final class {0}.", classToOverride.ToFullyQualifiedName (true)));
-			this.typeMapper = Ex.ThrowOnNull (typeMapper, "typeMapper");
+			this.typeMapper = Exceptions.ThrowOnNull (typeMapper, "typeMapper");
 
 			vtableName = classToOverride.ContainsGenericParameters ? classToOverride.Module.Name + "_xamVtableCache" : "_vtable";
 			ClassImplementations = new List<SLClass> ();
@@ -86,7 +86,7 @@ namespace SwiftReflector {
 
 		void AddImportIfNotPresent (string modname)
 		{
-			Ex.ThrowOnNull (modname, nameof (modname));
+			Exceptions.ThrowOnNull (modname, nameof (modname));
 			Imports.AddIfNotPresent (modname);
 			ModuleReferences.Add (modname);
 		}
@@ -1739,7 +1739,7 @@ namespace SwiftReflector {
 
 		public static string AssociatedTypeStaticWrapperName (ProtocolDeclaration proto, string funcName)
 		{
-			Ex.ThrowOnNull (funcName, nameof (funcName));
+			Exceptions.ThrowOnNull (funcName, nameof (funcName));
 			string prefix = proto.ToFullyQualifiedName ().Replace ('.', '_');
 			return $"xamarin_static_wrapper_{prefix}_{funcName}";
 		}

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Demangling {
 	public class Swift5NodeToTLDefinition {
@@ -748,7 +748,7 @@ namespace SwiftReflector.Demangling {
 
 		public TLDefinition Convert (Node node)
 		{
-			Ex.ThrowOnNull (node, nameof (node));
+			Exceptions.ThrowOnNull (node, nameof (node));
 
 
 			switch (node.Kind) {

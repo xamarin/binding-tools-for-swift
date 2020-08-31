@@ -38,7 +38,7 @@ namespace SwiftReflector.TypeMapping {
 			IsScalar = false;
 			IsReference = isReference;
 			Entity = EntityType.Tuple;
-			TupleTypes.AddRange (Ex.ThrowOnNull (tupleElements, "tupleElements"));
+			TupleTypes.AddRange (Exceptions.ThrowOnNull (tupleElements, "tupleElements"));
 		}
 
 		public NetTypeBundle (string nameSpace, string entityName, EntityType entity, bool isReference, IEnumerable<NetTypeBundle> genericTypes)
@@ -74,7 +74,7 @@ namespace SwiftReflector.TypeMapping {
 		public NetTypeBundle (string selfRepresentation, bool isReference)
 		{
 			GenericIndex = -1;
-			Type = FullName = Ex.ThrowOnNull (selfRepresentation, nameof (selfRepresentation));
+			Type = FullName = Exceptions.ThrowOnNull (selfRepresentation, nameof (selfRepresentation));
 			NameSpace = String.Empty;
 			IsReference = isReference;
 			IsSelf = true;

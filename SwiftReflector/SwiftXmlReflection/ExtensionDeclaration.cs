@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using ObjCRuntime;
 using SwiftReflector.ExceptionTools;
 using SwiftReflector.IOUtils;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class ExtensionDeclaration : IXElementConvertible {
@@ -35,7 +36,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return extensionOnTypeName;
 			}
 			set {
-				extensionOnTypeName = Ex.ThrowOnNull (value, "value");
+				extensionOnTypeName = Exceptions.ThrowOnNull (value, "value");
 				try {
 					ExtensionOnType = TypeSpecParser.Parse (extensionOnTypeName);
 				} catch (RuntimeException ex) {

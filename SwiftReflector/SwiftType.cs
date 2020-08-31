@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SwiftReflector.Demangling;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector {
 	public class SwiftType {
@@ -210,8 +211,8 @@ namespace SwiftReflector {
 		public SwiftBaseFunctionType (SwiftType parms, SwiftType ret, bool isReference, bool canThrow, SwiftName name = null, SwiftType extensionOn = null)
 		    : base (CoreCompoundType.Function, isReference, name)
 		{
-			Parameters = Ex.ThrowOnNull (parms, nameof(parms));
-			ReturnType = Ex.ThrowOnNull (ret, nameof(ret));
+			Parameters = Exceptions.ThrowOnNull (parms, nameof(parms));
+			ReturnType = Exceptions.ThrowOnNull (ret, nameof(ret));
 			GenericArguments = new List<GenericArgument> ();
 			CanThrow = canThrow;
 			ExtensionOn = extensionOn;
@@ -323,7 +324,7 @@ namespace SwiftReflector {
 		public SwiftInitializerType (InitializerType initType, SwiftType ret, SwiftClassType owner, SwiftName name)
 		    : base (SwiftTupleType.Empty, ret, false, false, name, null)
 		{
-			Owner = Ex.ThrowOnNull (owner, nameof (owner));
+			Owner = Exceptions.ThrowOnNull (owner, nameof (owner));
 			InitializerType = initType;
 		}
 
@@ -367,7 +368,7 @@ namespace SwiftReflector {
 
 	public class SwiftClassConstructorType : SwiftFunctionType {
 		public SwiftClassConstructorType (SwiftMetaClassType meta, bool isReference)
-		    : base (SwiftTupleType.Empty, Ex.ThrowOnNull (meta, "meta"), isReference, false, Decomposer.kSwiftClassConstructorName)
+		    : base (SwiftTupleType.Empty, Exceptions.ThrowOnNull (meta, "meta"), isReference, false, Decomposer.kSwiftClassConstructorName)
 		{
 		}
 	}
@@ -428,7 +429,7 @@ namespace SwiftReflector {
 		{
 			PropertyType = propType;
 			PrivateName = privateName;
-			OfType = Ex.ThrowOnNull (ofType, "ofType");
+			OfType = Exceptions.ThrowOnNull (ofType, "ofType");
 			IsSubscript = false;
 			IsStatic = isStatic;
 		}
@@ -675,12 +676,12 @@ namespace SwiftReflector {
 		public SwiftMetaClassType (SwiftClassType classType, bool isReference, SwiftName name = null)
 		    : base (CoreCompoundType.MetaClass, isReference, name)
 		{
-			Class = Ex.ThrowOnNull (classType, nameof (classType));
+			Class = Exceptions.ThrowOnNull (classType, nameof (classType));
 		}
 		public SwiftMetaClassType (SwiftGenericArgReferenceType classGenericReference, bool isReference, SwiftName name = null)
 			: base (CoreCompoundType.MetaClass, isReference, name)
 		{
-			ClassGenericReference = Ex.ThrowOnNull (classGenericReference, nameof (classGenericReference));
+			ClassGenericReference = Exceptions.ThrowOnNull (classGenericReference, nameof (classGenericReference));
 		}
 		public SwiftClassType Class { get; private set; }
 		public SwiftGenericArgReferenceType ClassGenericReference { get; private set; }
@@ -705,7 +706,7 @@ namespace SwiftReflector {
 		public SwiftExistentialMetaType (SwiftProtocolListType protocolList, bool isReference, SwiftName name = null)
 		    : base (CoreCompoundType.MetaClass, isReference, name)
 		{
-			Protocol = Ex.ThrowOnNull (protocolList, nameof (protocolList));
+			Protocol = Exceptions.ThrowOnNull (protocolList, nameof (protocolList));
 		}
 		public SwiftProtocolListType Protocol { get; private set; }
 		protected override bool LLEquals (SwiftType other)
@@ -764,8 +765,8 @@ namespace SwiftReflector {
 		public SwiftUnboundGenericType (SwiftType dependentType, List<GenericArgument> parms, bool isReference, SwiftName name = null)
 		    : base (CoreCompoundType.UnboundGeneric, isReference, name)
 		{
-			DependentType = Ex.ThrowOnNull (dependentType, nameof (dependentType));
-			Arguments = Ex.ThrowOnNull (parms, nameof (parms));
+			DependentType = Exceptions.ThrowOnNull (dependentType, nameof (dependentType));
+			Arguments = Exceptions.ThrowOnNull (parms, nameof (parms));
 		}
 
 		public SwiftType DependentType { get; private set; }
@@ -822,7 +823,7 @@ namespace SwiftReflector {
 		public SwiftBoundGenericType (SwiftType baseType, List<SwiftType> boundTypes, bool isReference, SwiftName name = null)
 		    : base (CoreCompoundType.BoundGeneric, isReference, name)
 		{
-			BaseType = Ex.ThrowOnNull (baseType, "baseType");
+			BaseType = Exceptions.ThrowOnNull (baseType, "baseType");
 			BoundTypes = new List<SwiftType> ();
 			if (boundTypes != null)
 				BoundTypes.AddRange (boundTypes);

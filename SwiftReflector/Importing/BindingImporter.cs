@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using SwiftReflector.SwiftXmlReflection;
+using SwiftRuntimeLibrary;
 
 namespace SwiftReflector.Importing {
 
@@ -16,8 +17,8 @@ namespace SwiftReflector.Importing {
 		class TypeDefinitionTypeDeclarationPair {
 			public TypeDefinitionTypeDeclarationPair (TypeDefinition typeDefinition, TypeDeclaration typeDeclaration)
 			{
-				TypeDefinition = Ex.ThrowOnNull (typeDefinition, nameof (typeDefinition));
-				TypeDeclaration = Ex.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
+				TypeDefinition = Exceptions.ThrowOnNull (typeDefinition, nameof (typeDefinition));
+				TypeDeclaration = Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			}
 			public TypeDefinition TypeDefinition { get; }
 			public TypeDeclaration TypeDeclaration { get; }
@@ -38,8 +39,8 @@ namespace SwiftReflector.Importing {
 
 		BindingImporter (string assemblyPath, ErrorHandling errors, TypeDatabase peerDatabase = null)
 		{
-			Ex.ThrowOnNull (assemblyPath, nameof (assemblyPath));
-			this.errors = Ex.ThrowOnNull (errors, nameof (errors));
+			Exceptions.ThrowOnNull (assemblyPath, nameof (assemblyPath));
+			this.errors = Exceptions.ThrowOnNull (errors, nameof (errors));
 			this.peerDatabase = peerDatabase;
 			aggregator = new TypeAggregator (assemblyPath);
 
@@ -60,7 +61,7 @@ namespace SwiftReflector.Importing {
 
 		public static bool ImportAndMerge (PlatformName platformName, TypeDatabase peerDatabase, ErrorHandling errors)
 		{
-			Ex.ThrowOnNull (peerDatabase, nameof (peerDatabase));
+			Exceptions.ThrowOnNull (peerDatabase, nameof (peerDatabase));
 			var initialErrorCount = errors.ErrorCount;
 			var newDb = ImportFrom (platformName, errors, peerDatabase);
 			peerDatabase.Merge (newDb, errors);
