@@ -1498,6 +1498,41 @@ public func reportIt (a: EasyToRepresent) -> Bool {
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Here.Value cannot be null.\nParameter name: a\n");
 		}
+
+		[Test]
+		public void CheckOnDisposeThanks ()
+		{
+			var swiftCode = @"
+public class DisposeMeThanks {
+    public init () { }
+    public func doIt () -> Int {
+        return 77
+    }
+}
+public func tryMeHere (a:DisposeMeThanks ) -> Int {
+    return a.doIt ()
+}
+";
+			// try {
+			//    var p = new DisposeMeThanks ();
+			//    p.Dispose ();
+			//    TopLevelEntities.TryMeHere (p);
+			// } catch (Exception err) {
+			//    Console.WriteLine (err.Message);
+			// }
+
+			var pID = new CSIdentifier ("p");
+			var errID = new CSIdentifier ("err");
+			var pDecl = CSVariableDeclaration.VarLine (pID, new CSFunctionCall ("DisposeMeThanks", true));
+			var disposeCall = CSFunctionCall.FunctionCallLine ($"{pID.Name}.Dispose", false);
+			var tryItCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.TryMeHere", false, pID);
+			var catchPrinter = CSFunctionCall.ConsoleWriteLine (errID.Dot (new CSIdentifier ("Message")));
+			var tryCatch = new CSTryCatch (CSCodeBlock.Create (pDecl, disposeCall, tryItCall),
+				typeof (Exception), errID.Name, CSCodeBlock.Create (catchPrinter));
+			var callingCode = CSCodeBlock.Create (tryCatch);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "SwiftObject handle is IntPtr.Zero, likely because it was disposed.\n");
+		}
 	}
 }
 

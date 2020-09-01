@@ -3693,11 +3693,14 @@ namespace SwiftReflector {
 			// protected virtual void DisposeUnmanagedResources()
 			// {
 			//      SwiftCore.Release(SwiftObject);
+			//      SwiftObject = IntPtr.Zero;
 			// }
 			var disposeUnmanaged = new CSMethod (CSVisibility.Protected,
 							  CSMethodKind.Virtual, CSSimpleType.Void, disposeUnmanagedIdent, new CSParameterList (),
 							  new CSCodeBlock ()
-				.And (CSFunctionCall.FunctionCallLine ("SwiftCore.Release", false, kSwiftObjectGetter)));
+				.And (CSFunctionCall.FunctionCallLine ("SwiftCore.Release", false, kSwiftObjectGetter))
+				.And (CSAssignment.Assign (kSwiftObjectGetter, CSConstant.IntPtrZero))
+				);
 			cl.Methods.Add (disposeUnmanaged);
 
 			var destructor = new CSMethod (CSVisibility.None, CSMethodKind.None, null, csDestructorIdent, new CSParameterList (),
