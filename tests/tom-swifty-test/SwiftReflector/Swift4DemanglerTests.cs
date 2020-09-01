@@ -1634,5 +1634,17 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (cl, "not a class");
 			Assert.AreEqual ("itsAFive.E2", cl.ClassName.ToFullyQualifiedName (), "wrong name");
 		}
+
+		[Test]
+		public void TestBaseConformanceDescriptor ()
+		{
+			var tld = Decomposer.Decompose ("_$sSHSQTb", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var bcd = tld as TLBaseConformanceDescriptor;
+			Assert.IsNotNull (bcd, "not a conformance descriptor");
+			var cl = bcd.ProtocolRequirement as SwiftClassType;
+			Assert.IsNotNull (cl, "not a class");
+			Assert.AreEqual ("Swift.Equatable", cl.ClassName.ToFullyQualifiedName (), "wrong name");
+		}
 	}
 }
