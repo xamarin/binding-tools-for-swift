@@ -1609,5 +1609,30 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (onType, "not a built in type");
 			Assert.AreEqual (CoreBuiltInType.Int, onType.BuiltInType, "not an int");
 		}
+
+		[Test]
+		public void TestReflectionMetadataField ()
+		{
+			var tld = Decomposer.Decompose ("_$s8itsAFive2E2OMF", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var mdd = tld as TLMetadataDescriptor;
+			Assert.IsNotNull (mdd, "not a metadata descriptor");
+			var cl = mdd.OfType as SwiftClassType;
+			Assert.IsNotNull (cl, "not a class");
+			Assert.AreEqual ("itsAFive.E2", cl.ClassName.ToFullyQualifiedName (), "wrong name");
+		}
+
+		[Test]
+		public void TestReflectionMetadataBuiltin ()
+		{
+			var tld = Decomposer.Decompose ("_$s8itsAFive2E2OMB", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var mdd = tld as TLMetadataDescriptor;
+			Assert.IsNotNull (mdd, "not a metadata descriptor");
+			Assert.IsTrue (mdd.IsBuiltIn, "not built in");
+			var cl = mdd.OfType as SwiftClassType;
+			Assert.IsNotNull (cl, "not a class");
+			Assert.AreEqual ("itsAFive.E2", cl.ClassName.ToFullyQualifiedName (), "wrong name");
+		}
 	}
 }
