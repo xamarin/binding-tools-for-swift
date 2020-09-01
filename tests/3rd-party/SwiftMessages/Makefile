@@ -19,7 +19,7 @@ HASH=6b348edcc4b1a167f2961f3f921d274792272c77
 # FRAMEWORKNAME=name
 #
 # If the project fails to build/bind, set IGNORED=1
-IGNORED=1
+# IGNORED=1
 # Changing IGNORED? Consider updating the README.txt file and any Git issues
 # referenced therein.
 
