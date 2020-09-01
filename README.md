@@ -14,7 +14,7 @@ The packaging of BTFS is still evolving, and we expect to provide a binding proj
 
 ## Caution ❗
 
-For contributing Binding-Tool-For-Swift, your XCode version required 12!
+For contributing Binding-Tool-For-Swift, your Xcode version required 12!
 
 ## Current Status
 
