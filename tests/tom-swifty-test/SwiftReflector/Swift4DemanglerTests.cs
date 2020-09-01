@@ -1646,5 +1646,38 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (cl, "not a class");
 			Assert.AreEqual ("Swift.Equatable", cl.ClassName.ToFullyQualifiedName (), "wrong name");
 		}
+
+		[Test]
+		public void TestAssociatedTypeDescriptor0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s12RowValueType6Eureka04RuleC0PTl", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var atdesc = tld as TLAssociatedTypeDescriptor;
+			Assert.IsNotNull (atdesc, "not an associated type desc");
+			Assert.AreEqual ("RowValueType", atdesc.AssociatedTypeName.Name, "wrong associated type name");
+			Assert.AreEqual ("Eureka.RuleType", atdesc.Class.ClassName.ToFullyQualifiedName (), "protocol name mismatch");
+		}
+
+		[Test]
+		public void TestAssociatedTypeDescriptor1 ()
+		{
+			var tld = Decomposer.Decompose ("_$s23PresentedControllerType6Eureka012PresenterRowC0PTl", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var atdesc = tld as TLAssociatedTypeDescriptor;
+			Assert.IsNotNull (atdesc, "not an associated type desc");
+			Assert.AreEqual ("PresentedControllerType", atdesc.AssociatedTypeName.Name, "wrong associated type name");
+			Assert.AreEqual ("Eureka.PresenterRowType", atdesc.Class.ClassName.ToFullyQualifiedName (), "protocol name mismatch");
+		}
+
+		[Test]
+		public void TestAssociatedTypeDescriptor2 ()
+		{
+			var tld = Decomposer.Decompose ("_$s9InlineRow6Eureka0aB4TypePTl", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var atdesc = tld as TLAssociatedTypeDescriptor;
+			Assert.IsNotNull (atdesc, "not an associated type desc");
+			Assert.AreEqual ("InlineRow", atdesc.AssociatedTypeName.Name, "wrong associated type name");
+			Assert.AreEqual ("Eureka.InlineRowType", atdesc.Class.ClassName.ToFullyQualifiedName (), "protocol name mismatch");
+		}
 	}
 }
