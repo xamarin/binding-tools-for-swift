@@ -12,6 +12,10 @@ Check out our [quickstart guide](QUICKSTART.md) to build and run the tool locall
 
 The packaging of BTFS is still evolving, and we expect to provide a binding project style interface to make this process easier in the future.
 
+## Caution ❗
+
+For contributing Binding-Tool-For-Swift, your XCode version required 12!
+
 ## Current Status
 
 ### What Binds?
