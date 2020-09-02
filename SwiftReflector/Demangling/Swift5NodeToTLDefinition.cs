@@ -819,6 +819,8 @@ namespace SwiftReflector.Demangling {
 				return ConvertProtocolRequirementsBaseDescriptor (node);
 			case NodeKind.BaseConformanceDescriptor:
 				return ConvertBaseConformanceDescriptor (node);
+			case NodeKind.AssociatedTypeDescriptor:
+				return ConvertAssocatedTypeDescriptor (node);
 			default:
 				return null;
 			}
@@ -1145,6 +1147,15 @@ namespace SwiftReflector.Demangling {
 			if (requirement == null)
 				return null;
 			return new TLBaseConformanceDescriptor (mangledName, protocol.ClassName.Module, protocol, requirement, offset);
+		}
+
+		TLAssociatedTypeDescriptor ConvertAssocatedTypeDescriptor (Node node)
+		{
+			var name = new SwiftName (node.Children [0].Text, false);
+			var protocol = ConvertToSwiftType (node.Children [0].Children [0], false, null) as SwiftClassType;
+			if (protocol == null)
+				return null;
+			return new TLAssociatedTypeDescriptor (mangledName, protocol.ClassName.Module, protocol, name, offset);
 		}
 
 

@@ -232,5 +232,15 @@ namespace SwiftReflector.Demangling {
 		}
 		public SwiftClassType ProtocolRequirement { get; private set; }
 	}
+
+	public class TLAssociatedTypeDescriptor : TLClassElem {
+		public TLAssociatedTypeDescriptor (string mangledName, SwiftName module, SwiftClassType protocol, SwiftName associatedTypeName, ulong offset)
+			: base (CoreCompoundType.AssociatedTypeDescriptor, mangledName, module, protocol, offset)
+		{
+			AssociatedTypeName = associatedTypeName;
+		}
+
+		public SwiftName AssociatedTypeName { get; private set; }
+	}
 }
 
