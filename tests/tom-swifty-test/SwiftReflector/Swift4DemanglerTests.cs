@@ -1679,5 +1679,55 @@ namespace SwiftReflector.Demangling {
 			Assert.AreEqual ("InlineRow", atdesc.AssociatedTypeName.Name, "wrong associated type name");
 			Assert.AreEqual ("Eureka.InlineRowType", atdesc.Class.ClassName.ToFullyQualifiedName (), "protocol name mismatch");
 		}
+
+		[Test]
+		public void TestMoreMethodDescriptor0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s14ClassWrapTests10GarbleWCRCCACycfCTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var md = tld as TLMethodDescriptor;
+			Assert.IsNotNull (md, "not a method descriptor");
+			Assert.AreEqual ("GarbleWCRC", md.Name.Name, "name mismatch");
+		}
+
+		[Test]
+		public void TestMoreMethodDescriptor1 ()
+		{
+			var tld = Decomposer.Decompose ("_$s14ClassWrapTests11MontyWMMIntCACycfCTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var md = tld as TLMethodDescriptor;
+			Assert.IsNotNull (md, "not a method descriptor");
+			Assert.AreEqual ("MontyWMMInt", md.Name.Name, "name mismatch");
+		}
+
+		[Test]
+		public void TestMoreMethodDescriptor2 ()
+		{
+			var tld = Decomposer.Decompose ("_$s14ClassWrapTests11MontyWSMIntCACycfCTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var md = tld as TLMethodDescriptor;
+			Assert.IsNotNull (md, "not a method descriptor");
+			Assert.AreEqual ("MontyWSMInt", md.Name.Name, "name mismatch");
+		}
+
+		[Test]
+		public void TestMoreMethodDescriptor3 ()
+		{
+			var tld = Decomposer.Decompose ("_$s14ClassWrapTests11MontyWSPIntCACycfCTq", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var md = tld as TLMethodDescriptor;
+			Assert.IsNotNull (md, "not a method descriptor");
+			Assert.AreEqual ("MontyWSPInt", md.Name.Name, "name mismatch");
+		}
+
+		[Test]
+		public void TestMorePropertyDescriptor0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s14ClassWrapTests11MontyWSPIntC3valSivpMV", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var pd = tld as TLPropertyDescriptor;
+			Assert.IsNotNull (pd, "not a property descriptor");
+			Assert.AreEqual ("val", pd.Name.Name, "name mismatch");
+		}
 	}
 }
