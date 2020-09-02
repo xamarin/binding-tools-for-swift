@@ -25,7 +25,7 @@ namespace SwiftRuntimeLibrary {
 					DictPI.NewDict (new IntPtr(retvalData), capacity, StructMarshal.Marshaler.Metatypeof (typeof (T)),
 					                StructMarshal.Marshaler.Metatypeof (typeof (U)),
 					                StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
-					StructMarshal.Marshaler.RetainNominalData (typeof (SwiftDictionary<T, U>), retvalData, SwiftData.Length);
+					StructMarshal.Marshaler.NominalInitializeWithCopy (typeof (SwiftDictionary<T, U>), retvalData, SwiftData.Length);
 				}
 			}
 		}
@@ -132,7 +132,7 @@ namespace SwiftRuntimeLibrary {
 			unsafe {
 				fixed (byte* thisPtr = SwiftData) {
 					var thisIntPtr = new IntPtr (thisPtr);
-					StructMarshal.Marshaler.RetainNominalData (typeof (SwiftDictionary<T, U>), thisIntPtr, SwiftData.Length);
+					StructMarshal.Marshaler.NominalInitializeWithCopy (typeof (SwiftDictionary<T, U>), thisIntPtr, SwiftData.Length);
 					byte* keyBuffer = stackalloc byte [StructMarshal.Marshaler.Sizeof (typeof (T))];
 					var keyBufferPtr = new IntPtr (keyBuffer);
 					StructMarshal.Marshaler.ToSwift (typeof (T), key, keyBufferPtr);
@@ -167,7 +167,7 @@ namespace SwiftRuntimeLibrary {
 			unsafe {
 				fixed (byte* thisPtr = SwiftData) {
 					IntPtr thisIntPtr = new IntPtr (thisPtr);
-					StructMarshal.Marshaler.RetainNominalData (typeof (SwiftDictionary<T, U>), thisIntPtr, SwiftData.Length);
+					StructMarshal.Marshaler.NominalInitializeWithCopy (typeof (SwiftDictionary<T, U>), thisIntPtr, SwiftData.Length);
 					DictPI.DictClear (thisIntPtr, StructMarshal.Marshaler.Metatypeof (typeof (T)),
 							 StructMarshal.Marshaler.Metatypeof (typeof (U)),
 							 StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
@@ -188,7 +188,7 @@ namespace SwiftRuntimeLibrary {
 			unsafe {
 				fixed (byte* thisPtr = SwiftData) {
 					var thisIntPtr = new IntPtr (thisPtr);
-					StructMarshal.Marshaler.RetainNominalData (typeof (SwiftDictionary<T, U>), thisIntPtr, SwiftData.Length);
+					StructMarshal.Marshaler.NominalInitializeWithCopy (typeof (SwiftDictionary<T, U>), thisIntPtr, SwiftData.Length);
 					byte* keyBuffer = stackalloc byte [StructMarshal.Marshaler.Sizeof (typeof (T))];
 					var keyBufferPtr = new IntPtr (keyBuffer);
 					StructMarshal.Marshaler.ToSwift (typeof (T), key, keyBufferPtr);
@@ -233,7 +233,7 @@ namespace SwiftRuntimeLibrary {
 
 		void Dispose (bool disposing)
 		{
-			StructMarshal.Marshaler.ReleaseNominalData (this);
+			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 

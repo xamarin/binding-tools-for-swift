@@ -3566,7 +3566,7 @@ namespace SwiftReflector {
 			//		{
 			//			fixed (byte* p = SwiftData)
 			//			{
-			//				StructMarshal.Marshaler.ReleaseNominalData(typeof(this), p);
+			//				StructMarshal.Marshaler.NominalDestroy(typeof(this), p);
 			//			}
 			//			SwiftData = null;
 			//		}
@@ -3583,7 +3583,7 @@ namespace SwiftReflector {
 			var fixedBody = new CSCodeBlock ();
 			var fixedBlock = new CSFixedCodeBlock (CSSimpleType.ByteStar, bytestarID, swiftDataID, fixedBody);
 			use.AddIfNotPresent (typeof (StructMarshal));
-			fixedBlock.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ReleaseNominalData", false,
+			fixedBlock.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.NominalDestroy", false,
 			                                               new CSFunctionCall ("typeof", false, new CSIdentifier (cl.ToCSType ().ToString ())),
 			                                               bytestarID));
 

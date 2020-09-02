@@ -76,7 +76,7 @@ namespace SwiftRuntimeLibrary {
 			if (SwiftData != null) {
 				unsafe {
 					fixed (byte* p = SwiftData) {
-						StructMarshal.Marshaler.ReleaseNominalData (typeof (UnsafeRawBufferPointer), p);
+						StructMarshal.Marshaler.NominalDestroy (typeof (UnsafeRawBufferPointer), p);
 					}
 					SwiftData = null;
 				}

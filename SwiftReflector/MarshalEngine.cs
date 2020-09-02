@@ -1092,7 +1092,7 @@ namespace SwiftReflector {
 				// StructMarshal.Marshaler.ToSwiftTuple(typeof(pType), pName, tupleIntPtr, map)
 				// ...
 				// SomePInvoke(... tupleIntPtr ...)
-				// StructMarshal.Marshaler.ReleaseNominalData (typeof (pType), tupleIntPtr);
+				// StructMarshal.Marshaler.NominalDestroy (typeof (pType), tupleIntPtr);
 				// only injected if the argument is by reference
 				// p.Name = StructMarshal.Marshaler.ToNetTuple<t1, t2, t3, t4>(tupleIntPtr, map);
 				// }
@@ -1127,7 +1127,7 @@ namespace SwiftReflector {
 				preMarshalCode.Add (pPtrDecl);
 
 				if (!MarshalingConstructor) {
-					var releaseNominal = CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ReleaseNominalData", false, p.CSType.Typeof (), pPtr);
+					var releaseNominal = CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.NominalDestroy", false, p.CSType.Typeof (), pPtr);
 					postMarshalCode.Add (releaseNominal);
 				}
 

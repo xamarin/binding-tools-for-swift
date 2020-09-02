@@ -54,7 +54,7 @@ namespace SwiftRuntimeLibrary {
 
 		void Dispose (bool disposing)
 		{
-			StructMarshal.Marshaler.ReleaseNominalData (this);
+			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		public static UnsafeMutablePointer<T> Allocate(nint capacity)
