@@ -59,17 +59,17 @@ namespace XmlReflectionTests {
 		{
 			string code = String.Format ("public func foo() -> {0} {{ return {1} }}", declaredType, value);
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.Functions.Count ());
+			Assert.IsNotNull (module, "no module");
+			Assert.AreEqual (1, module.Functions.Count (), "wrong func count");
 			FunctionDeclaration func = module.Functions.First ();
-			Assert.IsNotNull (func);
-			Assert.AreEqual (func.Name, "foo");
-			Assert.AreEqual (expectedType, func.ReturnTypeName);
-			Assert.AreEqual (1, func.ParameterLists.Count);
-			Assert.AreEqual (0, func.ParameterLists [0].Count);
+			Assert.IsNotNull (func, "no func");
+			Assert.AreEqual (func.Name, "foo", "bad name");
+			Assert.AreEqual (expectedType, func.ReturnTypeName, "wrong return type");
+			Assert.AreEqual (1, func.ParameterLists.Count, "wrong parameter list count");
+			Assert.AreEqual (0, func.ParameterLists [0].Count, "wrong parameter count");
 			NamedTypeSpec ns = func.ReturnTypeSpec as NamedTypeSpec;
-			Assert.NotNull (ns);
-			Assert.AreEqual (expectedType, ns.Name);
+			Assert.NotNull (ns, "not a named type spec");
+			Assert.AreEqual (expectedType, ns.Name, "wrong name");
 		}
 
 		[Test]
@@ -107,20 +107,20 @@ namespace XmlReflectionTests {
 		public void TestEmptyClass ()
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { } ", "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.AreEqual (1, module.Classes.Count ());
-			Assert.AreEqual (0, module.Functions.Count ());
-			Assert.AreEqual (0, module.Structs.Count ());
-			Assert.AreEqual ("Foo", module.Classes.First ().Name);
+			Assert.AreEqual (1, module.Classes.Count (), "wrong classes count");
+			Assert.AreEqual (0, module.Functions.Count (), "wrong function count");
+			Assert.AreEqual (0, module.Structs.Count (), "wrong structs count");
+			Assert.AreEqual ("Foo", module.Classes.First ().Name, "wrong name");
 		}
 
 		[Test]
 		public void TestEmptyStruct ()
 		{
 			ModuleDeclaration module = ReflectToModules ("public struct Foo { } ", "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.AreEqual (0, module.Classes.Count ());
-			Assert.AreEqual (0, module.Functions.Count ());
-			Assert.AreEqual (1, module.Structs.Count ());
-			Assert.AreEqual ("Foo", module.Structs.First ().Name);
+			Assert.AreEqual (0, module.Classes.Count (), "wrong classes count");
+			Assert.AreEqual (0, module.Functions.Count (), "wrong function count");
+			Assert.AreEqual (1, module.Structs.Count (), "wrong structs count");
+			Assert.AreEqual ("Foo", module.Structs.First ().Name, "wrong name");
 		}
 
 		[Test]
@@ -128,17 +128,17 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public struct Foo { public var X:Int;\n public var Y:Bool; public var Z: Float; }", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "no module");
 			StructDeclaration theStruct = module.Structs.FirstOrDefault (s => s.Name == "Foo");
-			Assert.NotNull (theStruct);
+			Assert.NotNull (theStruct, "no struct");
 			List<PropertyDeclaration> props = theStruct.Members.OfType<PropertyDeclaration> ().ToList ();
-			Assert.AreEqual (3, props.Count);
-			Assert.AreEqual ("X", props [0].Name);
-			Assert.AreEqual ("Y", props [1].Name);
-			Assert.AreEqual ("Z", props [2].Name);
-			Assert.AreEqual ("Swift.Int", props [0].TypeName);
-			Assert.AreEqual ("Swift.Bool", props [1].TypeName);
-			Assert.AreEqual ("Swift.Float", props [2].TypeName);
+			Assert.AreEqual (3, props.Count, "wrong props count");
+			Assert.AreEqual ("X", props [0].Name, "not x");
+			Assert.AreEqual ("Y", props [1].Name, "not y");
+			Assert.AreEqual ("Z", props [2].Name, "not z");
+			Assert.AreEqual ("Swift.Int", props [0].TypeName, "not int");
+			Assert.AreEqual ("Swift.Bool", props [1].TypeName, "not bool");
+			Assert.AreEqual ("Swift.Float", props [2].TypeName, "not float");
 		}
 
 		[Test]
@@ -146,15 +146,15 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "not module");
 			ClassDeclaration theClass = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.NotNull (theClass);
+			Assert.NotNull (theClass, "not class");
 			FunctionDeclaration cons = theClass.Members.OfType<FunctionDeclaration> ().FirstOrDefault (s => s.Name == ".ctor");
-			Assert.NotNull (cons);
-			Assert.AreEqual (2, cons.ParameterLists.Count);
-			Assert.AreEqual (1, cons.ParameterLists [1].Count);
-			Assert.AreEqual ("Swift.Int", cons.ParameterLists [1] [0].TypeName);
-			Assert.AreEqual ("y", cons.ParameterLists [1] [0].PublicName);
+			Assert.NotNull (cons, "no constructor");
+			Assert.AreEqual (2, cons.ParameterLists.Count, "wrong parameterlist count");
+			Assert.AreEqual (1, cons.ParameterLists [1].Count, "wrong arg count");
+			Assert.AreEqual ("Swift.Int", cons.ParameterLists [1] [0].TypeName, "wrong type");
+			Assert.AreEqual ("y", cons.ParameterLists [1] [0].PublicName, "wrong name");
 		}
 
 		[Test]
@@ -162,11 +162,11 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "not module");
 			ClassDeclaration theClass = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.NotNull (theClass);
+			Assert.NotNull (theClass, "not a class");
 			FunctionDeclaration dtor = theClass.Members.OfType<FunctionDeclaration> ().FirstOrDefault (s => s.Name == ".dtor");
-			Assert.NotNull (dtor);
+			Assert.NotNull (dtor, "not a destructor");
 		}
 
 		[Test]
@@ -174,9 +174,9 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnTuple()->(Int,Float) { return (0, 3.0); }", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnTuple");
-			Assert.AreEqual ("(Swift.Int, Swift.Float)", func.ReturnTypeName);
+			Assert.AreEqual ("(Swift.Int, Swift.Float)", func.ReturnTypeName, "wrong type");
 		}
 
 		[Test]
@@ -184,9 +184,9 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnDict()->[Int:Float] { return [Int:Float](); }", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnDict");
-			Assert.AreEqual ("Swift.Dictionary<Swift.Int, Swift.Float>", func.ReturnTypeName);
+			Assert.AreEqual ("Swift.Dictionary<Swift.Int, Swift.Float>", func.ReturnTypeName, "wrong type");
 		}
 
 
@@ -196,10 +196,10 @@ namespace XmlReflectionTests {
 			ModuleDeclaration module = ReflectToModules ("public enum MathError : Error {\ncase divZero\n}\n" +
 								    "public func returnInt(a:Int) throws ->Int { if a < 1\n{\n throw MathError.divZero\n }\n else {\n return a\n}\n}", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnInt");
-			Assert.AreEqual ("Swift.Int", func.ReturnTypeName);
-			Assert.AreEqual (true, func.HasThrows);
+			Assert.AreEqual ("Swift.Int", func.ReturnTypeName, "wrong type");
+			Assert.AreEqual (true, func.HasThrows, "doesn't throw");
 		}
 
 
@@ -209,9 +209,9 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnIntOpt()->Int? { return 3; }", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnIntOpt");
-			Assert.AreEqual ("Swift.Optional<Swift.Int>", func.ReturnTypeName);
+			Assert.AreEqual ("Swift.Optional<Swift.Int>", func.ReturnTypeName, "wrong type");
 		}
 
 		[Test]
@@ -219,9 +219,9 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public var aGlobal:Bool = true", "SomeModule")
 				.Find (m => m.Name == "SomeModule");
-			Assert.NotNull (module);
+			Assert.NotNull (module, "not module");
 			PropertyDeclaration decl = module.TopLevelProperties.FirstOrDefault (f => f.Name == "aGlobal");
-			Assert.IsNotNull (decl);
+			Assert.IsNotNull (decl, "no declaration");
 		}
 
 		[Test]
@@ -229,14 +229,14 @@ namespace XmlReflectionTests {
 		{
 			string code = "public enum foo { case a, b, c, d }";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.AllEnums.Count);
+			Assert.IsNotNull (module, "not a module");
+			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
-			Assert.AreEqual (edecl.Name, "foo");
-			Assert.AreEqual (4, edecl.Elements.Count);
-			Assert.IsTrue (edecl.IsTrivial);
-			Assert.IsTrue (edecl.IsHomogenous);
-			Assert.IsFalse (edecl.HasRawType);
+			Assert.AreEqual (edecl.Name, "foo", "wrong name");
+			Assert.AreEqual (4, edecl.Elements.Count, "wrong element count");
+			Assert.IsTrue (edecl.IsTrivial, "wrong triviality");
+			Assert.IsTrue (edecl.IsHomogenous, "wrong homogeneity");
+			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
 		[Test]
@@ -244,18 +244,18 @@ namespace XmlReflectionTests {
 		{
 			string code = "public enum foo { case a(Int), b(Int), c(Int), d(Int) }";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.AllEnums.Count);
+			Assert.IsNotNull (module, "not a module");
+			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
-			Assert.AreEqual (edecl.Name, "foo");
-			Assert.AreEqual (4, edecl.Elements.Count);
+			Assert.AreEqual (edecl.Name, "foo", "wrong name");
+			Assert.AreEqual (4, edecl.Elements.Count, "wrong element count");
 			foreach (EnumElement elem in edecl.Elements) {
-				Assert.IsTrue (elem.HasType);
+				Assert.IsTrue (elem.HasType, "no type");
 			}
-			Assert.IsFalse (edecl.IsTrivial);
-			Assert.IsTrue (edecl.IsIntegral);
-			Assert.IsTrue (edecl.IsHomogenous);
-			Assert.IsFalse (edecl.HasRawType);
+			Assert.IsFalse (edecl.IsTrivial, "wrong triviality");
+			Assert.IsTrue (edecl.IsIntegral, "wrong integral");
+			Assert.IsTrue (edecl.IsHomogenous, "wrong homogeneity");
+			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
 		[Test]
@@ -263,18 +263,18 @@ namespace XmlReflectionTests {
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Int), d(Int) }";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.AllEnums.Count);
+			Assert.IsNotNull (module, "not a module");
+			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
-			Assert.AreEqual (edecl.Name, "foo");
-			Assert.AreEqual (4, edecl.Elements.Count);
+			Assert.AreEqual (edecl.Name, "foo", "wrong name");
+			Assert.AreEqual (4, edecl.Elements.Count, "wrong element count");
 			foreach (EnumElement elem in edecl.Elements) {
-				Assert.IsTrue (elem.HasType);
+				Assert.IsTrue (elem.HasType, "no type");
 			}
-			Assert.IsFalse (edecl.IsTrivial);
-			Assert.IsTrue (edecl.IsIntegral);
-			Assert.IsFalse (edecl.IsHomogenous);
-			Assert.IsFalse (edecl.HasRawType);
+			Assert.IsFalse (edecl.IsTrivial, "wrong triviality");
+			Assert.IsTrue (edecl.IsIntegral, "wrong integral");
+			Assert.IsFalse (edecl.IsHomogenous, "wrong homogeneity");
+			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
 		[Test]
@@ -282,15 +282,15 @@ namespace XmlReflectionTests {
 		{
 			string code = "public enum foo { case a(Int), b, c, d }";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.AllEnums.Count);
+			Assert.IsNotNull (module, "not a module");
+			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
-			Assert.AreEqual (edecl.Name, "foo");
-			Assert.AreEqual (4, edecl.Elements.Count);
-			Assert.IsFalse (edecl.IsTrivial);
-			Assert.IsTrue (edecl.IsIntegral);
-			Assert.IsFalse (edecl.IsHomogenous);
-			Assert.IsFalse (edecl.HasRawType);
+			Assert.AreEqual (edecl.Name, "foo", "wrong name");
+			Assert.AreEqual (4, edecl.Elements.Count, "wrong element count");
+			Assert.IsFalse (edecl.IsTrivial, "wrong triviality");
+			Assert.IsTrue (edecl.IsIntegral, "wrong integral");
+			Assert.IsFalse (edecl.IsHomogenous, "wrong homogeneity");
+			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
 
@@ -301,16 +301,16 @@ namespace XmlReflectionTests {
 		{
 			string code = "public enum foo:Int { case a=1, b, c, d }";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.AllEnums.Count);
+			Assert.IsNotNull (module, "not a module");
+			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
-			Assert.AreEqual (edecl.Name, "foo");
-			Assert.AreEqual (4, edecl.Elements.Count);
-			Assert.IsFalse (edecl.IsTrivial);
-			Assert.IsTrue (edecl.IsIntegral);
-			Assert.IsTrue (edecl.IsHomogenous);
-			Assert.IsTrue (edecl.HasRawType);
-			Assert.AreEqual ("Swift.Int", edecl.RawTypeName);
+			Assert.AreEqual (edecl.Name, "foo", "wrong name");
+			Assert.AreEqual (4, edecl.Elements.Count, "wrong element count");
+			Assert.IsFalse (edecl.IsTrivial, "wrong triviality");
+			Assert.IsTrue (edecl.IsIntegral, "wrong integral");
+			Assert.IsTrue (edecl.IsHomogenous, "wrong homogeneity");
+			Assert.IsTrue (edecl.HasRawType, "wrong has raw type");
+			Assert.AreEqual ("Swift.Int", edecl.RawTypeName, "wrong raw type name");
 		}
 
 		[Test]
@@ -318,16 +318,16 @@ namespace XmlReflectionTests {
 		{
 			string code = "public enum foo:Int { case a, b, c, d }";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.AllEnums.Count);
+			Assert.IsNotNull (module, "not a module");
+			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
-			Assert.AreEqual (edecl.Name, "foo");
-			Assert.AreEqual (4, edecl.Elements.Count);
-			Assert.IsFalse (edecl.IsTrivial);
-			Assert.IsTrue (edecl.IsIntegral);
-			Assert.IsTrue (edecl.IsHomogenous);
-			Assert.IsTrue (edecl.HasRawType);
-			Assert.AreEqual ("Swift.Int", edecl.RawTypeName);
+			Assert.AreEqual (edecl.Name, "foo", "wrong name");
+			Assert.AreEqual (4, edecl.Elements.Count, "wrong element count");
+			Assert.IsFalse (edecl.IsTrivial, "wrong triviality");
+			Assert.IsTrue (edecl.IsIntegral, "wrong integral");
+			Assert.IsTrue (edecl.IsHomogenous, "wrong homogeneity");
+			Assert.IsTrue (edecl.HasRawType, "wrong has raw type");
+			Assert.AreEqual ("Swift.Int", edecl.RawTypeName, "wrong raw type name");
 		}
 
 		[Test]
@@ -335,20 +335,20 @@ namespace XmlReflectionTests {
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Bool), d(Float) }";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
-			Assert.AreEqual (1, module.AllEnums.Count);
+			Assert.IsNotNull (module, "not a module");
+			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
-			Assert.AreEqual (edecl.Name, "foo");
-			Assert.AreEqual (4, edecl.Elements.Count);
-			Assert.IsFalse (edecl.IsTrivial);
-			Assert.IsFalse (edecl.IsIntegral);
-			Assert.IsFalse (edecl.IsHomogenous);
-			Assert.IsFalse (edecl.HasRawType);
+			Assert.AreEqual (edecl.Name, "foo", "wrong name");
+			Assert.AreEqual (4, edecl.Elements.Count, "wrong element count");
+			Assert.IsFalse (edecl.IsTrivial, "wrong triviality");
+			Assert.IsFalse (edecl.IsIntegral, "wrong integral");
+			Assert.IsFalse (edecl.IsHomogenous, "wrong homogeneity");
+			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 
-			Assert.AreEqual ("Swift.UInt", edecl ["a"].TypeName);
-			Assert.AreEqual ("Swift.Int", edecl ["b"].TypeName);
-			Assert.AreEqual ("Swift.Bool", edecl ["c"].TypeName);
-			Assert.AreEqual ("Swift.Float", edecl ["d"].TypeName);
+			Assert.AreEqual ("Swift.UInt", edecl ["a"].TypeName, "wrong raw type name uint");
+			Assert.AreEqual ("Swift.Int", edecl ["b"].TypeName, "wrong raw type name int");
+			Assert.AreEqual ("Swift.Bool", edecl ["c"].TypeName, "wrong raw type name bool");
+			Assert.AreEqual ("Swift.Float", edecl ["d"].TypeName, "wrong raw type name float");
 		}
 
 
@@ -357,7 +357,7 @@ namespace XmlReflectionTests {
 		{
 			string code = "public func optInt(x:Int) -> Int? { if (x >= 0) { return x; }\nreturn nil; }\n";
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 		}
 
 		[Test]
@@ -367,17 +367,17 @@ namespace XmlReflectionTests {
 				"public typealias Bar = Foo\n" +
 				"public func aliased(a: Bar, b: (Bar)->()) {\n}\n";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "aliased");
-			Assert.IsNotNull (func);
+			Assert.IsNotNull (func, "no func");
 			var named = func.ParameterLists [0] [0].TypeSpec as NamedTypeSpec;
-			Assert.IsNotNull (named);
-			Assert.AreEqual ("Swift.OpaquePointer", named.Name);
+			Assert.IsNotNull (named, "not a named type spec");
+			Assert.AreEqual ("Swift.OpaquePointer", named.Name, "wrong name");
 			var closType = func.ParameterLists [0] [1].TypeSpec as ClosureTypeSpec;
-			Assert.IsNotNull (closType);
+			Assert.IsNotNull (closType, "not a closure");
 			named = closType.Arguments as NamedTypeSpec;
-			Assert.IsNotNull (named);
-			Assert.AreEqual ("Swift.OpaquePointer", named.Name);
+			Assert.IsNotNull (named, "not a named type spec 2");
+			Assert.AreEqual ("Swift.OpaquePointer", named.Name, "wrong name 2");
 
 		}
 
@@ -403,11 +403,11 @@ namespace XmlReflectionTests {
 				"@available(*, deprecated, message: \"no reason\")" +
 				"public class Foo { }";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
-			Assert.IsNotNull (cl);
-			Assert.IsTrue (cl.IsDeprecated);
-			Assert.IsFalse (cl.IsUnavailable);
+			Assert.IsNotNull (cl, "no class");
+			Assert.IsTrue (cl.IsDeprecated, "not deprecated");
+			Assert.IsFalse (cl.IsUnavailable, "available");
 		}
 
 		[Test]
@@ -432,9 +432,9 @@ namespace XmlReflectionTests {
 				"@available(swift, obsoleted:3.0, message: \"no reason\")" +
 				"public class Foo { }";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
-			Assert.IsNotNull (cl);
+			Assert.IsNotNull (cl, "no class");
 			Assert.IsFalse (cl.IsDeprecated, "deprecated");
 			Assert.IsTrue (cl.IsUnavailable, "unavailable");
 		}
@@ -447,11 +447,11 @@ namespace XmlReflectionTests {
 				"@available(*, unavailable)" +
 				"public func foo() { }";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (func);
-			Assert.IsFalse (func.IsDeprecated);
-			Assert.IsTrue (func.IsUnavailable);
+			Assert.IsNotNull (func, "no func");
+			Assert.IsFalse (func.IsDeprecated, "deprecated");
+			Assert.IsTrue (func.IsUnavailable, "unavailanle");
 		}
 
 
@@ -462,11 +462,11 @@ namespace XmlReflectionTests {
 				"@available(*, unavailable)" +
 				"public class Foo { }";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
-			Assert.IsNotNull (cl);
-			Assert.IsFalse (cl.IsDeprecated);
-			Assert.IsTrue (cl.IsUnavailable);
+			Assert.IsNotNull (cl, "class");
+			Assert.IsFalse (cl.IsDeprecated, "deprecated");
+			Assert.IsTrue (cl.IsUnavailable, "unavailanle");
 		}
 
 
@@ -482,14 +482,14 @@ namespace XmlReflectionTests {
 				"       }\n" +
 				"}\n";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			var st = module.Structs.FirstOrDefault (f => f.Name == "CommandEvaluation");
-			Assert.IsNotNull (st);
-			Assert.IsFalse (st.IsDeprecated);
-			Assert.IsFalse (st.IsUnavailable);
+			Assert.IsNotNull (st, "no struct");
+			Assert.IsFalse (st.IsDeprecated, "deprecated");
+			Assert.IsFalse (st.IsUnavailable, "unavailable");
 			var func = st.AllMethodsNoCDTor ().Where (fn => fn.Name == "retrieveParameter").FirstOrDefault ();
-			Assert.IsNotNull (func);
-			Assert.IsTrue (func.IsDeprecated);
+			Assert.IsNotNull (func, "no func");
+			Assert.IsTrue (func.IsDeprecated, "deprecated");
 		}
 
 		[Test]
@@ -501,11 +501,11 @@ namespace XmlReflectionTests {
     				"    public static var nullJSON: Int { return 3 }\n" +
 				"}\n";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			var st = module.Structs.FirstOrDefault (f => f.Name == "JSON");
 			var prop = st.AllProperties ().Where (fn => fn.Name == "nullJSON").FirstOrDefault ();
-			Assert.IsNotNull (prop);
-			Assert.IsTrue (prop.IsUnavailable);
+			Assert.IsNotNull (prop, "no prop");
+			Assert.IsTrue (prop.IsUnavailable, "unavailable");
 		}
 
 
@@ -517,7 +517,7 @@ namespace XmlReflectionTests {
 				"    public var millisecond: Double  { return self / 1000 }\n" +
 				"}\n";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.Extensions.Count, "Expected an extension");
 			var ext = module.Extensions [0];
 			Assert.AreEqual ("Swift.Double", ext.ExtensionOnTypeName, $"Incorrect type name {ext.ExtensionOnTypeName}");
@@ -532,7 +532,7 @@ namespace XmlReflectionTests {
 				"    public func DoubleIt() -> Double  { return self * 2; }\n" +
 				"}\n";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.Extensions.Count, "Expected an extension");
 			var ext = module.Extensions [0];
 			Assert.AreEqual ("Swift.Double", ext.ExtensionOnTypeName, $"Incorrect type name {ext.ExtensionOnTypeName}");
@@ -552,7 +552,7 @@ namespace XmlReflectionTests {
 				"    public func printIt() { print(self) }\n" +
 				"}\n";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module);
+			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.Extensions.Count, "Expected an extension");
 			var ext = module.Extensions [0];
 			Assert.AreEqual ("Swift.Double", ext.ExtensionOnTypeName, $"Incorrect type name {ext.ExtensionOnTypeName}");
@@ -982,7 +982,7 @@ public func joe (a: FooA & FooB) {
 			var parm = func.ParameterLists [0] [0];
 			var protoList = parm.TypeSpec as ProtocolListTypeSpec;
 			Assert.IsNotNull (protoList, "not a proto list");
-			Assert.AreEqual (2, protoList.Protocols.Count);
+			Assert.AreEqual (2, protoList.Protocols.Count, "wrong protocol list count");
 		}
 
 		[Test]
@@ -1066,7 +1066,7 @@ public protocol HoldsThing {
 			Assert.AreEqual (0, assoc.ConformingProtocols.Count, "wrong number of conf");
 			Assert.IsNull (assoc.SuperClass, "non-null superclass");
 			Assert.IsNotNull (assoc.DefaultType, "null default type");
-			Assert.AreEqual ("Swift.Int", assoc.DefaultType.ToString ());
+			Assert.AreEqual ("Swift.Int", assoc.DefaultType.ToString (), "wrong type");
 		}
 
 		[Test]
@@ -1086,7 +1086,7 @@ public protocol HoldsThing {
 			var assoc = protocol.AssociatedTypes [0];
 			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
 			Assert.AreEqual (1, assoc.ConformingProtocols.Count, "wrong number of conf");
-			Assert.AreEqual ("Swift.IteratorProtocol", assoc.ConformingProtocols [0].ToString ());
+			Assert.AreEqual ("Swift.IteratorProtocol", assoc.ConformingProtocols [0].ToString (), "wrong protocol name");
 			Assert.IsNull (assoc.SuperClass, "non-null superclass");
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
@@ -1114,7 +1114,7 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Thing", assoc.Name, "wrong name");
 			Assert.AreEqual (0, assoc.ConformingProtocols.Count, "wrong number of conf");
 			Assert.IsNotNull (assoc.SuperClass, "null superclass");
-			Assert.AreEqual ("SomeModule.Foo", assoc.SuperClass.ToString ());
+			Assert.AreEqual ("SomeModule.Foo", assoc.SuperClass.ToString (), "wrong superclass name");
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
@@ -1147,7 +1147,7 @@ public protocol HoldsThing {
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.SomeFunc () -> ()", output);
+			Assert.AreEqual ("Public SomeModule.SomeFunc () -> ()", output, "wrong signature");
 		}
 
 		[Test]
@@ -1159,7 +1159,7 @@ public protocol HoldsThing {
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.SomeFunc () -> Swift.Int", output);
+			Assert.AreEqual ("Public SomeModule.SomeFunc () -> Swift.Int", output, "wrong signature");
 		}
 
 		[Test]
@@ -1171,7 +1171,7 @@ public protocol HoldsThing {
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.SomeFunc () throws -> Swift.Int", output);
+			Assert.AreEqual ("Public SomeModule.SomeFunc () throws -> Swift.Int", output, "wrong signature");
 		}
 
 		[Test]
@@ -1183,7 +1183,7 @@ public protocol HoldsThing {
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int) -> Swift.Int", output);
+			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
 		[Test]
@@ -1195,7 +1195,7 @@ public protocol HoldsThing {
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.SomeFunc (b a: Swift.Int) -> Swift.Int", output);
+			Assert.AreEqual ("Public SomeModule.SomeFunc (b a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
 		[Test]
@@ -1207,7 +1207,7 @@ public protocol HoldsThing {
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.SomeFunc (_ a: Swift.Int) -> Swift.Int", output);
+			Assert.AreEqual ("Public SomeModule.SomeFunc (_ a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
 		[Test]
@@ -1219,7 +1219,7 @@ public protocol HoldsThing {
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int, b: Swift.Int) -> Swift.Int", output);
+			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int, b: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
 		[Test]
@@ -1238,7 +1238,7 @@ public class Foo {
 			var func = cl.AllMethodsNoCDTor ().Where (p => p.Name == "get_prop").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get }", output);
+			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get }", output, "wrong signature");
 		}
 
 		[Test]
@@ -1257,7 +1257,7 @@ public class Foo {
 			var func = cl.AllProperties ().Where (p => p.Name == "prop").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get set }", output);
+			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get set }", output, "wrong signature");
 		}
 
 
@@ -1282,7 +1282,7 @@ public class Foo {
 			var func = cl.AllMethodsNoCDTor ().Where (p => p.Name == "get_subscript").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.Foo.subscript [_ Index: Swift.Int] -> Swift.String { get }", output);
+			Assert.AreEqual ("Public SomeModule.Foo.subscript [_ Index: Swift.Int] -> Swift.String { get }", output, "wrong signature");
 		}
 
 		[Test]
@@ -1304,7 +1304,7 @@ private var x: T
 			Assert.IsNotNull (cl, "no class");
 			var func = cl.AllMethodsNoCDTor ().Where (p => p.Name == "printIt").FirstOrDefault ();
 			var output = func.ToString ();
-			Assert.AreEqual ("Public SomeModule.Foo.printIt<T, U> (a: U) -> ()", output);
+			Assert.AreEqual ("Public SomeModule.Foo.printIt<T, U> (a: U) -> ()", output, "wrong signature");
 		}
 
 		[Test]
