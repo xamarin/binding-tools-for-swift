@@ -451,7 +451,7 @@ namespace XmlReflectionTests {
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
 			Assert.IsNotNull (func, "no func");
 			Assert.IsFalse (func.IsDeprecated, "deprecated");
-			Assert.IsTrue (func.IsUnavailable, "unavailanle");
+			Assert.IsTrue (func.IsUnavailable, "unavailable");
 		}
 
 
@@ -466,7 +466,7 @@ namespace XmlReflectionTests {
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
 			Assert.IsNotNull (cl, "class");
 			Assert.IsFalse (cl.IsDeprecated, "deprecated");
-			Assert.IsTrue (cl.IsUnavailable, "unavailanle");
+			Assert.IsTrue (cl.IsUnavailable, "unavailable");
 		}
 
 
