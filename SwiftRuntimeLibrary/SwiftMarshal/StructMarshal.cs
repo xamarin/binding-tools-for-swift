@@ -3,10 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using SwiftRuntimeLibrary;
 using System.Text;
 #if !TOM_SWIFTY
 using Foundation;
@@ -605,112 +604,112 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return null;
 		}
 
-		public byte [] PrepareNominal (ISwiftNominalType e)
+		public byte [] PrepareNominal (ISwiftNominalType nominal)
 		{
-			var size = Strideof (e.GetType ());
-			if (e.SwiftData == null || e.SwiftData.Length != size) {
-				e.SwiftData = new byte [size];
+			var size = Strideof (nominal.GetType ());
+			if (nominal.SwiftData == null || nominal.SwiftData.Length != size) {
+				nominal.SwiftData = new byte [size];
 			}
-			return e.SwiftData;
+			return nominal.SwiftData;
 		}
 
-		public IntPtr ToSwift (object o, IntPtr p)
+		public IntPtr ToSwift (object o, IntPtr swiftDestinationMemory)
 		{
 			if (o == null)
 				throw new ArgumentNullException ();
-			return ToSwift (o.GetType (), o, p);
+			return ToSwift (o.GetType (), o, swiftDestinationMemory);
 		}
 
-		internal unsafe IntPtr ToSwift (Type t, object o, byte* p)
+		internal unsafe IntPtr ToSwift (Type t, object o, byte* swiftDestinationMemory)
 		{
-			return ToSwift (t, o, (IntPtr) p);
+			return ToSwift (t, o, (IntPtr) swiftDestinationMemory);
 		}
 
-		public IntPtr ToSwift (Type t, object o, IntPtr p)
+		public IntPtr ToSwift (Type t, object o, IntPtr swiftDestinationMemory)
 		{
 			if (t.IsPrimitive) {
-				return MarshalScalarToSwift (t, o, p);
+				return MarshalScalarToSwift (t, o, swiftDestinationMemory);
 			}
 
 			if (t == typeof (nint)) {
-				Write ((nint)o, p);
-				return p;
+				Write ((nint)o, swiftDestinationMemory);
+				return swiftDestinationMemory;
 			}
 
 			if (t == typeof (nuint)) {
-				Write ((nuint)o, p);
-				return p;
+				Write ((nuint)o, swiftDestinationMemory);
+				return swiftDestinationMemory;
 			}
 #if !TOM_SWIFTY
 	    		if (t == typeof (nfloat)) {
-	    			Write ((nfloat)o, p);
-	    			return p;
+	    			Write ((nfloat)o, swiftDestinationMemory);
+	    			return swiftDestinationMemory;
 	    		}
 #endif
 
 			if (IsSwiftTrivialEnum (t)) {
-				Write ((nuint)(long)o, p);
-				return p;
+				Write ((nuint)(long)o, swiftDestinationMemory);
+				return swiftDestinationMemory;
 			}
 
 			if (IsSwiftNominal (t)) {
-				return MarshalNominalToSwift (t, o, p);
+				return MarshalNominalToSwift (t, o, swiftDestinationMemory);
 			}
 
 			if (IsSwiftObject (t)) {
 				if (o != null)
-					Write (RetainSwiftObject ((ISwiftObject)o), p);
+					Write (RetainSwiftObject ((ISwiftObject)o), swiftDestinationMemory);
 				else
-					Write (IntPtr.Zero, p);
-				return p;
+					Write (IntPtr.Zero, swiftDestinationMemory);
+				return swiftDestinationMemory;
 			}
 
 #if !TOM_SWIFTY
 			if (IsObjCProtocol (t)) {
 				// protocols don't get a retain before a call
 				var nsobject = (INativeObject)o;
-				Write (nsobject.Handle, p);
-				return p;
+				Write (nsobject.Handle, swiftDestinationMemory);
+				return swiftDestinationMemory;
 			}
 
 			if (IsNSObject (t)) {
 				if (o != null)
-					Write (RetainNSObject ((NSObject)o), p);
+					Write (RetainNSObject ((NSObject)o), swiftDestinationMemory);
 				else
-					Write (IntPtr.Zero, p);
-				return p;
+					Write (IntPtr.Zero, swiftDestinationMemory);
+				return swiftDestinationMemory;
 			}
 #endif
 
 			if (IsSwiftError (t)) {
-				return MarshalSwiftErrorToSwift ((SwiftError)o, p);
+				return MarshalSwiftErrorToSwift ((SwiftError)o, swiftDestinationMemory);
 			}
 
 			if (t.IsDelegate ()) {
-				return MarshalDelegateToSwift (t, (Delegate)o, p);
+				return MarshalDelegateToSwift (t, (Delegate)o, swiftDestinationMemory);
 			}
 
 
 			if (t.IsTuple ()) {
-				return MarshalTupleToSwift (t, o, p);
+				return MarshalTupleToSwift (t, o, swiftDestinationMemory);
 			}
 
 			if (IsExistentialContainer (t)) {
-				return MarshalExistentialContainerToSwift (t, o, p);
+				return MarshalExistentialContainerToSwift (t, o, swiftDestinationMemory);
 			}
 
 			throw new SwiftRuntimeException (String.Format ("Unable to marshal type {0} to swift.", o.GetType ().Name));
 		}
 			
-		unsafe internal T ToNet<T> (byte* p, bool owns)
+		unsafe internal T ToNet<T> (byte* swiftSourceMemory, bool owns)
 		{
-			return ToNet<T> ((IntPtr) p, owns);
+			return ToNet<T> ((IntPtr) swiftSourceMemory, owns);
 		}
 
 		// FIXME: call the 'owns' overload from our code, and remove this overload
-		public T ToNet<T> (IntPtr p)
+		public T ToNet<T> (IntPtr swiftSourceMemory)
 		{
-			return ToNet<T> (p, false);
+			return ToNet<T> (swiftSourceMemory, false);
 		}
 
 		public T ToNet<T> (IntPtr p, bool owns)
@@ -719,83 +718,83 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 
 		// FIXME: call the 'owns' overload from our code, and remove this overload
-		public object ToNet (IntPtr p, Type t)
+		public object ToNet (IntPtr swiftSourceMemory, Type t)
 		{
-			return ToNet (p, t, false);
+			return ToNet (swiftSourceMemory, t, false);
 		}
 
-		public object ToNet (IntPtr p, Type t, bool owns)
+		public object ToNet (IntPtr swiftSourceMemory, Type t, bool owns)
 		{
 			if (t.IsPrimitive) {
-				return MarshalScalarToNet (p, t);
+				return MarshalScalarToNet (swiftSourceMemory, t);
 			}
 
 			if (t == typeof (nint)) {
-				return ReadNint (p);
+				return ReadNint (swiftSourceMemory);
 			}
 
 			if (t == typeof (nuint)) {
-				return ReadNuint (p);
+				return ReadNuint (swiftSourceMemory);
 			}
 
 #if !TOM_SWIFTY
 	    		if (t == typeof (nfloat)) {
-	    			return ReadNfloat (p);
+	    			return ReadNfloat (swiftSourceMemory);
 	    		}
 #endif
 
 			if (t.IsTuple ()) {
-				return MarshalTupleToNet (p, t, owns);
+				return MarshalTupleToNet (swiftSourceMemory, t, owns);
 			}
 
 			if (t.IsDelegate ()) {
-				return MarshalDelegateToNet (p, t, owns);
+				return MarshalDelegateToNet (swiftSourceMemory, t, owns);
 			}
 
 			if (IsSwiftTrivialEnum (t)) {
 				//return Enum.ToObject(t, Convert.ChangeType((long)ReadNint(p), Enum.GetUnderlyingType(t)));
-				return Enum.ToObject (t, (long)ReadNint (p));
+				return Enum.ToObject (t, (long)ReadNint (swiftSourceMemory));
 			}
 
 			if (IsSwiftNominal (t)) {
-				return MarshalNominalToNet (p, t, owns);
+				return MarshalNominalToNet (swiftSourceMemory, t, owns);
 			}
 
 			if (IsSwiftError (t)) {
-				return new SwiftError (Marshal.ReadIntPtr (p));
+				return new SwiftError (Marshal.ReadIntPtr (swiftSourceMemory));
 			}
 
 			if (IsSwiftObject (t)) {
-				return SwiftObjectRegistry.Registry.CSObjectForSwiftObject (Marshal.ReadIntPtr (p), t, owns);
+				return SwiftObjectRegistry.Registry.CSObjectForSwiftObject (Marshal.ReadIntPtr (swiftSourceMemory), t, owns);
 			}
 #if !TOM_SWIFTY
 			if (IsNSObject (t)) {
-				var rv = ObjCRuntime.Runtime.GetNSObject (Marshal.ReadIntPtr (p));
+				var rv = ObjCRuntime.Runtime.GetNSObject (Marshal.ReadIntPtr (swiftSourceMemory));
 				if (owns)
 					rv.DangerousRelease ();
 				return rv;
 			}
 
 			if (IsObjCProtocol (t)) {
-				return GetINativeObject (Marshal.ReadIntPtr (p), t, owns);
+				return GetINativeObject (Marshal.ReadIntPtr (swiftSourceMemory), t, owns);
 
 			}
 #endif
 			throw new SwiftRuntimeException (String.Format ("Unable to marshal type {0}.", t.Name));
 		}
 
-		IntPtr MarshalSwiftErrorToSwift (SwiftError err, IntPtr p)
+		IntPtr MarshalSwiftErrorToSwift (SwiftError err, IntPtr swiftDestinartionMemory)
 		{
-			Write (err.Handle, p);
-			return p + IntPtr.Size;
+			Write (err.Handle, swiftDestinartionMemory);
+			return swiftDestinartionMemory + IntPtr.Size;
 		}
 
-		IntPtr MarshalExistentialContainerToSwift (Type t, object o, IntPtr p)
+		IntPtr MarshalExistentialContainerToSwift (Type t, object o, IntPtr swiftDestinationMemory)
 		{
 			var container = (ISwiftExistentialContainer)o;
-			SwiftExistentialContainer0.CopyTo (container, p);
-			p += container.SizeOf;
-			return p;
+			SwiftExistentialContainer0.CopyTo (container, swiftDestinationMemory);
+			swiftDestinationMemory += container.SizeOf;
+			return swiftDestinationMemory;
 		}
 
 		Type [] DelegateParameterTypes (MethodInfo mi)
@@ -808,12 +807,12 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}).ToArray ();
 		}
 
-		object MarshalDelegateToNet (IntPtr p, Type t, bool owns)
+		object MarshalDelegateToNet (IntPtr swiftSourceMemory, Type t, bool owns)
 		{
 			var mi = t.GetMethod ("Invoke");
 			var argTypes = DelegateParameterTypes (mi);
 			var returnType = mi.ReturnType;
-			var blindClosure = (BlindSwiftClosureRepresentation)Marshal.PtrToStructure (p, typeof (BlindSwiftClosureRepresentation));
+			var blindClosure = (BlindSwiftClosureRepresentation)Marshal.PtrToStructure (swiftSourceMemory, typeof (BlindSwiftClosureRepresentation));
 			if (SwiftObjectRegistry.Registry.Contains (blindClosure.Data)) {
 				var capsule = SwiftObjectRegistry.Registry.CSObjectForSwiftObject<SwiftDotNetCapsule> (blindClosure.Data);
 				var delTuple = SwiftObjectRegistry.Registry.ClosureForCapsule (capsule);
@@ -848,16 +847,16 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 
 
-		IntPtr MarshalDelegateToSwift (Type t, Delegate del, IntPtr p)
+		IntPtr MarshalDelegateToSwift (Type t, Delegate del, IntPtr swiftDestinationMemory)
 		{
 			var mi = t.GetMethod ("Invoke");
 			var argTypes = DelegateParameterTypes (mi);
 			var returnType = mi.ReturnType;
 
 			var rep = BuildClosureRepresentation (del, argTypes, returnType);
-			var blindRep = BuildBlindClosure (rep, argTypes, returnType, p);
-			Marshal.StructureToPtr (blindRep, p, false);
-			return p;
+			var blindRep = BuildBlindClosure (rep, argTypes, returnType, swiftDestinationMemory);
+			Marshal.StructureToPtr (blindRep, swiftDestinationMemory, false);
+			return swiftDestinationMemory;
 		}
 
 		public unsafe BlindSwiftClosureRepresentation GetBlindSwiftClosureRepresentation (Type t, Delegate del)
@@ -1098,50 +1097,50 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 
 
-		public IntPtr MarshalTupleToSwift (Type t, object o, IntPtr p)
+		public IntPtr MarshalTupleToSwift (Type t, object tuple, IntPtr swiftDestinationMemory)
 		{
 			// null tuple? Don't do anything.
-			if (o == null)
-				return p;
+			if (tuple == null)
+				return swiftDestinationMemory;
 			var allTypes = TupleTypes (t).ToArray ();
 			var map = SwiftTupleMap.FromTypes (allTypes);
-			return MarshalTupleToSwift (t, map, o, p);
+			return MarshalTupleToSwift (t, map, tuple, swiftDestinationMemory);
 		}
 
-		public IntPtr MarshalTupleToSwift (Type t, SwiftTupleMap map, object o, IntPtr p)
+		public IntPtr MarshalTupleToSwift (Type t, SwiftTupleMap map, object tuple, IntPtr swiftDestinationMemory)
 		{
-			if (o == null)
-				return p;
+			if (tuple == null)
+				return swiftDestinationMemory;
 
-			var tupleTypesValues = TupleItems (t, o);
+			var tupleTypesValues = TupleItems (t, tuple);
 			int i = 0;
 			foreach (Tuple<Type, object> typeVal in tupleTypesValues) {
 				if (typeVal.Item1 != map.Types [i])
 					throw new SwiftRuntimeException ("Error decomposing tuple for marshaling to swift.");
-				ToSwift (typeVal.Item1, typeVal.Item2, p + map.Offsets [i]);
+				ToSwift (typeVal.Item1, typeVal.Item2, swiftDestinationMemory + map.Offsets [i]);
 				i++;
 			}
-			return p;
+			return swiftDestinationMemory;
 		}
 
-		public IntPtr MarshalObjectsAsTuple (object [] objects, SwiftTupleMap map, IntPtr p)
+		public IntPtr MarshalObjectsAsTuple (object [] objects, SwiftTupleMap map, IntPtr swiftDestinationMemory)
 		{
 			if (objects == null)
 				throw new ArgumentNullException (nameof (objects));
 			if (map.Types.Length != objects.Length)
 				throw new ArgumentOutOfRangeException (nameof (objects), "Size mismatch in object array length and tuple map size.");
 			for (int i = 0; i < objects.Length; i++) {
-				ToSwift (map.Types [i], objects [i], p + map.Offsets [i]);
+				ToSwift (map.Types [i], objects [i], swiftDestinationMemory + map.Offsets [i]);
 			}
-			return p;
+			return swiftDestinationMemory;
 		}
 
 
-		public object MarshalTupleToNet (IntPtr p, Type t, bool owns)
+		public object MarshalTupleToNet (IntPtr swiftSourceMemory, Type t, bool owns)
 		{
 			var allTypes = TupleTypes (t).ToArray ();
 			var map = SwiftTupleMap.FromTypes (allTypes);
-			return MarshalTupleToNet (p, map, owns);
+			return MarshalTupleToNet (swiftSourceMemory, map, owns);
 		}
 
 
@@ -1182,9 +1181,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 
 
-		public object MarshalTupleToNet (IntPtr p, SwiftTupleMap map, bool owns)
+		public object MarshalTupleToNet (IntPtr swiftSourceMemory, SwiftTupleMap map, bool owns)
 		{
-			var args = map.Types.Select ((tt, i) => ToNet (p + map.Offsets [i], tt, owns)).ToArray ();
+			var args = map.Types.Select ((tt, i) => ToNet (swiftSourceMemory + map.Offsets [i], tt, owns)).ToArray ();
 
 			return InvokeTupleConstructor (map.Types, args);
 		}
@@ -1346,12 +1345,19 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return SwiftTupleMap.FromTypes (types);
 		}
 
-		public bool ExceptionReturnContainsSwiftError (IntPtr p, Type t)
+		// a Medusa tuple is a swift tuple of the form: (T, error, Bool)
+		// where the Bool indicates whether or not the value of T is valid or the error is valid
+		// if the bool is true, the error is valid (throw condition).
+		// if the bool is false, T contains a valid value.
+		// Effectively the bool is a choice between two doors and the Medusa is behind one of them.
+		// If you look behind the wrong door, you will turn to stone.
+
+		public bool ExceptionReturnContainsSwiftError (IntPtr swiftMedusaTuple, Type t)
 		{
-			return ExceptionReturnContainsSwiftError (p, TupleMapForException (t));
+			return ExceptionReturnContainsSwiftError (swiftMedusaTuple, TupleMapForException (t));
 		}
 
-		bool ExceptionReturnContainsSwiftError (IntPtr p, SwiftTupleMap tMap)
+		bool ExceptionReturnContainsSwiftError (IntPtr swiftMeduaTuple, SwiftTupleMap tMap)
 		{
 			//#if DEBUG
 			//			Console.WriteLine("Given pointer " + p.ToString("X8"));
@@ -1363,7 +1369,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			//			Console.WriteLine();
 			//			Memory.Dump(p, 40);
 			//#endif
-			var boolPtr = p + tMap.Offsets [tMap.Offsets.Length - 1];
+			var boolPtr = swiftMeduaTuple + tMap.Offsets [tMap.Offsets.Length - 1];
 			//#if DEBUG
 			//			string bps = boolPtr.ToString("X8");
 			//			Console.WriteLine("Checking error at " + bps);
@@ -1374,52 +1380,52 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return ReadByte (boolPtr) != 0;
 		}
 
-		public T GetErrorReturnValue<T> (IntPtr p)
+		public T GetErrorReturnValue<T> (IntPtr swiftMedusaTuple)
 		{
-			return (T)GetErrorReturnValue (p, typeof (Tuple<T, IntPtr, bool>));
+			return (T)GetErrorReturnValue (swiftMedusaTuple, typeof (Tuple<T, IntPtr, bool>));
 		}
 
-		public object GetErrorReturnValue (IntPtr p, Type t)
+		public object GetErrorReturnValue (IntPtr swiftMedusaTuple, Type t)
 		{
 			var tMap = TupleMapForException (t);
-			if (ExceptionReturnContainsSwiftError (p, tMap))
+			if (ExceptionReturnContainsSwiftError (swiftMedusaTuple, tMap))
 				throw new SwiftRuntimeException ("Can't retrieve return value from tuple containing a SwiftError.");
 			if (IsSwiftObject (tMap.Types [0])) {
-				return SwiftObjectRegistry.Registry.CSObjectForSwiftObject (p + tMap.Offsets [0], tMap.Types [0]);
+				return SwiftObjectRegistry.Registry.CSObjectForSwiftObject (swiftMedusaTuple + tMap.Offsets [0], tMap.Types [0]);
 			} else {
-				var retval = ToNet (p + tMap.Offsets [0], tMap.Types [0]);
+				var retval = ToNet (swiftMedusaTuple + tMap.Offsets [0], tMap.Types [0]);
 				return retval;
 			}
 		}
 
-		public SwiftError GetErrorThrown (IntPtr p, Type t)
+		public SwiftError GetErrorThrown (IntPtr swiftMedusaTuple, Type t)
 		{
 			var tMap = TupleMapForException (t);
-			if (!ExceptionReturnContainsSwiftError (p, tMap))
+			if (!ExceptionReturnContainsSwiftError (swiftMedusaTuple, tMap))
 				throw new SwiftRuntimeException ("Can't retrieve SwiftError from tuple containing a value.");
-			var handlePtr = Marshal.ReadIntPtr (p + tMap.Offsets [tMap.Offsets.Length - 2]);
+			var handlePtr = Marshal.ReadIntPtr (swiftMedusaTuple + tMap.Offsets [tMap.Offsets.Length - 2]);
 			return new SwiftError (handlePtr);
 		}
 
-		public void SetErrorThrown (IntPtr p, SwiftError error, Type t)
+		public void SetErrorThrown (IntPtr swiftMedusaTuple, SwiftError error, Type t)
 		{
 			var tMap = TupleMapForException (t);
-			var boolPtr = p + tMap.Offsets [tMap.Offsets.Length - 1];
+			var boolPtr = swiftMedusaTuple + tMap.Offsets [tMap.Offsets.Length - 1];
 			Write ((byte)1, boolPtr);
-			var handlePtr = p + tMap.Offsets [tMap.Offsets.Length - 2];
+			var handlePtr = swiftMedusaTuple + tMap.Offsets [tMap.Offsets.Length - 2];
 			Write (error.Handle, handlePtr);
 		}
 
-		public void SetErrorNotThrown (IntPtr p, Type t)
+		public void SetErrorNotThrown (IntPtr swiftMedusaTuple, Type t)
 		{
 			var tMap = TupleMapForException (t);
-			var boolPtr = p + tMap.Offsets [tMap.Offsets.Length - 1];
+			var boolPtr = swiftMedusaTuple + tMap.Offsets [tMap.Offsets.Length - 1];
 			Write ((byte)0, boolPtr);
 		}
 
-		public SwiftException GetExceptionThrown (IntPtr p, Type t)
+		public SwiftException GetExceptionThrown (IntPtr swiftMeduaTuple, Type t)
 		{
-			var error = GetErrorThrown (p, t);
+			var error = GetErrorThrown (swiftMeduaTuple, t);
 			string message = $"Swift exception thrown: {error.Description}";
 			return new SwiftException (message, error);
 		}
@@ -1436,34 +1442,34 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 
 
-		static IntPtr MarshalBlitableStructToSwift (object o, IntPtr p)
+		static IntPtr MarshalBlitableStructToSwift (object o, IntPtr swiftDestinationMemory)
 		{
-			Marshal.StructureToPtr (o, p, false);
-			return p;
+			Marshal.StructureToPtr (o, swiftDestinationMemory, false);
+			return swiftDestinationMemory;
 		}
 
-		static object MarshalBlitableStructToNet (IntPtr p, Type t)
+		static object MarshalBlitableStructToNet (IntPtr swiftSourceMemory, Type t)
 		{
-			var o = Marshal.PtrToStructure (p, t);
+			var o = Marshal.PtrToStructure (swiftSourceMemory, t);
 			return o;
 		}
 
-		public unsafe IntPtr MarshalNominalToSwift (Type t, object o, IntPtr p)
+		public unsafe IntPtr MarshalNominalToSwift (Type t, object valueTYple, IntPtr swiftDestinationMemory)
 		{
-			if (o == null)
-				throw new ArgumentNullException (nameof (o));
+			if (valueTYple == null)
+				throw new ArgumentNullException (nameof (valueTYple));
 			var mt = Metatypeof (t);
-			byte [] payload = PrepareNominal ((ISwiftNominalType)o);
+			byte [] payload = PrepareNominal ((ISwiftNominalType)valueTYple);
 			var initWithCopy = GetNominalInitializeWithCopy (t);
 			fixed (byte* src = payload) {
-				initWithCopy (p, new IntPtr (src), mt);
+				initWithCopy (swiftDestinationMemory, new IntPtr (src), mt);
 			}
-			return p;
+			return swiftDestinationMemory;
 		}
 
-		public unsafe void NominalDestroy (Type t, byte* p)
+		public unsafe void NominalDestroy (Type t, byte* memoryContainingSwiftValueType)
 		{
-			NominalDestroy (t, new IntPtr (p));
+			NominalDestroy (t, new IntPtr (memoryContainingSwiftValueType));
 		}
 
 		public unsafe void NominalDestroy (ISwiftNominalType obj)
@@ -1476,17 +1482,17 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-		public void NominalDestroy (Type t, IntPtr p)
+		public void NominalDestroy (Type t, IntPtr memoryContainingSwiftValueTyple)
 		{
 			var mt = Metatypeof (t);
 			var destroy = GetNominalDestroy (t);
-			destroy (p, mt);
+			destroy (memoryContainingSwiftValueTyple, mt);
 		}
 
-		public unsafe void NominalDestroy (SwiftMetatype mt, byte [] p)
+		public unsafe void NominalDestroy (SwiftMetatype mt, byte [] memoryContainingSwiftValueType)
 		{
 			var destroy = GetNominalDestroy (mt);
-			fixed (byte* pptr = p) {
+			fixed (byte* pptr = memoryContainingSwiftValueType) {
 				destroy (new IntPtr (pptr), mt);
 			}
 		}
@@ -1568,32 +1574,32 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return NominalInitializeWithCopy (obj.GetType (), ptr, obj.SwiftData.Length);
 		}
 
-		public unsafe IntPtr NominalInitializeWithCopy (Type t, byte* p, int size)
+		public unsafe IntPtr NominalInitializeWithCopy (Type t, byte* swiftDestinationMemory, int size)
 		{
-			return NominalInitializeWithCopy (t, new IntPtr (p), size);
+			return NominalInitializeWithCopy (t, new IntPtr (swiftDestinationMemory), size);
 		}
 
-		public IntPtr NominalInitializeWithCopy (Type t, IntPtr p, int size)
+		public IntPtr NominalInitializeWithCopy (Type t, IntPtr swiftDestinationMemory, int size)
 		{
 			unsafe {
 				byte* tbuf = stackalloc byte [size];
 				var tbufPtr = new IntPtr (tbuf);
 				var mt = Metatypeof (t);
 				var initWithCopy = GetNominalInitializeWithCopy (t);
-				initWithCopy (tbufPtr, p, mt);
-				Memory.Copy (tbuf, (byte*)p, size);
+				initWithCopy (tbufPtr, swiftDestinationMemory, mt);
+				Memory.Copy (tbuf, (byte*)swiftDestinationMemory, size);
 			}
-			return p;
+			return swiftDestinationMemory;
 		}
 
-		public unsafe void NominalInitializeWithCopy (SwiftMetatype metadata, byte [] p)
+		public unsafe void NominalInitializeWithCopy (SwiftMetatype metadata, byte [] swiftDestinationMemory)
 		{
-			byte* tbuf = stackalloc byte [p.Length];
+			byte* tbuf = stackalloc byte [swiftDestinationMemory.Length];
 			var tbufPtr = new IntPtr (tbuf);
 			var initWithCopy = GetNominalInitializeWithCopy (metadata);
-			fixed (byte* pptr = p) {
+			fixed (byte* pptr = swiftDestinationMemory) {
 				initWithCopy (tbufPtr, new IntPtr (pptr), metadata);
-				Memory.Copy (tbuf, pptr, p.Length);
+				Memory.Copy (tbuf, pptr, swiftDestinationMemory.Length);
 			}
 		}
 
@@ -1658,7 +1664,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		}
 
 		static object [] nomCtorArgs = new object [] { SwiftNominalCtorArgument.None };
-		public ISwiftNominalType MarshalNominalToNet (IntPtr p, Type t, bool owns)
+		public ISwiftNominalType MarshalNominalToNet (IntPtr swiftSourceMemory, Type t, bool owns)
 		{
 			var ci = GetNominalCtor (t);
 			if (ci == null)
@@ -1669,78 +1675,78 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 			PrepareNominal (o);
 			var payload = o.SwiftData; 
-			Marshal.Copy (p, payload, 0, payload.Length);
+			Marshal.Copy (swiftSourceMemory, payload, 0, payload.Length);
 
 			if (!owns)
-				NominalInitializeWithCopy (t, p, payload.Length);
+				NominalInitializeWithCopy (t, swiftSourceMemory, payload.Length);
 
 			return o;
 		}
 
-		object MarshalEnumToNet (FieldInfo fi, IntPtr p)
+		object MarshalEnumToNet (FieldInfo fi, IntPtr swiftSourceMemory)
 		{
 			var swiftRawType = SwiftEnumMapper.EnumHasRawValue (fi.FieldType) ? SwiftEnumMapper.RawValueType (fi.FieldType) : typeof (int);
 			switch (Type.GetTypeCode (swiftRawType)) {
 			case TypeCode.Byte:
-				return (object)ReadByte (p);
+				return (object)ReadByte (swiftSourceMemory);
 			case TypeCode.SByte:
-				return (object)ReadSByte (p);
+				return (object)ReadSByte (swiftSourceMemory);
 			case TypeCode.Int16:
-				return (object)ReadShort (p);
+				return (object)ReadShort (swiftSourceMemory);
 			case TypeCode.UInt16:
-				return (object)ReadUShort (p);
+				return (object)ReadUShort (swiftSourceMemory);
 			case TypeCode.Int32:
-				return (object)ReadInt (p);
+				return (object)ReadInt (swiftSourceMemory);
 			case TypeCode.UInt32:
-				return (object)ReadUInt (p);
+				return (object)ReadUInt (swiftSourceMemory);
 			case TypeCode.Int64:
-				return (object)ReadLong (p);
+				return (object)ReadLong (swiftSourceMemory);
 			case TypeCode.UInt64:
-				return (object)ReadULong (p);
+				return (object)ReadULong (swiftSourceMemory);
 			case TypeCode.Char:
-				return (object)ReadChar (p);
+				return (object)ReadChar (swiftSourceMemory);
 			default:
 				throw new SwiftRuntimeException (String.Format ("Unknown type code {0} in enum.",
 					Type.GetTypeCode (swiftRawType)));
 			}
 		}
 
-		void MarshalScalarFieldToNet (object o, FieldInfo fi, IntPtr p)
+		void MarshalScalarFieldToNet (object o, FieldInfo fi, IntPtr swiftSourceMemory)
 		{
-			var value = MarshalScalarToNet (p, fi.FieldType);
+			var value = MarshalScalarToNet (swiftSourceMemory, fi.FieldType);
 			fi.SetValue (o, value);
 		}
 
-		object MarshalScalarToNet (IntPtr p, Type t)
+		object MarshalScalarToNet (IntPtr swiftSourceMemory, Type t)
 		{
 			switch (Type.GetTypeCode (t)) {
 			case TypeCode.Boolean:
-				return ReadByte (p) != 0;
+				return ReadByte (swiftSourceMemory) != 0;
 			case TypeCode.Byte:
-				return ReadByte (p);
+				return ReadByte (swiftSourceMemory);
 			case TypeCode.SByte:
-				return ReadSByte (p);
+				return ReadSByte (swiftSourceMemory);
 			case TypeCode.Int16:
-				return ReadShort (p);
+				return ReadShort (swiftSourceMemory);
 			case TypeCode.UInt16:
-				return ReadUShort (p);
+				return ReadUShort (swiftSourceMemory);
 			case TypeCode.Int32:
-				return ReadInt (p);
+				return ReadInt (swiftSourceMemory);
 			case TypeCode.UInt32:
-				return ReadUInt (p);
+				return ReadUInt (swiftSourceMemory);
 			case TypeCode.Int64:
-				return ReadLong (p);
+				return ReadLong (swiftSourceMemory);
 			case TypeCode.UInt64:
-				return ReadULong (p);
+				return ReadULong (swiftSourceMemory);
 			case TypeCode.Char:
-				return ReadChar (p);
+				return ReadChar (swiftSourceMemory);
 			case TypeCode.Single:
-				return ReadFloat (p);
+				return ReadFloat (swiftSourceMemory);
 			case TypeCode.Double:
-				return ReadDouble (p);
+				return ReadDouble (swiftSourceMemory);
 			default:
 				if (t == typeof (IntPtr) || t == typeof (UIntPtr)) {
-					return Marshal.PtrToStructure (p, t);
+					return Marshal.PtrToStructure (swiftSourceMemory, t);
 				}
 				throw new SwiftRuntimeException ("Illegal type code " + Type.GetTypeCode (t));
 			}
@@ -1824,53 +1830,53 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 #endif
 
 
-		static IntPtr MarshalScalarToSwift (Type fieldType, object value, IntPtr p)
+		static IntPtr MarshalScalarToSwift (Type fieldType, object value, IntPtr swiftDestinationMemory)
 		{
 			// see https://msdn.microsoft.com/en-us/library/system.type.isprimitive.aspx
 			switch (Type.GetTypeCode (fieldType)) {
 			case TypeCode.Boolean:
-				Write ((bool)value ? (byte)1 : (byte)0, p);
+				Write ((bool)value ? (byte)1 : (byte)0, swiftDestinationMemory);
 				break;
 			case TypeCode.Byte:
-				Write ((byte)value, p);
+				Write ((byte)value, swiftDestinationMemory);
 				break;
 			case TypeCode.SByte:
-				Write ((sbyte)value, p);
+				Write ((sbyte)value, swiftDestinationMemory);
 				break;
 			case TypeCode.Int16:
-				Write ((short)value, p);
+				Write ((short)value, swiftDestinationMemory);
 				break;
 			case TypeCode.UInt16:
-				Write ((ushort)value, p);
+				Write ((ushort)value, swiftDestinationMemory);
 				break;
 			case TypeCode.Int32:
-				Write ((int)value, p);
+				Write ((int)value, swiftDestinationMemory);
 				break;
 			case TypeCode.UInt32:
-				Write ((uint)value, p);
+				Write ((uint)value, swiftDestinationMemory);
 				break;
 			case TypeCode.Int64:
-				Write ((long)value, p);
+				Write ((long)value, swiftDestinationMemory);
 				break;
 			case TypeCode.UInt64:
-				Write ((ulong)value, p);
+				Write ((ulong)value, swiftDestinationMemory);
 				break;
 			case TypeCode.Char:
-				Write ((char)value, p);
+				Write ((char)value, swiftDestinationMemory);
 				break;
 			case TypeCode.Single:
-				Write ((float)value, p);
+				Write ((float)value, swiftDestinationMemory);
 				break;
 			case TypeCode.Double:
-				Write ((double)value, p);
+				Write ((double)value, swiftDestinationMemory);
 				break;
 			default:
 				if (fieldType == typeof (IntPtr) || fieldType == typeof (UIntPtr)) {
-					Marshal.StructureToPtr (value, p, false);
+					Marshal.StructureToPtr (value, swiftDestinationMemory, false);
 				}
 				throw new SwiftRuntimeException ("Illegal type code " + Type.GetTypeCode (fieldType));
 			}
-			return p;
+			return swiftDestinationMemory;
 		}
 
 		static unsafe void Write (nint val, IntPtr p)
