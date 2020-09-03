@@ -99,7 +99,7 @@ namespace SwiftRuntimeLibrary {
 			if (SwiftData != null) {
 				unsafe {
 					fixed (byte* p = SwiftData) {
-						StructMarshal.Marshaler.ReleaseNominalData (typeof (SwiftDate),
+						StructMarshal.Marshaler.NominalDestroy (typeof (SwiftDate),
 						    p);
 					}
 					SwiftData = null;

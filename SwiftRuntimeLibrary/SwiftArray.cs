@@ -147,7 +147,7 @@ namespace SwiftRuntimeLibrary {
 
 		void Dispose (bool disposing)
 		{
-			StructMarshal.Marshaler.ReleaseNominalData (this);
+			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 			
 		public IEnumerator<T> GetEnumerator ()

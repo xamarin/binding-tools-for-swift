@@ -1461,29 +1461,29 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return p;
 		}
 
-		public unsafe void ReleaseNominalData (Type t, byte* p)
+		public unsafe void NominalDestroy (Type t, byte* p)
 		{
-			ReleaseNominalData (t, new IntPtr (p));
+			NominalDestroy (t, new IntPtr (p));
 		}
 
-		public unsafe void ReleaseNominalData (ISwiftNominalType obj)
+		public unsafe void NominalDestroy (ISwiftNominalType obj)
 		{
 			var data = obj.SwiftData;
 			if (data != null) {
 				fixed (byte* p = data)
-					ReleaseNominalData (obj.GetType (), p);
+					NominalDestroy (obj.GetType (), p);
 				obj.SwiftData = null;
 			}
 		}
 
-		public void ReleaseNominalData (Type t, IntPtr p)
+		public void NominalDestroy (Type t, IntPtr p)
 		{
 			var mt = Metatypeof (t);
 			var destroy = GetNominalDestroy (t);
 			destroy (p, mt);
 		}
 
-		public unsafe void ReleaseNominalData (SwiftMetatype mt, byte [] p)
+		public unsafe void NominalDestroy (SwiftMetatype mt, byte [] p)
 		{
 			var destroy = GetNominalDestroy (mt);
 			fixed (byte* pptr = p) {
@@ -1514,7 +1514,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return; // nothing to release
 
 			if (IsSwiftNominal (type) || type.IsTuple ()) {
-				ReleaseNominalData (type, value);
+				NominalDestroy (type, value);
 				return;
 			}
 
@@ -1556,7 +1556,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return destroy;
 		}
 
-		public unsafe IntPtr RetainNominalData (ISwiftNominalType obj)
+		public unsafe IntPtr NominalInitializeWithCopy (ISwiftNominalType obj)
 		{
 			if (obj == null)
 				throw new ArgumentNullException (nameof (obj));
@@ -1565,15 +1565,15 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				throw new ObjectDisposedException (obj.GetType ().ToString ());
 
 			fixed (byte* ptr = obj.SwiftData)
-				return RetainNominalData (obj.GetType (), ptr, obj.SwiftData.Length);
+				return NominalInitializeWithCopy (obj.GetType (), ptr, obj.SwiftData.Length);
 		}
 
-		public unsafe IntPtr RetainNominalData (Type t, byte* p, int size)
+		public unsafe IntPtr NominalInitializeWithCopy (Type t, byte* p, int size)
 		{
-			return RetainNominalData (t, new IntPtr (p), size);
+			return NominalInitializeWithCopy (t, new IntPtr (p), size);
 		}
 
-		public IntPtr RetainNominalData (Type t, IntPtr p, int size)
+		public IntPtr NominalInitializeWithCopy (Type t, IntPtr p, int size)
 		{
 			unsafe {
 				byte* tbuf = stackalloc byte [size];
@@ -1586,7 +1586,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return p;
 		}
 
-		public unsafe void RetainNominalData (SwiftMetatype metadata, byte [] p)
+		public unsafe void NominalInitializeWithCopy (SwiftMetatype metadata, byte [] p)
 		{
 			byte* tbuf = stackalloc byte [p.Length];
 			var tbufPtr = new IntPtr (tbuf);
@@ -1672,7 +1672,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			Marshal.Copy (p, payload, 0, payload.Length);
 
 			if (!owns)
-				RetainNominalData (t, p, payload.Length);
+				NominalInitializeWithCopy (t, p, payload.Length);
 
 			return o;
 		}

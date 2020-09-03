@@ -40,7 +40,7 @@ namespace SwiftRuntimeLibrary {
 
 		void Dispose (bool disposing)
 		{
-			StructMarshal.Marshaler.ReleaseNominalData (this);
+			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		// As of the first release of Swift 5.0, using FromUTF16Pointer leaks memory for every string

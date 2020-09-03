@@ -27,7 +27,7 @@ namespace SwiftRuntimeLibrary {
 			if (swiftTypeData == null)
 				throw new ArgumentNullException (nameof (swiftTypeData));
 			var length = swiftTypeData.Length;
-			StructMarshal.Marshaler.RetainNominalData (mt, swiftTypeData);
+			StructMarshal.Marshaler.NominalInitializeWithCopy (mt, swiftTypeData);
 			SwiftData = new byte [length];
 			Array.Copy (swiftTypeData, SwiftData, length);
 			ProxiedMetatype = mt;
@@ -61,7 +61,7 @@ namespace SwiftRuntimeLibrary {
 			if (IsCSObjectProxy) {
 				SwiftCore.Release (SwiftObject);
 			} else {
-				StructMarshal.Marshaler.ReleaseNominalData (ProxiedMetatype, SwiftData);
+				StructMarshal.Marshaler.NominalDestroy (ProxiedMetatype, SwiftData);
 			}
 		}
 

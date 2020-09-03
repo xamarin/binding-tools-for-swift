@@ -37,7 +37,7 @@ namespace SwiftRuntimeLibrary {
 		{
 			if (SwiftData != null) {
 				fixed (byte *p = SwiftData) {
-					StructMarshal.Marshaler.ReleaseNominalData (typeof (SwiftHasher), p);
+					StructMarshal.Marshaler.NominalDestroy (typeof (SwiftHasher), p);
 				}
 				SwiftData = null;
 			}
