@@ -277,6 +277,12 @@
     <Compile Include="..\SwiftRuntimeLibrary\BaseAssociatedTypeProxy.cs">
       <Link>BaseAssociatedTypeProxy.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftNativeInstance.cs">
+      <Link>SwiftNativeInstance.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftNativeObject.cs">
+      <Link>SwiftNativeObject.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />
