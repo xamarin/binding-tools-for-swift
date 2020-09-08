@@ -118,6 +118,7 @@
     <Compile Include="BaseAssociatedTypeProxy.cs" />
     <Compile Include="SwiftNativeObject.cs" />
     <Compile Include="SwiftNativeInstance.cs" />
+    <Compile Include="SwiftNativeValueType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

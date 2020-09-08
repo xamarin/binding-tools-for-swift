@@ -11,7 +11,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Character")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftCharacter_NominalTypeDescriptor, SwiftCoreConstants.SwiftCharacter_Metadata, "")]
-	public sealed class SwiftCharacter : ISwiftStruct {
+	public sealed class SwiftCharacter : SwiftNativeValueType, ISwiftStruct {
 		public unsafe SwiftCharacter (string character) : this (SwiftNominalCtorArgument.None)
 		{
 			SwiftString swiftString = SwiftString.FromString (character);
@@ -25,19 +25,13 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal SwiftCharacter (SwiftNominalCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
-		public byte [] SwiftData {
-			get;
-			set;
-		}
-
-		public void Dispose ()
+		~SwiftCharacter ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
+			Dispose (false);
 		}
 
 		[DllImport (SwiftCore.kXamGlue,
@@ -69,11 +63,6 @@ namespace SwiftRuntimeLibrary {
 
 		// Unlike the 3 above, this is unsafe as a SwiftCaracter may contain more than a char
 		//public static explicit operator char (SwiftCharacter character) => throw new NotImplementedException ();
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
-		}
 	}
 }
 

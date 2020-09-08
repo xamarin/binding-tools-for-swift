@@ -9,14 +9,15 @@ namespace SwiftRuntimeLibrary {
 
 	[SwiftTypeName ("Swift.UnsafePointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafePointer_NominalTypeDescriptor, "", "")]
-	public class UnsafePointer<T> : ISwiftStruct {
+	public class UnsafePointer<T> : SwiftNativeValueType, ISwiftStruct {
 		internal UnsafePointer (SwiftNominalCtorArgument unused)
+			: base ()
 		{
 		}
 
 		UnsafePointer ()
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 		UnsafePointer (IntPtr p)
@@ -44,24 +45,10 @@ namespace SwiftRuntimeLibrary {
 		{
 		}
 
-		public byte [] SwiftData { get; set; }
-
 		~UnsafePointer ()
 		{
 			Dispose (false);
 		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
-		}
-
 
 		public IntPtr ToIntPtr ()
 		{

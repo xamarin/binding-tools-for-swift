@@ -12,9 +12,7 @@ namespace SwiftRuntimeLibrary {
 
 	[SwiftTypeName ("Swift.Dictionary")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftDictionary_NominalTypeDescriptor, "", "")]
-	public class SwiftDictionary<T, U> : IDictionary<T, U>, ISwiftStruct {
-		public byte [] SwiftData { get; set; }
-
+	public class SwiftDictionary<T, U> : SwiftNativeValueType, IDictionary<T, U>, ISwiftStruct {
 		public SwiftDictionary () : this (0) { }
 
 		public SwiftDictionary (int capacity)
@@ -41,10 +39,14 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal SwiftDictionary (SwiftNominalCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
+		~SwiftDictionary ()
+		{
+			Dispose (false);
+		}
 
 		public static SwiftMetatype GetSwiftMetatype ()
 		{
@@ -219,23 +221,6 @@ namespace SwiftRuntimeLibrary {
 		{
 			return GetEnumerator ();
 		}
-
-
-		bool disposed = false;
-		public void Dispose ()
-		{
-			if (!disposed) {
-				disposed = true;
-				Dispose (true);
-				GC.SuppressFinalize (this);
-			}
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
-		}
-
 
 		public U this [T key] {
 			get {

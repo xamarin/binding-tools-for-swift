@@ -16,14 +16,16 @@ namespace SwiftRuntimeLibrary {
 
 	[SwiftTypeName ("Swift.Optional")]
 	[SwiftEnumType (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftOptional_NominalTypeDescriptor, "", "")]
-	public class SwiftOptional<T> : ISwiftEnum {
+	public class SwiftOptional<T> : SwiftNativeValueType, ISwiftEnum {
 		internal SwiftOptional (SwiftNominalCtorArgument unused)
+			: base ()
 		{
 		}
 		public SwiftOptional ()
+			: base ()
 		{
 			unsafe {
-				fixed (byte* p = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* p = SwiftData) {
 					NativeMethodsForSwiftOptional.NewNone (new IntPtr (p),
 									       StructMarshal.Marshaler.Metatypeof (typeof (T)));
 				}
@@ -54,22 +56,9 @@ namespace SwiftRuntimeLibrary {
 				 StructMarshal.Marshaler.Metatypeof (typeof (T)));
 		}
 
-		public byte [] SwiftData { get; set; }
-
 		~SwiftOptional ()
 		{
 			Dispose (false);
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		public static SwiftOptional<T> None ()

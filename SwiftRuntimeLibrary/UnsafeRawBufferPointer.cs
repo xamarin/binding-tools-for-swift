@@ -10,21 +10,22 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.UnsafeRawBufferPointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeRawBufferPointer_NominalTypeDescriptor, SwiftCoreConstants.UnsafeRawBufferPointer_Metadata, "")]
-	public class UnsafeRawBufferPointer : ISwiftStruct, IEnumerable<byte> {
+	public class UnsafeRawBufferPointer : SwiftNativeValueType, ISwiftStruct, IEnumerable<byte> {
 
 		public unsafe UnsafeRawBufferPointer (IntPtr start, nint count)
+			: base ()
 		{
 			if (start == IntPtr.Zero)
 				throw new ArgumentNullException (nameof (start));
-			fixed (byte *thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+			fixed (byte *thisDataPtr = SwiftData) {
 				IntPtr thisPtr = new IntPtr (thisDataPtr);
 				NativeMethodsForUnsafeRawBufferPointer.PI_UnsafeRawBufferPointer (thisPtr, start, count);
 			}
 		}
 
 		internal UnsafeRawBufferPointer (SwiftNominalCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 		public unsafe SwiftString DebugDescription {
@@ -61,23 +62,6 @@ namespace SwiftRuntimeLibrary {
 			return NativeMethodsForUnsafeRawBufferPointer.PIMetadataAccessor_UnsafeRawBufferPointer (SwiftMetadataRequest.Complete);
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-		void Dispose (bool disposing)
-		{
-			if (SwiftData != null) {
-				unsafe {
-					fixed (byte* p = SwiftData) {
-						StructMarshal.Marshaler.NominalDestroy (typeof (UnsafeRawBufferPointer), p);
-					}
-					SwiftData = null;
-				}
-			}
-		}
-
 		public IEnumerator<byte> GetEnumerator ()
 		{
 			var count = Count;
@@ -94,8 +78,6 @@ namespace SwiftRuntimeLibrary {
 		{
 			Dispose (false);
 		}
-
-		public byte [] SwiftData { get; set; }
 	}
 
 	internal class NativeMethodsForUnsafeRawBufferPointer {

@@ -283,6 +283,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftNativeObject.cs">
       <Link>SwiftNativeObject.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftNativeValueType.cs">
+      <Link>SwiftNativeValueType.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />
