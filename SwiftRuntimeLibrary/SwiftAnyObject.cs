@@ -6,26 +6,10 @@ using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
-	public sealed class SwiftAnyObject : ISwiftObject {
+	public sealed class SwiftAnyObject : SwiftNativeObject {
 		SwiftAnyObject(IntPtr ptr)
-			: this (ptr, SwiftObjectRegistry.Registry)
+			: base (ptr, GetSwiftMetatype (), SwiftObjectRegistry.Registry)
 		{
-		}
-
-		SwiftAnyObject (IntPtr ptr, SwiftObjectRegistry registry)
-		{
-			SwiftObject = ptr;
-			SwiftCore.Retain (ptr);
-			registry.Add (this);
-		}
-
-		#region IDisposable implementation
-
-		bool disposed = false;
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
 		}
 
 		~SwiftAnyObject ()
@@ -33,37 +17,10 @@ namespace SwiftRuntimeLibrary {
 			Dispose (false);
 		}
 
-		void Dispose (bool disposing)
-		{
-			if (!disposed) {
-				if (disposing) {
-					DisposeManagedResources ();
-				}
-				DisposeUnmanagedResources ();
-				disposed = true;
-			}
-		}
-
-		void DisposeManagedResources ()
-		{
-		}
-
-		void DisposeUnmanagedResources ()
-		{
-			SwiftCore.Release (SwiftObject);
-		}
-		#endregion
-
-		#region ISwiftObject implementation
-
-		public IntPtr SwiftObject { get; set; }
-
 		public static SwiftAnyObject XamarinFactory (IntPtr p)
 		{
-			return new SwiftAnyObject (p, SwiftObjectRegistry.Registry);
+			return new SwiftAnyObject (p);
 		}
-
-		#endregion
 
 		public static SwiftAnyObject FromISwiftObject(ISwiftObject obj)
 		{
