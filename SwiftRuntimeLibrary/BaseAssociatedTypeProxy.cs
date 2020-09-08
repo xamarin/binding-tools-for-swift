@@ -6,23 +6,16 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 	[SwiftNativeObject ()]
-	public class BaseAssociatedTypeProxy : ISwiftObject {
-		IntPtr handle;
-		SwiftMetatype class_handle;
-		SwiftObjectFlags object_flags = SwiftObjectFlags.IsSwift;
-
+	public class BaseAssociatedTypeProxy : SwiftNativeObject {
 		protected BaseAssociatedTypeProxy (IntPtr handle, SwiftMetatype classHandle, SwiftObjectRegistry registry)
+			: base (handle, classHandle, registry)
 		{
-			if (SwiftNativeObjectAttribute.IsSwiftNativeObject (this)) {
-				object_flags |= SwiftObjectFlags.IsDirectBinding;
-			}
-			class_handle = classHandle;
-			SwiftObject = handle;
 			if (IsCSObjectProxy)
 				registry.Add (this);
 		}
 
 		protected BaseAssociatedTypeProxy (byte [] swiftTypeData, SwiftMetatype mt)
+			: base (IntPtr.Zero, mt, SwiftObjectRegistry.Registry)
 		{
 			if (swiftTypeData == null)
 				throw new ArgumentNullException (nameof (swiftTypeData));
@@ -33,33 +26,11 @@ namespace SwiftRuntimeLibrary {
 			ProxiedMetatype = mt;
 		}
 
-		public void Dispose ()
+		protected override void DisposeUnmanagedResources ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
 
-		protected virtual void Dispose (bool disposing)
-		{
-			if ((object_flags & SwiftObjectFlags.Disposed) != SwiftObjectFlags.Disposed) {
-				if (disposing) {
-					DisposeManagedResources ();
-				}
-				if (IsCSObjectProxy)
-					SwiftObjectRegistry.Registry.RemoveAndWeakRelease (this);
-				DisposeUnmanagedResources ();
-				object_flags |= SwiftObjectFlags.Disposed;
-			}
-		}
-
-		protected virtual void DisposeManagedResources ()
-		{
-		}
-
-		protected virtual void DisposeUnmanagedResources ()
-		{
 			if (IsCSObjectProxy) {
-				SwiftCore.Release (SwiftObject);
+				base.DisposeUnmanagedResources ();
 			} else {
 				StructMarshal.Marshaler.NominalDestroy (ProxiedMetatype, SwiftData);
 			}
@@ -70,16 +41,7 @@ namespace SwiftRuntimeLibrary {
 			Dispose (false);
 		}
 
-		protected bool IsCSObjectProxy => handle != IntPtr.Zero;
-
-		public IntPtr SwiftObject {
-			get {
-				return handle;
-			}
-			private set {
-				handle = value;
-			}
-		}
+		protected bool IsCSObjectProxy => SwiftObject != IntPtr.Zero;
 
 		protected byte [] SwiftData { get; set; }
 

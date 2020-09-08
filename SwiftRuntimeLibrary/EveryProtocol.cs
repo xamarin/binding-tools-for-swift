@@ -7,7 +7,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 	[SwiftNativeObject]
-	public class EveryProtocol : ISwiftObject {
+	public class EveryProtocol : SwiftNativeObject {
 		protected IntPtr handle;
 
 		protected SwiftMetatype class_handle;
@@ -28,21 +28,11 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		public EveryProtocol ()
-			: this (_XamEveryProtocolCtorImpl (), GetSwiftMetatype (), SwiftObjectRegistry.Registry)
+			: base (_XamEveryProtocolCtorImpl (), GetSwiftMetatype (), SwiftObjectRegistry.Registry)
 		{
 		}
 
-		protected EveryProtocol (IntPtr handle, SwiftMetatype classHandle, SwiftObjectRegistry registry)
-		{
-			if (SwiftNativeObjectAttribute.IsSwiftNativeObject (this)) {
-				object_flags |= SwiftObjectFlags.IsDirectBinding;
-			}
-			class_handle = classHandle;
-			SwiftObject = handle;
-			registry.Add (this);
-		}
-
-		EveryProtocol (IntPtr handle, SwiftObjectRegistry registry) : this (handle, GetSwiftMetatype (), registry)
+		EveryProtocol (IntPtr handle, SwiftObjectRegistry registry) : base (handle, GetSwiftMetatype (), registry)
 		{
 		}
 
@@ -51,46 +41,9 @@ namespace SwiftRuntimeLibrary {
 			return new EveryProtocol (p, SwiftObjectRegistry.Registry);
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		protected virtual void Dispose (bool disposing)
-		{
-			if ((object_flags & SwiftObjectFlags.Disposed) !=
-			    SwiftObjectFlags.Disposed) {
-				if (disposing) {
-					DisposeManagedResources ();
-				}
-				SwiftObjectRegistry.Registry.RemoveAndWeakRelease (this);
-				DisposeUnmanagedResources ();
-				object_flags |= SwiftObjectFlags.Disposed;
-			}
-		}
-
-		protected virtual void DisposeManagedResources ()
-		{
-		}
-
-		protected virtual void DisposeUnmanagedResources ()
-		{
-			SwiftCore.Release (SwiftObject);
-		}
-
 		~EveryProtocol ()
 		{
 			Dispose (false);
-		}
-
-		public IntPtr SwiftObject {
-			get {
-				return handle;
-			}
-			private set {
-				handle = value;
-			}
 		}
 	}
 
