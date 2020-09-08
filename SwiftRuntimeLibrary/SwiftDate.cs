@@ -10,7 +10,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Foundation.Date")]
 	[SwiftStruct (SwiftFoundationConstants.LibSwiftFoundation, SwiftFoundationConstants.SwiftDate_NominalTypeDescriptor, SwiftFoundationConstants.SwiftData_TypeMetadata, "")]
-	public class SwiftDate : ISwiftStruct {
+	public class SwiftDate : SwiftNativeValueType, ISwiftStruct {
 		public static SwiftDate SwiftDate_TimeIntervalSinceReferenceDate (double timeIntervalSinceReferenceDate)
 		{
 			unsafe {
@@ -79,8 +79,8 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal SwiftDate (SwiftNominalCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 		public static SwiftMetatype GetSwiftMetatype ()
@@ -88,24 +88,6 @@ namespace SwiftRuntimeLibrary {
 			return NativeMethodsForDDate.PIMetadataAccessor_DDate (SwiftMetadataRequest.Complete);
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		void Dispose (bool disposing)
-		{
-			if (SwiftData != null) {
-				unsafe {
-					fixed (byte* p = SwiftData) {
-						StructMarshal.Marshaler.NominalDestroy (typeof (SwiftDate),
-						    p);
-					}
-					SwiftData = null;
-				}
-			}
-		}
 		~SwiftDate ()
 		{
 			Dispose (false);
@@ -124,10 +106,6 @@ namespace SwiftRuntimeLibrary {
 					return retval;
 				}
 			}
-		}
-		public byte [] SwiftData {
-			get;
-			set;
 		}
 
 		public static explicit operator NSDate (SwiftDate date)

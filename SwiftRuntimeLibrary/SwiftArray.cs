@@ -12,9 +12,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Array")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftArray_NominalTypeDescriptor, "", "")]
-	public sealed class SwiftArray<T> : ISwiftStruct, IList<T> {
-
-		public byte [] SwiftData { get; set; }
+	public sealed class SwiftArray<T> : SwiftNativeValueType, ISwiftStruct, IList<T> {
 
 		byte [] CheckedSwiftData {
 			get {
@@ -90,8 +88,9 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal SwiftArray (SwiftNominalCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
+			
 		}
 
 		public static SwiftMetatype GetSwiftMetatype ()
@@ -135,21 +134,6 @@ namespace SwiftRuntimeLibrary {
 			}
 		}
 
-		bool disposed = false;
-		public void Dispose ()
-		{
-			if (!disposed) {
-				disposed = true;
-				Dispose (true);
-				GC.SuppressFinalize (this);
-			}
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
-		}
-			
 		public IEnumerator<T> GetEnumerator ()
 		{
 			int count = Count;

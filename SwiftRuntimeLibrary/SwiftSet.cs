@@ -8,7 +8,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Set")]
 	[SwiftStruct(SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftSet_NominalTypeDescriptor, "", "")]
-	public class SwiftSet<T> : ISwiftStruct {
+	public class SwiftSet<T> : SwiftNativeValueType, ISwiftStruct {
 
 		public SwiftSet ()
 			: this ((nint)0)
@@ -27,8 +27,8 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal SwiftSet (SwiftNominalCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 
@@ -41,23 +41,6 @@ namespace SwiftRuntimeLibrary {
 		~SwiftSet ()
 		{
 			Dispose (false);
-		}
-
-		public byte [] SwiftData { get; set; }
-
-		bool disposed = false;
-		public void Dispose ()
-		{
-			if (!disposed) {
-				disposed = true;
-				Dispose (true);
-				GC.SuppressFinalize (this);
-			}
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		public unsafe nint Count {

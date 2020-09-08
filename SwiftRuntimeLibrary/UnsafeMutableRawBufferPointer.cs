@@ -10,7 +10,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.UnsafeMutableRawBufferPointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeMutableRawBufferPointer_NominalTypeDescriptor, SwiftCoreConstants.UnsafeMutableRawBufferPointer_Metadata, "")]
-	public class UnsafeMutableRawBufferPointer : ISwiftStruct, IEnumerable<byte> {
+	public class UnsafeMutableRawBufferPointer : SwiftNativeValueType, ISwiftStruct, IEnumerable<byte> {
 
 		public unsafe UnsafeMutableRawBufferPointer (IntPtr start, nint count)
 		{
@@ -23,8 +23,8 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal UnsafeMutableRawBufferPointer (SwiftNominalCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 		public unsafe SwiftString DebugDescription {
@@ -66,22 +66,6 @@ namespace SwiftRuntimeLibrary {
 			return NativeMethodsForUnsafeMutableRawBufferPointer.PIMetadataAccessor_UnsafeMutableRawBufferPointer (SwiftMetadataRequest.Complete);
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-		void Dispose (bool disposing)
-		{
-			if (SwiftData != null) {
-				unsafe {
-					fixed (byte* p = SwiftData) {
-						StructMarshal.Marshaler.NominalDestroy (typeof (UnsafeRawBufferPointer), p);
-					}
-					SwiftData = null;
-				}
-			}
-		}
 
 		public IEnumerator<byte> GetEnumerator ()
 		{
@@ -99,8 +83,6 @@ namespace SwiftRuntimeLibrary {
 		{
 			Dispose (false);
 		}
-
-		public byte [] SwiftData { get; set; }
 	}
 
 	internal class NativeMethodsForUnsafeMutableRawBufferPointer {

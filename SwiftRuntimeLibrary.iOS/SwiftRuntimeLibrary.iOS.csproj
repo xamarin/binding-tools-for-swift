@@ -288,6 +288,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftNativeInstance.cs">
       <Link>SwiftNativeInstance.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftNativeValueType.cs">
+      <Link>SwiftNativeValueType.cs</Link>
+    </Compile>
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.iOS.cs">
     <Exec Command="make --directory=../SwiftRuntimeLibrary create-pinvokes-ios configuration=$(Configuration)" />

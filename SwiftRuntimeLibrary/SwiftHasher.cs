@@ -8,7 +8,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Hasher")]
 	[SwiftStruct(SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.Hasher_NominalTypeDescriptor, SwiftCoreConstants.Hasher_Metadata, "")]
-	public class SwiftHasher : ISwiftStruct {
+	public class SwiftHasher : SwiftNativeValueType, ISwiftStruct {
 		public unsafe SwiftHasher ()
 		{
 			fixed (byte * thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
@@ -18,6 +18,7 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal SwiftHasher (SwiftNominalCtorArgument unused)
+			: base ()
 		{
 			StructMarshal.Marshaler.PrepareNominal (this);
 		}
@@ -25,22 +26,6 @@ namespace SwiftRuntimeLibrary {
 		public static SwiftMetatype GetSwiftMetatype ()
 		{
 			return NativeMethodsForSwiftHasher.PIMetadataAccessor_Hasher (SwiftMetadataRequest.Complete);
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		unsafe void Dispose (bool disposing)
-		{
-			if (SwiftData != null) {
-				fixed (byte *p = SwiftData) {
-					StructMarshal.Marshaler.NominalDestroy (typeof (SwiftHasher), p);
-				}
-				SwiftData = null;
-			}
 		}
 
 		~SwiftHasher ()
@@ -109,11 +94,6 @@ namespace SwiftRuntimeLibrary {
 					return NativeMethodsForSwiftHasher.PI_hasherFinalize ((IntPtr)thisSwiftDataPtr);
 				}
 			}
-		}
-
-		public byte [] SwiftData {
-			get;
-			set;
 		}
 	}
 
