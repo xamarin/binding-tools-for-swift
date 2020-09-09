@@ -7,9 +7,10 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
 	public sealed class SwiftAnyObject : SwiftNativeObject {
-		SwiftAnyObject(IntPtr ptr)
+		SwiftAnyObject (IntPtr ptr)
 			: base (ptr, GetSwiftMetatype (), SwiftObjectRegistry.Registry)
 		{
+			SwiftCore.Retain (ptr);
 		}
 
 		~SwiftAnyObject ()
@@ -22,7 +23,7 @@ namespace SwiftRuntimeLibrary {
 			return new SwiftAnyObject (p);
 		}
 
-		public static SwiftAnyObject FromISwiftObject(ISwiftObject obj)
+		public static SwiftAnyObject FromISwiftObject (ISwiftObject obj)
 		{
 			if (obj == null)
 				throw new ArgumentNullException (nameof (obj));
@@ -37,7 +38,7 @@ namespace SwiftRuntimeLibrary {
 		public T CastAs<T> () where T : class, ISwiftObject
 		{
 			var metaType = StructMarshal.Marshaler.Metatypeof (typeof (T));
-			using (var optional = SwiftOptional<T>.None()) {
+			using (var optional = SwiftOptional<T>.None ()) {
 				unsafe {
 					fixed (byte* dataPtr = StructMarshal.Marshaler.PrepareNominal (optional)) {
 						NativeMethodsForSwiftAnyObject.CastAs (new IntPtr (dataPtr), SwiftObject, metaType);
@@ -51,8 +52,7 @@ namespace SwiftRuntimeLibrary {
 	}
 
 	internal static class NativeMethodsForSwiftAnyObject {
-		[DllImport(SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftAnyObject_CastAs)]
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftAnyObject_CastAs)]
 		public static extern void CastAs (IntPtr retval, IntPtr obj, SwiftMetatype meta);
 	}
 }
-
