@@ -4,10 +4,10 @@
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
-	public abstract class SwiftNativeValueType : SwiftNativeInstance, ISwiftNominalType {
+	public abstract class SwiftNativeValueType : SwiftNativeInstance, ISwiftValueType {
 		protected SwiftNativeValueType ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
+			StructMarshal.Marshaler.PrepareValueType (this);
 		}
 
 		bool disposed;

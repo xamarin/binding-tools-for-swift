@@ -16,17 +16,17 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		public SwiftSet (nint capacity)
-			: this (SwiftNominalCtorArgument.None)
+			: this (SwiftValueTypeCtorArgument.None)
 		{
 			unsafe {
-				fixed (byte* retvalData = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* retvalData = StructMarshal.Marshaler.PrepareValueType (this)) {
 					SetPI.NewSet (new IntPtr (retvalData), capacity, StructMarshal.Marshaler.Metatypeof (typeof (T)),
 							 StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
 				}
 			}
 		}
 
-		internal SwiftSet (SwiftNominalCtorArgument unused)
+		internal SwiftSet (SwiftValueTypeCtorArgument unused)
 			: base ()
 		{
 		}

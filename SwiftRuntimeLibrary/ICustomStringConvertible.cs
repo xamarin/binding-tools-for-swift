@@ -70,8 +70,8 @@ namespace SwiftRuntimeLibrary {
 				if (actualImpl != null)
 					return actualImpl.Description;
 				unsafe {
-					SwiftString retval = new SwiftString (SwiftNominalCtorArgument.None);
-					fixed (byte* retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (retval)) {
+					SwiftString retval = new SwiftString (SwiftValueTypeCtorArgument.None);
+					fixed (byte* retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (retval)) {
 						NativeMethodsForICustomStringConvertible.PIpropg_IConvertiblexamarin_NoneDConvertibleGdescription (new IntPtr (retvalSwiftDataPtr),
 						    ref container);
 						return retval;

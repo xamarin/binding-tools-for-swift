@@ -961,7 +961,7 @@ namespace SwiftReflector {
 			// {
 			//     EnumType retval = new Parameter();
 			//     unsafe {
-			//         fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(this)) {
+			//         fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(this)) {
 			//              Pinvoke.ToSwift(new IntPtr(retvalSwiftDataPtr));
 			//         }
 			//     }
@@ -972,7 +972,7 @@ namespace SwiftReflector {
 			// {
 			//      EnumType retval = new Parameter()
 			//      unsafe {
-			//          fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(this)) {
+			//          fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(this)) {
 			//              // marshal code for value
 			//              Pinvoke.ToSwift(new IntPtr(retvalSwiftDataPtr), whateverMarshaledValueIs);
 			//         }
@@ -1034,7 +1034,7 @@ namespace SwiftReflector {
 			//              throw new ArgumentOutOfRangeException("Expected Case to be Optional.");
 			//          // marshaling for return type
 			//          unsafe {
-			//              fixed (byte *thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(this)) {
+			//              fixed (byte *thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(this)) {
 			//                  Pinvoke.ToSwift(..., new IntPtr(thisSwiftDataPtr));
 			//                  // more marshaling
 			//                  return value;
@@ -1905,7 +1905,7 @@ namespace SwiftReflector {
 
 			string className = StubbedClassName (swiftClassName);
 			use.AddIfNotPresent ("SwiftRuntimeLibrary");
-			use.AddIfNotPresent (typeof (SwiftNominalTypeAttribute));
+			use.AddIfNotPresent (typeof (SwiftValueTypeAttribute));
 
 			var cl = new CSClass (CSVisibility.Public, className, null);
 			CSAttribute.FromAttr (typeof (SwiftNativeObjectAttribute), new CSArgumentList (), true).AttachBefore (cl);
@@ -3050,7 +3050,7 @@ namespace SwiftReflector {
 
 			string className = StubbedClassName (swiftClassName);
 			use.AddIfNotPresent ("SwiftRuntimeLibrary");
-			use.AddIfNotPresent (typeof (SwiftNominalTypeAttribute));
+			use.AddIfNotPresent (typeof (SwiftValueTypeAttribute));
 
 
 			var cl = new CSClass (CSVisibility.Public, className, null);
@@ -3521,7 +3521,7 @@ namespace SwiftReflector {
 
 		void ImplementMTFields (CSClass cl, CSUsingPackages use)
 		{
-			use.AddIfNotPresent (typeof (SwiftNominalTypeAttribute));
+			use.AddIfNotPresent (typeof (SwiftValueTypeAttribute));
 			cl.Fields.Add (CSFieldDeclaration.FieldLine (CSSimpleType.IntPtr, kHandleField, null,
 								   CSVisibility.Protected));
 			use.AddIfNotPresent (typeof (SwiftMetatype));
@@ -4002,14 +4002,14 @@ namespace SwiftReflector {
 		CSMethod NominalDefaultConstructor (CSType structType, ClassContents classContents, CSUsingPackages use)
 		{
 			var parms = new CSParameterList ();
-			use.AddIfNotPresent (typeof (SwiftNominalCtorArgument));
-			parms.Add (new CSParameter (new CSSimpleType (typeof (SwiftNominalCtorArgument)), "unused"));
+			use.AddIfNotPresent (typeof (SwiftValueTypeCtorArgument));
+			parms.Add (new CSParameter (new CSSimpleType (typeof (SwiftValueTypeCtorArgument)), "unused"));
 			var body = new CSCodeBlock ();
 
 			string consName = StubbedClassName (classContents.Name);
 
 			var ctor = new CSMethod (CSVisibility.Internal, CSMethodKind.None, null, new CSIdentifier (consName), parms, body);
-			body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.PrepareNominal", false, CSIdentifier.This));
+			body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.PrepareValueType", false, CSIdentifier.This));
 
 			return ctor;
 		}
@@ -6230,7 +6230,7 @@ namespace SwiftReflector {
 			al.Add (new CSArgument (CSConstant.Val (library)));
 			al.Add (new CSArgument (CSConstant.Val (nominalSym)));
 			al.Add (new CSArgument (CSConstant.Val (metaSym)));
-			return CSAttribute.FromAttr (typeof (SwiftNominalTypeAttribute), al, true);
+			return CSAttribute.FromAttr (typeof (SwiftValueTypeAttribute), al, true);
 		}
 
 		static CSAttribute MakeSwiftStructTypeAttribute (string library, string nominalSym, string metaSym, string witnessSym)
