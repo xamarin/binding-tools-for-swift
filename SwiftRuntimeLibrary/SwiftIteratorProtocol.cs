@@ -30,7 +30,7 @@ namespace SwiftRuntimeLibrary {
 	}
 
 
-	public class SwiftIteratorProtocolProxy<T> : ISwiftObject, IIteratorProtocol<T> {
+	public class SwiftIteratorProtocolProxy<T> : SwiftNativeObject, IIteratorProtocol<T> {
 		static SwiftIteratorProtocolProxy ()
 		{
 			SetVTable ();
@@ -52,33 +52,17 @@ namespace SwiftRuntimeLibrary {
 
 		IIteratorProtocol<T> proxiedType;
 
+
 		public SwiftIteratorProtocolProxy (IIteratorProtocol<T> proxiedType)
+			: base (IteratorProtocolPinvokes.NewIteratorProtocol (StructMarshal.Marshaler.Metatypeof (typeof (T))),
+				  GetSwiftMetatype (), SwiftObjectRegistry.Registry)
 		{
 			this.proxiedType = proxiedType;
-			SwiftObject = IteratorProtocolPinvokes.NewIteratorProtocol (StructMarshal.Marshaler.Metatypeof (typeof (T)));
-			SwiftCore.Retain (SwiftObject);
-			SwiftObjectRegistry.Registry.Add (this);
-		}
-
-		SwiftIteratorProtocolProxy (IntPtr ptr)
-			: this (ptr, SwiftObjectRegistry.Registry)
-		{
 		}
 
 		SwiftIteratorProtocolProxy (IntPtr ptr, SwiftObjectRegistry registry)
+			: base (ptr, GetSwiftMetatype (), registry)
 		{
-			SwiftObject = ptr;
-			SwiftCore.Retain (ptr);
-			registry.Add (this);
-		}
-
-		#region IDisposable implementation
-
-		bool disposed = false;
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
 		}
 
 		~SwiftIteratorProtocolProxy ()
@@ -86,37 +70,10 @@ namespace SwiftRuntimeLibrary {
 			Dispose (false);
 		}
 
-		void Dispose (bool disposing)
-		{
-			if (!disposed) {
-				if (disposing) {
-					DisposeManagedResources ();
-				}
-				DisposeUnmanagedResources ();
-				disposed = true;
-			}
-		}
-
-		void DisposeManagedResources ()
-		{
-		}
-
-		void DisposeUnmanagedResources ()
-		{
-			SwiftCore.Release (SwiftObject);
-		}
-		#endregion
-
-		#region ISwiftObject implementation
-
-		public IntPtr SwiftObject { get; set; }
-
 		public static SwiftIteratorProtocolProxy<T> XamarinFactory (IntPtr p)
 		{
 			return new SwiftIteratorProtocolProxy<T> (p, SwiftObjectRegistry.Registry);
 		}
-
-		#endregion
 
 		public static SwiftMetatype GetSwiftMetatype ()
 		{
