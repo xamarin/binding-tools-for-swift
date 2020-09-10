@@ -40,7 +40,7 @@ namespace SwiftRuntimeLibrary {
 			var metaType = StructMarshal.Marshaler.Metatypeof (typeof (T));
 			using (var optional = SwiftOptional<T>.None ()) {
 				unsafe {
-					fixed (byte* dataPtr = StructMarshal.Marshaler.PrepareNominal (optional)) {
+					fixed (byte* dataPtr = StructMarshal.Marshaler.PrepareValueType (optional)) {
 						NativeMethodsForSwiftAnyObject.CastAs (new IntPtr (dataPtr), SwiftObject, metaType);
 						return optional.HasValue ? optional.Value : default (T);
 					}

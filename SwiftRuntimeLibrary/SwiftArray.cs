@@ -35,13 +35,13 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		internal SwiftArray (IntPtr p)
-			: this (SwiftNominalCtorArgument.None)
+			: this (SwiftValueTypeCtorArgument.None)
 		{
 			CheckedSwiftData.WriteIntPtr (p, offset: 0);
 		}
 
 		public SwiftArray ()
-			: this ((nint) 0)
+			: this ((nint)0)
 		{
 
 		}
@@ -53,12 +53,12 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		public SwiftArray (IEnumerable<T> collection)
-			: this ((nint) 0)
+			: this ((nint)0)
 		{
 			AddRange (collection);
 		}
 
-		public SwiftArray (params T[] items)
+		public SwiftArray (params T [] items)
 			: this (Exceptions.ThrowOnNull (items, nameof (items)).Length)
 		{
 			AddRange (items);
@@ -67,7 +67,7 @@ namespace SwiftRuntimeLibrary {
 		static SwiftMetatype ElementMetatype {
 			get {
 				return StructMarshal.Marshaler.Metatypeof (typeof (T));
-			 }
+			}
 		}
 
 		static int ElementStride {
@@ -87,7 +87,7 @@ namespace SwiftRuntimeLibrary {
 			Dispose (false);
 		}
 
-		internal SwiftArray (SwiftNominalCtorArgument unused)
+		internal SwiftArray (SwiftValueTypeCtorArgument unused)
 			: base ()
 		{
 			

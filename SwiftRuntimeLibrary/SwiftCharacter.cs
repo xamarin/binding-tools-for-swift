@@ -12,7 +12,7 @@ namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Character")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftCharacter_NominalTypeDescriptor, SwiftCoreConstants.SwiftCharacter_Metadata, "")]
 	public sealed class SwiftCharacter : SwiftNativeValueType, ISwiftStruct {
-		public unsafe SwiftCharacter (string character) : this (SwiftNominalCtorArgument.None)
+		public unsafe SwiftCharacter (string character) : this (SwiftValueTypeCtorArgument.None)
 		{
 			SwiftString swiftString = SwiftString.FromString (character);
 			fixed (byte* src = swiftString.SwiftData)
@@ -24,7 +24,7 @@ namespace SwiftRuntimeLibrary {
 		{
 		}
 
-		internal SwiftCharacter (SwiftNominalCtorArgument unused)
+		internal SwiftCharacter (SwiftValueTypeCtorArgument unused)
 			: base ()
 		{
 		}
@@ -48,7 +48,7 @@ namespace SwiftRuntimeLibrary {
 
 		public unsafe override string ToString ()
 		{
-			SwiftString swiftString = new SwiftString (SwiftNominalCtorArgument.None);
+			SwiftString swiftString = new SwiftString (SwiftValueTypeCtorArgument.None);
 			fixed (byte* source = SwiftData) {
 				fixed (byte* dest = swiftString.SwiftData) {
 					GetCharacterValue (source, dest);

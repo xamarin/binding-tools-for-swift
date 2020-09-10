@@ -61,9 +61,6 @@
     <Compile Include="..\SwiftRuntimeLibrary\ISwiftHashable.cs">
       <Link>ISwiftHashable.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftRuntimeLibrary\ISwiftNominalType.cs">
-      <Link>ISwiftNominalType.cs</Link>
-    </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\ISwiftObject.cs">
       <Link>ISwiftObject.cs</Link>
     </Compile>
@@ -285,6 +282,9 @@
     </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftNativeValueType.cs">
       <Link>SwiftNativeValueType.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\ISwiftValueType.cs">
+      <Link>ISwiftValueType.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

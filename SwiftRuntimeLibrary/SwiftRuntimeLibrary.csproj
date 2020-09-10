@@ -71,7 +71,6 @@
     <Compile Include="SwiftHashableProxy.cs" />
     <Compile Include="SwiftMarshal\SwiftExternalProtocolDefinition.cs" />
     <Compile Include="SwiftDictionary.cs" />
-    <Compile Include="ISwiftNominalType.cs" />
     <Compile Include="SwiftClosureRepresentation.cs" />
     <Compile Include="SwiftDotNetCapsule.cs" />
     <Compile Include="MonoPInvokeCallbackAttribute.cs" />
@@ -119,6 +118,7 @@
     <Compile Include="SwiftNativeObject.cs" />
     <Compile Include="SwiftNativeInstance.cs" />
     <Compile Include="SwiftNativeValueType.cs" />
+    <Compile Include="ISwiftValueType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

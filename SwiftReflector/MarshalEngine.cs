@@ -70,7 +70,7 @@ namespace SwiftReflector {
 					var thisDataPtr = new CSIdentifier (Uniqueify ("thisDataPtr", identifiersUsed));
 					identifiersUsed.Add (thisDataPtr.Name);
 					var returnFixed = new CSFixedCodeBlock (CSSimpleType.ByteStar, thisDataPtr,
-										new CSFunctionCall ("StructMarshal.Marshaler.PrepareNominal", false, thisID), null);
+										new CSFunctionCall ("StructMarshal.Marshaler.PrepareValueType", false, thisID), null);
 					fixedChain.Add (returnFixed);
 					var thisPtr = new CSIdentifier (Uniqueify ("thisPtr", identifiersUsed));
 					identifiersUsed.Add (thisPtr.Name);
@@ -155,7 +155,7 @@ namespace SwiftReflector {
 				return CSVariableDeclaration.VarLine (returnType, id, objectType.Ctor ());
 			} else {
 				use.AddIfNotPresent (typeof (StructMarshal));
-				var marshalCreate = CSFunctionCall.Function ($"StructMarshal.DefaultNominal<{objectType}>");
+				var marshalCreate = CSFunctionCall.Function ($"StructMarshal.DefaultValueType<{objectType}>");
 
 				return CSVariableDeclaration.VarLine (returnType, id, marshalCreate);
 			}
@@ -288,7 +288,7 @@ namespace SwiftReflector {
 
 					if (returnEntity != null && returnEntity.EntityType == EntityType.Enum) {
 						// SomeEnumType someEnum = new SomeEnum();
-						// fixed (byte *retvalPtr = StructMarshal.Marshaler.PrepareNominal(someEnum)) {
+						// fixed (byte *retvalPtr = StructMarshal.Marshaler.PrepareValueType(someEnum)) {
 						//    ...
 						//    IntPtr retvalIntPtr = new IntPtr(retvalPtr);
 						//    SomePInvokeCall(retValIntPtr);
@@ -843,7 +843,7 @@ namespace SwiftReflector {
 
 		CSBaseExpression MarshalNominalAsPointer (CSParameter p, bool isReturnValue)
 		{
-			// fixed (byte * pSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(p)) {
+			// fixed (byte * pSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(p)) {
 			//   SomePiCall(... newIntPtr(pSwiftDataPtr));
 			// }
 			string enumDataPtrName = Uniqueify (String.Format ("{0}SwiftDataPtr", p.Name.Name), identifiersUsed);
@@ -853,7 +853,7 @@ namespace SwiftReflector {
 			RequiredUnsafeCode = true;
 			use.AddIfNotPresent (typeof (StructMarshal));
 			CSFixedCodeBlock fixedBlock = new CSFixedCodeBlock (CSSimpleType.ByteStar, enumDataPtr,
-			    new CSFunctionCall ("StructMarshal.Marshaler.PrepareNominal", false, p.Name), null);
+			    new CSFunctionCall ("StructMarshal.Marshaler.PrepareValueType", false, p.Name), null);
 			fixedChain.Add (fixedBlock);
 			return new CSCastExpression ("IntPtr", enumDataPtr);
 		}
@@ -1595,7 +1595,7 @@ namespace SwiftReflector {
 
 		CSBaseExpression MarshalNominal (CSParameter p)
 		{
-			// fixed (byte *nameSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(name)) {
+			// fixed (byte *nameSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(name)) {
 			// ...
 			// someCallToAPinvoke(new IntPtr(nameSwiftDataPtr))
 			// ...
@@ -1610,7 +1610,7 @@ namespace SwiftReflector {
 			RequiredUnsafeCode = true;
 			use.AddIfNotPresent (typeof (StructMarshal));
 			var fixedBlock = new CSFixedCodeBlock (CSSimpleType.ByteStar, enumDataPtr,
-							       new CSFunctionCall ("StructMarshal.Marshaler.PrepareNominal", false, p.Name), null);
+							       new CSFunctionCall ("StructMarshal.Marshaler.PrepareValueType", false, p.Name), null);
 			fixedChain.Add (fixedBlock);
 			return new CSCastExpression ("IntPtr", enumDataPtr);
 		}

@@ -13,12 +13,12 @@ namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.String")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftString_NominalTypeDescriptor, SwiftCoreConstants.SwiftString_Metadata, "")]
 	public sealed class SwiftString : SwiftNativeValueType, ISwiftStruct {
-		internal SwiftString (SwiftNominalCtorArgument unused)
+		internal SwiftString (SwiftValueTypeCtorArgument unused)
 			: base ()
 		{
 		}
 
-		public unsafe SwiftString (string s) : this (SwiftNominalCtorArgument.None)
+		public unsafe SwiftString (string s) : this (SwiftValueTypeCtorArgument.None)
 		{
 			fixed (byte* result = SwiftData) {
 				FromUTF16Pointer (s, s.Length, result);
