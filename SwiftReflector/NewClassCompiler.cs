@@ -835,6 +835,8 @@ namespace SwiftReflector {
 			pinvokes.Add (enumPI);
 			var usedPinvokeNames = new List<string> ();
 
+			use.AddIfNotPresent (typeof (SwiftNativeValueType));
+			enumClass.Inheritance.Add (typeof (SwiftNativeValueType));
 			use.AddIfNotPresent (typeof (ISwiftEnum));
 			enumClass.Inheritance.Add (typeof (ISwiftEnum));
 			var enumContents = moduleInventory.FindClass (enumDecl.ToFullyQualifiedName (true));
@@ -843,7 +845,6 @@ namespace SwiftReflector {
 			}
 			AddGenerics (enumClass, enumDecl, enumContents, use);
 
-			ReserveFieldSpace (enumClass);
 			string witName = enumContents.WitnessTable.ValueWitnessTable != null ? enumContents.WitnessTable.ValueWitnessTable.MangledName.Substring (1) : "";
 			string nomSym = enumContents.TypeDescriptor.MangledName.Substring (1);
 			string metaDataSym = enumContents.DirectMetadata != null ? enumContents.DirectMetadata.MangledName.Substring (1) : "";
@@ -852,7 +853,7 @@ namespace SwiftReflector {
 
 			string libPath = PInvokeName (wrapper.ModuleLibPath, swiftLibPath);
 
-			ImplementNominalIDisposable (enumClass, use);
+			ImplementValueTypeIDisposable (enumClass, use);
 			AddInheritedProtocols (enumDecl, enumClass, enumContents, PInvokeName (swiftLibPath), use, errors);
 
 			ImplementMethods (enumClass, enumPI, usedPinvokeNames, swiftEnumName, classContents, enumDecl, use, wrapper, tlf => true, swiftLibPath, errors);
@@ -944,7 +945,7 @@ namespace SwiftReflector {
 
 			CompileInnerNominalsInto (enumDecl, enumClass, moduleInventory, use, wrapper, swiftLibPath, pinvokes, errors);
 
-			TypeNameAttribute (enumDecl).AttachBefore (enumClass);
+			TypeNameAttribute (enumDecl, use).AttachBefore (enumClass);
 			return enumClass;
 		}
 
@@ -1098,17 +1099,6 @@ namespace SwiftReflector {
 			payloadProperty.Getter.Add (CSReturn.ReturnLine (new CSFunctionCall (csFuncImplName, false)));
 
 			cl.Properties.Add (payloadProperty);
-		}
-
-
-
-		static void ReserveFieldSpace (CSClass enumStruct)
-		{
-			// public byte[] SwiftData { get; set; }
-
-			enumStruct.Properties.Add (new CSProperty (new CSSimpleType ("byte", true),
-				CSMethodKind.None, new CSIdentifier ("SwiftData"), CSVisibility.Public, new CSCodeBlock (), CSVisibility.Public, new CSCodeBlock ()));
-
 		}
 
 		static TLFunction FindEnumCaseFinderWrapper (EnumDeclaration enumDecl, WrappingResult wrapper)
@@ -1401,7 +1391,8 @@ namespace SwiftReflector {
 				currentRawValue++;
 				csEnum.Values.Add (enumBinding);
 			}
-			TypeNameAttribute (enumDecl).AttachBefore (csEnum);
+
+			TypeNameAttribute (enumDecl, use).AttachBefore (csEnum);
 			return csEnum;
 		}
 
@@ -1491,12 +1482,13 @@ namespace SwiftReflector {
 			var picl = new CSClass (CSVisibility.Internal, PIClassName (swiftClassName));
 			var usedPinvokeNames = new List<string> ();
 
+			use.AddIfNotPresent (typeof (SwiftNativeValueType));
+			st.Inheritance.Add (typeof (SwiftNativeValueType));
 			use.AddIfNotPresent (typeof (ISwiftStruct));
 			st.Inheritance.Add (typeof (ISwiftStruct));
 			pinvokes.Add (picl);
 			AddGenerics (st, structDecl, classContents, use);
-			ReserveFieldSpace (st);
-			ImplementNominalIDisposable (st, use);
+			ImplementValueTypeIDisposable (st, use);
 
 			CompileInnerNominalsInto (structDecl, st, modInventory, use, wrapper, swiftLibraryPath, pinvokes, errors);
 
@@ -1509,7 +1501,7 @@ namespace SwiftReflector {
 			                             classContents.WitnessTable.ValueWitnessTable.MangledName.Substring (1) :
 			                             "";
 			MakeSwiftStructTypeAttribute (PInvokeName (swiftLibraryPath),
-			                              nomSym, metaDataSym, witSym).AttachBefore (st);
+			                              nomSym, metaDataSym, witSym, use).AttachBefore (st);
 
 			var ctors = MakeStructConstructors (st, picl, usedPinvokeNames, structDecl, classContents,
 			                                    use, st.ToCSType (), wrapper, swiftLibraryPath, errors);
@@ -1526,7 +1518,7 @@ namespace SwiftReflector {
 			ImplementProperties (st, picl, usedPinvokeNames, structDecl, classContents, null, use, wrapper, true, false, tlf => true, swiftLibraryPath, errors);
 			ImplementSubscripts (st, picl, usedPinvokeNames, structDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
-			TypeNameAttribute (structDecl).AttachBefore (st);
+			TypeNameAttribute (structDecl, use).AttachBefore (st);
 			return st;
 		}
 
@@ -1846,7 +1838,7 @@ namespace SwiftReflector {
 				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface, false);
 			}
 
-			TypeNameAttribute (protocolDecl).AttachBefore (iface);
+			TypeNameAttribute (protocolDecl, use).AttachBefore (iface);
 			return iface;
 		}
 
@@ -1987,7 +1979,7 @@ namespace SwiftReflector {
 			if (wrapUse != null)
 				use.Remove (wrapUse);
 
-			TypeNameAttribute (classDecl).AttachBefore (cl);
+			TypeNameAttribute (classDecl, use).AttachBefore (cl);
 			return cl;
 		}
 
@@ -3099,7 +3091,7 @@ namespace SwiftReflector {
 			ImplementProperties (cl, picl, usedPinvokeNames, classDecl, classContents, null, use, wrapper, false, false, tlf => true, swiftLibraryPath, errors);
 			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
-			TypeNameAttribute (classDecl).AttachBefore (cl);
+			TypeNameAttribute (classDecl, use).AttachBefore (cl);
 			return cl;
 		}
 
@@ -3511,62 +3503,8 @@ namespace SwiftReflector {
 			cl.Properties.Add (prop);
 		}
 
-		void ImplementNominalIDisposable (CSClass cl, CSUsingPackages use)
+		void ImplementValueTypeIDisposable (CSClass cl, CSUsingPackages use)
 		{
-			//public void Dispose()
-			//{
-			//	Dispose(true);
-			//	GC.SuppressFinalize(this);
-			//}
-			var disposeID = new CSIdentifier ("Dispose");
-			var disp1Body = new CSCodeBlock ();
-			var disp1 = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void,
-			                        disposeID, new CSParameterList (), disp1Body);
-			disp1Body.Add (CSFunctionCall.FunctionCallLine (disposeID, false, CSConstant.Val (true)));
-			use.AddIfNotPresent (typeof (GC));
-			disp1Body.Add (CSFunctionCall.FunctionCallLine ("GC.SuppressFinalize", false, CSIdentifier.This));
-			cl.Methods.Add (disp1);
-
-			//private void Dispose(bool disposing)
-			//{
-			//	if (SwiftData != null)
-			//	{
-			//		unsafe
-			//		{
-			//			fixed (byte* p = SwiftData)
-			//			{
-			//				StructMarshal.Marshaler.NominalDestroy(typeof(this), p);
-			//			}
-			//			SwiftData = null;
-			//		}
-			//	}
-			//}
-			var swiftDataID = new CSIdentifier ("SwiftData");
-			var nullID = new CSIdentifier ("null");
-			var disp2body = new CSCodeBlock ();
-			var disposingID = new CSIdentifier ("disposing");
-			var disp2 = new CSMethod (CSVisibility.None, CSMethodKind.None, CSSimpleType.Void,
-			                        disposeID, new CSParameterList (new CSParameter (CSSimpleType.Bool, disposingID)),
-			                        disp2body);
-			var bytestarID = new CSIdentifier ("p");
-			var fixedBody = new CSCodeBlock ();
-			var fixedBlock = new CSFixedCodeBlock (CSSimpleType.ByteStar, bytestarID, swiftDataID, fixedBody);
-			use.AddIfNotPresent (typeof (StructMarshal));
-			fixedBlock.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.NominalDestroy", false,
-			                                               new CSFunctionCall ("typeof", false, new CSIdentifier (cl.ToCSType ().ToString ())),
-			                                               bytestarID));
-
-			var unsafeBlock = new CSUnsafeCodeBlock (null);
-			unsafeBlock.Add (fixedBlock);
-			unsafeBlock.Add (CSAssignment.Assign (swiftDataID, CSAssignmentOperator.Assign, nullID));
-
-			var ifBlock = new CSCodeBlock ();
-			var ifelse = new CSIfElse (swiftDataID != nullID, ifBlock);
-			ifBlock.Add (unsafeBlock);
-			disp2body.Add (ifelse);
-
-			cl.Methods.Add (disp2);
-
 			ImplementFinalizer (cl); 
 		}
 
@@ -3846,10 +3784,10 @@ namespace SwiftReflector {
 				foreach (CSMethod m in StructConstructorToMethod (structDecl, funcDecl, st, picl, usedPinvokeNames, csStructType, classContents, tlf, use, wrapper, swiftLibraryPath, errors))
 					yield return m;
 			}
-			yield return NominalDefaultConstructor (csStructType, classContents, use);
+			yield return ValueTypeDefaultConstructor (csStructType, classContents, use);
 		}
 
-		CSMethod NominalDefaultConstructor (CSType structType, ClassContents classContents, CSUsingPackages use)
+		CSMethod ValueTypeDefaultConstructor (CSType structType, ClassContents classContents, CSUsingPackages use)
 		{
 			var parms = new CSParameterList ();
 			use.AddIfNotPresent (typeof (SwiftValueTypeCtorArgument));
@@ -3858,8 +3796,7 @@ namespace SwiftReflector {
 
 			string consName = StubbedClassName (classContents.Name);
 
-			var ctor = new CSMethod (CSVisibility.Internal, CSMethodKind.None, null, new CSIdentifier (consName), parms, body);
-			body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.PrepareValueType", false, CSIdentifier.This));
+			var ctor = new CSMethod (CSVisibility.Internal, CSMethodKind.None, null, new CSIdentifier (consName), parms, new CSBaseExpression [0], true, body);
 
 			return ctor;
 		}
@@ -6066,8 +6003,9 @@ namespace SwiftReflector {
 			return CSAttribute.FromAttr (typeof (SwiftValueTypeAttribute), al, true);
 		}
 
-		static CSAttribute MakeSwiftStructTypeAttribute (string library, string nominalSym, string metaSym, string witnessSym)
+		static CSAttribute MakeSwiftStructTypeAttribute (string library, string nominalSym, string metaSym, string witnessSym, CSUsingPackages use)
 		{
+			use.AddIfNotPresent (typeof (SwiftStructAttribute));
 			var al = new CSArgumentList ();
 			al.Add (CSConstant.Val (library));
 			al.Add (CSConstant.Val (nominalSym));
@@ -6297,8 +6235,9 @@ namespace SwiftReflector {
 			return ct.ClassName.ToFullyQualifiedName (false) == named.NameWithoutModule;
 		}
 
-		static CSAttribute TypeNameAttribute (BaseDeclaration decl)
+		static CSAttribute TypeNameAttribute (BaseDeclaration decl, CSUsingPackages use)
 		{
+			use.AddIfNotPresent (typeof (SwiftTypeNameAttribute));
 			var argList = new CSArgumentList ();
 			argList.Add (new CSArgument (CSConstant.Val (decl.ToFullyQualifiedName ())));
 			return CSAttribute.FromAttr (typeof (SwiftTypeNameAttribute), argList);
