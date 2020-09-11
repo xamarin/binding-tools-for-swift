@@ -5,7 +5,7 @@ using System;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
-	[SwiftNativeObject ()]
+	[SwiftNativeObjectTag ()]
 	public class BaseAssociatedTypeProxy : SwiftNativeObject {
 		protected BaseAssociatedTypeProxy (IntPtr handle, SwiftMetatype classHandle, SwiftObjectRegistry registry)
 			: base (handle, classHandle, registry)

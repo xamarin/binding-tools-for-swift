@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftRuntimeLibrary {
-	[SwiftNativeObject]
+	[SwiftNativeObjectTag]
 	public class EveryProtocol : SwiftNativeObject {
 		protected IntPtr handle;
 

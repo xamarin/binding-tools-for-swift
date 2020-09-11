@@ -113,7 +113,8 @@ namespace SwiftReflector {
 				} else {
 					if (isHomonym) {
 						use.AddIfNotPresent (typeof (SwiftObjectRegistry));
-						postMarshalCode.Add (CSReturn.ReturnLine (new CSFunctionCall (cl.Name.Name, true, thisIntPtr, new CSIdentifier ("SwiftObjectRegistry.Registry"))));
+						postMarshalCode.Add (CSReturn.ReturnLine (new CSFunctionCall (cl.Name.Name, true, thisIntPtr,
+							new CSFunctionCall ($"{cl.Name.Name}.GetSwiftMetatype", false), new CSIdentifier ("SwiftObjectRegistry.Registry"))));
 					} else {
 						postMarshalCode.Add (CSReturn.ReturnLine (thisIntPtr));
 					}
