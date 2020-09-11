@@ -12,7 +12,7 @@ namespace SwiftRuntimeLibrary {
 
 		protected SwiftNativeObject (IntPtr handle, SwiftMetatype classHandle, SwiftObjectRegistry registry)
 		{
-			if (SwiftNativeObjectAttribute.IsSwiftNativeObject (this)) {
+			if (SwiftNativeObjectTagAttribute.IsSwiftNativeObject (this)) {
 				object_flags |= SwiftObjectFlags.IsDirectBinding;
 			}
 			class_handle = classHandle;
@@ -39,6 +39,7 @@ namespace SwiftRuntimeLibrary {
 		protected virtual void DisposeUnmanagedResources ()
 		{
 			SwiftCore.Release (SwiftObject);
+			SwiftObject = IntPtr.Zero;
 		}
 
 		public IntPtr SwiftObject {
