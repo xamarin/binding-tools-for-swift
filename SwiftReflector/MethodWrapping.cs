@@ -868,7 +868,7 @@ namespace SwiftReflector {
 			var elseclause = new SLCodeBlock (null).And (new SLThrow (new SLIdentifier ("SwiftEnumError.undefined")));
 
 
-			var ifcase = new SLIfElse (new SLIdentifier (String.Format (".{0}(let {1}) = {2}", elemName, patXId.Name, valId.Name)),
+			var ifcase = new SLIfElse (new SLInject (String.Format (".{0}(let {1}) = {2}", elemName, patXId.Name, valId.Name)),
 						  ifclause, elseclause, true);
 			body.Add (ifcase);
 

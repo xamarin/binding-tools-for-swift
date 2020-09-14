@@ -191,7 +191,7 @@ namespace tomwiftytest {
 			block.Add (new CSIdentifier ("\n#if _MAC_TS_TEST_\n"));
 			block.Add (CSVariableDeclaration.VarLine (CSSimpleType.String, pathID,
 							      new CSFunctionCall ("Path.Combine", false,
-									       new CSIdentifier ("Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)") +
+									       new CSInject ("Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)") +
 									       CSConstant.Val ("/Documents/"),
 									       CSConstant.Val (fileName))));
 			block.Add (new CSIdentifier ("\n#else\n"));
@@ -508,7 +508,7 @@ public static class Console {
 					),
 					CSCodeBlock.Create (
 						new CSIfElse (
-							new CSIdentifier ("string.IsNullOrEmpty (Filename)"),
+							new CSInject ("string.IsNullOrEmpty (Filename)"),
 							CSCodeBlock.Create (CSFunctionCall.FunctionCallLine ("global::System.Console.Write", new CSIdentifier ("value"))),
 							CSCodeBlock.Create (CSFunctionCall.FunctionCallLine ("System.IO.File.AppendAllText", new CSIdentifier ("Filename"), new CSIdentifier ("value")))
 						)
@@ -528,7 +528,7 @@ public static class Console {
 						CSFunctionCall.FunctionCallLine (
 							"write",
 							false,
-							new CSIdentifier ("value?.ToString ()")
+							new CSInject ("value?.ToString ()")
 						)
 					)
 				)
@@ -547,7 +547,7 @@ public static class Console {
 						CSFunctionCall.FunctionCallLine (
 							"write",
 							false,
-							new CSIdentifier ("value == null ? string.Empty : string.Format (value, args)")
+							new CSInject ("value == null ? string.Empty : string.Format (value, args)")
 						)
 					)
 				)
@@ -565,7 +565,7 @@ public static class Console {
 						CSFunctionCall.FunctionCallLine (
 							"write",
 							false,
-							new CSIdentifier ("value?.ToString () + Environment.NewLine")
+							new CSInject ("value?.ToString () + Environment.NewLine")
 						)
 					)
 				)
@@ -584,7 +584,7 @@ public static class Console {
 						CSFunctionCall.FunctionCallLine (
 							"write",
 							false,
-							new CSIdentifier ("(value == null ? string.Empty : string.Format (value, args)) + Environment.NewLine")
+							new CSInject ("(value == null ? string.Empty : string.Format (value, args)) + Environment.NewLine")
 						)
 					)
 				)
