@@ -325,7 +325,7 @@ namespace SwiftReflector {
 
 				var superProtocol = entity.Type as ProtocolDeclaration;
 				if (superProtocol == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 14, $"Found and entity for {entity.Type.Name}, but it was a {entity.Type.GetType ().Name} instead of a protocol.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 14, $"Found an entity for {entity.Type.Name}, but it was a {entity.Type.GetType ().Name} instead of a protocol.");
 				}
 				OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (superProtocol).Select (m => MarkOverrideSurrogate (m, Reparent (new FunctionDeclaration (m), OverriddenClass))));
 				HandleProtocolMethods (superProtocol);
@@ -344,7 +344,7 @@ namespace SwiftReflector {
 
 			var superClass = entity.Type as ClassDeclaration;
 			if (superClass == null) {
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 17, $"Found and entity for {entity.Type.Name}, but it was a {entity.Type.GetType ().Name} instead of a class.");
+				throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 17, $"Found an entity for {entity.Type.Name}, but it was a {entity.Type.GetType ().Name} instead of a class.");
 			}
 			OverriddenVirtualMethods.AddRange (VirtualMethodsForClass (superClass).Select (m => MarkOverrideSurrogate (m, Reparent (new FunctionDeclaration (m), OverriddenClass))));
 			HandleSuperClassVirtualMethods (superClass);

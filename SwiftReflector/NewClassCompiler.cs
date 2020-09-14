@@ -2038,7 +2038,7 @@ namespace SwiftReflector {
 
 				ProtocolDeclaration superProtocol = entity.Type as ProtocolDeclaration;
 				if (superProtocol == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 35, $"Found and entity for {entity.Type.Name}, but it was a {entity.Type.ToString ()} instead of a protocol.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 35, $"Found an entity for {entity.Type.Name}, but it was a {entity.Type.ToString ()} instead of a protocol.");
 				}
 				functions.AddRange (superProtocol.AllVirtualMethods ().Where(func => !(func.IsDeprecated || func.IsUnavailable)));
 				CollectAllProtocolMethods (functions, superProtocol);
