@@ -460,13 +460,13 @@ namespace SwiftReflector {
 			CSIdentifier csharpCall = null;
 			var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
 			if (forProtocol && !hasAssociatedTypes) {
-				csharpCall = new CSIdentifier ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{prop.Name.Name}");
+				csharpCall = new CSInject ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{prop.Name.Name}");
 			} else {
 				var call = isObjC ?
 					$"ObjCRuntime.Runtime.GetNSObject<{thisTypeName}> (self).{prop.Name.Name}" :
 					$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisTypeName}> (self).{prop.Name.Name}";
 
-				csharpCall = new CSIdentifier (call);
+				csharpCall = new CSInject (call);
 			}
 
 			if (funcDecl.IsGetter) {
@@ -559,7 +559,7 @@ namespace SwiftReflector {
 						var proxObjName = MarshalEngine.Uniqueify ("proxyObj", identifiersUsed);
 						identifiersUsed.Add (proxObjName);
 						var proxyObjId = new CSIdentifier (proxObjName);
-						var proxyObjDecl = CSVariableDeclaration.VarLine (proxyObjId, new CSIdentifier ($"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisTypeName}> ({delegateParams [1].Name})"));
+						var proxyObjDecl = CSVariableDeclaration.VarLine (proxyObjId, new CSInject ($"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisTypeName}> ({delegateParams [1].Name})"));
 						body.Add (proxyObjDecl);
 						valueExpr = new CSCastExpression (methodType, new CSParenthesisExpression (new CSBinaryExpression (CSBinaryOperator.NullCoalesce, proxyObjId.Dot (NewClassCompiler.kInterfaceImpl), proxyObjId)));
 					} else {
