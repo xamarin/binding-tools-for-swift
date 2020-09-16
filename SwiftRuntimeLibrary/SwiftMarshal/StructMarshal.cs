@@ -667,6 +667,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return swiftDestinationMemory;
 			}
 #endif
+			if (IsSwiftProtocol (t)) {
+				return MarshalProtocolToSwift (t, o, swiftDestinationMemory);
+			}
 
 			if (IsSwiftError (t)) {
 				return MarshalSwiftErrorToSwift ((SwiftError)o, swiftDestinationMemory);
@@ -1081,6 +1084,12 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 												    argTypes, returnType);
 				}
 			}
+		}
+
+		public IntPtr MarshalProtocolToSwift (Type t, object implementsProtocol, IntPtr swiftDestinationMemory)
+		{
+			var container = SwiftObjectRegistry.Registry.ExistentialContainerForProtocols (implementsProtocol, t);
+			return container.CopyTo (swiftDestinationMemory);
 		}
 
 
@@ -1522,7 +1531,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return;
 			}
 #endif
-
+			if (IsSwiftProtocol (type)) {
+				return;
+			}
 			throw new SwiftRuntimeException ($"Don't know how to release a swift pointer to {type}.");
 		}
 

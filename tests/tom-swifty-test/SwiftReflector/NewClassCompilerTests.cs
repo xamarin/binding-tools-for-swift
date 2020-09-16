@@ -1533,6 +1533,96 @@ public func tryMeHere (a:DisposeMeThanks ) -> Int {
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "SwiftObject handle is IntPtr.Zero, likely because it was disposed.\n");
 		}
+
+		[Test]
+		public void SandwichTest ()
+		{
+			var swiftCode = @"
+public protocol Filling {
+    var stuff: String { get }
+}
+
+public protocol Bread {
+    var name: String { get }
+    var sliced: Bool { get }
+}
+
+public struct Rye : Bread {
+    public init () { }
+    public var name:String {
+        get { return ""rye"" }
+    }
+    public var sliced:Bool {
+        get { return true }
+    }
+}
+
+public struct Ham : Filling {
+    public init () { }
+    public var stuff: String {
+        get { return ""ham"" }
+    }
+}
+
+public enum LettuceKind {
+    case IceBerg, Romaine, Bib
+}
+
+public struct Lettuce : Filling {
+    private var kind: LettuceKind
+    public init (of: LettuceKind) {
+        kind = of
+    }
+    public var stuff: String {
+        get {
+            return ""\(kindToString ()) lettuce""
+        }
+    }
+    
+    private func kindToString () -> String {
+        switch kind {
+        case .IceBerg: return ""iceberg""
+        case .Romaine: return ""romaine""
+        case .Bib: return ""bib""
+        }
+    }
+}
+
+public func printSandwich (of: Bread, with: Filling) {
+    print (""\(with.stuff) on \(of.name)"")
+}
+";
+
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("hi"));
+			var callingCode = CSCodeBlock.Create (printer);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "hi\n");
+		}
+
+		[Test]
+		public void MakeProto ()
+		{
+			var swiftCode = @"
+public protocol Silly {
+	func beSilly ()
+}
+";
+			var impl = new CSClass (CSVisibility.Public, "Goof");
+			impl.Inheritance.Add (new CSIdentifier ("ISilly"));
+			var goofPrinter = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("here"));
+			var method = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void, new CSIdentifier ("BeSilly"),
+				new CSParameterList (), CSCodeBlock.Create (goofPrinter));
+			impl.Methods.Add (method);
+
+			var arrId = new CSIdentifier ("arr");
+			var arrDecl = CSVariableDeclaration.VarLine (arrId, new CSFunctionCall ("SwiftArray<ISilly>", true));
+			var add = CSFunctionCall.FunctionCallLine ("arr.Add", false, new CSFunctionCall (impl.Name.Name, true));
+			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("here"));
+
+			var callingCode = CSCodeBlock.Create (arrDecl, add, printer);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "here\n", otherClass: impl);
+		}
 	}
 }
 
