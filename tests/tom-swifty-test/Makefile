@@ -131,13 +131,13 @@ tomswiftydevicetests/%/tomswiftydevicetests.csproj: tomswiftydevicetests/%/tomsw
 
 csproj-iphone: tomswiftydevicetests/iphone/tomswiftydevicetests.csproj
 
-#all-ios: build-iphone csproj-iphone
-all-ios: 
-	echo "device tests are offline for swift 5"
+all-ios: build-iphone csproj-iphone
+# all-ios: 
+	# echo "device tests are offline for swift 5"
 
-#build-device-tests: all-ios tomswiftydevicetests.zip
-build-device-tests: 
-	echo "device tests are offline for swift 5"
+build-device-tests: all-ios tomswiftydevicetests.zip
+# build-device-tests: 
+	# echo "device tests are offline for swift 5"
 
 tomswiftydevicetests/iphone/bin/iPhone/Debug/tomswiftydevicetests.app: build-iphone csproj-iphone $(wildcard tomswiftydevicetests/*/*.cs)
 	msbuild tomswiftydevicetests/iphone/tomswiftydevicetests.csproj /p:Platform=iPhone
