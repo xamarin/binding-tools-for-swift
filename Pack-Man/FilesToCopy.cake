@@ -105,7 +105,7 @@ IEnumerable<(DirectoryPath Src, DirectoryPath Dest)> GetDirectoriesToBundle (Bui
 		dl.Add (GetInfo (bi.XamGlue, $"{glue}/FinalProduct/XamGlue.framework", $"lib/SwiftInterop/{glue}/XamGlue.framework"));
 
 	// Get 'Sample' folders to copy
-	var samples = new [] { "helloswift", "foreach", "piglatin", "propertybag", "sampler" };
+	var samples = new [] { "helloswift", "piglatin", "propertybag", "sampler", "sandwiches" };
 	foreach (var sample in samples)
 		dl.Add (GetInfo (bi.BaseDir, $"samples/{sample}", $"samples/{sample}"));
 
