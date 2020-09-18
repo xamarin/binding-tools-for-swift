@@ -84,7 +84,9 @@ In addition, the tools can operator on separate `.swiftmodule` and `.dylib` file
 ## Building and Running Samples
 Samples source code is in the `samples` directory, but are will not build and run there.
 Instead you need to make a packaged build, from the root of binding-tools-for-swift execute the command:
+
 	`make package`
+	
 this will leave a directory inside of the directory `Pack-Man` named `binding-tools-for-swift` which contains buildable samples.
 Most samples can be built by executing `make` in their directory. To try out a sample, do `make runit` for most of the samples.
 
