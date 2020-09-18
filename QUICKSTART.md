@@ -68,7 +68,7 @@ A typical set of commands to generate bindings is:
 
     mono /path/to/tom-swifty.exe --swift-bin-path SWIFT_BIN_PATH --swift-lib-path SWIFT_LIB_PATH -o /path/to/output_directory -C /path/to/YOURLIBRARY.framework -C /path/to/binding-tools-for-swift/swiftglue/bin/Debug/PLATFORM/XamGlue.framework -module-name YOURLIBRARY
 
-In this example `SWIFT_BIN_PATH` and `SWIFT_LIB_PATH` are paths to the Swift reflector build (see above). `YOULIBRARY` is the name of the library you’re trying to bind. `PLATFORM` is one of `appletv`, `iphone`, `mac`, or `watch`.
+In this example `SWIFT_BIN_PATH` and `SWIFT_LIB_PATH` are paths to the Swift reflector build (see above). `YOURLIBRARY` is the name of the library you’re trying to bind. `PLATFORM` is one of `appletv`, `iphone`, `mac`, or `watch`.
 
 If you add the argument `--retain-swift-wrappers`, the binding tools will leave a directory that contains the source to the Swift wrappers written during the compilation. If you add the argument `--retain-xml-reflection`, the binding tools will leaves a directory that contains output of the reflector in XML format.
 
@@ -81,5 +81,12 @@ The binding tools need the following to operate:
 
 In addition, the tools can operator on separate `.swiftmodule` and `.dylib` files. This can be handled by using a `-M` argument for the `.swiftmodule` and `-L` for the library. It’s easier to use the `.framework` directory and a single `-C` argument.
 
+## Building and Running Samples
+Samples source code is in the `samples` directory, but will not build and run there.
+Instead you need to make a packaged build, from the root of binding-tools-for-swift execute the command:
 
+	`make package`
+	
+this will leave a directory inside of the directory `Pack-Man` named `binding-tools-for-swift` which contains buildable samples.
+Most samples can be built by executing `make` in their directory. To try out a sample, do `make runit` for most of the samples.
 

@@ -12,7 +12,8 @@ libForeach.dylib: *.swift *.cs
 	@cp ../../lib/binding-tools-for-swift/SwiftRuntimeLibrary.dll .
 	@cp ../../lib/SwiftInterop/mac/XamGlue.framework/XamGlue .
 	$(SWIFTC) $(SWIFTARGS) -module-name $(OUTPUT_MODULE) *.swift
-	$(BINDINGTOOLSFORSWIFT) --retain-swift-wrappers -o . -C . $(OUTPUT_MODULE) 
+	$(BINDINGTOOLSFORSWIFT) --retain-swift-wrappers -o . -C . -module-name $(OUTPUT_MODULE)
+	@xcrun install_name_tool -change "@rpath/XamGlue.framework/XamGlue" XamGlue libXamWrapping.dylib
 	mcs -nowarn:CS0169 -lib:../lib -r:SwiftRuntimeLibrary -lib:. *.cs -out:$(OUTPUT_MODULE).exe
 
 runit:
@@ -20,4 +21,4 @@ runit:
 
 clean:
 	@rm -f *.dylib *.swiftmodule *.swiftdoc *.dll *.exe XamGlue LooperForeach.cs
-	@rm -rf XamWrappingSource x86_64 *.framework XmlReflection
+	@rm -rf XamWrappingSource x86_64 *.framework XmlReflection bindings

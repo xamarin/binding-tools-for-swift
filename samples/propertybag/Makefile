@@ -15,7 +15,8 @@ libPropertyBag.dylib: *.swift
 	@cp ../../lib/SwiftInterop/mac/XamGlue.framework/XamGlue .
 	@cp ../../lib/binding-tools-for-swift/SwiftRuntimeLibrary.dll .
 	$(SWIFTC) $(SWIFTARGS) -module-name $(OUTPUT_MODULE) *.swift
-	$(BINDINGTOOLSFORSWIFT) --retain-swift-wrappers -o . -C . $(OUTPUT_MODULE) 
+	$(BINDINGTOOLSFORSWIFT) --retain-swift-wrappers -o . -C . -module-name $(OUTPUT_MODULE) 
+	@xcrun install_name_tool -change "@rpath/XamGlue.framework/XamGlue" XamGlue libXamWrapping.dylib
 	mcs -nowarn:CS0169 -lib:../lib -r:SwiftRuntimeLibrary -lib:. *.cs -unsafe+ -out:$(OUTPUT_MODULE).exe
 
 runit:
@@ -23,4 +24,4 @@ runit:
 
 clean:
 	@rm -f *.dylib *.swiftmodule *.swiftdoc *.dll *.exe XamGlue PropertyBagProps.cs
-	@rm -rf XamWrappingSource armv7 armv7s arm64 x86_64
+	@rm -rf XamWrappingSource armv7 armv7s arm64 x86_64 bindings
