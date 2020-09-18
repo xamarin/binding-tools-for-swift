@@ -82,7 +82,7 @@ The binding tools need the following to operate:
 In addition, the tools can operator on separate `.swiftmodule` and `.dylib` files. This can be handled by using a `-M` argument for the `.swiftmodule` and `-L` for the library. It’s easier to use the `.framework` directory and a single `-C` argument.
 
 ## Building and Running Samples
-Samples source code is in the `samples` directory, but are will not build and run there.
+Samples source code is in the `samples` directory, but will not build and run there.
 Instead you need to make a packaged build, from the root of binding-tools-for-swift execute the command:
 
 	`make package`
