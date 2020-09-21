@@ -600,10 +600,10 @@ public class ImplProtoPropFAProtoFB : ProtoProtoPA, ProtoProtoPB {
         return 4
     }
 }
-public protocol UsingProto {
+public protocol UsingProtoProp {
     var prop : ProtoProtoPA & ProtoProtoPB  { get }
 }
-public class UsingClassPProp : UsingProto {
+public class UsingClassPProp : UsingProtoProp {
     public init () {
         x = ImplProtoPropFAProtoFB ()
     }
