@@ -389,7 +389,7 @@ namespace SwiftReflector {
 			string piSetterRef = null;
 			string syntheticClassName = prop.Module.Name + "." + CompilerNames.GlobalFunctionClassName;
 
-			string getWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Getter, false, prop.IsExtension);
+			string getWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Getter, false, prop.IsExtension, prop.IsStatic);
 			getterWrapper = FindTLPropWrapper (prop, getWrapperName, wrapper);
 			var getterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (getterWrapper, TypeMapper, wrapper);
 
@@ -405,7 +405,7 @@ namespace SwiftReflector {
 
 			if (!prop.IsLet && (prop.Storage != StorageKind.Computed ||
 			                    (prop.Storage == StorageKind.Computed && setter != null))) {
-				string setWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Setter, false, prop.IsExtension);
+				string setWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Setter, false, prop.IsExtension, prop.IsStatic);
 				setterWrapper = FindTLPropWrapper (prop, setWrapperName, wrapper);
 				setterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (setterWrapper, TypeMapper, wrapper);
 				
@@ -1146,9 +1146,9 @@ namespace SwiftReflector {
 			var parentName = PrefixInsertedBeforeName (superFunc.Parent, superFunc.IsProperty, namePrefix);
 			if (superFunc.IsProperty) {
 				wrapperName = MethodWrapping.WrapperName (parentName,
-					superFunc.PropertyName, superFunc.IsGetter ? PropertyType.Getter : PropertyType.Setter, superFunc.IsSubscript, false);
+					superFunc.PropertyName, superFunc.IsGetter ? PropertyType.Getter : PropertyType.Setter, superFunc.IsSubscript, false, superFunc.IsStatic);
 			} else {
-				wrapperName = MethodWrapping.WrapperName (parentName, superFunc.Name, false);
+				wrapperName = MethodWrapping.WrapperName (parentName, superFunc.Name, false, superFunc.IsStatic);
 			}
 			var referenceCode = wrapper.FunctionReferenceCodeMap.ReferenceCodeFor (superFunc);
 			if (referenceCode != null) {
@@ -5127,9 +5127,10 @@ namespace SwiftReflector {
 			if (funcDeclToWrap.IsProperty) {
 				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (true), funcDeclToWrap.PropertyName,
 									  (funcDeclToWrap.IsGetter ? PropertyType.Getter :
-				                                           (funcDeclToWrap.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDeclToWrap.IsExtension);
+				                                           (funcDeclToWrap.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDeclToWrap.IsExtension,
+									  funcDeclToWrap.IsStatic);
 			} else {
-				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (false), funcDeclToWrap.Name, true);
+				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (false), funcDeclToWrap.Name, true, funcDeclToWrap.IsStatic);
 			}
 			return FindWrapperForMethod (funcDeclToWrap, funcToWrap, wrapperName, wrapper);
 
@@ -5165,7 +5166,7 @@ namespace SwiftReflector {
 			var prop = methodToWrap.Signature as SwiftPropertyType;
 			if (prop == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 34, $"Expected a SwiftPropertyType for method signature, but got {methodToWrap.Signature.GetType ().Name}");
-			var wrapperName = MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, propType, prop.IsSubscript, funcToWrap.IsExtension);
+			var wrapperName = MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, propType, prop.IsSubscript, funcToWrap.IsExtension, prop.IsStatic);
 			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
 		}
 
@@ -5173,7 +5174,7 @@ namespace SwiftReflector {
 		TLFunction FindWrapperForMethod (FunctionDeclaration funcToWrap, TLFunction methodToWrap, WrappingResult wrapper)
 		{
 			string wrapperName = methodToWrap.Operator == OperatorType.None ?
-							 MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, funcToWrap.IsExtension) :
+							 MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, funcToWrap.IsExtension, funcToWrap.IsStatic) :
 			                                 MethodWrapping.WrapperOperatorName (TypeMapper, funcToWrap.Parent.ToFullyQualifiedName (true), methodToWrap.Name.Name, funcToWrap.OperatorType);
 			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
 		}

@@ -167,5 +167,27 @@ namespace SwiftReflector {
 			var callingCode = CSCodeBlock.Create (printIt);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "success\n");
 		}
+
+		[Test]
+		public void TestPropNameConflict ()
+		{
+			var swiftCode = @"
+public class PropConflict {
+	public init () { }
+	public static var X:Int = 3
+	public var X:Float = 4.0
+}
+";
+			var classNameId = new CSIdentifier ("PropConflict");
+			var propVarId = new CSIdentifier ("X");
+			var propVarConflictId = new CSIdentifier ("X0");
+			var propId = new CSIdentifier ("p");
+			var propDecl = CSVariableDeclaration.VarLine (propId, new CSFunctionCall ("PropConflict", true));
+			var printer1 = CSFunctionCall.ConsoleWriteLine (propId.Dot (propVarConflictId));
+			var printer2 = CSFunctionCall.ConsoleWriteLine (classNameId.Dot (propVarId));
+			var callingCode = CSCodeBlock.Create (propDecl, printer1, printer2);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "4\n3\n");
+		}
 	}
 }
