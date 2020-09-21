@@ -306,6 +306,7 @@ public extension HotDogOnUserType
 		public void NonPublicExtensionOnNotification ()
 		{
 			var swiftCode = @"import Foundation
+			import CoreGraphics
 	extension Notification {
 	
 	    func myFrame () -> CGRect? {
