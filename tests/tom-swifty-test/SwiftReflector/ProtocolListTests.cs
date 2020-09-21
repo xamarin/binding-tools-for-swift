@@ -295,7 +295,7 @@ public protocol ProtoMEA {
 public protocol ProtoMEB {
     func constantB () -> Int
 }
-public enum NotParticularlyUseful {
+public enum NotParticularlyUsefulPayload {
     case intValue(Int)
     case protoValue(ProtoMEA & ProtoMEB)
 }
@@ -308,7 +308,7 @@ public class ImplMEAMEB : ProtoMEA, ProtoMEB {
     public func constantB () -> Int {
         return 4
     }
-    public func getPayload() -> NotParticularlyUseful {
+    public func getPayload() -> NotParticularlyUsefulPayload {
         return .protoValue(self)
     }
 }
