@@ -591,7 +591,7 @@ public protocol ProtoProtoPA {
 public protocol ProtoProtoPB {
     func constantB () -> Int
 }
-public class ImplProtoFAProtoFB : ProtoProtoPA, ProtoProtoPB {
+public class ImplProtoPropFAProtoFB : ProtoProtoPA, ProtoProtoPB {
     public init () { }
     public func constantA () -> Int {
         return 3
@@ -605,7 +605,7 @@ public protocol UsingProto {
 }
 public class UsingClassPProp : UsingProto {
     public init () {
-        x = ImplProtoFAProtoFB ()
+        x = ImplProtoPropFAProtoFB ()
     }
     private var x: ProtoProtoPA & ProtoProtoPB
     public var prop : ProtoProtoPA & ProtoProtoPB {
