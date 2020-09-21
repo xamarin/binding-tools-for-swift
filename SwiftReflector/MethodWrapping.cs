@@ -1465,7 +1465,7 @@ namespace SwiftReflector {
 
 			GatherFunctionDeclarationGenerics (funcDecl, genericDeclaration);
 
-			var instanceName = hasInstance ? new SLIdentifier (GetUniqueNameForInstance (parms)) : null;
+			var instanceName = hasInstance ? new SLIdentifier (GetUniqueNameForInstance (usedNames)) : null;
 			bool instanceIsAPointer = false;
 			if (hasInstance)
 				usedNames.Add (instanceName.Name);
@@ -1506,7 +1506,8 @@ namespace SwiftReflector {
 			// To mitigate this, all wrapper functions that return type struct need to have an extra
 			// parameter which is a reference to a struct.
 			if (makeInOut) {
-				returnName = new SLIdentifier (GetUniqueNameForReturn (parms));
+				returnName = new SLIdentifier (GetUniqueNameForReturn (usedNames));
+				usedNames.Add (returnName.Name);
 
 				if (funcDecl.HasThrows) {
 					SLType slReturn = null;
@@ -1645,14 +1646,16 @@ namespace SwiftReflector {
 					} else {
 						string exceptionCall = "setExceptionNotThrown";
 
-						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", parms));
+						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", usedNames));
+						usedNames.Add (temp.Name);
 						var tempDecl = new SLDeclaration (true, new SLBinding (temp, new SLTry (callSite)), Visibility.None);
 						doBlock.Add (new SLLine (tempDecl));
 						doBlock.Add (SLFunctionCall.FunctionCallLine (exceptionCall,
 						                                              new  SLArgument (new SLIdentifier ("value"), temp, true),
 						                                              new SLArgument (new SLIdentifier ("retval"), returnName, true)));
 					}
-					var error = new SLIdentifier (GetUniqueNameForFoo ("error", parms));
+					var error = new SLIdentifier (GetUniqueNameForFoo ("error", usedNames));
+					usedNames.Add (error.Name);
 					var catcher = new SLCatch (error.Name, null);
 					catcher.Body.Add (SLFunctionCall.FunctionCallLine ("setExceptionThrown",
 					                                                   new SLArgument (new SLIdentifier ("err"), error, true),
@@ -1826,7 +1829,7 @@ namespace SwiftReflector {
 			// To mitigate this, all wrapper functions that return type struct need to have an extra
 			// parameter which is a reference to a struct.
 			if (makeInOut) {
-				returnName = new SLIdentifier (GetUniqueNameForReturn (parms));
+				returnName = new SLIdentifier (GetUniqueNameForReturn (usedNames));
 				usedNames.Add (returnName.Name);
 
 				if (funcDecl.HasThrows) {
@@ -1928,14 +1931,16 @@ namespace SwiftReflector {
 					} else {
 						string exceptionCall = "setExceptionNotThrown";
 
-						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", parms));
+						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", usedNames));
+						usedNames.Add (temp.Name);
 						var tempDecl = new SLDeclaration (true, new SLBinding (temp, new SLTry (callSite)), Visibility.None);
 						doBlock.Add (new SLLine (tempDecl));
 						doBlock.Add (SLFunctionCall.FunctionCallLine (exceptionCall,
 						                                              new SLArgument (new SLIdentifier ("value"), temp, true),
 						                                              new SLArgument (new SLIdentifier ("retval"), returnName, true)));
 					}
-					var error = new SLIdentifier (GetUniqueNameForFoo ("error", parms));
+					var error = new SLIdentifier (GetUniqueNameForFoo ("error", usedNames));
+					usedNames.Add (error.Name);
 					var catcher = new SLCatch (error.Name, null);
 					catcher.Body.Add (SLFunctionCall.FunctionCallLine ("setExceptionThrown",
 					                                                   new SLArgument (new SLIdentifier ("err"), error, true),
@@ -2119,15 +2124,15 @@ namespace SwiftReflector {
 										    SLImportModules modules, List<ICodeElement> preMarshalCode)
 		{
 			var retval = new DelegatedCommaListElemCollection<SLArgument> (SLFunctionCall.WriteElement);
-			var uniqueNames = new List<SLParameter> ();
-			uniqueNames.AddRange (parms);
+			var usedNames = new List<string> ();
+			usedNames.AddRange (parms.Select (p => p.PrivateName.Name));
 			retval.AddRange (parms.Select ((nt, i) => {
 				bool parmNameIsRequired = original [i].NameIsRequired;
 				var originalTypeSpec = original [i].TypeSpec.ReplaceName ("Self", substituteForSelf);
 				if (originalTypeSpec is ClosureTypeSpec) {
 					var ct = (ClosureTypeSpec)originalTypeSpec;
-					var closureName = new SLIdentifier (GetUniqueNameForFoo ("clos", uniqueNames));
-					uniqueNames.Add (new SLParameter (closureName, SLSimpleType.Bool)); // type doesn't matter here
+					var closureName = new SLIdentifier (GetUniqueNameForFoo ("clos", usedNames));
+					usedNames.Add (closureName.Name);
 
 					var origArgs = ct.Arguments as TupleTypeSpec;
 					var ids = new List<SLNameTypePair> ();
@@ -2138,8 +2143,8 @@ namespace SwiftReflector {
 					}
 					var clargTypesAsTuple = (SLTupleType)clargTypes;
 					for (int j = 0; j < origArgsCount; j++) {
-						SLIdentifier id = new SLIdentifier (GetUniqueNameForFoo ("arg", uniqueNames));
-						uniqueNames.Add (new SLParameter (id, SLSimpleType.Bool)); // type doesn't matter
+						var id = new SLIdentifier (GetUniqueNameForFoo ("arg", usedNames));
+						usedNames.Add (id.Name);
 						ids.Add (new SLNameTypePair (id, clargTypesAsTuple.Elements [j].TypeAnnotation));
 					}
 					var clparms = new SLTupleType (ids);
@@ -2150,13 +2155,13 @@ namespace SwiftReflector {
 					bool hasArgs = !ct.Arguments.IsEmptyTuple;
 
 
-					var funcPtrId = new SLIdentifier (GetUniqueNameForFoo (nt.PrivateName.Name + "Ptr", uniqueNames));
+					var funcPtrId = new SLIdentifier (GetUniqueNameForFoo (nt.PrivateName.Name + "Ptr", usedNames));
 					var wrappedClosType = nt.TypeAnnotation as SLFuncType;
 					// this strips off the @escaping attribute, if any
 					var closTypeNoAttr = new SLFuncType (wrappedClosType.ReturnType, wrappedClosType.Parameters);
 
 					SLType funcPtrType = new SLBoundGenericType ("UnsafeMutablePointer", closTypeNoAttr);
-					uniqueNames.Add (new SLParameter (funcPtrId, funcPtrType));
+					usedNames.Add (funcPtrId.Name);
 					var funcPtrBinding = new SLBinding (funcPtrId,
 									    new SLFunctionCall ($"{funcPtrType.ToString ()}.allocate",
 											     false,
@@ -2172,10 +2177,10 @@ namespace SwiftReflector {
 					SLIdentifier retvalId = null;
 
 					if (hasReturn) {
-						retvalPtrId = new SLIdentifier (GetUniqueNameForFoo ("retvalPtr", uniqueNames));
-						uniqueNames.Add (new SLParameter (retvalPtrId, SLSimpleType.Bool));
-						retvalId = new SLIdentifier (GetUniqueNameForFoo ("retval", uniqueNames));
-						uniqueNames.Add (new SLParameter (retvalId, SLSimpleType.Bool));
+						retvalPtrId = new SLIdentifier (GetUniqueNameForFoo ("retvalPtr", usedNames));
+						usedNames.Add (retvalPtrId.Name);
+						retvalId = new SLIdentifier (GetUniqueNameForFoo ("retval", usedNames));
+						usedNames.Add (retvalId.Name);
 						var retvalBinding = new SLBinding (retvalPtrId,
 										   new SLFunctionCall (
 											   $"UnsafeMutablePointer<{clretType.ToString ()}>.allocate",
@@ -2184,8 +2189,8 @@ namespace SwiftReflector {
 													   SLConstant.Val (1), true)));
 						closureBody.Add (new SLDeclaration (true, retvalBinding, Visibility.None));
 					}
-					var argsPtrId = new SLIdentifier (GetUniqueNameForFoo ("argsPtr", uniqueNames));
-					uniqueNames.Add (new SLParameter (argsPtrId, SLSimpleType.Bool));
+					var argsPtrId = new SLIdentifier (GetUniqueNameForFoo ("argsPtr", usedNames));
+					usedNames.Add (argsPtrId.Name);
 					if (hasArgs) {
 						var argsBinding = new SLBinding (argsPtrId,
 										 new SLFunctionCall (
@@ -2310,25 +2315,19 @@ namespace SwiftReflector {
 		}
 
 
-		static string GetUniqueNameForInstance (List<SLParameter> parms)
+		static string GetUniqueNameForInstance (List<string> usedNames)
 		{
-			return GetUniqueNameForFoo ("this", parms);
+			return GetUniqueNameForFoo ("this", usedNames);
 		}
 
-		static string GetUniqueNameForReturn (List<SLParameter> parms)
+		static string GetUniqueNameForReturn (List<string> usedNames)
 		{
-			return GetUniqueNameForFoo ("retval", parms);
+			return GetUniqueNameForFoo ("retval", usedNames);
 		}
 
-		static string GetUniqueNameForFoo (string foo, List<SLParameter> parms)
+		static string GetUniqueNameForFoo (string foo, List<string> usedNames)
 		{
-			int i = 0;
-			string s = null;
-			do {
-				s = String.Format ("{0}{1}", foo, i > 0 ? i.ToString () : "");
-				i++;
-			} while (parms.Exists (np => s == (np.PublicName != null ? np.PublicName.Name : "")));
-			return s;
+			return MarshalEngine.Uniqueify (foo, usedNames);
 		}
 
 		public static bool IsStructOrEnum (TypeMapper t, ParameterItem item)
