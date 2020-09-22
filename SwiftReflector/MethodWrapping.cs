@@ -85,15 +85,16 @@ namespace SwiftReflector {
 			return $"{kXamPrefix}{classPrefix}{operatorType}{operatorName}";
 		}
 
-		public static string WrapperName (SwiftClassName name, string methodName, bool isExtension)
+		public static string WrapperName (SwiftClassName name, string methodName, bool isExtension, bool isStatic)
 		{
-			return WrapperName (name.ToFullyQualifiedName (false), methodName, isExtension);
+			return WrapperName (name.ToFullyQualifiedName (false), methodName, isExtension, isStatic);
 		}
 
-		public static string WrapperName (string fullyQualifiedClassName, string methodName, bool isExtension)
+		public static string WrapperName (string fullyQualifiedClassName, string methodName, bool isExtension, bool isStatic)
 		{
-			string classPrefix = fullyQualifiedClassName.Replace ('.', 'D');
-			return $"{kXamPrefix}{classPrefix}{(isExtension ? 'E' : 'D')}{methodName}";
+			var classPrefix = fullyQualifiedClassName.Replace ('.', 'D');
+			var separator = isExtension ? 'E' : (isStatic ? 'd' : 'D');
+			return $"{kXamPrefix}{classPrefix}{separator}{methodName}";
 		}
 
 		public static string WrapperCtorName (SwiftClassName name, bool isExtension)
@@ -102,9 +103,9 @@ namespace SwiftReflector {
 			return $"{kXamPrefix}{classPrefix}{(isExtension ? 'E' : 'D')}{name.Terminus}";
 		}
 
-		public static string WrapperName (SwiftClassName name, string methodName, PropertyType propType, bool isSubScript, bool isExtension)
+		public static string WrapperName (SwiftClassName name, string methodName, PropertyType propType, bool isSubScript, bool isExtension, bool isStatic)
 		{
-			return WrapperName (name.ToFullyQualifiedName (), methodName, propType, isSubScript, isExtension);
+			return WrapperName (name.ToFullyQualifiedName (), methodName, propType, isSubScript, isExtension, isStatic);
 		}
 
 		public static string EnumFactoryCaseWrapperName (SwiftClassName name, string caseName)
@@ -137,7 +138,7 @@ namespace SwiftReflector {
 			return string.Format ("{0}{1}ec", kXamPrefix, classPrefix);
 		}
 
-		public static string WrapperName (string fullyQualifiedClassName, string methodName, PropertyType propType, bool isSubScript, bool isExtension)
+		public static string WrapperName (string fullyQualifiedClassName, string methodName, PropertyType propType, bool isSubScript, bool isExtension, bool isStatic)
 		{
 			var lastIndex = fullyQualifiedClassName.LastIndexOf ('.');
 			if (lastIndex >= 0) {
@@ -147,13 +148,13 @@ namespace SwiftReflector {
 			char propMarker = isSubScript ? 's' : 'p';
 			switch (propType) {
 			case PropertyType.Getter:
-				propMarker = 'G';
+				propMarker = isStatic ? 'g' : 'G';
 				break;
 			case PropertyType.Setter:
-				propMarker = 'S';
+				propMarker = isStatic ? 's' : 'S';
 				break;
 			case PropertyType.Materializer:
-				propMarker = 'M';
+				propMarker = isStatic ? 'm' : 'M';
 				break;
 			default:
 				throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 0, $"unknown property type {propType.ToString ()} wrapping function {methodName} in {fullyQualifiedClassName}");
@@ -469,11 +470,11 @@ namespace SwiftReflector {
 				setter.ParameterLists [0].Add (parameter);
 			}
 
-			var getWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Getter, false, decl.IsExtension);
+			var getWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Getter, false, decl.IsExtension, decl.IsStatic);
 			var getWrapper = MapTopLevelFuncToWrapperFunc (slfile.Imports, getter, getWrapperName);
 			slfile.Functions.Add (getWrapper);
 			if (setter != null) {
-				var setWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Setter, false, decl.IsExtension);
+				var setWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Setter, false, decl.IsExtension, decl.IsStatic);
 				var setWrapper = MapTopLevelFuncToWrapperFunc (slfile.Imports, setter, setWrapperName);
 				slfile.Functions.Add (setWrapper);
 			}
@@ -1702,15 +1703,15 @@ namespace SwiftReflector {
 			} else if (funcDecl.IsSubscript) {
 				funcName = WrapperName (className, funcDecl.PropertyName,
 					(funcDecl.IsGetter ? PropertyType.Getter :
-				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), true, funcDecl.IsExtension);
+				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), true, funcDecl.IsExtension, funcDecl.IsStatic);
 			} else if (funcDecl.IsProperty) {
 				funcName = WrapperName (className, funcDecl.PropertyName,
 					(funcDecl.IsGetter ? PropertyType.Getter :
-				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDecl.IsExtension);
+				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDecl.IsExtension, funcDecl.IsStatic);
 			} else if (funcDecl.IsOperator) {
 				funcName = WrapperOperatorName (typeMapper, funcDecl.Parent.ToFullyQualifiedName (true), funcDecl.Name, funcDecl.OperatorType);
 			} else {
-				funcName = WrapperName (className, funcDecl.Name, funcDecl.IsExtension);
+				funcName = WrapperName (className, funcDecl.Name, funcDecl.IsExtension, funcDecl.IsStatic);
 			}
 
 			var funcBody = new SLCodeBlock (preMarshalCode);
