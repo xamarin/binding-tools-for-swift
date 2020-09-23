@@ -17,7 +17,7 @@ namespace SwiftReflector {
 		{
 			var swiftCode = @"
 public protocol Identity0 {
-	func whoAmI () -> Self
+	func whoAmIIdentity0 () -> Self
 }
 ";
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Got here."));
@@ -31,11 +31,11 @@ public protocol Identity0 {
 		{
 			var swiftCode = @"
 public protocol Identity1 {
-	func whoAmI () -> Self
+	func whoAmIIdentity1 () -> Self
 }
 
 public func getName (a: Identity1) -> String {
-	let o = a.whoAmI
+	let o = a.whoAmIIdentity1
 	let t = type(of: o)
 	return String(describing: t)
 }
@@ -55,7 +55,7 @@ public func getName (a: Identity1) -> String {
 			var ctor = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, auxClass.Name,
 				new CSParameterList (), new CSCodeBlock ());
 			var whoAmI = new CSMethod (CSVisibility.Public, CSMethodKind.None, new CSSimpleType (auxClass.Name.Name),
-				new CSIdentifier ("WhoAmI"), new CSParameterList (),
+				new CSIdentifier ("WhoAmIIdentity1"), new CSParameterList (),
 				CSCodeBlock.Create (CSReturn.ReturnLine (CSIdentifier.This)));
 
 			auxClass.Constructors.Add (ctor);
@@ -124,7 +124,7 @@ public protocol Identity3 {
 	var whoAmI: Self { get }
 }
 
-public func whoProp<T> (a: T) where T: Identity3 {
+public func whoPropIdentity3<T> (a: T) where T: Identity3 {
 	a.whoAmI
 }
 ";
@@ -155,7 +155,7 @@ public func whoProp<T> (a: T) where T: Identity3 {
 
 			var instName = new CSIdentifier ("inst");
 			var instDecl = CSVariableDeclaration.VarLine (instName, new CSFunctionCall (auxClass.Name, new Dynamo.CommaListElementCollection<CSBaseExpression> (), true));
-			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoProp", false, instName);
+			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoPropIdentity3", false, instName);
 			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass);
@@ -169,7 +169,7 @@ public protocol Identity4 {
 	var whoAmI: Self { get set }
 }
 
-public func whoProp<T> (a: T) where T: Identity4 {
+public func whoPropIdentity4<T> (a: T) where T: Identity4 {
 	var b = a
 	b.whoAmI = a
 }
@@ -204,7 +204,7 @@ public func whoProp<T> (a: T) where T: Identity4 {
 
 			var instName = new CSIdentifier ("inst");
 			var instDecl = CSVariableDeclaration.VarLine (instName, new CSFunctionCall (auxClass.Name, new Dynamo.CommaListElementCollection<CSBaseExpression> (), true));
-			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoProp", false, instName);
+			var methodCall = CSFunctionCall.FunctionCallLine ("TopLevelEntities.WhoPropIdentity4", false, instName);
 			var callingCode = CSCodeBlock.Create (instDecl, methodCall);
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here.\n", otherClass: auxClass);
