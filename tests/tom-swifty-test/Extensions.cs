@@ -32,12 +32,12 @@ namespace tomwiftytest {
 
 		public static void AssertNoErrors (this ErrorHandling errors, string whileDoing)
 		{
-			Assert.IsFalse (errors.AnyErrors, $"{errors.ErrorCount} errors while {whileDoing}");
+			Assert.IsFalse (errors.AnyErrors, $"{errors.ErrorCount} error(s) while {whileDoing}");
 		}
 
 		public static void AssertNoWarnings (this ErrorHandling errors, string whileDoing)
 		{
-			Assert.IsTrue (errors.WarningCount == 0, $"{errors} errors while {whileDoing}");
+			Assert.IsTrue (errors.WarningCount == 0, $"{errors} warning(s) while {whileDoing}");
 		}
 	}
 }
