@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using NUnit.Framework;
 using SwiftReflector;
 
 namespace tomwiftytest {
@@ -27,6 +28,16 @@ namespace tomwiftytest {
 				else
 					break;
 			}
+		}
+
+		public static void AssertNoErrors (this ErrorHandling errors, string whileDoing)
+		{
+			Assert.IsFalse (errors.AnyErrors, $"{errors.ErrorCount} error(s) while {whileDoing}");
+		}
+
+		public static void AssertNoWarnings (this ErrorHandling errors, string whileDoing)
+		{
+			Assert.IsTrue (errors.WarningCount == 0, $"{errors} warning(s) while {whileDoing}");
 		}
 	}
 }
