@@ -46,7 +46,8 @@ clean:
 	@rm -rf bin obj TestResult.xml devicetests/*
 
 # Compute the list of test modules
-MODULES:=$(shell ls -d devicetests/*/swiftsrc 2>/dev/null | sed -e 's_devicetests/__' -e 's_/swiftsrc__')
+MODULES:=$(shell ls -d devicetests/*/swiftsrc/*[!_]?????.swift 2>/dev/null | sed -e 's_devicetests/__' -e 's_/swiftsrc__' -e 's_/.*swift__'  | uniq)
+
 
 #
 # Define a template that can compile the swift code for the device tests
