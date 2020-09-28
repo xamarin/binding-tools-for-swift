@@ -81,7 +81,7 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 		TestRunningCodeGenerator.kSwiftFileWriter +
-		$"public protocol MontyWSGO{type} {{ subscript{type}(i:Int32) -> {type} {{ get }} \n  }}\n" +
+		$"public protocol MontyWSGO{type} {{ subscript(i:Int32) -> {type} {{ get }} \n  }}\n" +
 			   $"public class TestMontyWSGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSGO{type}) {{\nvar s = \"\", t=\"\"\nprint(m[0], to:&s)\nprint(m[1], to:&t)\nwriteToFile(s+t, \"WrapSingleSubscriptGetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSGO{type}");
@@ -146,7 +146,7 @@ namespace SwiftReflector {
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
 				       $"public protocol MontyWSPGO{type} {{ var prop{type} : {type} {{ get }} \n  }}\n" +
-				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.prop, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
+				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.prop{type}, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSPGO{type}");
 			overCS.Inheritance.Add (new CSIdentifier ($"IMontyWSPGO{type}"));
@@ -263,7 +263,7 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
-				       $"public protocol MontyWSubSGO{type} {{ subscript{type}(i:Int32) -> {type} {{ get set }}\n  }}\n" +
+				       $"public protocol MontyWSubSGO{type} {{ subscript(i:Int32) -> {type} {{ get set }}\n  }}\n" +
 				       $"public class TestMontyWSubSGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSubSGO{type}) {{\nvar x = m\nvar s = \"\", t = \"\"\nprint(x[0], to:&s)\nx[0] = {swiftReplacement}\nprint(x[0], to:&t)\nwriteToFile(s + t, \"WrapSubscriptGetSetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSubSGO{type}");
