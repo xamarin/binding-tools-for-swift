@@ -243,7 +243,7 @@ namespace MetatypeTests
 		public void Run()
 		{{
 			SwiftNominalTypeDescriptor nt = StructMarshal.Marshaler.Metatypeof(typeof({typeName})).GetNominalTypeDescriptor();
-			Console.WriteLine(nt.GetMangledName());
+			Console.WriteLine(nt.GetFullName());
 		}}
 
 		public string TestName {{ get {{ return ""CheckName{typeName}""; }} }}
@@ -300,7 +300,7 @@ namespace MetatypeTests
 		public void Run()
 		{{
 			SwiftNominalTypeDescriptor nt = StructMarshal.Marshaler.Metatypeof(typeof({typeName})).GetNominalTypeDescriptor();
-			Console.WriteLine(nt.GetMangledName());
+			Console.WriteLine(nt.GetFullName());
 		}}
 
 		public string TestName {{ get {{ return ""CheckName{typeName}""; }} }}
