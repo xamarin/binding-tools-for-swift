@@ -172,6 +172,7 @@ namespace dlopentest
 
 				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
 				Assert.AreEqual (expected, output);
+				var typeBasedClassName = typeName.Replace('.', '_');
 
 				string tsource = $@"using System;
 using NewClassCompilerTests;
@@ -181,7 +182,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace MetatypeTests
 {{
-	public class CheckTypeOne{typeName} : ITomTest
+	public class CheckTypeOne{typeBasedClassName} : ITomTest
 	{{
 	    public void Run()
 		{{
