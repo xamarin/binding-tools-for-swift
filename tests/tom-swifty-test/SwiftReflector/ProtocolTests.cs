@@ -81,7 +81,7 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 		TestRunningCodeGenerator.kSwiftFileWriter +
-		$"public protocol MontyWSGO{type} {{ subscript(i:Int32) -> {type} {{ get }} \n  }}\n" +
+		$"public protocol MontyWSGO{type} {{ subscriptWSGO(i:Int32) -> {type} {{ get }} \n  }}\n" +
 			   $"public class TestMontyWSGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSGO{type}) {{\nvar s = \"\", t=\"\"\nprint(m[0], to:&s)\nprint(m[1], to:&t)\nwriteToFile(s+t, \"WrapSingleSubscriptGetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSGO{type}");
@@ -145,13 +145,13 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
-				       $"public protocol MontyWSPGO{type} {{ var WSPGOProp{type} : {type} {{ get }} \n  }}\n" +
-				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.WSPGOProp{type}, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
+				       $"public protocol MontyWSPGO{type} {{ var propWSPGO{type} : {type} {{ get }} \n  }}\n" +
+				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.propWSPGO{type}, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSPGO{type}");
 			overCS.Inheritance.Add (new CSIdentifier ($"IMontyWSPGO{type}"));
 			CSCodeBlock overBody = CSCodeBlock.Create (CSReturn.ReturnLine (new CSIdentifier (csReplacement)));
-			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ($"WSPGOProp{type}"),
+			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ($"PropWSPGO{type}"),
 						CSVisibility.Public, overBody, CSVisibility.Public, null);
 
 			overCS.Properties.Add (overProp);
@@ -204,19 +204,19 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
-			    $"public protocol MontyWSPGSO{type} {{ var WSPGSOprop{type} : {type} {{ get set }} \n  }}\n" +
-			    $"public class TestMontyWSPGSO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGSO{type}) {{\nvar x = m\nvar s = \"\", t = \"\"\nprint(x.WSPGSOprop{type}, to:&s)\nx.WSPGSOprop{type} = {swiftReplacement}\nprint(x.WSPGSOprop{type}, to:&t)\nwriteToFile(s + t, \"WrapSinglePropertyGetSetOnly{type}\")\n}}\n}}\n";
+			    $"public protocol MontyWSPGSO{type} {{ var propWSPGSO{type} : {type} {{ get set }} \n  }}\n" +
+			    $"public class TestMontyWSPGSO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGSO{type}) {{\nvar x = m\nvar s = \"\", t = \"\"\nprint(x.propWSPGSO{type}, to:&s)\nx.propWSPGSO{type} = {swiftReplacement}\nprint(x.propWSPGSO{type}, to:&t)\nwriteToFile(s + t, \"WrapSinglePropertyGetSetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSPGSO{type}");
 			overCS.Inheritance.Add (new CSIdentifier ($"IMontyWSPGSO{type}"));
-			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ($"WSPGSOProp{type}"),
+			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ($"PropWSPGSO{type}"),
 			    CSVisibility.Public, new CSCodeBlock (), CSVisibility.Public, new CSCodeBlock ());
 
 			overCS.Properties.Add (overProp);
 
 			CSLine decl = CSVariableDeclaration.VarLine (new CSSimpleType ($"OverWSPGSO{type}"), "myOver", new CSFunctionCall ($"OverWSPGSO{type}", true));
 			CSLine decl1 = CSVariableDeclaration.VarLine (new CSSimpleType ($"TestMontyWSPGSO{type}"), "tester", new CSFunctionCall ($"TestMontyWSPGSO{type}", true));
-			CSLine initer = CSAssignment.Assign ($"myOver.WSPGSOProp{type}", new CSIdentifier (csVal));
+			CSLine initer = CSAssignment.Assign ($"myOver.PropWSPGSO{type}", new CSIdentifier (csVal));
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, initer, invoker);
 
@@ -263,7 +263,7 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
-				       $"public protocol MontyWSubSGO{type} {{ subscript(i:Int32) -> {type} {{ get set }}\n  }}\n" +
+				       $"public protocol MontyWSubSGO{type} {{ subscriptWSubSGO(i:Int32) -> {type} {{ get set }}\n  }}\n" +
 				       $"public class TestMontyWSubSGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSubSGO{type}) {{\nvar x = m\nvar s = \"\", t = \"\"\nprint(x[0], to:&s)\nx[0] = {swiftReplacement}\nprint(x[0], to:&t)\nwriteToFile(s + t, \"WrapSubscriptGetSetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSubSGO{type}");
