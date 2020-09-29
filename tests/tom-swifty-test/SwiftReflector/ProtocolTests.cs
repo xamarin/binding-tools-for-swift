@@ -81,7 +81,7 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 		TestRunningCodeGenerator.kSwiftFileWriter +
-		$"public protocol MontyWSGO{type} {{ subscriptWSGO(i:Int32) -> {type} {{ get }} \n  }}\n" +
+		$"public protocol MontyWSGO{type} {{ subscript(i:Int32) -> {type} {{ get }} \n  }}\n" +
 			   $"public class TestMontyWSGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSGO{type}) {{\nvar s = \"\", t=\"\"\nprint(m[0], to:&s)\nprint(m[1], to:&t)\nwriteToFile(s+t, \"WrapSingleSubscriptGetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSGO{type}");
@@ -103,6 +103,8 @@ namespace SwiftReflector {
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleSubscriptGetOnly{type}", otherClass : overCS);
 		}
+
+#if _MAC_TS_TEST_
 
 		[Test]
 		public void WrapSingleSubscriptGetOnlyBool ()
@@ -140,6 +142,8 @@ namespace SwiftReflector {
 			WrapSingleSubscriptGetOnly ("String", "SwiftString", "SwiftString.FromString(\"one\")",
 							   "SwiftString.FromString(\"two\")", "one\ntwo\n");
 		}
+
+#endif
 
 		void WrapSinglePropertyGetOnly (string appendage, string type, string csType, string csReplacement, string expected)
 		{
@@ -263,7 +267,7 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
-				       $"public protocol MontyWSubSGO{type} {{ subscriptWSubSGO(i:Int32) -> {type} {{ get set }}\n  }}\n" +
+				       $"public protocol MontyWSubSGO{type} {{ subscript(i:Int32) -> {type} {{ get set }}\n  }}\n" +
 				       $"public class TestMontyWSubSGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSubSGO{type}) {{\nvar x = m\nvar s = \"\", t = \"\"\nprint(x[0], to:&s)\nx[0] = {swiftReplacement}\nprint(x[0], to:&t)\nwriteToFile(s + t, \"WrapSubscriptGetSetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSubSGO{type}");
@@ -286,6 +290,8 @@ namespace SwiftReflector {
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSubscriptGetSetOnly{type}", otherClass : overCS);
 		}
+
+#if _MAC_TS_TEST_
 
 		[Test]
 		public void WrapSubscriptPropGetSetBool ()
@@ -322,6 +328,8 @@ namespace SwiftReflector {
 		{
 			WrapSubscriptGetSetOnly ("String", "SwiftString", "SwiftString.FromString(\"hi\")", "\"mom\"", "hi\nmom\n");
 		}
+
+#endif
 
 		[Test]
 		[Ignore("Taking offline until protocols are redone")]
