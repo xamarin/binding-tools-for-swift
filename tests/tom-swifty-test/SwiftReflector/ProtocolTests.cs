@@ -146,7 +146,7 @@ namespace SwiftReflector {
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
 				       $"public protocol MontyWSPGO{type} {{ var WSPGOProp{type} : {type} {{ get }} \n  }}\n" +
-				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.WSPGOprop{type}, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
+				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.WSPGOProp{type}, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSPGO{type}");
 			overCS.Inheritance.Add (new CSIdentifier ($"IMontyWSPGO{type}"));
