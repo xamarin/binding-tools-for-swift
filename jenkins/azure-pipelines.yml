@@ -6,7 +6,9 @@ trigger:
 - '*'
 
 pr:
-- '*'
+  branches:
+    include:
+    - '*'
 
 jobs:
 - job: ContinuousIntegration
