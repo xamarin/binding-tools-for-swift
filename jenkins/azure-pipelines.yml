@@ -18,8 +18,8 @@ resources:
 
 variables:
   -group: xamops-azdev-secrets
-          Xamarin Release
-          Xamarin-Secrets
+  -group: Xamarin Release
+  -group: Xamarin-Secrets
 
 jobs:
 - job: ContinuousIntegration
@@ -27,13 +27,12 @@ jobs:
   pool:
     vmImage: 'macOS-10.14'
 
-  # Add the required provisioning profiles to be able to execute the tests.
   - bash: |
       set -x
       set -e
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
-      ./maccore/tools/install-qa-provisioning-profiles.sh -v 
+      ./maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
     env:
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
