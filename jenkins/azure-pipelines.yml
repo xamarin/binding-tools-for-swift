@@ -5,6 +5,9 @@
 trigger:
 - '*'
 
+pr:
+- '*'
+
 jobs:
 - job: ContinuousIntegration
   timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
