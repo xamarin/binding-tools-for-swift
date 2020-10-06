@@ -37,7 +37,7 @@ Build everything. This will build the swift dependency (only if needed [1]) and 
 toolchain is available in Azure, and if so, download and use that version.
 This behavior can be overriden by doing `export FORCE_SWIFT_BUILD=1`.
 
-### Notes about building
+### Notes About Building
 
 The above steps are doing a **full debug** build for swift. [build-script](https://github.com/xamarin/swift/blob/swift-4.0-branch-tomswifty/utils/build-script) can also produce different builds, e.g.
 
@@ -52,7 +52,7 @@ Running `build-script` takes a **very long** time, so building extraneous local 
 1. `cd maccore/tools/tom-swifty/tests/tom-swifty-test/`
 2. `make`
 
-### Notes about testing
+### Notes About Testing
 
 * The new (incompatible but much more powerful) NUnit 3 runner means using the usual `FIXTURES` variable has to use a [different syntax](https://github.com/nunit/docs/wiki/Test-Selection-Language). E.g. to run a single test case from the command line you would do
 
