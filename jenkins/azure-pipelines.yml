@@ -30,6 +30,7 @@ jobs:
   steps:
   - checkout: maccore
     persistCredentials: true
+  - checkout: self
 
   - bash: |
       set -x
