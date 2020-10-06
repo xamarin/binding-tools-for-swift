@@ -50,6 +50,30 @@ namespace SwiftReflector {
 			return compiler;
 		}
 
+		public static CustomSwiftCompiler DefaultSystemCompiler (DisposableTempDirectory provider = null, string target = "x86_64-apple-macosx10.9")
+		{
+			var targetInfo = Compiler.SystemCompilerLocation.GetTargetInfo (target);
+			return new CustomSwiftCompiler (targetInfo, provider, false);
+		}
+
+		public static CustomSwiftCompiler SystemCompileSwift (string swiftCode, DisposableTempDirectory provider = null, string moduleName = "Xython", string target = "x86_64-apple-macosx10.9")
+		{
+			CustomSwiftCompiler compiler = DefaultSystemCompiler (provider, target: target);
+			string [] includeDirectories = null;
+			List<string> libraryDirectories = new List<string> { compiler.DirectoryPath, Compiler.kSwiftRuntimeGlueDirectory };
+			if (provider != null) {
+				includeDirectories = new string [] { provider.DirectoryPath };
+				libraryDirectories.Add (provider.DirectoryPath);
+				File.Copy (Path.Combine (Compiler.kXamGlueSourceDirectory, "module.map"), Path.Combine (provider.DirectoryPath, "module.map"));
+				File.Copy (Path.Combine (Compiler.kXamGlueSourceDirectory, "registeraccess.h"), Path.Combine (provider.DirectoryPath, "registeraccess.h"));
+			}
+
+			SwiftCompilerOptions options = new SwiftCompilerOptions (moduleName, includeDirectories, libraryDirectories.ToArray (), new string [] { "XamGlue" });
+			compiler.CompileString (options, swiftCode);
+			return compiler;
+		}
+
+
 		public static NewClassCompiler DefaultCSharpCompiler (UnicodeMapper unicodeMapper = null)
 		{
 			ClassCompilerOptions compilerOptions = new ClassCompilerOptions (targetPlatformIs64Bit : true, verbose : false, retainReflectedXmlOutput : true, retainSwiftWrappers : true);

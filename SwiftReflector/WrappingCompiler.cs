@@ -101,13 +101,18 @@ namespace SwiftReflector {
 							  Path.Combine (targetoutdir, outputLibraryName), true);
 					File.Delete (Path.Combine (fileProvider.DirectoryPath, outputLibraryName));
 
-					File.Copy (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftmodule"),
-							  Path.Combine (targetoutdir, wrappingModuleName + ".swiftmodule"));
-					File.Delete (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftmodule"));
+					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftmodule");
+					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftdoc");
+					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftinterface");
+					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftsourceinfo");
 
-					File.Copy (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftdoc"),
-							  Path.Combine (targetoutdir, wrappingModuleName + ".swiftdoc"));
-					File.Delete (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftdoc"));
+					//File.Copy (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftmodule"),
+					//		  Path.Combine (targetoutdir, wrappingModuleName + ".swiftmodule"));
+					//File.Delete (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftmodule"));
+
+					//File.Copy (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftdoc"),
+					//		  Path.Combine (targetoutdir, wrappingModuleName + ".swiftdoc"));
+					//File.Delete (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftdoc"));
 				}
 				if (targets.Count > 1) {
 					// lipo all the outputs back into the fileProvider
@@ -139,6 +144,10 @@ namespace SwiftReflector {
 							  Path.Combine (targetDir, wrappingModuleName + ".swiftmodule"), true);
 					File.Copy (Path.Combine (targetOutDirs [i], wrappingModuleName + ".swiftdoc"),
 										  Path.Combine (targetDir, wrappingModuleName + ".swiftdoc"), true);
+					File.Copy (Path.Combine (targetOutDirs [i], wrappingModuleName + ".swiftinterface"),
+										  Path.Combine (targetDir, wrappingModuleName + ".swiftinterface"), true);
+					File.Copy (Path.Combine (targetOutDirs [i], wrappingModuleName + ".swiftsourceinfo"),
+										  Path.Combine (targetDir, wrappingModuleName + ".swiftsourceinfo"), true);
 				}
 				foreach (string dirname in targetOutDirs) {
 					Directory.Delete (dirname, true);
@@ -148,6 +157,13 @@ namespace SwiftReflector {
 				}
 				return new Tuple<string, HashSet<string>> (outputLibraryPath, allReferencedModules);
 			}
+		}
+
+		void CopyThenDelete (string sourceDirectory, string targetDirectory, string fileName)
+		{
+			var sourceFile = Path.Combine (sourceDirectory, fileName);
+			File.Copy (sourceFile, Path.Combine (targetDirectory, fileName));
+			File.Delete (sourceFile);
 		}
 
 		void Lipo (List<string> sourcePaths, string outputPath, string libraryName)

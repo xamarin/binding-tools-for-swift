@@ -79,7 +79,6 @@ namespace SwiftReflector {
 
 			Launch (CompilerInfo.CustomSwiftc, args);
 			var outputLib = Path.Combine (DirectoryPath, $"lib{compilerOptions.ModuleName}.dylib");
-			RemoveBadRPath (outputLib);
 			if (outputIsFramework) {
 				string srcLib = outputLib;
 				File.Copy (srcLib,
@@ -93,6 +92,8 @@ namespace SwiftReflector {
 		{
 			StringBuilder sb = new StringBuilder ();
 			sb.Append ("-emit-library ");
+			sb.Append ("-enable-library-evolution ");
+			sb.Append ("-emit-module-interface ");
 
 			if (CompilerInfo.HasTarget)
 				sb.Append ("-target ").Append (CompilerInfo.Target).Append (" ");
@@ -146,12 +147,6 @@ namespace SwiftReflector {
 			} catch {
 				return null;
 			}
-		}
-
-		void RemoveBadRPath (string library)
-		{
-			var args = $"-delete_rpath {QuoteIfNeeded (CompilerInfo.LibDirectory)} {QuoteIfNeeded (library)}";
-			Launch ("install_name_tool", args);
 		}
 
 		public Stream ReflectToStream (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectories,

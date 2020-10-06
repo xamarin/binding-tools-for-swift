@@ -14,11 +14,16 @@ namespace SwiftReflector.Importing {
 			"Registrar", // not a namespace
 	    		"Twitter", // not compatible with Swift
 			"CoreAnimation", // not a namespace
+			"Microsoft.CodeAnalysis",
+			"ObjCRuntime", // .NET only
 	    		"System", // not a namespace
 			"System.Drawing", // not a namespace
+			"System.Net.Http",
+			"System.Runtime.CompilerServices",
 	    		"Xamarin.Utils", // .NET only
-			"ObjCRuntime", // .NET only
 	    		"VideoSubscriberAccount", // tvOS only
+			"WatchKit",
+			"Xamarin.Bundler",
 		};
 
 		static partial void AvailableMapIOS (ref Dictionary<string, string> result)
@@ -37,15 +42,24 @@ namespace SwiftReflector.Importing {
 			"Accounts.ACFacebookAudience",
 			// AddressBook
 			"AddressBook.ABAddressBookError", // not an enum
+			"AddressBook.ABAuthorizationStatus",
+			"AddressBook.ABPersonCompositeNameFormat",
+			"AddressBook.ABPersonImageFormat",
 			"AddressBook.ABPersonKind", // not an enum
 			"AddressBook.ABPersonProperty", // not an enum
 			"AddressBook.ABPersonSortBy", // not an enum
+			"AddressBook.ABPropertyType",
+			"AddressBook.ABRecordType",
 			"AddressBook.ABSourceProperty", // not an enum
+			"AddressBook.ABSourceType",
 			// ARKit
 			"ARKit.ARPlaneClassificationStatus",
 			// AssetsLibrary
 			"AssetsLibrary.ALAssetsError", // not an enum
+			"AssetsLibrary.ALAssetsGroupType",
+			"AssetsLibrary.ALAssetOrientation",
 			"AssetsLibrary.ALAssetType", // not an enum
+			"AssetsLibrary.ALAuthorizationStatus",
 			// AudioToolbox
 			"AudioToolbox.AudioCodecComponentType", // not an enum
 			"AudioToolbox.AudioConverterError", // not an enum
@@ -112,6 +126,8 @@ namespace SwiftReflector.Importing {
 			"AudioUnit.ScheduledAudioSliceFlag", // replaced
 			"AudioUnit.SpatialMixerAttenuation", // replaced
 			"AudioUnit.SpatialMixerRenderingFlags", // replaced
+			// AuthenticationServices
+			"AuthenticationServices.ASAuthorizationOperation",
 			// AVFoundation
 			"AVFoundation.AVAssetExportSessionPreset", // not an enum
 			"AVFoundation.AVAudioBitRateStrategy", // not an enum
@@ -122,6 +138,7 @@ namespace SwiftReflector.Importing {
 			"AVFoundation.AVAudioSessionInterruptionFlags", // not an enum
 			"AVFoundation.AVAuthorizationMediaType", // can't find it
 			"AVFoundation.AVCaptureDeviceTransportControlsPlaybackMode", // marked unavailable
+			"AVFoundation.AVContentKeyResponseDataType",
 			"AVFoundation.AVMediaTypes", // not an enum
 			"AVFoundation.AVSampleCursorChunkInfo", // Mac only
 			"AVFoundation.AVSampleCursorDependencyInfo", // Mac only
@@ -137,6 +154,8 @@ namespace SwiftReflector.Importing {
 			"AVKit.AVPlayerViewControlsStyle", // Mac only
 			// CallKit
 			"CallKit.CXErrorCode", // doesn't exist in Swift
+			// CloudKit
+			"CloudKit.CKSubscriptionOptions",
 			// Contacts
 			"Contacts.CNContactOptions", // not an enum
 			"Contacts.CNInstantMessageAddressOption", // not an enum
@@ -144,7 +163,11 @@ namespace SwiftReflector.Importing {
 			"Contacts.CNPostalAddressKeyOption", // not an enum
 			"Contacts.CNSocialProfileOption", // not an enum
 			"Contacts.CNSocialProfileServiceOption", // not an enum
+			// CoreBlueTooth
+			"CoreBluetooth.CBCentralManagerState",
+			"CoreBluetooth.CBPeripheralManagerState",
 			// CoreData
+			"CoreData.NSPersistentStoreUbiquitousTransitionType",
 			"CoreData.MigrationErrorType", // not an enum
 			"CoreData.ObjectGraphManagementErrorType", // not an enum
 			"CoreData.PersistentStoreErrorType", // not an enum
@@ -153,8 +176,12 @@ namespace SwiftReflector.Importing {
 			"CoreFoundation.CFMessagePortSendRequestStatus", // not an enum
 			"CoreFoundation.CFProxyType", // not an enum
 			"CoreFoundation.CFSocketFlags", // no name
+			"CoreFoundation.CFStringTransform",
+			"CoreFoundation.DispatchBlockFlags",
+			"CoreFoundation.DispatchQualityOfService",
 			"CoreFoundation.DispatchQueuePriority", // not an enum
 			"CoreFoundation.MemoryPressureFlags", // not an enum
+			"CoreFoundation.OSLogLevel",
 			"CoreFoundation.ProcessMonitorFlags", // not an enum
 			"CoreFoundation.VnodeMonitorKind", // not an enum
 			// CoreGraphics
@@ -165,6 +192,7 @@ namespace SwiftReflector.Importing {
 	    		"CoreGraphics.CGImageColorModel", // can't find it
 			"CoreGraphics.CGColorConverterTriple", // can't find it
 	    		"CoreGraphics.GColorConversionInfoTriple", // can't find it
+			"CoreGraphics.CGPdfTagType", // iOS 13+
 			"CoreGraphics.MatrixOrder",
 			// CoreImage
 			"CoreImage.CIFilterMode", // not in this namespace
@@ -174,6 +202,7 @@ namespace SwiftReflector.Importing {
 			// CoreMedia
 			"CoreMedia.CMFormatDescriptionError", // not an enum
 			"CoreMedia.CMPixelFormat", // not an enum
+			"CoreMedia.CMSampleBufferAttachmentKey",
 			"CoreMedia.CMTimebaseError", // not an enum
 			"CoreMedia.LensStabilizationStatus", // can't find it
 			"CoreMedia.TextMarkupColor", // can't find it
@@ -181,6 +210,11 @@ namespace SwiftReflector.Importing {
 			"CoreMedia.CMClockError", // doesn't exist
 			"CoreMedia.CMSampleBufferError", // doesn't exist
 			"CoreMedia.CMSyncError", // doesn't exist
+			// CoreNFC
+			"CoreNFC.NFCNdefStatus", // iOS 13
+			"CoreNFC.NFCTagType", // iOS 13
+			"CoreNFC.VasErrorCode", // iOS 13
+			"CoreNFC.VasMode", // iOS 13
 			// CoreSpotlight
 			"CoreSpotlight.CSFileProtection", // can't find it
 			// CoreTelephony
@@ -195,6 +229,7 @@ namespace SwiftReflector.Importing {
 			"CoreText.CTSuperscriptStyle", // can't find it
 			"CoreText.FontFeatureGroup", // not an enum
 			// CoreVideo
+			"CoreVideo.CVImageBufferAlphaChannelMode",
 			"CoreVideo.CVImageBufferColorPrimaries", // not an enum
 			"CoreVideo.CVImageBufferTransferFunction", // not an enum
 			"CoreVideo.CVImageBufferYCbCrMatrix", // not an enum
@@ -219,6 +254,7 @@ namespace SwiftReflector.Importing {
 	    		"Foundation.NSLigatureType",
 			"Foundation.NSDateComponentsWrappingBehavior",
 	    		"Foundation.NSUrlErrorCancelledReason",
+			"Foundation.NSUrlErrorNetworkUnavailableReason",
 			"Foundation.NSUrlRelationship",
 	    		"Foundation.NSStringEncoding",
 			"Foundation.NSDocumentType",
@@ -226,15 +262,21 @@ namespace SwiftReflector.Importing {
 			"Foundation.NSItemDownloadingStatus",
 	    		"Foundation.NSLinguisticTagUnit",
 			"Foundation.NSUrlSessionMultipathServiceType",
+			"Foundation.NSUrlSessionWebSocketCloseCode",
+			"Foundation.NSUrlSessionWebSocketMessageType",
 	    		"Foundation.NSRunLoopMode",
 			"Foundation.NSTextWritingDirection", // deprecated in 9.0
+			"Foundation.NSXpcConnectionOptions",
 			// GameKit
+			"GameKit.GKAuthenticationType",
 			"GameKit.GKGameSessionErrorCode", // no longer exists
 			"GameKit.GKPeerConnectionState", // marked unavailable
 			"GameKit.GKPeerPickerConnectionType", // marked unavailable
 			"GameKit.GKSendDataMode", // marked unavailable
 			"GameKit.GKSessionMode", // marked unavailable
 			"GameKit.GKVoiceChatServiceError", // marked unavailable
+			// HealthKit
+			"HealthKit.HKDataTypeIdentifier",
 			// HomeKit
 			"HomeKit.HMAccessoryCategoryType", // not an enum
 			"HomeKit.HMActionSetType", // not an enum
@@ -242,6 +284,10 @@ namespace SwiftReflector.Importing {
 			"HomeKit.HMCharacteristicMetadataUnits", // not an enum
 			"HomeKit.HMCharacteristicType", // not an enum
 			"HomeKit.HMServiceType", // not an enum
+			// iAd
+			"iAd.ADAdType",
+			"iAd.ADError",
+			"iAd.ADInterstitialPresentationPolicy",
 			// IdentityLookup
 			"IdentityLookup.ILClassificationAction",
 			// ImageIO
@@ -257,27 +303,60 @@ namespace SwiftReflector.Importing {
 			"IOSurface.IOSurfaceMemoryMap", // has become anonymous
 			// MapKit
 			"MapKit.MKDirectionsMode", // not an enum
+			"MapKit.MKMapCameraZoomRangeType",
+			"MapKit.MKPinAnnotationColor",
+			"MapKit.MKPointOfInterestFilterType",
 			// MediaPlayer
 			"MediaPlayer.MPMovieControlMode", // not an enum
+			"MediaPlayer.MPMovieControlStyle",
+			"MediaPlayer.MPMovieFinishReason",
+			"MediaPlayer.MPMovieLoadState",
+			"MediaPlayer.MPMovieMediaType",
+			"MediaPlayer.MPMoviePlaybackState",
+			"MediaPlayer.MPMovieRepeatMode",
+			"MediaPlayer.MPMovieScalingMode",
+			"MediaPlayer.MPMovieSourceType",
+			"MediaPlayer.MPMovieTimeOption",
 			// MediaToolbox
 			"MediaToolbox.MTAudioProcessingTapError", // can't find it
 			// Messages
 			"Messages.MSMessagesAppPresentationContext",
 			// Metal
 			"Metal.MTLClearValue", // can't find it
+			"Metal.MTLGpuFamily",
 			"Metal.MTLRenderPipelineError", // can't find it
 			"Metal.MTLSamplerBorderColor", // marked unavailable
+			// Metal Performance Shaders
+			"MetalPerformanceShaders.MPSCnnBatchNormalizationFlags",
+			"MetalPerformanceShaders.MPSCnnConvolutionGradientOption",
+			"MetalPerformanceShaders.MPSCnnLossType",
+			"MetalPerformanceShaders.MPSCnnReductionType",
+			"MetalPerformanceShaders.MPSCnnWeightsQuantizationType",
+			"MetalPerformanceShaders.MPSRnnMatrixId",
 			// ModelIO
 			"ModelIO.MDLNoiseTextureType", // can't find it
 			"ModelIO.MDLVoxelIndexExtent", // replaced
 			// Network
+			"Network.NWBrowseResultChange",
+			"Network.NWBrowserState",
+			"Network.NWDataTransferReportState",
 			"Network.NWEndpointType", // not an enum
+			"Network.NWFramerCreateFlags",
+			"Network.NWFramerStartResult",
 			"Network.NWErrorDomain", // can't find it
+			"Network.NWIPLocalAddressPreference",
 			"Network.NWMultiPathService", // can't find it
 			"Network.NWConnectionState", // iOS 12.0 or later
 			"Network.NWInterfaceType", // iOS 12.0 or later
 			"Network.NWListenerState", // iOS 12.0 or later
+			"Network.NWReportResolutionSource",
+			"Network.NWTxtRecordFindKey",
+			"Network.NWWebSocketCloseCode",
+			"Network.NWWebSocketOpCode",
+			"Network.NWWebSocketResponseStatus",
+			"Network.NWWebSocketVersion",
 			// PassKit
+			"PassKit.PKAddSecureElementPassErrorCode",
 			"PassKit.PKErrorCode", // does not exist
 			// PdfKit
 			"PdfKit.PdfPrintScalingMode", // macOS only
@@ -300,6 +379,9 @@ namespace SwiftReflector.Importing {
 			"Security.SslSessionConfig", // can't find it
 			"Security.SslSessionStrengthPolicy", // can't find it
 			"Security.SslStatus", // can't find it
+			"Security.TlsCipherSuite",
+			"Security.TlsCipherSuiteGroup",
+			"Security.TlsProtocolVersion",
 			// Social
 			"Social.SLServiceKind", // not an enum
 			// SystemConfiguration
@@ -311,6 +393,7 @@ namespace SwiftReflector.Importing {
 	    		"UIKit.UIAccessibilityTrait", // type alias
 			"UIKit.UICollectionElementKindSection",
 	    		"UIKit.UIDocumentMenuOrder", // deprecation in 11.0
+			"UIKit.UIKeyboardHidUsage",
 			"UIKit.UILineBreakMode", // deprecated
 	    		"UIKit.UIPencilPreferredAction", // 12.1+
 			"UIKit.UIRemoteNotificationType", // deprecated in 8
@@ -322,14 +405,18 @@ namespace SwiftReflector.Importing {
 			"UIKit.UIUserNotificationActionBehavior", // deprecated in 10.0
 	    		"UIKit.UIUserNotificationActivationMode", // deprecated in 10.0
 			"UIKit.UIUserNotificationType", // deprecated in 10.0
+			"UIKit.UIPointerEffectTintMode",
 	    		"UIKit.UIGraphicsImageRendererFormatRange", // doesn't exist?
 			"UIKit.UIImagePickerControllerImageUrlExportPreset", // can't find it?
 	    		"UIKit.UIPrintErrorCode", // can't find it?
 			"UIKit.UIPrintError", // can't find it?
+			"UIKit.UISceneErrorCode",
 			"UIKit.UITransitionViewControllerKind", // can't find it?
 	    		"UIKit.UIUserInterfaceStyle", // can't find it?
 			"UIKit.UIUserNotificationActionContext", // deprecated
+			"UIKit.UIWindowSceneSessionRole",
 			// VideoToolbox
+			"VideoToolbox.VTAlphaChannelMode",
 			"VideoToolbox.VTStatus",
 			"VideoToolbox.VTProfileLevel",
 			"VideoToolbox.VTH264EntropyMode",
@@ -350,17 +437,25 @@ namespace SwiftReflector.Importing {
 			"VideoToolbox.VTTransferFunction", // can't find it
 			// Vision
 	    		"Vision.VNBarcodeObservationRequestRevision",
+			"Vision.VNClassifyImageRequestRevision",
 			"Vision.VNCoreMLRequestRevision",
 	    		"Vision.VNDetectBarcodesRequestRevision",
 			"Vision.VNDetectedObjectObservationRequestRevision",
+			"Vision.VNDetectFaceCaptureQualityRequestRevision",
 	    		"Vision.VNDetectFaceLandmarksRequestRevision",
 			"Vision.VNDetectFaceRectanglesRequestRevision",
 	    		"Vision.VNDetectHorizonRequestRevision",
+			"Vision.VNDetectHumanRectanglesRequestRevision",
 			"Vision.VNDetectRectanglesRequestRevision",
 	    		"Vision.VNDetectTextRectanglesRequestRevision",
 			"Vision.VNFaceObservationRequestRevision",
+			"Vision.VNGenerateAttentionBasedSaliencyImageRequestRevision",
+			"Vision.VNGenerateImageFeaturePrintRequestRevision",
+			"Vision.VNGenerateObjectnessBasedSaliencyImageRequestRevision",
 	    		"Vision.VNHomographicImageRegistrationRequestRevision",
+			"Vision.VNRecognizeAnimalsRequestRevision",
 			"Vision.VNRecognizedObjectObservationRequestRevision",
+			"Vision.VNRecognizeTextRequestRevision",
 	    		"Vision.VNRectangleObservationRequestRevision",
 			"Vision.VNRequestRevision",
 	    		"Vision.VNTextObservationRequestRevision",
@@ -383,13 +478,22 @@ namespace SwiftReflector.Importing {
 			{ "Accelerate.vImageFlags", "vImage_Flags" },
 			{ "Accelerate.vImageInterpolationMethod", "vImage_InterpolationMethod" },
 			// ARKit
+			{ "ARKit.ARCoachingGoal", "ARCoachingOverlayView.Goal" },
+			{ "ARKit.ARCollaborationDataPriority", "ARSession.CollaborationData" },
 			{ "ARKit.AREnvironmentTexturing", "ARWorldTrackingConfiguration.EnvironmentTexturing" },
 			{ "ARKit.ARErrorCode", "ARError.Code" },
+			{ "ARKit.ARFrameSemantics", "ARConfiguration.FrameSemantics" },
+			{ "ARKit.ARMatteResolution", "ARMatteGenerator.Resolution" },
 			{ "ARKit.ARHitTestResultType", "ARHitTestResult.ResultType" },
 			{ "ARKit.ARPlaneAnchorAlignment", "ARPlaneAnchor.Alignment" },
 			{ "ARKit.ARPlaneClassification", "ARKit.ARPlaneAnchor.Classification" },
 			{ "ARKit.ARPlaneDetection", "ARKit.ARWorldTrackingConfiguration.PlaneDetection" },
+			{ "ARKit.ARRaycastTarget", "ARRaycastQuery.Target" },
+			{ "ARKit.ARRaycastTargetAlignment", "ARRaycastQuery.TargetAlignment" },
+			{ "ARKit.ARSceneReconstruction", "ARConfiguration.SceneReconstruction" },
+			{ "ARKit.ARSegmentationClass", "ARFrame.SegmentationClass" },
 			{ "ARKit.ARSessionRunOptions", "ARSession.RunOptions" },
+			{ "ARKit.ARSkeletonJointName", "ARSkeleton.JointName" },
 			{ "ARKit.ARTrackingState", "ARCamera.TrackingState" },
 			{ "ARKit.ARTrackingStateReason", "ARCamera.TrackingState.Reason" },
 			{ "ARKit.ARWorldAlignment", "ARConfiguration.WorldAlignment" },
@@ -406,6 +510,10 @@ namespace SwiftReflector.Importing {
 			// AudioUnit
 			{ "AudioUnit.AudioComponentFlag", "AudioComponentFlags" },
 			// AuthenticationServices
+			{ "AuthenticationServices.ASAuthorizationAppleIdButtonStyle", "ASAuthorizationAppleIDButton.Style" },
+			{ "AuthenticationServices.ASAuthorizationAppleIdButtonType", "ASAuthorizationAppleIDButton.ButtonType" },
+			{ "AuthenticationServices.ASAuthorizationAppleIdProviderCredentialState", "ASAuthorizationAppleIDProvider.CredentialState" },
+			{ "AuthenticationServices.ASAuthorizationScope", "ASAuthorization.Scope" },
 			{ "AuthenticationServices.ASCredentialIdentityStoreErrorCode", "ASCredentialIdentityStoreError.Code" },
 			{ "AuthenticationServices.ASCredentialServiceIdentifierType", "ASCredentialServiceIdentifier.IdentifierType" },
 			{ "AuthenticationServices.ASExtensionErrorCode", "ASExtensionError.Code" },
@@ -423,6 +531,7 @@ namespace SwiftReflector.Importing {
 			{ "AVFoundation.AVAudioSessionInterruptionType", "AVAudioSession.InterruptionType" },
 			{ "AVFoundation.AVAudioSessionIOType", "AVAudioSession.IOType" },
 			{ "AVFoundation.AVAudioSessionPortOverride", "AVAudioSession.PortOverride" },
+			{ "AVFoundation.AVAudioSessionPromptStyle", "AVAudioSession.PromptStyle" },
 			{ "AVFoundation.AVAudioSessionRecordPermission", "AVAudioSession.RecordPermission" },
 			{ "AVFoundation.AVAudioSessionRouteChangeReason", "AVAudioSession.RouteChangeReason" },
 			{ "AVFoundation.AVAudioSessionRouteSharingPolicy", "AVAudioSession.RouteSharingPolicy" },
@@ -438,6 +547,7 @@ namespace SwiftReflector.Importing {
 			{ "AVFoundation.AVCaptureFocusMode", "AVCaptureDevice.FocusMode" },
 			{ "AVFoundation.AVCaptureLensStabilizationStatus", "AVCaptureDevice.LensStabilizationStatus" },
 			{ "AVFoundation.AVCaptureOutputDataDroppedReason", "AVCaptureOutput.DataDroppedReason" },
+			{ "AVFoundation.AVCapturePhotoQualityPrioritization", "AVCapturePhotoOutput.QualityPrioritization" },
 			{ "AVFoundation.AVCaptureSessionInterruptionReason", "AVCaptureSession.InterruptionReason" },
 			{ "AVFoundation.AVCaptureSystemPressureFactors", "AVCaptureDevice.SystemPressureState.Factors" },
 			{ "AVFoundation.AVCaptureSystemPressureLevel", "AVCaptureDevice.SystemPressureState.Level" },
@@ -460,6 +570,9 @@ namespace SwiftReflector.Importing {
 			{ "AVFoundation.AVPlayerLooperStatus", "AVPlayerLooper.Status" },
 			{ "AVFoundation.AVPlayerStatus", "AVPlayer.Status" },
 			{ "AVFoundation.AVPlayerTimeControlStatus", "AVPlayer.TimeControlStatus" },
+			{ "AVFoundation.AVSemanticSegmentationMatteType", "AVSemanticSegmentationMatte.MatteType" },
+			// AVKit
+			{ "AVKit.AVAudioSessionRouteSelection", "AVAudioSession.RouteSelection" },
 			// BusinessChat
 			{ "BusinessChat.BCChatButtonStyle", "BCChatButton.Style" },
 			{ "BusinessChat.BCParameterName", "BCChatAction.Parameter" },
@@ -496,6 +609,8 @@ namespace SwiftReflector.Importing {
 			{ "Compression.CompressionAlgorithm", "compression_algorithm" },
 			// Contacts
 			{ "Contacts.CNErrorCode", "CNError.Code" },
+			// CoreBluetooth
+			{ "CoreBluetooth.CBCentralManagerFeature", "CBCentralManager.Feature" },
 			// CoreFoundation
 			{ "CoreFoundation.CFRunLoopExitReason", "CFRunLoopRunResult" },
 			{ "CoreFoundation.CFUrlPathStyle", "CFURLPathStyle" },
@@ -507,6 +622,8 @@ namespace SwiftReflector.Importing {
 			// iOS 13.0 or later: { "CoreMedia.CMClockError", "CMClock.Error" },
 			// iOS 13.0 or later: { "CoreMedia.CMSampleBufferError", "CMSampleBuffer.Error" },
 			// iOS 13.0 or later: { "CoreMedia.CMSyncError", "CMSync.Error" },
+			// CoreNFC
+			{ "CoreNFC.NFCPollingOption", "NFCTagReaderSession.PollingOption" },
 			// CoreSpotlight
 			{ "CoreSpotlight.CSIndexErrorCode", "CSIndexError.Code" },
 			{ "CoreSpotlight.CSSearchQueryErrorCode", "CSSearchQueryError.Code" },
@@ -552,6 +669,7 @@ namespace SwiftReflector.Importing {
 			{ "Foundation.NSComparisonPredicateOptions", "NSComparisonPredicate.Options" },
 			{ "Foundation.NSCompoundPredicateType", "NSCompoundPredicate.LogicalType" },
 			{ "Foundation.NSVolumeEnumerationOptions", "FileManager.VolumeEnumerationOptions" },
+			{ "Foundation.NSDataCompressionAlgorithm", "NSData.CompressionAlgorithm" },
 			{ "Foundation.NSDirectoryEnumerationOptions", "FileManager.DirectoryEnumerationOptions" },
 			{ "Foundation.NSFileManagerItemReplacementOptions", "FileManager.ItemReplacementOptions" },
 			{ "Foundation.NSSearchPathDirectory", "FileManager.SearchPathDirectory" },
@@ -574,6 +692,8 @@ namespace SwiftReflector.Importing {
 			{ "Foundation.NSFileWrapperReadingOptions", "FileWrapper.ReadingOptions" },
 			{ "Foundation.NSFileWrapperWritingOptions", "FileWrapper.WritingOptions" },
 			{ "Foundation.NSByteCountFormatterUnits", "ByteCountFormatter.Units" },
+			{ "Foundation.NSRelativeDateTimeFormatterStyle", "RelativeDateTimeFormatter.DateTimeStyle" },
+			{ "Foundation.NSRelativeDateTimeFormatterUnitsStyle", "RelativeDateTimeFormatter.UnitsStyle" },
 			{ "Foundation.NSUrlBookmarkCreationOptions", "NSURL.BookmarkCreationOptions" },
 			{ "Foundation.NSUrlBookmarkResolutionOptions", "NSURL.BookmarkResolutionOptions" },
 			{ "Foundation.NSUrlRequestNetworkServiceType", "NSURLRequest.NetworkServiceType" },
@@ -629,6 +749,7 @@ namespace SwiftReflector.Importing {
 			// Intents
 			{ "Intents.INDailyRoutineSituation", "INDailyRoutineRelevanceProvider.Situation" },
 			{ "Intents.INIntentErrorCode", "INIntentError.Code" },
+			{ "Intents.INMediaUserContextSubscriptionStatus", "INMediaUserContext.SubscriptionStatus" },
 			// LocalAuthentication
 			{ "LocalAuthentication.LAStatus", "LAError" },
 			// MapKit
@@ -637,6 +758,8 @@ namespace SwiftReflector.Importing {
 			{ "MapKit.MKDistanceFormatterUnits", "MKDistanceFormatter.Units" },
 			{ "MapKit.MKDistanceFormatterUnitStyle", "MKDistanceFormatter.DistanceUnitStyle" },
 			{ "MapKit.MKErrorCode", "MKError.Code" },
+			{ "MapKit.MKLocalSearchCompleterResultType", "MKLocalSearchCompleter.ResultType" },
+			{ "MapKit.MKLocalSearchResultType", "MKLocalSearch.ResultType" },
 			{ "MapKit.MKScaleViewAlignment", "MKScaleView.Alignment" },
 			{ "MapKit.MKSearchCompletionFilterType", "MKLocalSearchCompleter.FilterType" },
 			// MediaPlayer
@@ -660,6 +783,7 @@ namespace SwiftReflector.Importing {
 			{ "ModelIO.MDLVoxelIndexExtent2", "MDLVoxelIndexExtent" },
 			// NaturalLanguage
 			{ "NaturalLanguage.NLModelType", "NLModel.ModelType" },
+			{ "NaturalLanguage.NLTaggerAssetsResult", "NLTagger.AssetsResult" },
 			{ "NaturalLanguage.NLTaggerOptions", "NLTagger.Options" },
 			{ "NaturalLanguage.NLTokenizerAttributes", "NLTokenizer.Attributes" },
 			// Network
@@ -672,6 +796,7 @@ namespace SwiftReflector.Importing {
 			{ "Network.NWServiceClass", "nw_service_class_t" },
 			// NetworkExtension
 			{ "NetworkExtension.NEDnsProxyManagerError", "NEDNSProxyManagerError" },
+			{ "NetworkExtension.NEFilterReportEvent", "NEFilterReport.Event" },
 			{ "NetworkExtension.NEHotspotConfigurationEapTlsVersion", "NEHotspotEAPSettings.TLSVersion" },
 			{ "NetworkExtension.NEHotspotConfigurationEapType", "NEHotspotEAPSettings.EAPType" },
 			{ "NetworkExtension.NEHotspotConfigurationTtlsInnerAuthenticationType", "NEHotspotEAPSettings.TTLSInnerAuthenticationType" },
@@ -688,8 +813,10 @@ namespace SwiftReflector.Importing {
 			{ "NetworkExtension.NWUdpSessionState", "NWUDPSessionState" },
 			// PassKit
 			{ "PassKit.PKContactFields", "PKContactField" },
+			{ "PassKit.PKDisbursementRequestSchedule", "PKDisbursementRequest.Schedule" },
 			{ "PassKit.PKPassKitErrorCode", "PKPassKitError.Code" },
 			{ "PassKit.PKPaymentErrorCode", "PKPaymentError.Code" },
+			{ "PassKit.PKSecureElementPassActivationState", "PKSecureElementPass.PassActivationState" },
 			// PdfKit
 			{ "PDFKit.PdfActionNamedName", "PDFActionNamedName" },
 			{ "PDFKit.PdfAnnotationHighlightingMode", "PDFAnnotationHighlightingMode" },
@@ -716,6 +843,7 @@ namespace SwiftReflector.Importing {
 			// ReplayKit
 			{ "ReplayKit.RPRecordingError", "RPRecordingErrorCode" },
 			// SafariServices
+			{ "SafariServices.SFContentBlockerErrorCode", "SFError.Code" },
 			{ "SafariServices.SFErrorCode", "SFError.Code" },
 			// SceneKit
 			{ "SceneKit.SCNAnimationImportPolicy", "SCNSceneSource.AnimationImportPolicy" },
@@ -736,6 +864,7 @@ namespace SwiftReflector.Importing {
 			{ "Security.SslSessionState", "SSLSessionState" },
 			// StoreKit
 			{ "StoreKit.SKProductDiscountPaymentMode", "SKProductDiscount.PaymentMode" },
+			{ "StoreKit.SKProductDiscountType", "SKProductDiscount.Type" },
 			{ "StoreKit.SKProductPeriodUnit", "SKProduct.PeriodUnit" },
 			// SystemConfiguration
 			{ "SystemConfiguration.NetworkReachabilityFlags", "SCNetworkReachabilityFlags" },
@@ -784,9 +913,11 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIDocumentChangeKind", "UIDocument.ChangeKind" },
 			{ "UIKit.UIDocumentSaveOperation", "UIDocument.SaveOperation" },
 			{ "UIKit.UIDocumentState", "UIDocument.State" },
+			{ "UIKit.UIEventButtonMask", "UIEvent.ButtonMask" },
 			{ "UIKit.UIEventSubtype", "UIEvent.EventSubtype" },
 			{ "UIKit.UIEventType", "UIEvent.EventType" },
 			{ "UIKit.UIFontDescriptorSymbolicTraits", "UIFontDescriptor.SymbolicTraits" },
+			{ "UIKit.UIFontDescriptorSystemDesign", "UIFontDescriptor.SystemDesign" },
 			{ "UIKit.UIFontTextStyle", "UIFont.TextStyle" },
 			{ "UIKit.UIFontWeight", "UIFont.Weight" },
 			{ "UIKit.UIGestureRecognizerState", "UIGestureRecognizer.State" },
@@ -801,6 +932,8 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIImagePickerControllerImageUrlExportPreset", "UIImagePickerController.ImageURLExportPreset" },
 			{ "UIKit.UIImageRenderingMode", "UIImage.RenderingMode" },
 			{ "UIKit.UIImageResizingMode", "UIImage.ResizingMode" },
+			{ "UIKit.UIImageSymbolScale", "UIImage.SymbolScale" },
+			{ "UIKit.UIImageSymbolWeight", "UIImage.SymbolWeight" },
 			{ "UIKit.UIImpactFeedbackStyle", "UIImpactFeedbackGenerator.FeedbackStyle" },
 			{ "UIKit.UIInputViewStyle", "UIInputView.Style" },
 			{ "UIKit.UIInterpolatingMotionEffectType", "UIInterpolatingMotionEffect.EffectType" },
@@ -809,6 +942,10 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UINavigationControllerOperation", "UINavigationController.Operation" },
 			{ "UIKit.UINavigationItemLargeTitleDisplayMode", "UINavigationItem.LargeTitleDisplayMode" },
 			{ "UIKit.UINotificationFeedbackType", "UINotificationFeedbackGenerator.FeedbackType" },
+			{ "UIKit.UIMenuElementAttributes", "UIMenuElement.Attributes" },
+			{ "UIKit.UIMenuElementState", "UIMenuElement.State" },
+			{ "UIKit.UIMenuIdentifier", "UIMenu.Identifier" },
+			{ "UIKit.UIMenuOptions", "UIMenu.Options" },
 			{ "UIKit.UIPageViewControllerNavigationDirection", "UIPageViewController.NavigationDirection" },
 			{ "UIKit.UIPageViewControllerNavigationOrientation", "UIPageViewController.NavigationOrientation" },
 			{ "UIKit.UIPageViewControllerSpineLocation", "UIPageViewController.SpineLocation" },
@@ -824,6 +961,7 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIPrintInfoOutputType", "UIPrintInfo.OutputType" },
 			{ "UIKit.UIProgressViewStyle", "UIProgressView.Style" },
 			{ "UIKit.UIPushBehaviorMode", "UIPushBehavior.Mode" },
+			{ "UIKit.UISceneActivationState", "UIScene.ActivationState" },
 			{ "UIKit.UIScreenOverscanCompensation", "UIScreen.OverscanCompensation" },
 			{ "UIKit.UIScrollViewContentInsetAdjustmentBehavior", "UIScrollView.ContentInsetAdjustmentBehavior" },
 			{ "UIKit.UIScrollViewIndexDisplayMode", "UIScrollView.IndexDisplayMode" },
@@ -832,12 +970,14 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UISearchBarIcon", "UISearchBar.Icon" },
 			{ "UIKit.UISearchBarStyle", "UISearchBar.Style" },
 			{ "UIKit.UISegmentedControlSegment", "UISegmentedControl.Segment" },
+			{ "UIKit.UISplitViewControllerBackgroundStyle", "UISplitViewController.BackgroundStyle" },
 			{ "UIKit.UISplitViewControllerDisplayMode", "UISplitViewController.DisplayMode" },
 			{ "UIKit.UISplitViewControllerPrimaryEdge", "UISplitViewController.PrimaryEdge" },
 			{ "UIKit.UIStackViewAlignment", "UIStackView.Alignment" },
 			{ "UIKit.UIStackViewDistribution", "UIStackView.Distribution" },
 			{ "UIKit.UISwipeGestureRecognizerDirection", "UISwipeGestureRecognizer.Direction" },
 			{ "UIKit.UISystemAnimation", "UIView.SystemAnimation" },
+			{ "UIKit.UITabBarItemAppearanceStyle", "UITabBarItemAppearance.Style" },
 			{ "UIKit.UITabBarItemPositioning", "UITabBar.ItemPositioning" },
 			{ "UIKit.UITabBarSystemItem", "UITabBarItem.SystemItem" },
 			{ "UIKit.UITableViewCellDragState", "UITableViewCell.DragState" },
@@ -872,6 +1012,7 @@ namespace SwiftReflector.Importing {
 			{ "UIKit.UIWebPaginationBreakingMode", "UIWebView.PaginationBreakingMode" },
 			{ "UIKit.UIWebPaginationMode", "UIWebView.PaginationMode" },
 			{ "UIKit.UIWebViewNavigationType", "UIWebView.NavigationType" },
+			{ "UIKit.UIWindowSceneDismissalAnimation", "UIWindowScene.DismissalAnimation" },
 			{ "UIKit.UIContextualActionStyle", "UIContextualAction.Style" },
 			{ "UIKit.UIDocumentBrowserViewControllerImportMode", "UIDocumentBrowserViewController.ImportMode" },
 			{ "UIKit.UIDocumentBrowserViewControllerBrowserUserInterfaceStyle", "UIDocumentBrowserViewController.BrowserUserInterfaceStyle" },
@@ -884,6 +1025,7 @@ namespace SwiftReflector.Importing {
 			// WatchKit
 			{ "WatchKit.WKErrorCode", "WatchKitError.Code" },
 			// WebKit
+			{ "WebKit.WKContentMode", "WKWebpagePreferences.ContentMode" },
 			{ "WebKit.WKErrorCode", "WKError.Code" },
 		};
 	}

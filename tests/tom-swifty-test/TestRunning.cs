@@ -254,7 +254,7 @@ namespace tomwiftytest {
 			SetInvokingTestNameIfUnset (ref testName, out string nameSpace);
 
 			using (var provider = new DisposableTempDirectory ()) {
-				var compiler = Utils.CompileSwift (swiftCode, provider, nameSpace);
+				var compiler = Utils.SystemCompileSwift (swiftCode, provider, nameSpace);
 
 				var libName = $"lib{nameSpace}.dylib";
 				var tempDirectoryPath = Path.Combine (provider.DirectoryPath, "BuildDir");
@@ -291,7 +291,7 @@ namespace tomwiftytest {
 			string testClassName = "TomTest" + testName;
 
 			using (var provider = new DisposableTempDirectory ()) {
-				var compiler = Utils.CompileSwift (swiftCode, provider, nameSpace);
+				var compiler = Utils.SystemCompileSwift (swiftCode, provider, nameSpace);
 
 				var libName = $"lib{nameSpace}.dylib";
 				var tempDirectoryPath = Path.Combine (provider.DirectoryPath, "BuildDir");

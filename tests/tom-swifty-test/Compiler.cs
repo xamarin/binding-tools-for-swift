@@ -41,6 +41,10 @@ namespace tomwiftytest {
 
 		static string kSwiftCustomBin = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (kSwiftCustomDirectory, "bin/") : FindPathFromEnvVariable ("bin/swift/bin/")) + "/";
 		static string kSwiftCustomLib = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (kSwiftCustomDirectory, "lib/swift/macosx/") : FindPathFromEnvVariable ("bin/swift/lib/swift/macosx/"));
+
+		static string kSystemBin = "/usr/bin/";
+		static string kSystemLib = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx";
+
 		[ThreadStatic]
 		static SwiftCompilerLocation compilerLocation;
 		public static SwiftCompilerLocation CompilerLocation {
@@ -50,6 +54,17 @@ namespace tomwiftytest {
 				return compilerLocation;
 			}
 		}
+
+		[ThreadStatic]
+		static SwiftCompilerLocation systemCompilerLocation;
+		public static SwiftCompilerLocation SystemCompilerLocation {
+			get {
+				if (systemCompilerLocation == null)
+					systemCompilerLocation = new SwiftCompilerLocation (kSystemBin, kSystemLib);
+				return systemCompilerLocation;
+			}
+		}
+
 
 		public static List<string> kTypeDatabases = new List<string> { PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../bindings") : FindPathFromEnvVariable ("bindings")) };
 		public static string kSwiftCustomSwiftc = SOM_PATH is null ? Path.Combine (kSwiftCustomBin, "swiftc") : FindPathFromEnvVariable ("bin/swift/bin/swiftc");
@@ -419,22 +434,26 @@ namespace tomwiftytest {
 				return;
 
 			// Copy the XamGlue library if we don't already have it
-			var xamGlueLibrary = Path.Combine (workingDirectory, "XamGlue");
-			if (!File.Exists (xamGlueLibrary))
+			var thisLocation = Path.Combine (workingDirectory, "XamGlue.framework");
+			var xamGlueLibrary = Path.Combine (thisLocation, "XamGlue");
+			if (!File.Exists (xamGlueLibrary)) {
+				if (!Directory.Exists (thisLocation))
+					Directory.CreateDirectory (thisLocation);
 				File.Copy (Path.Combine (Compiler.kSwiftRuntimeGlueDirectory, "XamGlue"), xamGlueLibrary, true);
-
-			// And fixup any references to the XamGlue.framework
-			var output = new StringBuilder ();
-			var install_name_tool = new StringBuilder ();
-			install_name_tool.Append ($"install_name_tool ");
-			install_name_tool.Append ($"-change @rpath/XamGlue.framework/XamGlue XamGlue ");
-			install_name_tool.Append ($"{StringUtils.Quote (dylib)} ");
-			output.Clear ();
-			var rv = ExecAndCollect.RunCommand ("xcrun", install_name_tool.ToString (), output: output, verbose: true);
-			if (rv != 0) {
-				Console.WriteLine (output);
-				throw new Exception ($"Failed to run install_name_tool on {dylib}:\n{output}\n");
 			}
+
+			//// And fixup any references to the XamGlue.framework
+			//var output = new StringBuilder ();
+			//var install_name_tool = new StringBuilder ();
+			//install_name_tool.Append ($"install_name_tool ");
+			//install_name_tool.Append ($"-change @rpath/XamGlue.framework/XamGlue XamGlue ");
+			//install_name_tool.Append ($"{StringUtils.Quote (dylib)} ");
+			//output.Clear ();
+			//var rv = ExecAndCollect.RunCommand ("xcrun", install_name_tool.ToString (), output: output, verbose: true);
+			//if (rv != 0) {
+			//	Console.WriteLine (output);
+			//	throw new Exception ($"Failed to run install_name_tool on {dylib}:\n{output}\n");
+			//}
 		}
 
 		static bool RunCurrentTestWithLeaks {
@@ -526,11 +545,11 @@ namespace tomwiftytest {
 
 			// this will let you see why things might not link
 			// or why libraries might not load (for instance if dependent libraries can't be found)
-			//env.Add ("MONO_LOG_LEVEL", "debug");
-			//env.Add ("MONO_LOG_MASK", "dll");
+			env.Add ("MONO_LOG_LEVEL", "debug");
+			env.Add ("MONO_LOG_MASK", "dll");
 			// this will print out every library that was loaded
 			//env.Add ("DYLD_PRINT_LIBRARIES") = "YES";
-			env.Add ("DYLD_LIBRARY_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "DYLD_LIBRARY_PATH", String.Format ("{0}:{1}", kSwiftCustomLib, kSwiftRuntimeGlueDirectory)));
+			env.Add ("DYLD_LIBRARY_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "DYLD_LIBRARY_PATH", $"/usr/lib/swift:{kSwiftRuntimeGlueDirectory}"));
 			switch (platform) {
 			case PlatformName.macOS:
 				// This is really a hack, any tests needing to use XM, should create a proper .app using mmp instead.
@@ -540,6 +559,8 @@ namespace tomwiftytest {
 			case PlatformName.None:
 				env.Add ("MONO_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "MONO_PATH", $"{ConstructorTests.kSwiftRuntimeOutputDirectory}"));
 				env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", ".");
+				if (workingDirectory != null)
+					env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", workingDirectory);
 				break;
 			default:
 				throw new NotImplementedException (platform.ToString ());
