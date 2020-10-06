@@ -37,7 +37,7 @@ jobs:
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
       ls -la
-      ./maccore/tools/install-qa-provisioning-profiles.sh -v
+      ./tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
     env:
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
