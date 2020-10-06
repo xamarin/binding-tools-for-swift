@@ -230,6 +230,7 @@ namespace dlopentest
 
 				var output = TestRunning.Execute (temp.DirectoryPath, "TestIt.exe", PlatformName.macOS);
 				Assert.AreEqual (expected, output);
+				var typeBasedClassName = typeName.Replace('.', '_');
 
 				var tsource = $@"using System;
 using NewClassCompilerTests;
@@ -239,7 +240,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace MetatypeTests
 {{
-	public class CheckName{typeName} : ITomTest
+	public class CheckName{typeBasedClassName} : ITomTest
 	{{
 		public void Run()
 		{{
@@ -287,6 +288,9 @@ namespace dlopentest
 
 				var output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
 				Assert.AreEqual (expected, output);
+				var typeBasedClassName = typeName.Replace('.', '_');
+
+				
 
 				var tsource = $@"using System;
 using NewClassCompilerTests;
@@ -296,7 +300,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace MetatypeTests
 {{
-	public class CheckName{typeName} : ITomTest
+	public class CheckName{typeBasedClassName} : ITomTest
 	{{
 		public void Run()
 		{{
