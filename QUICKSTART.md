@@ -62,7 +62,7 @@ When you make binding-tools-for-swift, the build will bring down a copy of the b
     /path/to/binding-tools-for-swift/SwiftToolchain-v3/GITHASH/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin
     /path/to/binding-tools-for-swift/SwiftToolchain-v3/GITHASH/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib
 
-Since the binding tools need to compile Swift wrappers that use some runtime glue, it needs a reference 
+Since the binding tools need to compile Swift wrappers that use some runtime glue, it needs a reference
 
 A typical set of commands to generate bindings is:
 
@@ -82,11 +82,12 @@ The binding tools need the following to operate:
 In addition, the tools can operator on separate `.swiftmodule` and `.dylib` files. This can be handled by using a `-M` argument for the `.swiftmodule` and `-L` for the library. It’s easier to use the `.framework` directory and a single `-C` argument.
 
 ## Building and Running Samples
+
 Samples source code is in the `samples` directory, but will not build and run there.
 Instead you need to make a packaged build, from the root of binding-tools-for-swift execute the command:
 
-	`make package`
-	
+    make package
+
 this will leave a directory inside of the directory `Pack-Man` named `binding-tools-for-swift` which contains buildable samples.
 Most samples can be built by executing `make` in their directory. To try out a sample, do `make runit` for most of the samples.
 
