@@ -18,17 +18,14 @@ resources:
 
 variables:
   -group: xamops-azdev-secrets
-  -group: Xamarin Release
-  -group: Xamarin-Secrets
+          Xamarin Release
+          Xamarin-Secrets
 
 jobs:
 - job: ContinuousIntegration
   timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
   pool:
     vmImage: 'macOS-10.14'
-
-  - checkout: maccore
-    persistCredentials: true
 
   # Add the required provisioning profiles to be able to execute the tests.
   - bash: |
@@ -42,6 +39,8 @@ jobs:
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
   steps:
+  - checkout: maccore
+    persistCredentials: true
   - script: |
       set +e # we don't care about errors here
       set -x
