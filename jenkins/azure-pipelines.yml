@@ -91,7 +91,7 @@ jobs:
   - script: |
       set -e
       set -x
-      ./jenkins/build.sh
+      ./binding-tools-for-swift/jenkins/build.sh
     displayName: 'Build'
 
   - script: |
