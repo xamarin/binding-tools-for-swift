@@ -60,6 +60,7 @@ jobs:
   - script: |
       set -e
       set -x
+      ls -la
       ./jenkins/provision-deps.sh
     displayName: 'Provision dependencies'
 
@@ -90,7 +91,6 @@ jobs:
   - script: |
       set -e
       set -x
-      ls -la
       ./jenkins/build.sh
     displayName: 'Build'
 
