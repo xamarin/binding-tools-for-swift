@@ -98,9 +98,6 @@ jobs:
       set -e
       set -x
       ./binding-tools-for-swift/jenkins/build-package.sh
-      ls -la
-      ls .. -la
-      ls ../.. -la
       ls -la ./package || true
     displayName: 'Package'
 
