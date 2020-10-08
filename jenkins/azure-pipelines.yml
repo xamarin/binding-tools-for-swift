@@ -61,13 +61,13 @@ jobs:
       set -e
       set -x
       ls -la
-      ./jenkins/provision-deps.sh
+      ./binding-tools-for-swift/jenkins/provision-deps.sh
     displayName: 'Provision dependencies'
 
   - script: |
       set -e
       set -x
-      ./jenkins/build-swift.sh --publish
+      ./binding-tools-for-swift/jenkins/build-swift.sh --publish
       mkdir -p ../toolchain
       if test -f Pack-Man/SwiftToolchain-*.zip; then
         cp -c Pack-Man/SwiftToolchain-*.zip ../toolchain
@@ -97,7 +97,7 @@ jobs:
   - script: |
       set -e
       set -x
-      ./jenkins/build-package.sh
+      ./binding-tools-for-swift/jenkins/build-package.sh
       ls -la ../package || true
     displayName: 'Package'
 
@@ -114,7 +114,7 @@ jobs:
   - script: |
       set -e
       set -x
-      ./jenkins/run-tests.sh
+      ./binding-tools-for-swift/jenkins/run-tests.sh
     displayName: 'Run tests'
 
 - job: UploadToolchain
@@ -159,7 +159,7 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
 
 - job: UploadPackages
@@ -203,5 +203,5 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
