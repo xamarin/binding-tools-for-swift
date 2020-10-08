@@ -98,7 +98,7 @@ jobs:
       set -e
       set -x
       ./binding-tools-for-swift/jenkins/build-package.sh
-      ls -la ../package || true
+      ls -la ./package || true
     displayName: 'Package'
 
   # This will upload the packages to Azure Devops
@@ -107,7 +107,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Upload Packages'
     inputs:
-      PathtoPublish: '../package'
+      PathtoPublish: './package'
       ArtifactName: 'drop'
       publishLocation: 'Container'
 
