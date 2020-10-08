@@ -37,7 +37,7 @@ jobs:
       set -e
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
-      cd $(workingDirectory)
+      cd $workingDirectory
       ls -la
       ./tools/install-qa-provisioning-profiles.sh -v
       env:
