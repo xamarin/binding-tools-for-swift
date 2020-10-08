@@ -115,6 +115,24 @@ jobs:
       ./binding-tools-for-swift/jenkins/run-tests.sh
     displayName: 'Run tests'
 
+  - task: PublishTestResults@2
+    displayName: 'Publish NUnit Device Test Results'
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TestResult*.xml'
+      failTaskOnFailedTests: true
+    continueOnError: true
+    condition: succeededOrFailed()
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Artifact: TestSummary'
+    inputs:
+      targetPath: 'xamarin-macios/tests/TestSummary.md'
+      artifactName: TestSummary
+    continueOnError: true
+    condition: succeededOrFailed()
+    
+
 - job: UploadToolchain
   dependsOn: ContinuousIntegration
   condition: eq(dependencies.ContinuousIntegration.outputs['BuildSwift.uploadtoolchain'], '1')
