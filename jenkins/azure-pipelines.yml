@@ -37,13 +37,12 @@ jobs:
       set -e
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
-      cd $workingDirectory
+      cd $directory
       ls -la
       ./tools/install-qa-provisioning-profiles.sh -v
-        
+    workingDirectory: directory
     displayName: 'Add provisioning profiles'
     env:
-      workingDirectory: System.DefaultWorkingDirectory
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
   - script: |
