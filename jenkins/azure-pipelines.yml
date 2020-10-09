@@ -123,17 +123,18 @@ jobs:
       failTaskOnFailedTests: true
     continueOnError: true
     condition: succeededOrFailed()
+  
+  - bash:
+      ls -la
+    displayName: 'Check Path for artifact'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
     inputs:
-      targetPath: '$(WorkingDirectory)/binding-tools-for-swift/tests/TestResult.md'
+      targetPath: 'tests/TestResult.md'
       artifactName: TestResults
     continueOnError: true
     condition: succeededOrFailed()
-    env:
-      WorkingDirectory: $(System.DefaultWorkingDirectory)
-    
 
 - job: UploadToolchain
   dependsOn: ContinuousIntegration
