@@ -12,7 +12,7 @@ namespace SwiftRuntimeLibrary {
 #if __IOS__ || __MACOS__ || __WATCHOS__ || __TVOS__
 		internal const string kXamGlue = "@rpath/XamGlue.framework/XamGlue";
 #else
-		internal const string kXamGlue = "XamGlue";
+		internal const string kXamGlue = "XamGlue.framework/XamGlue";
 #endif
 
 		[DllImport (SwiftCoreConstants.LibSwiftCore)]

@@ -132,6 +132,7 @@ namespace SwiftReflector {
 		public static CSIdentifier kMobilePlatforms = new CSIdentifier ("__IOS__ || __MACOS__ || __TVOS__ || __WATCHOS__");
 
 		SwiftCompilerLocation SwiftCompilerLocations;
+		SwiftCompilerLocation ReflectorLocations;
 		ClassCompilerLocations ClassCompilerLocations;
 		ClassCompilerNames CompilerNames;
 		ClassCompilerOptions Options;
@@ -148,7 +149,8 @@ namespace SwiftReflector {
 
 		public NewClassCompiler (SwiftCompilerLocation swiftCompilerLocations, ClassCompilerOptions options, UnicodeMapper unicodeMapper)
 		{
-			SwiftCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (swiftCompilerLocations, nameof (swiftCompilerLocations));
+			ReflectorLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (swiftCompilerLocations, nameof (swiftCompilerLocations));
+			SwiftCompilerLocations = new SwiftCompilerLocation ("/usr/bin", "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx");
 			Options = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (options, nameof (options));
 			UnicodeMapper = unicodeMapper;
 
@@ -5731,7 +5733,7 @@ namespace SwiftReflector {
 				mods.Clear ();
 				mods.AddRange (locations.Select (loc => loc.DirectoryPath));
 
-				var targetInfo = SwiftCompilerLocations.GetTargetInfo (targets [0]);
+				var targetInfo = ReflectorLocations.GetTargetInfo (targets [0]);
 				using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, null, true)) {
 					compiler.Verbose = verbose;
 					var libs = new List<string> (libraryPaths);
@@ -5842,7 +5844,7 @@ namespace SwiftReflector {
 				string bestTarget = ChooseBestTarget (targets);
 
 				using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
-					var targetInfo = SwiftCompilerLocations.GetTargetInfo (bestTarget);
+					var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget);
 					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, provider, false)) {
 						compiler.Verbose = Verbose;
 
@@ -5898,7 +5900,7 @@ namespace SwiftReflector {
 		{
 			try {
 				using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
-					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (SwiftCompilerLocations.GetTargetInfo (null), provider, false)) {
+					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (ReflectorLocations.GetTargetInfo (null), provider, false)) {
 						compiler.Verbose = Verbose;
 
 						var decls = compiler.ReflectToModules (moduleSeachPaths, null, "-f XamGlue", moduleName);

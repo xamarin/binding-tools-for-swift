@@ -14,7 +14,11 @@ The packaging of BTFS is still evolving, and we expect to provide a binding proj
 
 ## Caution ❗
 
-In order to contribute to Binding-Tools-For-Swift, you will need Xcode 10.2 !
+In order to contribute to Binding-Tools-For-Swift, you will need Xcode 12!
+
+❗❗❗
+Binding Tools for Swift is currently in the process of moving to Swift 5.3. The tests are (temporarily) disabled until issues can be addressed.
+❗❗❗
 
 ## Current Status
 

@@ -41,9 +41,6 @@
     <Reference Include="Mono.Options">
       <HintPath>..\..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Mac">
-      <HintPath>..\..\SwiftRuntimeLibrary.Mac\bin\Debug\Xamarin.Mac.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
@@ -136,13 +133,13 @@
       <Project>{8CAC7366-9650-440D-A3C5-36D880285DD5}</Project>
       <Name>tom-swifty</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SwiftRuntimeLibrary.Mac\SwiftRuntimeLibrary.Mac.csproj">
-      <Project>{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}</Project>
-      <Name>SwiftRuntimeLibrary.Mac</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\leaktest\leaktest.csproj">
       <Project>{33D1E7E3-A123-43F0-B047-163C6E75D3BF}</Project>
       <Name>leaktest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
+      <Project>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</Project>
+      <Name>SwiftRuntimeLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
