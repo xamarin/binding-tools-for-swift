@@ -82,7 +82,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Upload Swift Toolchain'
     inputs:
-      PathtoPublish: './toolchain'
+      PathtoPublish: '../../toolchain'
       ArtifactName: 'toolchain'
       publishLocation: 'Container'
 
