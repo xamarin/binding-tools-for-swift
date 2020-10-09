@@ -124,7 +124,7 @@ jobs:
     continueOnError: true
     condition: succeededOrFailed()
   
-  - bash:
+  - bash: |
       pwd
       ls -la
     displayName: 'Check Path for artifact'
