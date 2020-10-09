@@ -1,1 +1,1 @@
-TestResults
+This is where azure-pipeline test results will be stored.
