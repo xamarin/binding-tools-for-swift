@@ -109,11 +109,11 @@ jobs:
       ArtifactName: 'drop'
       publishLocation: 'Container'
 
-  # - script: |
-  #     set -e
-  #     set -x
-  #     ./binding-tools-for-swift/jenkins/run-tests.sh
-  #   displayName: 'Run tests'
+  - script: |
+      set -e
+      set -x
+      ./binding-tools-for-swift/jenkins/run-tests.sh
+    displayName: 'Run tests'
 
   - task: PublishTestResults@2
     displayName: 'Publish NUnit Device Test Results'
@@ -121,20 +121,6 @@ jobs:
       testResultsFormat: NUnit
       testResultsFiles: '**/TestResult*.xml'
       failTaskOnFailedTests: true
-    continueOnError: true
-    condition: succeededOrFailed()
-  
-  - bash: |
-      pwd
-      ls -la
-      pwd
-    displayName: 'Check Path for artifact'
-
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish Artifact: TestResult'
-    inputs:
-      targetPath: '../../binding-tools-for-swift/tests/TestResult.md'
-      artifactName: TestResults
     continueOnError: true
     condition: succeededOrFailed()
 
