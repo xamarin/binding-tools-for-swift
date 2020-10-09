@@ -125,10 +125,10 @@ jobs:
     condition: succeededOrFailed()
 
   - task: PublishPipelineArtifact@1
-    displayName: 'Publish Artifact: TestResults='
+    displayName: 'Publish Artifact: TestResult'
     inputs:
-      targetPath: 'xamarin-macios/tests/TestResult.md'
-      artifactName: TestSummary
+      targetPath: 'binding-tools-for-swift/tests/TestResult.md'
+      artifactName: TestResults
     continueOnError: true
     condition: succeededOrFailed()
     
@@ -219,5 +219,6 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./binding-tools-for-swift/jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ls -la
+      ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
