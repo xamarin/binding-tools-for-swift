@@ -532,8 +532,8 @@ namespace tomwiftytest {
 
 			// this will let you see why things might not link
 			// or why libraries might not load (for instance if dependent libraries can't be found)
-			// env.Add ("MONO_LOG_LEVEL", "debug");
-			// env.Add ("MONO_LOG_MASK", "dll");
+			//env.Add ("MONO_LOG_LEVEL", "debug");
+			//env.Add ("MONO_LOG_MASK", "dll");
 			// this will print out every library that was loaded
 			//env.Add ("DYLD_PRINT_LIBRARIES") = "YES";
 			env.Add ("DYLD_LIBRARY_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "DYLD_LIBRARY_PATH", $"/usr/lib/swift:{kSwiftRuntimeGlueDirectory}"));
