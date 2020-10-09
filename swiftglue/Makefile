@@ -63,7 +63,7 @@ $$($(3)_RELEASE_COUTPUTDIR)/%.o : %.c
 
 $$($(3)_RELEASE_OUTPUTDIR)/$(MODULENAME): Makefile $(wildcard *.swift) $$($(3)_RELEASE_OBJFILES)
 	$(Q) mkdir -p $$(dir $$@)
-	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Release]) $(SYSTEM_SWIFTC) -O -sdk $$($(3)_SDK) -target $(3) -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_RELEASE_OBJFILES)
+	$$(call Q_2,SWIFTC [$(1)/$$($(3)_ARCH)/Release]) $(SYSTEM_SWIFTC) -O -sdk $$($(3)_SDK) -target $(3) -emit-module-interface -enable-library-evolution -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $(MODULENAME) -Xlinker -install_name -Xlinker @rpath/$(MODULENAME).framework/$(MODULENAME) -I . -module-name $(MODULENAME) -o $$@.tmp *.swift $$($(3)_RELEASE_OBJFILES)
 #	$$(Q) install_name_tool -delete_rpath $(realpath $(UNPACKAGED_SWIFTLIB)/$(2)) $$@.tmp
 	$$(Q) mv $$@.tmp $$@
 endef
@@ -88,6 +88,8 @@ define SwiftFrameworkTemplate
 $(BINDIR)/$(2)/$(1)/FinalProduct/$(MODULENAME).framework/$(MODULENAME): $$(foreach arch,$(3),$(BINDIR)/$(2)/$(1)/$$(arch)/$(MODULENAME))
 	$$(Q) mkdir -p $$(dir $$@)/Modules/$(MODULENAME).swiftmodule
 	$$(Q) $$(foreach arch,$(3),$(CP) $(BINDIR)/$(2)/$(1)/$$(arch)/$(MODULENAME).swiftdoc    $$(dir $$@)/Modules/$(MODULENAME).swiftmodule/$$(arch).swiftdoc &&) true
+	$$(Q) $$(foreach arch,$(3),$(CP) $(BINDIR)/$(2)/$(1)/$$(arch)/$(MODULENAME).swiftinterface    $$(dir $$@)/Modules/$(MODULENAME).swiftmodule/$$(arch).swiftinterface &&) true
+	$$(Q) $$(foreach arch,$(3),$(CP) $(BINDIR)/$(2)/$(1)/$$(arch)/$(MODULENAME).swiftsourceinfo    $$(dir $$@)/Modules/$(MODULENAME).swiftmodule/$$(arch).swiftsourceinfo &&) true
 	$$(Q) $$(foreach arch,$(3),$(CP) $(BINDIR)/$(2)/$(1)/$$(arch)/$(MODULENAME).swiftmodule $$(dir $$@)/Modules/$(MODULENAME).swiftmodule/$$(arch).swiftmodule &&) true
 	$$(call Q_2,LIPO [$(1)/$(2)]) lipo $$^ -create -output $$@.tmp
 	$$(Q) mv $$@.tmp $$@

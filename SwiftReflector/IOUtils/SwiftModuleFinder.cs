@@ -68,6 +68,8 @@ namespace SwiftReflector.IOUtils {
 				}
 				string moduleSourceFile = Path.Combine (pathSourceDirectory, cpu + ".swiftmodule");
 				string docSourceFile = Path.Combine (pathSourceDirectory, cpu + ".swiftdoc");
+				var infoSourceFile = Path.Combine (pathSourceDirectory, cpu + ".swiftsourceinfo");
+				var interfaceSourceFile = Path.Combine (pathSourceDirectory, cpu + ".swiftinterface");
 				if (!File.Exists (moduleSourceFile))
 					throw new FileNotFoundException ($"Unable to find Swift module for target {target}.", moduleSourceFile);
 				if (!File.Exists (docSourceFile))
@@ -77,8 +79,14 @@ namespace SwiftReflector.IOUtils {
 					moduleName = moduleName.Substring (0, moduleName.Length - ".swiftmodule".Length);
 				string moduleDestFile = Path.Combine (tempDir.DirectoryPath, moduleName + ".swiftmodule");
 				string docDestFile = Path.Combine (tempDir.DirectoryPath, moduleName + ".swiftdoc");
+				var infoDestFile = Path.Combine (tempDir.DirectoryPath, moduleName + ".swiftsourceinfo");
+				var interfaceDestFile = Path.Combine (tempDir.DirectoryPath, moduleName + ".swiftinterface");
 				File.Copy (moduleSourceFile, moduleDestFile);
 				File.Copy (docSourceFile, docDestFile);
+				if (File.Exists (infoSourceFile))
+					File.Copy (infoSourceFile, infoDestFile);
+				if (File.Exists (interfaceSourceFile))
+					File.Copy (interfaceSourceFile, interfaceDestFile);
 			}
 
 			public string DirectoryPath {

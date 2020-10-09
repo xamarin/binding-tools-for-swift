@@ -124,6 +124,9 @@ namespace SwiftReflector {
 				sb.Append (" -Xlinker -final_output -Xlinker ").Append (QuoteIfNeeded (moduleName));
 				sb.Append (" -Xlinker -install_name -Xlinker ").Append (QuoteIfNeeded ($"@rpath/{moduleName}.framework/{moduleName}"));
 			} else {
+				sb.Append (" -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks");
+				sb.Append (" -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @rpath");
+				sb.Append (" -Xlinker -rpath -Xlinker @loader_path");
 				sb.Append (" -Xlinker -install_name -Xlinker ").Append (QuoteIfNeeded ($"@rpath/lib{moduleName}.dylib"));
 			}
 
@@ -209,7 +212,7 @@ namespace SwiftReflector {
 			StringBuilder sb = new StringBuilder ();
 
 
-			sb.Append ("-xamreflect ");
+			sb.Append ("-xamreflect ").Append ("-enable-library-evolution ");
 
 			if (CompilerInfo.HasTarget)
 				sb.Append ("-target ").Append (CompilerInfo.Target).Append (" ");

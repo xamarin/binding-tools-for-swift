@@ -105,14 +105,6 @@ namespace SwiftReflector {
 					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftdoc");
 					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftinterface");
 					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftsourceinfo");
-
-					//File.Copy (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftmodule"),
-					//		  Path.Combine (targetoutdir, wrappingModuleName + ".swiftmodule"));
-					//File.Delete (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftmodule"));
-
-					//File.Copy (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftdoc"),
-					//		  Path.Combine (targetoutdir, wrappingModuleName + ".swiftdoc"));
-					//File.Delete (Path.Combine (fileProvider.DirectoryPath, wrappingModuleName + ".swiftdoc"));
 				}
 				if (targets.Count > 1) {
 					// lipo all the outputs back into the fileProvider
