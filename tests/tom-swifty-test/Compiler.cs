@@ -441,19 +441,6 @@ namespace tomwiftytest {
 					Directory.CreateDirectory (thisLocation);
 				File.Copy (Path.Combine (Compiler.kSwiftRuntimeGlueDirectory, "XamGlue"), xamGlueLibrary, true);
 			}
-
-			//// And fixup any references to the XamGlue.framework
-			//var output = new StringBuilder ();
-			//var install_name_tool = new StringBuilder ();
-			//install_name_tool.Append ($"install_name_tool ");
-			//install_name_tool.Append ($"-change @rpath/XamGlue.framework/XamGlue XamGlue ");
-			//install_name_tool.Append ($"{StringUtils.Quote (dylib)} ");
-			//output.Clear ();
-			//var rv = ExecAndCollect.RunCommand ("xcrun", install_name_tool.ToString (), output: output, verbose: true);
-			//if (rv != 0) {
-			//	Console.WriteLine (output);
-			//	throw new Exception ($"Failed to run install_name_tool on {dylib}:\n{output}\n");
-			//}
 		}
 
 		static bool RunCurrentTestWithLeaks {
