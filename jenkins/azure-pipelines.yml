@@ -108,11 +108,11 @@ jobs:
       ArtifactName: 'drop'
       publishLocation: 'Container'
 
-  - script: |
-      set -e
-      set -x
-      ./binding-tools-for-swift/jenkins/run-tests.sh
-    displayName: 'Run tests'
+  # - script: |
+  #     set -e
+  #     set -x
+  #     ./binding-tools-for-swift/jenkins/run-tests.sh
+  #   displayName: 'Run tests'
 
   - task: PublishTestResults@2
     displayName: 'Publish NUnit Device Test Results'
