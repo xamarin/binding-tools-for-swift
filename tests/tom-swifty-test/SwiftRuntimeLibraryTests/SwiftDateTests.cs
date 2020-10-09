@@ -17,6 +17,8 @@ namespace SwiftRuntimeLibraryTests {
 	[TestFixture]
 	public class SwiftDateTests {
 
+#if _MAC_TS_TEST_
+
 		[TestCase (PlatformName.macOS)]
 		public void BasicTest (PlatformName platform)
 		{
@@ -31,5 +33,8 @@ public func dateIsNotUsed () { }
 			var callingCode = CSCodeBlock.Create (clDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "1970-01-01 00:00:00 +0000\n", testName: $"BasicTest{platform}", platform: platform);
 		}
+
+#endif
+
 	}
 }
