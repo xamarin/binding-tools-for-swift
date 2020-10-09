@@ -37,11 +37,10 @@ jobs:
       set -e
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
-      cd $WorkingDirectory
+      cd $(System.DefaultWorkingDirectory)
       ./maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
     env:
-      WorkingDirectory: $(System.DefaultWorkingDirectory)
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
   - script: |
@@ -109,11 +108,11 @@ jobs:
       ArtifactName: 'drop'
       publishLocation: 'Container'
 
-  # - script: |
-  #     set -e
-  #     set -x
-  #     ./binding-tools-for-swift/jenkins/run-tests.sh
-  #   displayName: 'Run tests'
+  - script: |
+      set -e
+      set -x
+      ./binding-tools-for-swift/jenkins/run-tests.sh
+    displayName: 'Run tests'
 
   - task: PublishTestResults@2
     displayName: 'Publish NUnit Device Test Results'
