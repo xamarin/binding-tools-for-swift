@@ -125,13 +125,14 @@ jobs:
     condition: succeededOrFailed()
   
   - bash:
+      pwd
       ls -la
     displayName: 'Check Path for artifact'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
     inputs:
-      targetPath: 'tests/TestResult.md'
+      targetPath: 'binding-tools-for-swift/tests/TestResult.md'
       artifactName: TestResults
     continueOnError: true
     condition: succeededOrFailed()
