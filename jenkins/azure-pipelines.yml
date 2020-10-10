@@ -126,7 +126,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
     inputs:
-      targetPath: $(System.DefaultWorkingDirectory)/binding-tools-for-swift/tests/TestResult.xml
+      targetPath: $(System.DefaultWorkingDirectory)/binding-tools-for-swift/tests/tom-swifty-test/TestResult.xml
       artifactName: TestResults
     continueOnError: true
     condition: succeededOrFailed()
