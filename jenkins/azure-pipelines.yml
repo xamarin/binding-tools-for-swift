@@ -17,7 +17,7 @@ resources:
     endpoint: xamarin
 
 variables:
-  -group: xamops-azdev-secrets
+  - group: xamops-azdev-secrets
           Xamarin Release
           Xamarin-Secrets
 
