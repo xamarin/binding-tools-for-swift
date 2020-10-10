@@ -18,7 +18,6 @@ resources:
 
 variables:
   - group: xamops-azdev-secrets
-  - group: Xamarin Release
   - group: Xamarin-Secrets
 
 jobs:
