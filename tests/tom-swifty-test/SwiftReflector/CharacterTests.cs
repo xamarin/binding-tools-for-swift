@@ -44,7 +44,7 @@ namespace SwiftReflector {
 				}
 			}
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString ());
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString (), enforceUTF8Encoding: true);
 		}
 
 		[Test]
@@ -70,12 +70,12 @@ public class CharacterEcho
 				CSLine instance = CSVariableDeclaration.VarLine ((CSSimpleType)"CharacterEcho", (CSIdentifier)"Foo", CSFunctionCall.Ctor ("CharacterEcho", ctorParam));
 
 				// First the properties
-				var explicitCastProp = (CSIdentifier)"(string)Foo.Value";
+				var explicitCastProp = (CSInject)"(string)Foo.Value";
 				var toStringProp = (CSIdentifier)"Foo.Value.ToString ()";
 
 				// Then the function returns as well
-				var explicitCastFun = (CSIdentifier)"(string)Foo.GetValue ()";
-				var toStringFun = (CSIdentifier)"Foo.GetValue ().ToString ()";
+				var explicitCastFun = (CSInject)"(string)Foo.GetValue ()";
+				var toStringFun = (CSInject)"Foo.GetValue ().ToString ()";
 
 				block.Add (instance);
 				foreach (var call in new CSBaseExpression [] { explicitCastProp, toStringProp, explicitCastFun, toStringFun }) 
@@ -88,7 +88,7 @@ public class CharacterEcho
 				callingCode.Add (block);
 			}
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString ());
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString (), enforceUTF8Encoding: true);
 		}
 
 		[Test]
@@ -123,7 +123,7 @@ public class CharacterHolder
 				testCharacter (new CSCastExpression ((CSSimpleType)"SwiftCharacter", testIdentifier));	
 			}
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString ());
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString (), enforceUTF8Encoding: true);
 		}
 	}
 }

@@ -12,35 +12,22 @@ namespace SwiftRuntimeLibrary {
 
 	[SwiftTypeName ("Swift.String")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftString_NominalTypeDescriptor, SwiftCoreConstants.SwiftString_Metadata, "")]
-	public sealed class SwiftString : ISwiftStruct {
-		internal SwiftString (SwiftNominalCtorArgument unused)
+	public sealed class SwiftString : SwiftNativeValueType, ISwiftStruct {
+		internal SwiftString (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
-			SwiftData = StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
-		public unsafe SwiftString (string s) : this (SwiftNominalCtorArgument.None)
+		public unsafe SwiftString (string s) : this (SwiftValueTypeCtorArgument.None)
 		{
 			fixed (byte* result = SwiftData) {
 				FromUTF16Pointer (s, s.Length, result);
 			}
 		}
 
-		public byte [] SwiftData { get; set; }
-
 		~SwiftString ()
 		{
 			Dispose (false);
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		// As of the first release of Swift 5.0, using FromUTF16Pointer leaks memory for every string

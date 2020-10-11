@@ -42,14 +42,14 @@ namespace SwiftReflector.Inventory {
 			TLFunction tlf = tld as TLFunction;
 			if (tlf != null) {
 				if (IsConstructor (tlf.Signature, tlf.Class)) {
-					Constructors.Add (tlf, srcStm);
+					AddOrChainInNewThunk (Constructors, tlf, srcStm);
 				} else if (tlf.Signature is SwiftClassConstructorType) {
 					if (ClassConstructor.Values.Count () == 0)
-						ClassConstructor.Add (tlf, srcStm);
+						AddOrChainInNewThunk (ClassConstructor, tlf, srcStm);
 					else
 						throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 12, $"multiple type metadata accessors for {tlf.Class.ClassName.ToFullyQualifiedName ()}");
 				} else if (IsDestructor (tlf.Signature, tlf.Class)) {
-					Destructors.Add (tlf, srcStm);
+					AddOrChainInNewThunk (Destructors, tlf, srcStm);
 				} else if (IsProperty (tlf.Signature, tlf.Class)) {
 					if (IsSubscript (tlf.Signature, tlf.Class)) {
 						if (IsPrivateProperty (tlf.Signature, tlf.Class))
@@ -72,14 +72,15 @@ namespace SwiftReflector.Inventory {
 				} else if (IsMethodOnClass (tlf.Signature, tlf.Class)) {
 					if (tlf is TLMethodDescriptor)
 						MethodDescriptors.Add (tlf, srcStm);
-		    			else
-						Methods.Add (tlf, srcStm);
+					else {
+						AddOrChainInNewThunk (Methods, tlf, srcStm);
+					}
 				} else if (IsStaticMethod (tlf.Signature, tlf.Class)) {
-					StaticFunctions.Add (tlf, srcStm);
+					AddOrChainInNewThunk (StaticFunctions, tlf, srcStm);
 				} else if (IsWitnessTable (tlf.Signature, tlf.Class)) {
 					WitnessTable.Add (tlf, srcStm);
 				} else if (IsInitializer (tlf.Signature, tlf.Class)) {
-					Initializers.Add (tlf, srcStm);
+					AddOrChainInNewThunk (Initializers, tlf, srcStm);
 				} else {
 					FunctionsOfUnknownDestination.Add (tlf);
 				}
@@ -129,6 +130,23 @@ namespace SwiftReflector.Inventory {
 				return;
 			}
 			DefinitionsOfUnknownDestination.Add (tld);
+		}
+
+		static void AddOrChainInNewThunk (FunctionInventory inventory, TLFunction newTLF, Stream sourceStream)
+		{
+			var oldTLF = inventory.ContainsEquivalentFunction (newTLF);
+			if (oldTLF == null)
+				inventory.Add (newTLF, sourceStream);
+			else {
+				var newSig = newTLF.Signature;
+				var oldSig = oldTLF.Signature;
+				if (oldSig.IsThunk) {
+					newSig.Thunk = oldSig;
+					inventory.ReplaceFunction (oldTLF, newTLF);
+				} else {
+					oldSig.Thunk = newSig;
+				}
+			}
 		}
 
 		public bool IsFinal (TLFunction func)

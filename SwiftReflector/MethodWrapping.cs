@@ -85,15 +85,16 @@ namespace SwiftReflector {
 			return $"{kXamPrefix}{classPrefix}{operatorType}{operatorName}";
 		}
 
-		public static string WrapperName (SwiftClassName name, string methodName, bool isExtension)
+		public static string WrapperName (SwiftClassName name, string methodName, bool isExtension, bool isStatic)
 		{
-			return WrapperName (name.ToFullyQualifiedName (false), methodName, isExtension);
+			return WrapperName (name.ToFullyQualifiedName (false), methodName, isExtension, isStatic);
 		}
 
-		public static string WrapperName (string fullyQualifiedClassName, string methodName, bool isExtension)
+		public static string WrapperName (string fullyQualifiedClassName, string methodName, bool isExtension, bool isStatic)
 		{
-			string classPrefix = fullyQualifiedClassName.Replace ('.', 'D');
-			return $"{kXamPrefix}{classPrefix}{(isExtension ? 'E' : 'D')}{methodName}";
+			var classPrefix = fullyQualifiedClassName.Replace ('.', 'D');
+			var separator = isExtension ? 'E' : (isStatic ? 'd' : 'D');
+			return $"{kXamPrefix}{classPrefix}{separator}{methodName}";
 		}
 
 		public static string WrapperCtorName (SwiftClassName name, bool isExtension)
@@ -102,9 +103,9 @@ namespace SwiftReflector {
 			return $"{kXamPrefix}{classPrefix}{(isExtension ? 'E' : 'D')}{name.Terminus}";
 		}
 
-		public static string WrapperName (SwiftClassName name, string methodName, PropertyType propType, bool isSubScript, bool isExtension)
+		public static string WrapperName (SwiftClassName name, string methodName, PropertyType propType, bool isSubScript, bool isExtension, bool isStatic)
 		{
-			return WrapperName (name.ToFullyQualifiedName (), methodName, propType, isSubScript, isExtension);
+			return WrapperName (name.ToFullyQualifiedName (), methodName, propType, isSubScript, isExtension, isStatic);
 		}
 
 		public static string EnumFactoryCaseWrapperName (SwiftClassName name, string caseName)
@@ -137,7 +138,7 @@ namespace SwiftReflector {
 			return string.Format ("{0}{1}ec", kXamPrefix, classPrefix);
 		}
 
-		public static string WrapperName (string fullyQualifiedClassName, string methodName, PropertyType propType, bool isSubScript, bool isExtension)
+		public static string WrapperName (string fullyQualifiedClassName, string methodName, PropertyType propType, bool isSubScript, bool isExtension, bool isStatic)
 		{
 			var lastIndex = fullyQualifiedClassName.LastIndexOf ('.');
 			if (lastIndex >= 0) {
@@ -147,13 +148,13 @@ namespace SwiftReflector {
 			char propMarker = isSubScript ? 's' : 'p';
 			switch (propType) {
 			case PropertyType.Getter:
-				propMarker = 'G';
+				propMarker = isStatic ? 'g' : 'G';
 				break;
 			case PropertyType.Setter:
-				propMarker = 'S';
+				propMarker = isStatic ? 's' : 'S';
 				break;
 			case PropertyType.Materializer:
-				propMarker = 'M';
+				propMarker = isStatic ? 'm' : 'M';
 				break;
 			default:
 				throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 0, $"unknown property type {propType.ToString ()} wrapping function {methodName} in {fullyQualifiedClassName}");
@@ -469,11 +470,11 @@ namespace SwiftReflector {
 				setter.ParameterLists [0].Add (parameter);
 			}
 
-			var getWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Getter, false, decl.IsExtension);
+			var getWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Getter, false, decl.IsExtension, decl.IsStatic);
 			var getWrapper = MapTopLevelFuncToWrapperFunc (slfile.Imports, getter, getWrapperName);
 			slfile.Functions.Add (getWrapper);
 			if (setter != null) {
-				var setWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Setter, false, decl.IsExtension);
+				var setWrapperName = WrapperName (decl.Module.Name, decl.Name, PropertyType.Setter, false, decl.IsExtension, decl.IsStatic);
 				var setWrapper = MapTopLevelFuncToWrapperFunc (slfile.Imports, setter, setWrapperName);
 				slfile.Functions.Add (setWrapper);
 			}
@@ -482,30 +483,44 @@ namespace SwiftReflector {
 
 		public static SwiftType GetPropertyType (PropertyDeclaration decl, ModuleInventory modInventory)
 		{
-			if (decl.Storage == StorageKind.Computed) {
-				if (modInventory.TryGetValue (decl.Module.Name, out ModuleContents contents)) {
-					if (contents.Functions.TryGetValue (decl.Name, out OverloadInventory getterOverload)) {
-						foreach (var func in getterOverload.Functions) {
-							if (func.Signature.ParameterCount == 0 && func.Signature.ReturnType != null && !func.Signature.ReturnType.IsEmptyTuple)
-								return func.Signature.ReturnType;
-						}
-					}
+			if (modInventory.TryGetValue (decl.Module.Name, out ModuleContents contents)) {
+				if (decl.Storage == StorageKind.Computed) {
+					var type = ComputedPropertyType (decl, contents);
+					if (type != null)
+						return type;
+				} else {
+					var type = VariablePropertyType (decl, contents) ?? ComputedPropertyType (decl, contents);
+					if (type != null)
+						return type;
 				}
-			} else {
-				if (modInventory.TryGetValue (decl.Module.Name, out ModuleContents contents)) {
-					if (contents.Variables.TryGetValue (decl.Name, out VariableContents variable)) {
-						if (variable.Addressors.Count > 0) {
-							SwiftAddressorType addressor = variable.Addressors [0].Signature as SwiftAddressorType;
-							if (addressor != null) {
-								return addressor.ReturnType;
-							}
-						} else {
-							return variable.Variable.OfType;
-						}
+			} 
+			throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 2, $"unable to find the type ({decl.TypeName}) of property {decl.ToFullyQualifiedName ()}");
+		}
+
+		static SwiftType VariablePropertyType (PropertyDeclaration decl, ModuleContents contents)
+		{
+			if (contents.Variables.TryGetValue (decl.Name, out VariableContents variable)) {
+				if (variable.Addressors.Count > 0) {
+					SwiftAddressorType addressor = variable.Addressors [0].Signature as SwiftAddressorType;
+					if (addressor != null) {
+						return addressor.ReturnType;
 					}
+				} else {
+					return variable.Variable.OfType;
 				}
 			}
-			throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 2, $"unable to find the type ({decl.TypeName}) of property {decl.ToFullyQualifiedName ()}");
+			return null;
+		}
+
+		static SwiftType ComputedPropertyType (PropertyDeclaration decl, ModuleContents contents)
+		{
+			if (contents.Functions.TryGetValue (decl.Name, out OverloadInventory getterOverload)) {
+				foreach (var func in getterOverload.Functions) {
+					if (func.Signature.ParameterCount == 0 && func.Signature.ReturnType != null && !func.Signature.ReturnType.IsEmptyTuple)
+						return func.Signature.ReturnType;
+				}
+			}
+			return null;
 		}
 
 
@@ -527,6 +542,8 @@ namespace SwiftReflector {
 				return true;
 			if (fn.IsExtension)
 				return true;
+			if (fn.IsConstructor)
+				return true;
 			var tlf = XmlToTLFunctionMapper.ToTLFunction (fn, modInventory, typeMapper);
 			if (tlf == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 1, $"Unable to find function for declaration of {fn.ToFullyQualifiedName ()}.");
@@ -546,6 +563,8 @@ namespace SwiftReflector {
 			if (fn.IsOperator)
 				return true;
 			if (fn.IsExtension)
+				return true;
+			if (fn.IsConstructor)
 				return true;
 			bool hasReturn = fn.ReturnTypeSpec != null && !fn.ReturnTypeSpec.IsEmptyTuple;
 			bool returnNeedsWrapping = false;
@@ -868,7 +887,7 @@ namespace SwiftReflector {
 			var elseclause = new SLCodeBlock (null).And (new SLThrow (new SLIdentifier ("SwiftEnumError.undefined")));
 
 
-			var ifcase = new SLIfElse (new SLIdentifier (String.Format (".{0}(let {1}) = {2}", elemName, patXId.Name, valId.Name)),
+			var ifcase = new SLIfElse (new SLInject (String.Format (".{0}(let {1}) = {2}", elemName, patXId.Name, valId.Name)),
 						  ifclause, elseclause, true);
 			body.Add (ifcase);
 
@@ -1201,17 +1220,15 @@ namespace SwiftReflector {
 						continue;
 					if (BoundClosureError (funcDecl, cl, "wrapping an overrider constructor in a class"))
 						continue;
-					if (FuncNeedsWrapping (funcDecl, typeMapper)) {
-						SLFunc func = null;
-						try {
-							func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
-						} catch (Exception e) {
-							SkipWithWarning (funcDecl, cl, "wrapping an overrider constructor in a class", e);
-							continue;
-						}
-						funcs.Add (func);
-						AddFunctionToOverallList (externalCl, func.Name.Name);
+					SLFunc func = null;
+					try {
+						func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
+					} catch (Exception e) {
+						SkipWithWarning (funcDecl, cl, "wrapping an overrider constructor in a class", e);
+						continue;
 					}
+					funcs.Add (func);
+					AddFunctionToOverallList (externalCl, func.Name.Name);
 				}
 
 				foreach (FunctionDeclaration funcDecl in externalCl.AllMethodsNoCDTor ().Where (fd => fd.Access == Accessibility.Internal
@@ -1280,19 +1297,17 @@ namespace SwiftReflector {
 				foreach (FunctionDeclaration funcDecl in cl.AllConstructors ().Where (fd => fd.Access == Accessibility.Public)) {
 					if (ShouldSkipDeprecated (funcDecl, "Constructor"))
 						continue;
-					if (FuncNeedsWrapping (funcDecl, typeMapper)) {
-						if (BoundClosureError (funcDecl, cl, "wrapping a constructor in a class"))
-							continue;
-						SLFunc func = null;
-						try {
-							func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
-						} catch (Exception e) {
-							SkipWithWarning (funcDecl, cl, "wrapping a constructor in a class", e);
-							continue;
-						}
-						funcs.Add (func);
-						AddFunctionToOverallList (cl, func.Name.Name);
+					if (BoundClosureError (funcDecl, cl, "wrapping a constructor in a class"))
+						continue;
+					SLFunc func = null;
+					try {
+						func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
+					} catch (Exception e) {
+						SkipWithWarning (funcDecl, cl, "wrapping a constructor in a class", e);
+						continue;
 					}
+					funcs.Add (func);
+					AddFunctionToOverallList (cl, func.Name.Name);
 				}
 			}
 
@@ -1465,7 +1480,7 @@ namespace SwiftReflector {
 
 			GatherFunctionDeclarationGenerics (funcDecl, genericDeclaration);
 
-			var instanceName = hasInstance ? new SLIdentifier (GetUniqueNameForInstance (parms)) : null;
+			var instanceName = hasInstance ? new SLIdentifier (GetUniqueNameForInstance (usedNames)) : null;
 			bool instanceIsAPointer = false;
 			if (hasInstance)
 				usedNames.Add (instanceName.Name);
@@ -1506,7 +1521,8 @@ namespace SwiftReflector {
 			// To mitigate this, all wrapper functions that return type struct need to have an extra
 			// parameter which is a reference to a struct.
 			if (makeInOut) {
-				returnName = new SLIdentifier (GetUniqueNameForReturn (parms));
+				returnName = new SLIdentifier (GetUniqueNameForReturn (usedNames));
+				usedNames.Add (returnName.Name);
 
 				if (funcDecl.HasThrows) {
 					SLType slReturn = null;
@@ -1645,14 +1661,16 @@ namespace SwiftReflector {
 					} else {
 						string exceptionCall = "setExceptionNotThrown";
 
-						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", parms));
+						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", usedNames));
+						usedNames.Add (temp.Name);
 						var tempDecl = new SLDeclaration (true, new SLBinding (temp, new SLTry (callSite)), Visibility.None);
 						doBlock.Add (new SLLine (tempDecl));
 						doBlock.Add (SLFunctionCall.FunctionCallLine (exceptionCall,
 						                                              new  SLArgument (new SLIdentifier ("value"), temp, true),
 						                                              new SLArgument (new SLIdentifier ("retval"), returnName, true)));
 					}
-					var error = new SLIdentifier (GetUniqueNameForFoo ("error", parms));
+					var error = new SLIdentifier (GetUniqueNameForFoo ("error", usedNames));
+					usedNames.Add (error.Name);
 					var catcher = new SLCatch (error.Name, null);
 					catcher.Body.Add (SLFunctionCall.FunctionCallLine ("setExceptionThrown",
 					                                                   new SLArgument (new SLIdentifier ("err"), error, true),
@@ -1699,15 +1717,15 @@ namespace SwiftReflector {
 			} else if (funcDecl.IsSubscript) {
 				funcName = WrapperName (className, funcDecl.PropertyName,
 					(funcDecl.IsGetter ? PropertyType.Getter :
-				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), true, funcDecl.IsExtension);
+				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), true, funcDecl.IsExtension, funcDecl.IsStatic);
 			} else if (funcDecl.IsProperty) {
 				funcName = WrapperName (className, funcDecl.PropertyName,
 					(funcDecl.IsGetter ? PropertyType.Getter :
-				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDecl.IsExtension);
+				         (funcDecl.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDecl.IsExtension, funcDecl.IsStatic);
 			} else if (funcDecl.IsOperator) {
 				funcName = WrapperOperatorName (typeMapper, funcDecl.Parent.ToFullyQualifiedName (true), funcDecl.Name, funcDecl.OperatorType);
 			} else {
-				funcName = WrapperName (className, funcDecl.Name, funcDecl.IsExtension);
+				funcName = WrapperName (className, funcDecl.Name, funcDecl.IsExtension, funcDecl.IsStatic);
 			}
 
 			var funcBody = new SLCodeBlock (preMarshalCode);
@@ -1826,7 +1844,7 @@ namespace SwiftReflector {
 			// To mitigate this, all wrapper functions that return type struct need to have an extra
 			// parameter which is a reference to a struct.
 			if (makeInOut) {
-				returnName = new SLIdentifier (GetUniqueNameForReturn (parms));
+				returnName = new SLIdentifier (GetUniqueNameForReturn (usedNames));
 				usedNames.Add (returnName.Name);
 
 				if (funcDecl.HasThrows) {
@@ -1928,14 +1946,16 @@ namespace SwiftReflector {
 					} else {
 						string exceptionCall = "setExceptionNotThrown";
 
-						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", parms));
+						var temp = new SLIdentifier (GetUniqueNameForFoo ("temp", usedNames));
+						usedNames.Add (temp.Name);
 						var tempDecl = new SLDeclaration (true, new SLBinding (temp, new SLTry (callSite)), Visibility.None);
 						doBlock.Add (new SLLine (tempDecl));
 						doBlock.Add (SLFunctionCall.FunctionCallLine (exceptionCall,
 						                                              new SLArgument (new SLIdentifier ("value"), temp, true),
 						                                              new SLArgument (new SLIdentifier ("retval"), returnName, true)));
 					}
-					var error = new SLIdentifier (GetUniqueNameForFoo ("error", parms));
+					var error = new SLIdentifier (GetUniqueNameForFoo ("error", usedNames));
+					usedNames.Add (error.Name);
 					var catcher = new SLCatch (error.Name, null);
 					catcher.Body.Add (SLFunctionCall.FunctionCallLine ("setExceptionThrown",
 					                                                   new SLArgument (new SLIdentifier ("err"), error, true),
@@ -2119,15 +2139,15 @@ namespace SwiftReflector {
 										    SLImportModules modules, List<ICodeElement> preMarshalCode)
 		{
 			var retval = new DelegatedCommaListElemCollection<SLArgument> (SLFunctionCall.WriteElement);
-			var uniqueNames = new List<SLParameter> ();
-			uniqueNames.AddRange (parms);
+			var usedNames = new List<string> ();
+			usedNames.AddRange (parms.Select (p => p.PrivateName.Name));
 			retval.AddRange (parms.Select ((nt, i) => {
 				bool parmNameIsRequired = original [i].NameIsRequired;
 				var originalTypeSpec = original [i].TypeSpec.ReplaceName ("Self", substituteForSelf);
 				if (originalTypeSpec is ClosureTypeSpec) {
 					var ct = (ClosureTypeSpec)originalTypeSpec;
-					var closureName = new SLIdentifier (GetUniqueNameForFoo ("clos", uniqueNames));
-					uniqueNames.Add (new SLParameter (closureName, SLSimpleType.Bool)); // type doesn't matter here
+					var closureName = new SLIdentifier (GetUniqueNameForFoo ("clos", usedNames));
+					usedNames.Add (closureName.Name);
 
 					var origArgs = ct.Arguments as TupleTypeSpec;
 					var ids = new List<SLNameTypePair> ();
@@ -2138,8 +2158,8 @@ namespace SwiftReflector {
 					}
 					var clargTypesAsTuple = (SLTupleType)clargTypes;
 					for (int j = 0; j < origArgsCount; j++) {
-						SLIdentifier id = new SLIdentifier (GetUniqueNameForFoo ("arg", uniqueNames));
-						uniqueNames.Add (new SLParameter (id, SLSimpleType.Bool)); // type doesn't matter
+						var id = new SLIdentifier (GetUniqueNameForFoo ("arg", usedNames));
+						usedNames.Add (id.Name);
 						ids.Add (new SLNameTypePair (id, clargTypesAsTuple.Elements [j].TypeAnnotation));
 					}
 					var clparms = new SLTupleType (ids);
@@ -2150,13 +2170,13 @@ namespace SwiftReflector {
 					bool hasArgs = !ct.Arguments.IsEmptyTuple;
 
 
-					var funcPtrId = new SLIdentifier (GetUniqueNameForFoo (nt.PrivateName.Name + "Ptr", uniqueNames));
+					var funcPtrId = new SLIdentifier (GetUniqueNameForFoo (nt.PrivateName.Name + "Ptr", usedNames));
 					var wrappedClosType = nt.TypeAnnotation as SLFuncType;
 					// this strips off the @escaping attribute, if any
 					var closTypeNoAttr = new SLFuncType (wrappedClosType.ReturnType, wrappedClosType.Parameters);
 
 					SLType funcPtrType = new SLBoundGenericType ("UnsafeMutablePointer", closTypeNoAttr);
-					uniqueNames.Add (new SLParameter (funcPtrId, funcPtrType));
+					usedNames.Add (funcPtrId.Name);
 					var funcPtrBinding = new SLBinding (funcPtrId,
 									    new SLFunctionCall ($"{funcPtrType.ToString ()}.allocate",
 											     false,
@@ -2172,10 +2192,10 @@ namespace SwiftReflector {
 					SLIdentifier retvalId = null;
 
 					if (hasReturn) {
-						retvalPtrId = new SLIdentifier (GetUniqueNameForFoo ("retvalPtr", uniqueNames));
-						uniqueNames.Add (new SLParameter (retvalPtrId, SLSimpleType.Bool));
-						retvalId = new SLIdentifier (GetUniqueNameForFoo ("retval", uniqueNames));
-						uniqueNames.Add (new SLParameter (retvalId, SLSimpleType.Bool));
+						retvalPtrId = new SLIdentifier (GetUniqueNameForFoo ("retvalPtr", usedNames));
+						usedNames.Add (retvalPtrId.Name);
+						retvalId = new SLIdentifier (GetUniqueNameForFoo ("retval", usedNames));
+						usedNames.Add (retvalId.Name);
 						var retvalBinding = new SLBinding (retvalPtrId,
 										   new SLFunctionCall (
 											   $"UnsafeMutablePointer<{clretType.ToString ()}>.allocate",
@@ -2184,8 +2204,8 @@ namespace SwiftReflector {
 													   SLConstant.Val (1), true)));
 						closureBody.Add (new SLDeclaration (true, retvalBinding, Visibility.None));
 					}
-					var argsPtrId = new SLIdentifier (GetUniqueNameForFoo ("argsPtr", uniqueNames));
-					uniqueNames.Add (new SLParameter (argsPtrId, SLSimpleType.Bool));
+					var argsPtrId = new SLIdentifier (GetUniqueNameForFoo ("argsPtr", usedNames));
+					usedNames.Add (argsPtrId.Name);
 					if (hasArgs) {
 						var argsBinding = new SLBinding (argsPtrId,
 										 new SLFunctionCall (
@@ -2310,25 +2330,19 @@ namespace SwiftReflector {
 		}
 
 
-		static string GetUniqueNameForInstance (List<SLParameter> parms)
+		static string GetUniqueNameForInstance (List<string> usedNames)
 		{
-			return GetUniqueNameForFoo ("this", parms);
+			return GetUniqueNameForFoo ("this", usedNames);
 		}
 
-		static string GetUniqueNameForReturn (List<SLParameter> parms)
+		static string GetUniqueNameForReturn (List<string> usedNames)
 		{
-			return GetUniqueNameForFoo ("retval", parms);
+			return GetUniqueNameForFoo ("retval", usedNames);
 		}
 
-		static string GetUniqueNameForFoo (string foo, List<SLParameter> parms)
+		static string GetUniqueNameForFoo (string foo, List<string> usedNames)
 		{
-			int i = 0;
-			string s = null;
-			do {
-				s = String.Format ("{0}{1}", foo, i > 0 ? i.ToString () : "");
-				i++;
-			} while (parms.Exists (np => s == (np.PublicName != null ? np.PublicName.Name : "")));
-			return s;
+			return MarshalEngine.Uniqueify (foo, usedNames);
 		}
 
 		public static bool IsStructOrEnum (TypeMapper t, ParameterItem item)

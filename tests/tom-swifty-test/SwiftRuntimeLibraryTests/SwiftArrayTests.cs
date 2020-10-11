@@ -40,7 +40,7 @@ namespace SwiftRuntimeLibraryTests {
 				Assert.GreaterOrEqual (arr.Capacity, 20, "Capacity 2");
 			}
 
-			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<long> (-1));
+			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<long> ((long)-1));
 		}
 
 		[Test]

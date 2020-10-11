@@ -112,17 +112,13 @@ namespace SwiftReflector {
 	public class NewClassCompiler {
 		public static string kISwiftObjectName = "ISwiftObject";
 		public static CSIdentifier kISwiftObject = new CSIdentifier (kISwiftObjectName);
+		public static string kSwiftNativeObjectName = "SwiftNativeObject";
+		public static CSIdentifier kSwiftNativeObject = new CSIdentifier (kSwiftNativeObjectName);
 		public static string kSwiftObjectGetterName = "SwiftObject";
 		public static CSIdentifier kSwiftObjectGetter = new CSIdentifier (kSwiftObjectGetterName);
 		public static string kObjcHandleGetterName = "Handle";
 		public static CSIdentifier kObjcHandleGetter = new CSIdentifier (kObjcHandleGetterName);
 		static string kThisName = "this";
-		public static string kHandleFieldName = "handle";
-		public static CSIdentifier kHandleField = new CSIdentifier (kHandleFieldName);
-		public static string kClassHandleName = "class_handle";
-		public static CSIdentifier kClassHandle = new CSIdentifier (kClassHandleName);
-		public static string kSwiftObjectFlagsName = "object_flags";
-		public static CSIdentifier kSwiftObjectFlags = new CSIdentifier (kSwiftObjectFlagsName);
 		public static string kInterfaceImplName = "xamarinImpl";
 		public static CSIdentifier kInterfaceImpl = new CSIdentifier (kInterfaceImplName);
 		public static string kContainerName = "xamarinContainer";
@@ -136,6 +132,7 @@ namespace SwiftReflector {
 		public static CSIdentifier kMobilePlatforms = new CSIdentifier ("__IOS__ || __MACOS__ || __TVOS__ || __WATCHOS__");
 
 		SwiftCompilerLocation SwiftCompilerLocations;
+		SwiftCompilerLocation ReflectorLocations;
 		ClassCompilerLocations ClassCompilerLocations;
 		ClassCompilerNames CompilerNames;
 		ClassCompilerOptions Options;
@@ -152,7 +149,8 @@ namespace SwiftReflector {
 
 		public NewClassCompiler (SwiftCompilerLocation swiftCompilerLocations, ClassCompilerOptions options, UnicodeMapper unicodeMapper)
 		{
-			SwiftCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (swiftCompilerLocations, nameof (swiftCompilerLocations));
+			ReflectorLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (swiftCompilerLocations, nameof (swiftCompilerLocations));
+			SwiftCompilerLocations = new SwiftCompilerLocation ("/usr/bin", "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx");
 			Options = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (options, nameof (options));
 			UnicodeMapper = unicodeMapper;
 
@@ -393,7 +391,7 @@ namespace SwiftReflector {
 			string piSetterRef = null;
 			string syntheticClassName = prop.Module.Name + "." + CompilerNames.GlobalFunctionClassName;
 
-			string getWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Getter, false, prop.IsExtension);
+			string getWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Getter, false, prop.IsExtension, prop.IsStatic);
 			getterWrapper = FindTLPropWrapper (prop, getWrapperName, wrapper);
 			var getterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (getterWrapper, TypeMapper, wrapper);
 
@@ -409,7 +407,7 @@ namespace SwiftReflector {
 
 			if (!prop.IsLet && (prop.Storage != StorageKind.Computed ||
 			                    (prop.Storage == StorageKind.Computed && setter != null))) {
-				string setWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Setter, false, prop.IsExtension);
+				string setWrapperName = MethodWrapping.WrapperName (prop.Module.Name, prop.Name, PropertyType.Setter, false, prop.IsExtension, prop.IsStatic);
 				setterWrapper = FindTLPropWrapper (prop, setWrapperName, wrapper);
 				setterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (setterWrapper, TypeMapper, wrapper);
 				
@@ -839,6 +837,8 @@ namespace SwiftReflector {
 			pinvokes.Add (enumPI);
 			var usedPinvokeNames = new List<string> ();
 
+			use.AddIfNotPresent (typeof (SwiftNativeValueType));
+			enumClass.Inheritance.Add (typeof (SwiftNativeValueType));
 			use.AddIfNotPresent (typeof (ISwiftEnum));
 			enumClass.Inheritance.Add (typeof (ISwiftEnum));
 			var enumContents = moduleInventory.FindClass (enumDecl.ToFullyQualifiedName (true));
@@ -847,7 +847,6 @@ namespace SwiftReflector {
 			}
 			AddGenerics (enumClass, enumDecl, enumContents, use);
 
-			ReserveFieldSpace (enumClass);
 			string witName = enumContents.WitnessTable.ValueWitnessTable != null ? enumContents.WitnessTable.ValueWitnessTable.MangledName.Substring (1) : "";
 			string nomSym = enumContents.TypeDescriptor.MangledName.Substring (1);
 			string metaDataSym = enumContents.DirectMetadata != null ? enumContents.DirectMetadata.MangledName.Substring (1) : "";
@@ -856,7 +855,7 @@ namespace SwiftReflector {
 
 			string libPath = PInvokeName (wrapper.ModuleLibPath, swiftLibPath);
 
-			ImplementNominalIDisposable (enumClass, use);
+			ImplementValueTypeIDisposable (enumClass, use);
 			AddInheritedProtocols (enumDecl, enumClass, enumContents, PInvokeName (swiftLibPath), use, errors);
 
 			ImplementMethods (enumClass, enumPI, usedPinvokeNames, swiftEnumName, classContents, enumDecl, use, wrapper, tlf => true, swiftLibPath, errors);
@@ -948,7 +947,7 @@ namespace SwiftReflector {
 
 			CompileInnerNominalsInto (enumDecl, enumClass, moduleInventory, use, wrapper, swiftLibPath, pinvokes, errors);
 
-			TypeNameAttribute (enumDecl).AttachBefore (enumClass);
+			TypeNameAttribute (enumDecl, use).AttachBefore (enumClass);
 			return enumClass;
 		}
 
@@ -961,7 +960,7 @@ namespace SwiftReflector {
 			// {
 			//     EnumType retval = new Parameter();
 			//     unsafe {
-			//         fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(this)) {
+			//         fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(this)) {
 			//              Pinvoke.ToSwift(new IntPtr(retvalSwiftDataPtr));
 			//         }
 			//     }
@@ -972,7 +971,7 @@ namespace SwiftReflector {
 			// {
 			//      EnumType retval = new Parameter()
 			//      unsafe {
-			//          fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(this)) {
+			//          fixed (byte *retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(this)) {
 			//              // marshal code for value
 			//              Pinvoke.ToSwift(new IntPtr(retvalSwiftDataPtr), whateverMarshaledValueIs);
 			//         }
@@ -1034,7 +1033,7 @@ namespace SwiftReflector {
 			//              throw new ArgumentOutOfRangeException("Expected Case to be Optional.");
 			//          // marshaling for return type
 			//          unsafe {
-			//              fixed (byte *thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal(this)) {
+			//              fixed (byte *thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType(this)) {
 			//                  Pinvoke.ToSwift(..., new IntPtr(thisSwiftDataPtr));
 			//                  // more marshaling
 			//                  return value;
@@ -1104,17 +1103,6 @@ namespace SwiftReflector {
 			cl.Properties.Add (payloadProperty);
 		}
 
-
-
-		static void ReserveFieldSpace (CSClass enumStruct)
-		{
-			// public byte[] SwiftData { get; set; }
-
-			enumStruct.Properties.Add (new CSProperty (new CSSimpleType ("byte", true),
-				CSMethodKind.None, new CSIdentifier ("SwiftData"), CSVisibility.Public, new CSCodeBlock (), CSVisibility.Public, new CSCodeBlock ()));
-
-		}
-
 		static TLFunction FindEnumCaseFinderWrapper (EnumDeclaration enumDecl, WrappingResult wrapper)
 		{
 			string caseFinderName = MethodWrapping.EnumCaseFinderWrapperName (enumDecl);
@@ -1160,9 +1148,9 @@ namespace SwiftReflector {
 			var parentName = PrefixInsertedBeforeName (superFunc.Parent, superFunc.IsProperty, namePrefix);
 			if (superFunc.IsProperty) {
 				wrapperName = MethodWrapping.WrapperName (parentName,
-					superFunc.PropertyName, superFunc.IsGetter ? PropertyType.Getter : PropertyType.Setter, superFunc.IsSubscript, false);
+					superFunc.PropertyName, superFunc.IsGetter ? PropertyType.Getter : PropertyType.Setter, superFunc.IsSubscript, false, superFunc.IsStatic);
 			} else {
-				wrapperName = MethodWrapping.WrapperName (parentName, superFunc.Name, false);
+				wrapperName = MethodWrapping.WrapperName (parentName, superFunc.Name, false, superFunc.IsStatic);
 			}
 			var referenceCode = wrapper.FunctionReferenceCodeMap.ReferenceCodeFor (superFunc);
 			if (referenceCode != null) {
@@ -1405,7 +1393,8 @@ namespace SwiftReflector {
 				currentRawValue++;
 				csEnum.Values.Add (enumBinding);
 			}
-			TypeNameAttribute (enumDecl).AttachBefore (csEnum);
+
+			TypeNameAttribute (enumDecl, use).AttachBefore (csEnum);
 			return csEnum;
 		}
 
@@ -1495,12 +1484,13 @@ namespace SwiftReflector {
 			var picl = new CSClass (CSVisibility.Internal, PIClassName (swiftClassName));
 			var usedPinvokeNames = new List<string> ();
 
+			use.AddIfNotPresent (typeof (SwiftNativeValueType));
+			st.Inheritance.Add (typeof (SwiftNativeValueType));
 			use.AddIfNotPresent (typeof (ISwiftStruct));
 			st.Inheritance.Add (typeof (ISwiftStruct));
 			pinvokes.Add (picl);
 			AddGenerics (st, structDecl, classContents, use);
-			ReserveFieldSpace (st);
-			ImplementNominalIDisposable (st, use);
+			ImplementValueTypeIDisposable (st, use);
 
 			CompileInnerNominalsInto (structDecl, st, modInventory, use, wrapper, swiftLibraryPath, pinvokes, errors);
 
@@ -1513,7 +1503,7 @@ namespace SwiftReflector {
 			                             classContents.WitnessTable.ValueWitnessTable.MangledName.Substring (1) :
 			                             "";
 			MakeSwiftStructTypeAttribute (PInvokeName (swiftLibraryPath),
-			                              nomSym, metaDataSym, witSym).AttachBefore (st);
+			                              nomSym, metaDataSym, witSym, use).AttachBefore (st);
 
 			var ctors = MakeStructConstructors (st, picl, usedPinvokeNames, structDecl, classContents,
 			                                    use, st.ToCSType (), wrapper, swiftLibraryPath, errors);
@@ -1530,7 +1520,7 @@ namespace SwiftReflector {
 			ImplementProperties (st, picl, usedPinvokeNames, structDecl, classContents, null, use, wrapper, true, false, tlf => true, swiftLibraryPath, errors);
 			ImplementSubscripts (st, picl, usedPinvokeNames, structDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
-			TypeNameAttribute (structDecl).AttachBefore (st);
+			TypeNameAttribute (structDecl, use).AttachBefore (st);
 			return st;
 		}
 
@@ -1850,7 +1840,7 @@ namespace SwiftReflector {
 				ImplementProxyConstructorAndFields (proxyClass, use, hasVtable, iface, false);
 			}
 
-			TypeNameAttribute (protocolDecl).AttachBefore (iface);
+			TypeNameAttribute (protocolDecl, use).AttachBefore (iface);
 			return iface;
 		}
 
@@ -1905,10 +1895,10 @@ namespace SwiftReflector {
 
 			string className = StubbedClassName (swiftClassName);
 			use.AddIfNotPresent ("SwiftRuntimeLibrary");
-			use.AddIfNotPresent (typeof (SwiftNominalTypeAttribute));
+			use.AddIfNotPresent (typeof (SwiftValueTypeAttribute));
 
 			var cl = new CSClass (CSVisibility.Public, className, null);
-			CSAttribute.FromAttr (typeof (SwiftNativeObjectAttribute), new CSArgumentList (), true).AttachBefore (cl);
+			CSAttribute.FromAttr (typeof (SwiftNativeObjectTagAttribute), new CSArgumentList (), true).AttachBefore (cl);
 
 			var picl = new CSClass (CSVisibility.Internal, PIClassName (subclassSwiftClassName));
 			pinvokes.Add (picl);
@@ -1932,15 +1922,13 @@ namespace SwiftReflector {
 				use.AddIfNotPresent (sharpInherit.Namespace);
 				cl.Inheritance.Add (new CSIdentifier (sharpInherit.TypeName));
 			} else {
-				ImplementMTFields (cl, use);
-				ImplementISwiftObject (cl);
-				ImplementIDisposable (classDecl, subclassContents, use, PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), cl, picl, false);
+				ImplementFinalizer (cl);
 			}
 
 			AddInheritedProtocols (classDecl, cl, classContents, PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), use, errors);
 
 			if (!classDecl.IsObjCOrInheritsObjC (TypeMapper) && !inheritsISwiftObject)
-				cl.Inheritance.Add (kISwiftObject);
+				cl.Inheritance.Insert (0, kSwiftNativeObject);
 
 			int vtableSize = ImplementVtableMethodsSuperMethodsAndVtable (modInventory, wrapper, subclassDecl, 
 			                                                              subclassContents,
@@ -1993,7 +1981,7 @@ namespace SwiftReflector {
 			if (wrapUse != null)
 				use.Remove (wrapUse);
 
-			TypeNameAttribute (classDecl).AttachBefore (cl);
+			TypeNameAttribute (classDecl, use).AttachBefore (cl);
 			return cl;
 		}
 
@@ -2052,7 +2040,7 @@ namespace SwiftReflector {
 
 				ProtocolDeclaration superProtocol = entity.Type as ProtocolDeclaration;
 				if (superProtocol == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 35, $"Found and entity for {entity.Type.Name}, but it was a {entity.Type.ToString ()} instead of a protocol.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 35, $"Found an entity for {entity.Type.Name}, but it was a {entity.Type.ToString ()} instead of a protocol.");
 				}
 				functions.AddRange (superProtocol.AllVirtualMethods ().Where(func => !(func.IsDeprecated || func.IsUnavailable)));
 				CollectAllProtocolMethods (functions, superProtocol);
@@ -3050,11 +3038,11 @@ namespace SwiftReflector {
 
 			string className = StubbedClassName (swiftClassName);
 			use.AddIfNotPresent ("SwiftRuntimeLibrary");
-			use.AddIfNotPresent (typeof (SwiftNominalTypeAttribute));
+			use.AddIfNotPresent (typeof (SwiftValueTypeAttribute));
 
 
 			var cl = new CSClass (CSVisibility.Public, className, null);
-			CSAttribute.FromAttr (typeof (SwiftNativeObjectAttribute), new CSArgumentList (), true).AttachBefore (cl);
+			CSAttribute.FromAttr (typeof (SwiftNativeObjectTagAttribute), new CSArgumentList (), true).AttachBefore (cl);
 
 			var picl = new CSClass (CSVisibility.Public, PIClassName (swiftClassName));
 			pinvokes.Add (picl);
@@ -3080,9 +3068,7 @@ namespace SwiftReflector {
 				use.AddIfNotPresent (sharpInherit.Namespace);
 				cl.Inheritance.Add (new CSIdentifier (sharpInherit.TypeName));
 			} else {
-				ImplementMTFields (cl, use);
-				ImplementISwiftObject (cl);
-				ImplementIDisposable (classDecl, classContents, use, PInvokeName (swiftLibraryPath), cl, picl, false);
+				ImplementFinalizer (cl);
 			}
 
 			var cctor = MakeClassConstructor (cl, picl, usedPinvokeNames, classDecl, classContents, use,
@@ -3094,7 +3080,7 @@ namespace SwiftReflector {
 			AddInheritedProtocols (classDecl, cl, classContents, PInvokeName (swiftLibraryPath), use, errors);
 
 			if (!classDecl.IsObjCOrInheritsObjC (TypeMapper))
-				cl.Inheritance.Add (kISwiftObject);
+				cl.Inheritance.Insert (0, kSwiftNativeObject);
 
 			CompileInnerNominalsInto (classDecl, cl, modInventory, use, wrapper, swiftLibraryPath, pinvokes, errors);
 
@@ -3107,7 +3093,7 @@ namespace SwiftReflector {
 			ImplementProperties (cl, picl, usedPinvokeNames, classDecl, classContents, null, use, wrapper, false, false, tlf => true, swiftLibraryPath, errors);
 			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
-			TypeNameAttribute (classDecl).AttachBefore (cl);
+			TypeNameAttribute (classDecl, use).AttachBefore (cl);
 			return cl;
 		}
 
@@ -3519,194 +3505,22 @@ namespace SwiftReflector {
 			cl.Properties.Add (prop);
 		}
 
-		void ImplementMTFields (CSClass cl, CSUsingPackages use)
+		void ImplementValueTypeIDisposable (CSClass cl, CSUsingPackages use)
 		{
-			use.AddIfNotPresent (typeof (SwiftNominalTypeAttribute));
-			cl.Fields.Add (CSFieldDeclaration.FieldLine (CSSimpleType.IntPtr, kHandleField, null,
-								   CSVisibility.Protected));
-			use.AddIfNotPresent (typeof (SwiftMetatype));
-			cl.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (typeof (SwiftMetatype)), kClassHandle, null,
-								 CSVisibility.Protected));
-
-			cl.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (typeof (SwiftObjectFlags)),
-								 kSwiftObjectFlags,
-								 new CSIdentifier ("SwiftObjectFlags.IsSwift"),
-								 CSVisibility.Protected));
+			ImplementFinalizer (cl); 
 		}
 
-		void ImplementISwiftObject (CSClass cl)
+		void ImplementFinalizer (CSClass cl)
 		{
-			var p = CSProperty.PublicGetPrivateSetBacking (CSSimpleType.IntPtr, kSwiftObjectGetterName,
-									 false,
-									 kHandleFieldName);
-			cl.Properties.Add (p);
-		}
-
-		void ImplementNominalIDisposable (CSClass cl, CSUsingPackages use)
-		{
-			//public void Dispose()
-			//{
-			//	Dispose(true);
-			//	GC.SuppressFinalize(this);
-			//}
-			var disposeID = new CSIdentifier ("Dispose");
-			var disp1Body = new CSCodeBlock ();
-			var disp1 = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void,
-			                        disposeID, new CSParameterList (), disp1Body);
-			disp1Body.Add (CSFunctionCall.FunctionCallLine (disposeID, false, CSConstant.Val (true)));
-			use.AddIfNotPresent (typeof (GC));
-			disp1Body.Add (CSFunctionCall.FunctionCallLine ("GC.SuppressFinalize", false, CSIdentifier.This));
-			cl.Methods.Add (disp1);
-
-			//private void Dispose(bool disposing)
-			//{
-			//	if (SwiftData != null)
-			//	{
-			//		unsafe
-			//		{
-			//			fixed (byte* p = SwiftData)
-			//			{
-			//				StructMarshal.Marshaler.NominalDestroy(typeof(this), p);
-			//			}
-			//			SwiftData = null;
-			//		}
-			//	}
-			//}
-			var swiftDataID = new CSIdentifier ("SwiftData");
-			var nullID = new CSIdentifier ("null");
-			var disp2body = new CSCodeBlock ();
-			var disposingID = new CSIdentifier ("disposing");
-			var disp2 = new CSMethod (CSVisibility.None, CSMethodKind.None, CSSimpleType.Void,
-			                        disposeID, new CSParameterList (new CSParameter (CSSimpleType.Bool, disposingID)),
-			                        disp2body);
-			var bytestarID = new CSIdentifier ("p");
-			var fixedBody = new CSCodeBlock ();
-			var fixedBlock = new CSFixedCodeBlock (CSSimpleType.ByteStar, bytestarID, swiftDataID, fixedBody);
-			use.AddIfNotPresent (typeof (StructMarshal));
-			fixedBlock.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.NominalDestroy", false,
-			                                               new CSFunctionCall ("typeof", false, new CSIdentifier (cl.ToCSType ().ToString ())),
-			                                               bytestarID));
-
-			var unsafeBlock = new CSUnsafeCodeBlock (null);
-			unsafeBlock.Add (fixedBlock);
-			unsafeBlock.Add (CSAssignment.Assign (swiftDataID, CSAssignmentOperator.Assign, nullID));
-
-			var ifBlock = new CSCodeBlock ();
-			var ifelse = new CSIfElse (swiftDataID != nullID, ifBlock);
-			ifBlock.Add (unsafeBlock);
-			disp2body.Add (ifelse);
-
-			cl.Methods.Add (disp2);
-
 			//~Type()
 			//{
 			//    Dispose(false);
 			//}
-			var csDestructorIdent = new CSIdentifier (String.Format ("~{0}", cl.Name.Name));
+			var disposeID = new CSIdentifier ("Dispose");
+			var csDestructorIdent = new CSIdentifier ($"~{cl.Name.Name}");
 			var destructor = new CSMethod (CSVisibility.None, CSMethodKind.None, null, csDestructorIdent, new CSParameterList (),
 				CSCodeBlock.Create (CSFunctionCall.FunctionCallLine (disposeID, false, CSConstant.Val (false)))
 				);
-			cl.Methods.Add (destructor);
-		}
-
-		void ImplementIDisposable (ClassDeclaration classDecl, ClassContents contents, CSUsingPackages use, string libraryPath, CSClass cl, CSClass picl,
-			bool isProtocol)
-		{
-			string pinvokeDtorName = isProtocol ? null : PIDTorName (contents.Name);
-			var gcIdent = new CSIdentifier ("GC.SuppressFinalize");
-			var thisIdent = new CSIdentifier ("this");
-			var disposeIdent = new CSIdentifier ("Dispose");
-			var disposingIdent = new CSIdentifier ("disposing");
-			var disposeManagedIdent = new CSIdentifier ("DisposeManagedResources");
-			var disposeUnmanagedIdent = new CSIdentifier ("DisposeUnmanagedResources");
-			var csDestructorIdent = new CSIdentifier (String.Format ("~{0}", cl.Name.Name));
-
-
-			if (!isProtocol) {
-				TLFunction tlf = contents.Destructors.DeallocatingDestructors () [0];
-				var destructorDecl = classDecl.AllDestructors () [0];
-
-				var piDestructor = TLFCompiler.CompileMethod (destructorDecl, use, libraryPath, tlf.MangledName, pinvokeDtorName, true, false, false);
-				picl.Methods.Add (piDestructor);
-			}
-
-
-			// public void Dispose() {
-			//   Dispose(true);
-			//   GC.SuppressFinalize(this);
-			// }
-			var publicDispose = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void, disposeIdent,
-			                                new CSParameterList (),
-			                                new CSCodeBlock ()
-			                                .And (CSFunctionCall.FunctionCallLine (disposeIdent, false, CSConstant.Val (true)))
-			                                .And (CSFunctionCall.FunctionCallLine (gcIdent, false, thisIdent)));
-			cl.Methods.Add (publicDispose);
-
-			//
-			// protected virtual void Dispose(bool disposing)
-			// {
-			//   if (object_flags & SwiftObjectFlags.Disposed != SwiftObjectFlags.Disposed) {
-			//     object_flags |= SwiftObjectFlags.Disposed;
-			//     if (disposing) {
-			//       DisposeManagedResources();
-			//     }
-			//     SwiftObjectRegistry.Registry.RemoveAndWeakRelease(this);
-			//     DisposeUnmangedResources();
-			// }
-
-			var innerIf = new CSIfElse (disposingIdent,
-				new CSCodeBlock ().And (CSFunctionCall.FunctionCallLine (disposeManagedIdent, false)), null);
-
-			var disposedFlag = new CSIdentifier ("SwiftObjectFlags.Disposed");
-			var disposedTest = new CSParenthesisExpression (kSwiftObjectFlags & disposedFlag) != disposedFlag;
-
-			var isDirectFlag = new CSIdentifier ("SwiftObjectFlags.IsDirectBinding");
-			var isWeakTime = new CSUnaryExpression (CSUnaryOperator.Not, disposingIdent) & new CSParenthesisExpression (kSwiftObjectFlags & isDirectFlag) != isDirectFlag;
-			var weakRelease = CSFunctionCall.FunctionCallLine ("SwiftObjectRegistry.Registry.RemoveAndWeakRelease", false, new CSIdentifier (kThisName));
-
-
-
-			var mainIf = new CSIfElse (disposedTest, new CSCodeBlock ()
-						.And (innerIf)
-						.And (weakRelease)
-			 			.And (CSFunctionCall.FunctionCallLine (disposeUnmanagedIdent, false))
-						.And (CSAssignment.Assign (kSwiftObjectFlags, CSAssignmentOperator.OrAssign, disposedFlag))
-						, null);
-
-			var protectedDispose = new CSMethod (CSVisibility.Protected,
-			                                   CSMethodKind.Virtual, CSSimpleType.Void, disposeIdent,
-			                                   new CSParameterList (new CSParameter [] { new CSParameter (CSSimpleType.Bool, disposingIdent) }),
-			                                   new CSCodeBlock ().And (mainIf));
-			cl.Methods.Add (protectedDispose);
-
-			//
-			// protected virtual void DisposeManagedResources() {
-			// }
-			//
-			var disposeManaged = new CSMethod (CSVisibility.Protected,
-							CSMethodKind.Virtual, CSSimpleType.Void, disposeManagedIdent, new CSParameterList (),
-							new CSCodeBlock ());
-
-			cl.Methods.Add (disposeManaged);
-
-
-			// protected virtual void DisposeUnmanagedResources()
-			// {
-			//      SwiftCore.Release(SwiftObject);
-			//      SwiftObject = IntPtr.Zero;
-			// }
-			var disposeUnmanaged = new CSMethod (CSVisibility.Protected,
-							  CSMethodKind.Virtual, CSSimpleType.Void, disposeUnmanagedIdent, new CSParameterList (),
-							  new CSCodeBlock ()
-				.And (CSFunctionCall.FunctionCallLine ("SwiftCore.Release", false, kSwiftObjectGetter))
-				.And (CSAssignment.Assign (kSwiftObjectGetter, CSConstant.IntPtrZero))
-				);
-			cl.Methods.Add (disposeUnmanaged);
-
-			var destructor = new CSMethod (CSVisibility.None, CSMethodKind.None, null, csDestructorIdent, new CSParameterList (),
-				new CSCodeBlock ()
-				.And (CSFunctionCall.FunctionCallLine (disposeIdent, false,
-					CSConstant.Val (false))));
 			cl.Methods.Add (destructor);
 		}
 
@@ -3823,23 +3637,16 @@ namespace SwiftReflector {
 					MakeOptionalConstructor (cl, picl, usedPinvokeNames, classDecl, superClassContents ?? classContents, use, csClassType, wrapper, swiftLibraryPath, funcDecl, tlf, errors);
 					continue;
 				}
-				if (MethodWrapping.FuncNeedsWrapping (funcDecl, TypeMapper)) {
-					foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType, tlf,
-								    superClassName, use, wrapper, superClassContents ?? classContents,
-								    PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), errors, genericNamer, isAssociatedTypeProxy))
-						yield return m;
-				} else {
-					string pinvokeName = isSubclass ? PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath) : PInvokeName (swiftLibraryPath);
-					foreach (var m in ConstructorToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames,
-									       csClassType, tlf, superClassName, use, pinvokeName, wrapper, errors, isAssociatedTypeProxy))
-						yield return m;
-				}
+				foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType, tlf,
+								superClassName, use, wrapper, superClassContents ?? classContents,
+								PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), errors, genericNamer, isAssociatedTypeProxy))
+					yield return m;
 			}
 			string className = StubbedClassName (superClassName ?? classContents.Name);
-			if (!inheritsISwiftObject)
+			if (!inheritsISwiftObject && classDecl.IsObjCOrInheritsObjC (TypeMapper))
 				yield return MakeProtectedConstructor (classDecl, className, use);
 			if (!classDecl.IsObjCOrInheritsObjC (TypeMapper))
-				yield return MakePrivateFactoryConstructor (classDecl, superClassDecl, className, use, isAssociatedTypeProxy);
+				yield return MakeProtectedFactoryConstructor (classDecl, superClassDecl, className, use, isAssociatedTypeProxy);
 			yield return MakePublicFactory (classDecl, className, use, inheritsISwiftObject, hasDynamicSelf);
 		}
 
@@ -3892,79 +3699,55 @@ namespace SwiftReflector {
 
 		CSMethod MakeProtectedConstructor (TypeDeclaration classDecl, string constructorName, CSUsingPackages use)
 		{
-			// swift
-			// protected constructorName (IntPtr handle, IntPtr classHandle, SwiftObjectRegistry registry)
-			// {
-			//     if (isDirectBinding) {
-			//         object_flags |= SwiftObjectFlags.IsDirectBinding;
-			//     }
-			//     class_handle = classHandle;
-			//     SwiftObject = handle;
-			//     registry.Add(this);
-			// }
 			// objc
 			// protected constructorName (IntPtr handle, SwiftMetatype classHandle)
 			// {
 			//     base.InitializeHandle (handle);
 			// }
 
-			var isObjC = classDecl.IsObjCOrInheritsObjC (TypeMapper);
 			var handleParmId = new CSIdentifier ("handle");
-			var classHandleParmId = new CSIdentifier ("classHandle");
-			var registryId = new CSIdentifier ("registry");
 			use.AddIfNotPresent (typeof (SwiftObjectRegistry));
 			use.AddIfNotPresent (typeof (SwiftObjectFlags));
-			var parms = isObjC ?
+			var parms =
 				new CSParameter [] {
 					new CSParameter (CSSimpleType.IntPtr, handleParmId),
-				} :
-				new CSParameter [] {
-					new CSParameter (CSSimpleType.IntPtr, handleParmId),
-					new CSParameter (new CSSimpleType (typeof (SwiftMetatype)), classHandleParmId),
-					new CSParameter (new CSSimpleType (typeof (SwiftObjectRegistry).Name), registryId)
 				};
 			var body = new CSCodeBlock ();
 
-			body.Add (ImplementNativeObjectCheck (isObjC));
+			body.Add (ImplementNativeObjectCheck ());
 
-			if (isObjC) {
-				return new CSMethod (CSVisibility.Protected, CSMethodKind.None, null, new CSIdentifier (constructorName), new CSParameterList (parms),
-						     new CSBaseExpression [] { handleParmId }, true, body);
-			} else {
-				body.And (CSAssignment.Assign (kClassHandle, classHandleParmId))
-				    .And (CSAssignment.Assign (kSwiftObjectGetterName, handleParmId))
-				    .And (CSFunctionCall.FunctionCallLine ("registry.Add", false, CSIdentifier.This));
-				return new CSMethod (CSVisibility.Protected, CSMethodKind.None, null, new CSIdentifier (constructorName), new CSParameterList (parms), body);
-			}
+			return new CSMethod (CSVisibility.Protected, CSMethodKind.None, null, new CSIdentifier (constructorName), new CSParameterList (parms),
+						new CSBaseExpression [] { handleParmId }, true, body);
 		}
 
-		CSMethod MakePrivateFactoryConstructor (TypeDeclaration classDecl, TypeDeclaration superClassDecl, string constructorName, CSUsingPackages use,
+		CSMethod MakeProtectedFactoryConstructor (TypeDeclaration classDecl, TypeDeclaration superClassDecl, string constructorName, CSUsingPackages use,
 			bool forceBaseCall)
 		{
-			//			constructorName (IntPtr p, SwiftObjectRegistry registry)
+			//			protected constructorName (IntPtr p, SwiftMetatype mt, SwiftObjectRegistry registry)
 			//			{
 			//				_swiftObject = p;
 			//				registry.Add (this);
 			//			}
 			var handleId = new CSIdentifier ("handle");
+			var mtId = new CSIdentifier ("mt");
 			var registryId = new CSIdentifier ("registry");
 			use.AddIfNotPresent (typeof (SwiftObjectRegistry));
 			var isObjC = classDecl.IsObjCOrInheritsObjC (TypeMapper);
 			if (isObjC)
 				throw new NotImplementedException ("The private factory constructor is not supported for ObjC classes");
 			var parms = new CSParameter [] {
-				new CSParameter(CSSimpleType.IntPtr, handleId),
+				new CSParameter (CSSimpleType.IntPtr, handleId),
+				new CSParameter (new CSSimpleType (typeof (SwiftMetatype).Name), mtId),
 				new CSParameter (new CSSimpleType (typeof (SwiftObjectRegistry).Name), registryId)
 			};
 
 
 			var thisExprs = new CSBaseExpression [] {
-				handleId, new CSFunctionCall ("GetSwiftMetatype", false), registryId
+				handleId, mtId, registryId
 			};
 
-			var isThisCall = !(superClassDecl ?? classDecl).IsSwiftBaseClass () || forceBaseCall;
-			return new CSMethod (CSVisibility.None, CSMethodKind.None, null, new CSIdentifier (constructorName),
-			                     new CSParameterList (parms), thisExprs, isThisCall, new CSCodeBlock ());
+			return new CSMethod (CSVisibility.Protected, CSMethodKind.None, null, new CSIdentifier (constructorName),
+			                     new CSParameterList (parms), thisExprs, callsBase: true, new CSCodeBlock ());
 		}
 
 		IEnumerable<CSMethod> MakeStructConstructors (CSClass st, CSClass picl, List<string> usedPinvokeNames, StructDeclaration structDecl,
@@ -3996,20 +3779,19 @@ namespace SwiftReflector {
 				foreach (CSMethod m in StructConstructorToMethod (structDecl, funcDecl, st, picl, usedPinvokeNames, csStructType, classContents, tlf, use, wrapper, swiftLibraryPath, errors))
 					yield return m;
 			}
-			yield return NominalDefaultConstructor (csStructType, classContents, use);
+			yield return ValueTypeDefaultConstructor (csStructType, classContents, use);
 		}
 
-		CSMethod NominalDefaultConstructor (CSType structType, ClassContents classContents, CSUsingPackages use)
+		CSMethod ValueTypeDefaultConstructor (CSType structType, ClassContents classContents, CSUsingPackages use)
 		{
 			var parms = new CSParameterList ();
-			use.AddIfNotPresent (typeof (SwiftNominalCtorArgument));
-			parms.Add (new CSParameter (new CSSimpleType (typeof (SwiftNominalCtorArgument)), "unused"));
+			use.AddIfNotPresent (typeof (SwiftValueTypeCtorArgument));
+			parms.Add (new CSParameter (new CSSimpleType (typeof (SwiftValueTypeCtorArgument)), "unused"));
 			var body = new CSCodeBlock ();
 
 			string consName = StubbedClassName (classContents.Name);
 
-			var ctor = new CSMethod (CSVisibility.Internal, CSMethodKind.None, null, new CSIdentifier (consName), parms, body);
-			body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.PrepareNominal", false, CSIdentifier.This));
+			var ctor = new CSMethod (CSVisibility.Internal, CSMethodKind.None, null, new CSIdentifier (consName), parms, new CSBaseExpression [0], true, body);
 
 			return ctor;
 		}
@@ -4093,7 +3875,7 @@ namespace SwiftReflector {
 		{
 			//			public static type XamarinFactory(IntPtr p)
 			//			{
-			//				return new type (p, SwiftObjectRegistry.Registry);
+			//				return new type (p, GetSwiftMetatype (), SwiftObjectRegistry.Registry);
 			//			}
 			// or
 			//          public static object XamarinFactory(IntPtr p, Type[] genericTypes)
@@ -4144,7 +3926,7 @@ namespace SwiftReflector {
 				var methodKind = inheritsISwiftObject ? CSMethodKind.StaticNew : CSMethodKind.Static;
 				var body = new CSCodeBlock ();
 				if ((object)extraFactoryParam != null) {
-					body.And (CSReturn.ReturnLine (new CSFunctionCall (className, true, parms [0].Name, extraFactoryParam)));
+					body.And (CSReturn.ReturnLine (new CSFunctionCall (className, true, parms [0].Name, new CSFunctionCall ("GetSwiftMetatype", false), extraFactoryParam)));
 				} else {
 					body.And (CSReturn.ReturnLine (new CSFunctionCall (className, true, parms [0].Name)));
 				}
@@ -4218,6 +4000,7 @@ namespace SwiftReflector {
 					publicCons.Body.Add (CSReturn.ReturnLine (new CSFunctionCall (cl.ToCSType ().ToString (), true,
 												      new CSFunctionCall (privateConsImplID, false,
 															  publicCons.Parameters.Select (parm => (CSBaseExpression)parm.Name).ToArray ()),
+												      new CSFunctionCall ($"{cl.ToCSType ().ToString ()}.GetSwiftMetatype", false),
 												      new CSIdentifier ("SwiftObjectRegistry.Registry"))));
 				} else {
 					// every class should have a protected constructor with the signature
@@ -4234,8 +4017,8 @@ namespace SwiftReflector {
 
 
 					var isObjC = classDecl.IsObjCOrInheritsObjC (TypeMapper);
-					if (!isAssociatedTypeProxy)
-						publicCons.Body.Add (ImplementNativeObjectCheck (isObjC));
+					if (!isAssociatedTypeProxy && isObjC)
+						publicCons.Body.Add (ImplementNativeObjectCheck ());
 
 					var privateConsCall = new CSFunctionCall (privateConsImplID, false,
 										  publicCons.Parameters.Select (parm => (CSBaseExpression)parm.Name).ToArray ());
@@ -4247,7 +4030,7 @@ namespace SwiftReflector {
 							new CSIdentifier ("SwiftObjectRegistry.Registry")
 						};
 
-					var isThisCall = false;
+					var isThisCall = true;
 					if (isObjC) {
 						var superAsClassDecl = superClassDecl as ClassDeclaration;
 						var classAsClassDecl = classDecl as ClassDeclaration;
@@ -4255,8 +4038,6 @@ namespace SwiftReflector {
 						if (superAsClassDecl == null && classAsClassDecl == null)
 							throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 29, "Inconceivable! One of the class or super class should be a class declaration");
 						isThisCall = (superAsClassDecl ?? classAsClassDecl).ProtectedObjCCtorIsInThis (TypeMapper);
-					} else {
-						isThisCall = !(superClassDecl ?? classDecl).IsSwiftBaseClass () || isAssociatedTypeProxy;
 					}
 
 					publicCons = new CSMethod (publicCons.Visibility, publicCons.Kind, publicCons.Type, publicCons.Name,
@@ -4332,7 +4113,7 @@ namespace SwiftReflector {
 							new CSIdentifier ("SwiftObjectRegistry.Registry")
 						};
 
-					var isThisCall = false;
+					var isThisCall = true;
 					if (isObjC) {
 						var superAsClassDecl = superClassDecl as ClassDeclaration;
 						var classAsClassDecl = classDecl as ClassDeclaration;
@@ -4340,8 +4121,6 @@ namespace SwiftReflector {
 						if (superAsClassDecl == null && classAsClassDecl == null)
 							throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 30, "Inconceivable! One of the class or super class should be a class declaration");
 						isThisCall = (superAsClassDecl ?? classAsClassDecl).ProtectedObjCCtorIsInThis (TypeMapper);
-					} else {
-						isThisCall = !(superClassDecl ?? classDecl).IsSwiftBaseClass () || isAssociatedProxy;
 					}
 
 					publicCons = new CSMethod (CSVisibility.Public, CSMethodKind.None, null, oldPrivateCons.Name,
@@ -4363,25 +4142,11 @@ namespace SwiftReflector {
 				yield return publicCons;
 		}
 
-		ICodeElement ImplementNativeObjectCheck (bool isObjc)
+		ICodeElement ImplementNativeObjectCheck ()
 		{
-
-			if (isObjc) {
-				return CSAssignment.Assign ("base.IsDirectBinding", new CSFunctionCall ("SwiftNativeObjectAttribute.IsSwiftNativeObject",
-													false, new CSIdentifier (kThisName)));
-			} else {
-				var ifBody = new CSCodeBlock ();
-				ifBody.Add (CSAssignment.Assign (kSwiftObjectFlags, CSAssignmentOperator.OrAssign, new CSIdentifier ("SwiftObjectFlags.IsDirectBinding")));
-				var ifTest = new CSIfElse (new CSFunctionCall ("SwiftNativeObjectAttribute.IsSwiftNativeObject", false, new CSIdentifier (kThisName)), ifBody);
-				return ifTest;
-			}
+			return CSAssignment.Assign ("base.IsDirectBinding", new CSFunctionCall ("SwiftNativeObjectTagAttribute.IsSwiftNativeObject",
+												false, new CSIdentifier (kThisName)));
 		}
-
-		CSLine ImplementMetatypeAssignment ()
-		{
-			return CSAssignment.Assign (kClassHandle, CSAssignmentOperator.Assign, new CSFunctionCall ("GetSwiftMetatype", false));
-		}
-
 
 		public static CSBaseExpression BackingFieldAccessor (CSParameter parm)
 		{
@@ -5357,9 +5122,10 @@ namespace SwiftReflector {
 			if (funcDeclToWrap.IsProperty) {
 				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (true), funcDeclToWrap.PropertyName,
 									  (funcDeclToWrap.IsGetter ? PropertyType.Getter :
-				                                           (funcDeclToWrap.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDeclToWrap.IsExtension);
+				                                           (funcDeclToWrap.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDeclToWrap.IsExtension,
+									  funcDeclToWrap.IsStatic);
 			} else {
-				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (false), funcDeclToWrap.Name, true);
+				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (false), funcDeclToWrap.Name, true, funcDeclToWrap.IsStatic);
 			}
 			return FindWrapperForMethod (funcDeclToWrap, funcToWrap, wrapperName, wrapper);
 
@@ -5395,7 +5161,7 @@ namespace SwiftReflector {
 			var prop = methodToWrap.Signature as SwiftPropertyType;
 			if (prop == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 34, $"Expected a SwiftPropertyType for method signature, but got {methodToWrap.Signature.GetType ().Name}");
-			var wrapperName = MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, propType, prop.IsSubscript, funcToWrap.IsExtension);
+			var wrapperName = MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, propType, prop.IsSubscript, funcToWrap.IsExtension, prop.IsStatic);
 			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
 		}
 
@@ -5403,7 +5169,7 @@ namespace SwiftReflector {
 		TLFunction FindWrapperForMethod (FunctionDeclaration funcToWrap, TLFunction methodToWrap, WrappingResult wrapper)
 		{
 			string wrapperName = methodToWrap.Operator == OperatorType.None ?
-							 MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, funcToWrap.IsExtension) :
+							 MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, funcToWrap.IsExtension, funcToWrap.IsStatic) :
 			                                 MethodWrapping.WrapperOperatorName (TypeMapper, funcToWrap.Parent.ToFullyQualifiedName (true), methodToWrap.Name.Name, funcToWrap.OperatorType);
 			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
 		}
@@ -5960,7 +5726,7 @@ namespace SwiftReflector {
 				mods.Clear ();
 				mods.AddRange (locations.Select (loc => loc.DirectoryPath));
 
-				var targetInfo = SwiftCompilerLocations.GetTargetInfo (targets [0]);
+				var targetInfo = ReflectorLocations.GetTargetInfo (targets [0]);
 				using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, null, true)) {
 					compiler.Verbose = verbose;
 					var libs = new List<string> (libraryPaths);
@@ -6071,7 +5837,7 @@ namespace SwiftReflector {
 				string bestTarget = ChooseBestTarget (targets);
 
 				using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
-					var targetInfo = SwiftCompilerLocations.GetTargetInfo (bestTarget);
+					var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget);
 					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, provider, false)) {
 						compiler.Verbose = Verbose;
 
@@ -6127,7 +5893,7 @@ namespace SwiftReflector {
 		{
 			try {
 				using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
-					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (SwiftCompilerLocations.GetTargetInfo (null), provider, false)) {
+					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (ReflectorLocations.GetTargetInfo (null), provider, false)) {
 						compiler.Verbose = Verbose;
 
 						var decls = compiler.ReflectToModules (moduleSeachPaths, null, "-f XamGlue", moduleName);
@@ -6230,11 +5996,12 @@ namespace SwiftReflector {
 			al.Add (new CSArgument (CSConstant.Val (library)));
 			al.Add (new CSArgument (CSConstant.Val (nominalSym)));
 			al.Add (new CSArgument (CSConstant.Val (metaSym)));
-			return CSAttribute.FromAttr (typeof (SwiftNominalTypeAttribute), al, true);
+			return CSAttribute.FromAttr (typeof (SwiftValueTypeAttribute), al, true);
 		}
 
-		static CSAttribute MakeSwiftStructTypeAttribute (string library, string nominalSym, string metaSym, string witnessSym)
+		static CSAttribute MakeSwiftStructTypeAttribute (string library, string nominalSym, string metaSym, string witnessSym, CSUsingPackages use)
 		{
+			use.AddIfNotPresent (typeof (SwiftStructAttribute));
 			var al = new CSArgumentList ();
 			al.Add (CSConstant.Val (library));
 			al.Add (CSConstant.Val (nominalSym));
@@ -6464,8 +6231,9 @@ namespace SwiftReflector {
 			return ct.ClassName.ToFullyQualifiedName (false) == named.NameWithoutModule;
 		}
 
-		static CSAttribute TypeNameAttribute (BaseDeclaration decl)
+		static CSAttribute TypeNameAttribute (BaseDeclaration decl, CSUsingPackages use)
 		{
+			use.AddIfNotPresent (typeof (SwiftTypeNameAttribute));
 			var argList = new CSArgumentList ();
 			argList.Add (new CSArgument (CSConstant.Val (decl.ToFullyQualifiedName ())));
 			return CSAttribute.FromAttr (typeof (SwiftTypeNameAttribute), argList);

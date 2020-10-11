@@ -16,14 +16,16 @@ namespace SwiftRuntimeLibrary {
 
 	[SwiftTypeName ("Swift.Optional")]
 	[SwiftEnumType (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftOptional_NominalTypeDescriptor, "", "")]
-	public class SwiftOptional<T> : ISwiftEnum {
-		internal SwiftOptional (SwiftNominalCtorArgument unused)
+	public class SwiftOptional<T> : SwiftNativeValueType, ISwiftEnum {
+		internal SwiftOptional (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
 		}
 		public SwiftOptional ()
+			: base ()
 		{
 			unsafe {
-				fixed (byte* p = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* p = SwiftData) {
 					NativeMethodsForSwiftOptional.NewNone (new IntPtr (p),
 									       StructMarshal.Marshaler.Metatypeof (typeof (T)));
 				}
@@ -36,7 +38,7 @@ namespace SwiftRuntimeLibrary {
 			if (valueType.IsClass && EqualityComparer<T>.Default.Equals (value, default (T)))
 				throw new ArgumentNullException (nameof (value), $"SwiftOptional<{typeof (T).Name}> constructor requires a non-null object instance.");
 			unsafe {
-				fixed (byte* retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					var valPtr = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (T))];
 					var valIntPtr = new IntPtr (valPtr);
 					valIntPtr = StructMarshal.Marshaler.ToSwift (value, valIntPtr);
@@ -54,22 +56,9 @@ namespace SwiftRuntimeLibrary {
 				 StructMarshal.Marshaler.Metatypeof (typeof (T)));
 		}
 
-		public byte [] SwiftData { get; set; }
-
 		~SwiftOptional ()
 		{
 			Dispose (false);
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		public static SwiftOptional<T> None ()
@@ -85,7 +74,7 @@ namespace SwiftRuntimeLibrary {
 		public SwiftOptionalCases Case {
 			get {
 				unsafe {
-					fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+					fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 						return (SwiftOptionalCases)(int)NativeMethodsForSwiftOptional.Case (new IntPtr (thisSwiftDataPtr),
 														    StructMarshal.Marshaler.Metatypeof (typeof (T)));
 					}
@@ -106,7 +95,7 @@ namespace SwiftRuntimeLibrary {
 				unsafe {
 					byte* valPtr = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (T))];
 					var valIntPtr = new IntPtr (valPtr);
-					fixed (byte* optPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+					fixed (byte* optPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 						NativeMethodsForSwiftOptional.Value (new IntPtr (optPtr),
 										     valIntPtr,
 										     StructMarshal.Marshaler.Metatypeof (typeof (T)));

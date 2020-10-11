@@ -142,6 +142,8 @@
     <Compile Include="Dynamo.SwiftLang\SLComment.cs" />
     <Compile Include="Dynamo.CSLang\CSInitializer.cs" />
     <Compile Include="Dynamo.CSLang\CSConditionalCompilation.cs" />
+    <Compile Include="Dynamo.CSLang\CSInject.cs" />
+    <Compile Include="Dynamo.SwiftLang\SLInject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

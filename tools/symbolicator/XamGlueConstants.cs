@@ -298,7 +298,7 @@ namespace SwiftRuntimeLibrary {
 		[SymbolicatorInfo (Skip = true)]
 		internal const string EveryProtocol_MetadataAccessor = "$s7XamGlue13EveryProtocolCMa";
 		[SymbolicatorInfo (Skip = true)]
-		internal const string EveryProtocolNew = "$s7XamGlue13EveryProtocolCACycfC";
+		internal const string MakeEveryProtocol = "$s7XamGlue17makeEveryProtocolAA0dE0CyF";
 
 		// AnyHelpers
 		internal const string ToAny = "$s7XamGlue5toAny6result3valySpyypG_xtlF";

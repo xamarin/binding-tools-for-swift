@@ -10,28 +10,28 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.UnsafeMutableRawBufferPointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeMutableRawBufferPointer_NominalTypeDescriptor, SwiftCoreConstants.UnsafeMutableRawBufferPointer_Metadata, "")]
-	public class UnsafeMutableRawBufferPointer : ISwiftStruct, IEnumerable<byte> {
+	public class UnsafeMutableRawBufferPointer : SwiftNativeValueType, ISwiftStruct, IEnumerable<byte> {
 
 		public unsafe UnsafeMutableRawBufferPointer (IntPtr start, nint count)
 		{
 			if (start == IntPtr.Zero)
 				throw new ArgumentNullException (nameof (start));
-			fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+			fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 				IntPtr thisPtr = new IntPtr (thisDataPtr);
 				NativeMethodsForUnsafeMutableRawBufferPointer.PI_UnsafeMutableRawBufferPointer (thisPtr, start, count);
 			}
 		}
 
-		internal UnsafeMutableRawBufferPointer (SwiftNominalCtorArgument unused)
+		internal UnsafeMutableRawBufferPointer (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 		public unsafe SwiftString DebugDescription {
 			get {
-				var retval = StructMarshal.DefaultNominal<SwiftString> ();
-				fixed (byte* retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (retval)) {
-					fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				var retval = StructMarshal.DefaultValueType<SwiftString> ();
+				fixed (byte* retvalSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (retval)) {
+					fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 						NativeMethodsForUnsafeMutableRawBufferPointer.PImethod_getDebugDescription ((IntPtr)retvalSwiftDataPtr,
 						    (IntPtr)thisSwiftDataPtr);
 						return retval;
@@ -42,7 +42,7 @@ namespace SwiftRuntimeLibrary {
 
 		public unsafe nint Count {
 			get {
-				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					return NativeMethodsForUnsafeMutableRawBufferPointer.PImethod_getCount ((IntPtr)thisSwiftDataPtr);
 				}
 			}
@@ -50,12 +50,12 @@ namespace SwiftRuntimeLibrary {
 
 		public unsafe byte this [int index] {
 			get {
-				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					return NativeMethodsForUnsafeMutableRawBufferPointer.PImethod_getAt ((IntPtr)thisSwiftDataPtr, index);
 				}
 			}
 			set {
-				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					NativeMethodsForUnsafeMutableRawBufferPointer.PImethod_setAt ((IntPtr)thisSwiftDataPtr, index, value);
 				}
 			}
@@ -66,22 +66,6 @@ namespace SwiftRuntimeLibrary {
 			return NativeMethodsForUnsafeMutableRawBufferPointer.PIMetadataAccessor_UnsafeMutableRawBufferPointer (SwiftMetadataRequest.Complete);
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-		void Dispose (bool disposing)
-		{
-			if (SwiftData != null) {
-				unsafe {
-					fixed (byte* p = SwiftData) {
-						StructMarshal.Marshaler.NominalDestroy (typeof (UnsafeRawBufferPointer), p);
-					}
-					SwiftData = null;
-				}
-			}
-		}
 
 		public IEnumerator<byte> GetEnumerator ()
 		{
@@ -99,8 +83,6 @@ namespace SwiftRuntimeLibrary {
 		{
 			Dispose (false);
 		}
-
-		public byte [] SwiftData { get; set; }
 	}
 
 	internal class NativeMethodsForUnsafeMutableRawBufferPointer {

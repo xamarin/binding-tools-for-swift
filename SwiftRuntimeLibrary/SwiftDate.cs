@@ -10,13 +10,13 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Foundation.Date")]
 	[SwiftStruct (SwiftFoundationConstants.LibSwiftFoundation, SwiftFoundationConstants.SwiftDate_NominalTypeDescriptor, SwiftFoundationConstants.SwiftData_TypeMetadata, "")]
-	public class SwiftDate : ISwiftStruct {
+	public class SwiftDate : SwiftNativeValueType, ISwiftStruct {
 		public static SwiftDate SwiftDate_TimeIntervalSinceReferenceDate (double timeIntervalSinceReferenceDate)
 		{
 			unsafe {
 
-				SwiftDate this0 = StructMarshal.DefaultNominal<SwiftDate> ();
-				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this0)) {
+				SwiftDate this0 = StructMarshal.DefaultValueType<SwiftDate> ();
+				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this0)) {
 					IntPtr thisPtr = new IntPtr (thisDataPtr);
 					NativeMethodsForDDate.PI_Date_timeIntervalSinceReferenceDate (thisPtr, timeIntervalSinceReferenceDate);
 					return this0;
@@ -27,9 +27,9 @@ namespace SwiftRuntimeLibrary {
 		public SwiftDate (double timeInterval, SwiftDate since)
 		{
 			unsafe {
-				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
-					fixed (byte* sinceSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (since)) {
-						IntPtr thisPtr  = new IntPtr (thisDataPtr);
+				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
+					fixed (byte* sinceSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (since)) {
+						IntPtr thisPtr = new IntPtr (thisDataPtr);
 						NativeMethodsForDDate.PI_Date (thisPtr, timeInterval, (IntPtr)sinceSwiftDataPtr);
 					}
 				}
@@ -40,8 +40,8 @@ namespace SwiftRuntimeLibrary {
 		{
 			unsafe {
 
-				SwiftDate this0 = StructMarshal.DefaultNominal<SwiftDate> ();
-				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this0)) {
+				SwiftDate this0 = StructMarshal.DefaultValueType<SwiftDate> ();
+				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this0)) {
 					IntPtr thisPtr = new IntPtr (thisDataPtr);
 					NativeMethodsForDDate.PI_Date_timeIntervalSince1970 (thisPtr, timeIntervalSince1970);
 					return this0;
@@ -51,7 +51,7 @@ namespace SwiftRuntimeLibrary {
 		public SwiftDate ()
 		{
 			unsafe {
-				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					IntPtr thisPtr = new IntPtr (thisDataPtr);
 					NativeMethodsForDDate.PI_DateNew (thisPtr);
 				}
@@ -61,7 +61,7 @@ namespace SwiftRuntimeLibrary {
 		public SwiftDate (NSDate nSDate)
 		{
 			unsafe {
-				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					IntPtr thisPtr = new IntPtr (thisDataPtr);
 					NativeMethodsForDDate.PI_DateNewFromNSDate (thisPtr, nSDate.Handle);
 				}
@@ -71,16 +71,16 @@ namespace SwiftRuntimeLibrary {
 		public SwiftDate (double timeIntervalSinceNow)
 		{
 			unsafe {
-				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					IntPtr thisPtr = new IntPtr (thisDataPtr);
 					NativeMethodsForDDate.PI_DateNewFromInterval (thisPtr, timeIntervalSinceNow);
 				}
 			}
 		}
 
-		internal SwiftDate (SwiftNominalCtorArgument unused)
+		internal SwiftDate (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 		public static SwiftMetatype GetSwiftMetatype ()
@@ -88,24 +88,6 @@ namespace SwiftRuntimeLibrary {
 			return NativeMethodsForDDate.PIMetadataAccessor_DDate (SwiftMetadataRequest.Complete);
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		void Dispose (bool disposing)
-		{
-			if (SwiftData != null) {
-				unsafe {
-					fixed (byte* p = SwiftData) {
-						StructMarshal.Marshaler.NominalDestroy (typeof (SwiftDate),
-						    p);
-					}
-					SwiftData = null;
-				}
-			}
-		}
 		~SwiftDate ()
 		{
 			Dispose (false);
@@ -114,7 +96,7 @@ namespace SwiftRuntimeLibrary {
 		public NSDate ToNSDate ()
 		{
 			unsafe {
-				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 
 					NSDate retval = null;
 
@@ -124,10 +106,6 @@ namespace SwiftRuntimeLibrary {
 					return retval;
 				}
 			}
-		}
-		public byte [] SwiftData {
-			get;
-			set;
 		}
 
 		public static explicit operator NSDate (SwiftDate date)

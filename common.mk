@@ -9,6 +9,10 @@ $(TOP)/stconfig.inc: $(TOP)/stconfig.sh
 # We need this if we need swiftc before the package is created (because that's where SOM_PATH points to)
 UNPACKAGED_SWIFTC=$(abspath $(TOP)/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin/swiftc)
 UNPACKAGED_SWIFTLIB=$(abspath $(TOP)/apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift)
+SYSTEM_SWIFTC=/usr/bin/swiftc
+XCODEROOT=`xcode-select -p`
+SYSTEM_SWIFTLIB="$(XCODEROOT)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/"
+SYSTEM_SWIFT=/usr/bin/swift
 
 PLIST_SWIFTY:=mono --debug $(abspath $(TOP)/plist-swifty/bin/Debug/plist-swifty.exe)
 TYPE_O_MATIC:=mono --debug $(abspath $(TOP)/type-o-matic/bin/Debug/type-o-matic.exe)

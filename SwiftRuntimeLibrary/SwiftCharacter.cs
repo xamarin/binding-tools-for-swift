@@ -11,8 +11,8 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Character")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftCharacter_NominalTypeDescriptor, SwiftCoreConstants.SwiftCharacter_Metadata, "")]
-	public sealed class SwiftCharacter : ISwiftStruct {
-		public unsafe SwiftCharacter (string character) : this (SwiftNominalCtorArgument.None)
+	public sealed class SwiftCharacter : SwiftNativeValueType, ISwiftStruct {
+		public unsafe SwiftCharacter (string character) : this (SwiftValueTypeCtorArgument.None)
 		{
 			SwiftString swiftString = SwiftString.FromString (character);
 			fixed (byte* src = swiftString.SwiftData)
@@ -24,20 +24,14 @@ namespace SwiftRuntimeLibrary {
 		{
 		}
 
-		internal SwiftCharacter (SwiftNominalCtorArgument unused)
+		internal SwiftCharacter (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
-		public byte [] SwiftData {
-			get;
-			set;
-		}
-
-		public void Dispose ()
+		~SwiftCharacter ()
 		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
+			Dispose (false);
 		}
 
 		[DllImport (SwiftCore.kXamGlue,
@@ -54,7 +48,7 @@ namespace SwiftRuntimeLibrary {
 
 		public unsafe override string ToString ()
 		{
-			SwiftString swiftString = new SwiftString (SwiftNominalCtorArgument.None);
+			SwiftString swiftString = new SwiftString (SwiftValueTypeCtorArgument.None);
 			fixed (byte* source = SwiftData) {
 				fixed (byte* dest = swiftString.SwiftData) {
 					GetCharacterValue (source, dest);
@@ -69,11 +63,6 @@ namespace SwiftRuntimeLibrary {
 
 		// Unlike the 3 above, this is unsafe as a SwiftCaracter may contain more than a char
 		//public static explicit operator char (SwiftCharacter character) => throw new NotImplementedException ();
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
-		}
 	}
 }
 

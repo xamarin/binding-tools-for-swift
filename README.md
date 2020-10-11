@@ -14,11 +14,16 @@ The packaging of BTFS is still evolving, and we expect to provide a binding proj
 
 ## Caution ❗
 
-In order to contribute to Binding-Tools-For-Swift, you will need Xcode 10.2 !
+In order to contribute to Binding-Tools-For-Swift, you will need Xcode 12!
+
+❗❗❗
+Binding Tools for Swift is currently in the process of moving to Swift 5.3. The tests are (temporarily) disabled until issues can be addressed.
+❗❗❗
 
 ## Current Status
 
 ### What Binds?
+
 - Classes
 - Structs
 - Enums
@@ -32,11 +37,13 @@ In order to contribute to Binding-Tools-For-Swift, you will need Xcode 10.2 !
 - Extensions
 
 ### What Doesn’t Bind Yet?
+
 - Protocols with associated types
 - Bound generic types with closures
 - Non-escaping closures
 
 ### What Else Can I Expect?
+
 - An `open` class in Swift can be subclassed in C# and the subclass can be passed in to Swift. Overridden virtual methods in C# will be called when invoked from Swift.
 - A C# type implementing an interface bound to a Swift protocol can be passed in to Swift. Methods and properties in the C# interface implementation will be called when invoked from Swift.
 - At runtime, the generated code honors the Swift Automatic Reference Counting as well as .NET garbage collection.

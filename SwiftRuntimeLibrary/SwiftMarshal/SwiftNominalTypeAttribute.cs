@@ -5,8 +5,8 @@ using System;
 
 namespace SwiftRuntimeLibrary.SwiftMarshal {
 	[AttributeUsage (AttributeTargets.Enum | AttributeTargets.Struct | AttributeTargets.Class)]
-	public class SwiftNominalTypeAttribute : Attribute {
-		public SwiftNominalTypeAttribute (string libraryName, string nominalTypeDescriptor, string metadata, string witnessTable)
+	public class SwiftValueTypeAttribute : Attribute {
+		public SwiftValueTypeAttribute (string libraryName, string nominalTypeDescriptor, string metadata, string witnessTable)
 		{
 			if (libraryName == null)
 				throw new ArgumentNullException (nameof (libraryName));

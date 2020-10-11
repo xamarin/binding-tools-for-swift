@@ -1729,5 +1729,34 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (pd, "not a property descriptor");
 			Assert.AreEqual ("val", pd.Name.Name, "name mismatch");
 		}
+
+		[Test]
+		public void TestPropertyThunk ()
+		{
+			var tld = Decomposer.Decompose ("_$s7CanFind3BarC1xSbvgTj", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "null function");
+			var getter = tlf.Signature as SwiftPropertyThunkType;
+			Assert.IsNotNull (getter, "not a property");
+			Assert.AreEqual (PropertyType.Getter, getter.PropertyType, "not a getter");
+			Assert.AreEqual ("x", getter.Name.Name, "wrong name");
+		}
+
+		[Test]
+		public void TestStaticFuncThunk ()
+		{
+			var tld = Decomposer.Decompose ("_$s21NewClassCompilerTests06Publicb4OpenB15MethodBoolFalseC5thingSbyFZTj", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "null function");
+			var func = tlf.Signature as SwiftStaticFunctionThunkType;
+			Assert.IsNotNull (func, "not a static thunk func");
+			Assert.AreEqual ("thing", func.Name.Name, "wrong name");
+			Assert.AreEqual (0, func.ParameterCount, "wrong parameter count");
+			var ret = func.ReturnType as SwiftBuiltInType;
+			Assert.IsNotNull (ret, "wrong return type");
+			Assert.AreEqual (CoreBuiltInType.Bool, ret.BuiltInType, "not a bool");
+		}
 	}
 }

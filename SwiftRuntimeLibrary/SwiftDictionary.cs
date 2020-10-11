@@ -12,19 +12,17 @@ namespace SwiftRuntimeLibrary {
 
 	[SwiftTypeName ("Swift.Dictionary")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftDictionary_NominalTypeDescriptor, "", "")]
-	public class SwiftDictionary<T, U> : IDictionary<T, U>, ISwiftStruct {
-		public byte [] SwiftData { get; set; }
-
+	public class SwiftDictionary<T, U> : SwiftNativeValueType, IDictionary<T, U>, ISwiftStruct {
 		public SwiftDictionary () : this (0) { }
 
 		public SwiftDictionary (int capacity)
-		    : this (SwiftNominalCtorArgument.None)
+		    : this (SwiftValueTypeCtorArgument.None)
 		{
 			unsafe {
-				fixed (byte* retvalData = StructMarshal.Marshaler.PrepareNominal (this)) {
-					DictPI.NewDict (new IntPtr(retvalData), capacity, StructMarshal.Marshaler.Metatypeof (typeof (T)),
-					                StructMarshal.Marshaler.Metatypeof (typeof (U)),
-					                StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
+				fixed (byte* retvalData = StructMarshal.Marshaler.PrepareValueType (this)) {
+					DictPI.NewDict (new IntPtr (retvalData), capacity, StructMarshal.Marshaler.Metatypeof (typeof (T)),
+							StructMarshal.Marshaler.Metatypeof (typeof (U)),
+							StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
 					StructMarshal.Marshaler.NominalInitializeWithCopy (typeof (SwiftDictionary<T, U>), retvalData, SwiftData.Length);
 				}
 			}
@@ -40,17 +38,21 @@ namespace SwiftRuntimeLibrary {
 			}
 		}
 
-		internal SwiftDictionary (SwiftNominalCtorArgument unused)
+		internal SwiftDictionary (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
+		~SwiftDictionary ()
+		{
+			Dispose (false);
+		}
 
 		public static SwiftMetatype GetSwiftMetatype ()
 		{
 			return DictPI.PIMetadataAccessor_SwiftDictionary (SwiftMetadataRequest.Complete, StructMarshal.Marshaler.Metatypeof (typeof (T)),
-			                                StructMarshal.Marshaler.Metatypeof (typeof (U)),
-			                                StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
+							StructMarshal.Marshaler.Metatypeof (typeof (U)),
+							StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
 		}
 
 		public unsafe int Count {
@@ -75,13 +77,13 @@ namespace SwiftRuntimeLibrary {
 			get {
 				unsafe {
 					fixed (byte* thisPtr = SwiftData) {
-						var keys = new SwiftArray<T> (SwiftNominalCtorArgument.None);
-						fixed (byte *keyData = StructMarshal.Marshaler.PrepareNominal(keys)) {
+						var keys = new SwiftArray<T> (SwiftValueTypeCtorArgument.None);
+						fixed (byte* keyData = StructMarshal.Marshaler.PrepareValueType (keys)) {
 							var thisIntPtr = new IntPtr (thisPtr);
-							DictPI.DictKeys(new IntPtr(keyData), thisIntPtr,
-							                StructMarshal.Marshaler.Metatypeof (typeof (T)),
-							                StructMarshal.Marshaler.Metatypeof (typeof (U)),
-							                StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
+							DictPI.DictKeys (new IntPtr (keyData), thisIntPtr,
+									StructMarshal.Marshaler.Metatypeof (typeof (T)),
+									StructMarshal.Marshaler.Metatypeof (typeof (U)),
+									StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
 						}
 						return keys;
 					}
@@ -94,8 +96,8 @@ namespace SwiftRuntimeLibrary {
 			get {
 				unsafe {
 					fixed (byte* thisPtr = SwiftData) {
-						var values = new SwiftArray<U> (SwiftNominalCtorArgument.None);
-						fixed (byte* valueData = StructMarshal.Marshaler.PrepareNominal (values)) {
+						var values = new SwiftArray<U> (SwiftValueTypeCtorArgument.None);
+						fixed (byte* valueData = StructMarshal.Marshaler.PrepareValueType (values)) {
 							var thisIntPtr = new IntPtr (thisPtr);
 							DictPI.DictKeys (new IntPtr (valueData), thisIntPtr,
 									StructMarshal.Marshaler.Metatypeof (typeof (T)),
@@ -219,23 +221,6 @@ namespace SwiftRuntimeLibrary {
 		{
 			return GetEnumerator ();
 		}
-
-
-		bool disposed = false;
-		public void Dispose ()
-		{
-			if (!disposed) {
-				disposed = true;
-				Dispose (true);
-				GC.SuppressFinalize (this);
-			}
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
-		}
-
 
 		public U this [T key] {
 			get {

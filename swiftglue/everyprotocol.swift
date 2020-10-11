@@ -5,3 +5,8 @@ public final class EveryProtocol
 {
 	public init () { }
 }
+
+public func makeEveryProtocol () -> EveryProtocol
+{
+	return EveryProtocol ()
+}

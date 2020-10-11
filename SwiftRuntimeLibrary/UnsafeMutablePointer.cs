@@ -9,8 +9,8 @@ namespace SwiftRuntimeLibrary {
 
 	[SwiftTypeName ("Swift.UnsafeMutablePointer")]
 	[SwiftStruct (SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.UnsafeMutablePointer_NominalTypeDescriptor, "", "")]
-	public class UnsafeMutablePointer<T> : ISwiftStruct {
-		internal UnsafeMutablePointer (SwiftNominalCtorArgument unused)
+	public class UnsafeMutablePointer<T> : SwiftNativeValueType, ISwiftStruct {
+		internal UnsafeMutablePointer (SwiftValueTypeCtorArgument unused)
 		{
 		}
 
@@ -25,8 +25,8 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		UnsafeMutablePointer ()
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 		UnsafeMutablePointer(IntPtr p)
@@ -39,22 +39,9 @@ namespace SwiftRuntimeLibrary {
 			}
 		}
 
-		public byte [] SwiftData { get; set; }
-
 		~UnsafeMutablePointer ()
 		{
 			Dispose (false);
-		}
-
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		public static UnsafeMutablePointer<T> Allocate(nint capacity)
@@ -152,7 +139,7 @@ namespace SwiftRuntimeLibrary {
 			unsafe {
 				fixed (byte *ptr = SwiftData) {
 					var actualPtr = Marshal.ReadIntPtr (new IntPtr (ptr));
-					fixed (byte* retvalPtr = StructMarshal.Marshaler.PrepareNominal(retval)) {
+					fixed (byte* retvalPtr = StructMarshal.Marshaler.PrepareValueType (retval)) {
 						NativeMethodsForUnsafeMutablePointer.Advance(new IntPtr(retvalPtr), actualPtr, by, StructMarshal.Marshaler.Metatypeof (typeof (T)));
 					}
 				}

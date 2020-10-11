@@ -8,18 +8,19 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Hasher")]
 	[SwiftStruct(SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.Hasher_NominalTypeDescriptor, SwiftCoreConstants.Hasher_Metadata, "")]
-	public class SwiftHasher : ISwiftStruct {
+	public class SwiftHasher : SwiftNativeValueType, ISwiftStruct {
 		public unsafe SwiftHasher ()
 		{
-			fixed (byte * thisDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+			fixed (byte * thisDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 				var thisPtr = new IntPtr (thisDataPtr);
 				NativeMethodsForSwiftHasher.PI_hasherNew (thisPtr);
 			}
 		}
 
-		internal SwiftHasher (SwiftNominalCtorArgument unused)
+		internal SwiftHasher (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
+			StructMarshal.Marshaler.PrepareValueType (this);
 		}
 
 		public static SwiftMetatype GetSwiftMetatype ()
@@ -27,30 +28,14 @@ namespace SwiftRuntimeLibrary {
 			return NativeMethodsForSwiftHasher.PIMetadataAccessor_Hasher (SwiftMetadataRequest.Complete);
 		}
 
-		public void Dispose ()
-		{
-			Dispose (true);
-			GC.SuppressFinalize (this);
-		}
-
-		unsafe void Dispose (bool disposing)
-		{
-			if (SwiftData != null) {
-				fixed (byte *p = SwiftData) {
-					StructMarshal.Marshaler.NominalDestroy (typeof (SwiftHasher), p);
-				}
-				SwiftData = null;
-			}
-		}
-
 		~SwiftHasher ()
 		{
 			Dispose (false);
 		}
 
-		public unsafe void Combine<T>(T thing) where T: ISwiftHashable
+		public unsafe void Combine<T> (T thing) where T : ISwiftHashable
 		{
-			fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+			fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 				IntPtr thingIntPtr;
 				ISwiftObject thingProxy = null;
 				var thingIsSwiftable = StructMarshal.Marshaler.IsSwiftRepresentable (typeof (T));
@@ -86,16 +71,16 @@ namespace SwiftRuntimeLibrary {
 
 		public unsafe void Combine (UnsafeRawBufferPointer bytes)
 		{
-			fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
-				fixed (byte* bytesSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (bytes)) {
+			fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
+				fixed (byte* bytesSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (bytes)) {
 					NativeMethodsForSwiftHasher.PI_hasherCombine ((IntPtr)thisSwiftDataPtr, (IntPtr)bytesSwiftDataPtr);
 				}
 			}
 		}
 
-		public unsafe void Combine (byte[] bytes)
+		public unsafe void Combine (byte [] bytes)
 		{
-			fixed (byte *bytesPtr = bytes) {
+			fixed (byte* bytesPtr = bytes) {
 				using (UnsafeRawBufferPointer rawBytes = new UnsafeRawBufferPointer ((IntPtr)bytesPtr, bytes.Length)) {
 					Combine (rawBytes);
 				}
@@ -105,15 +90,10 @@ namespace SwiftRuntimeLibrary {
 		public nint FinalizeHasher ()
 		{
 			unsafe {
-				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* thisSwiftDataPtr = StructMarshal.Marshaler.PrepareValueType (this)) {
 					return NativeMethodsForSwiftHasher.PI_hasherFinalize ((IntPtr)thisSwiftDataPtr);
 				}
 			}
-		}
-
-		public byte [] SwiftData {
-			get;
-			set;
 		}
 	}
 

@@ -10,11 +10,13 @@ all: build run-tests
 
 check: run-tests
 
+run-tests:
+	echo "tests are offline for now."
 
 # new (incompatible but much more powerful) runner syntax means using FIXTURES has to look like
 # FIXTURES="--where=test=SwiftReflector.LinkageTests.TestMissingNSObject" make
 # https://github.com/nunit/docs/wiki/Test-Selection-Language
-run-tests: bin/Debug/tom-swifty-test.dll
+offline-run-tests: bin/Debug/tom-swifty-test.dll
 	rm -f .failed-stamp
 	rm -Rf bin/devicetests # remove any existing device test output
 	DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):$(SWIFTLIB)/macosx:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \

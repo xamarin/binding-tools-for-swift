@@ -170,7 +170,6 @@ public func alignmentof<T> (_ ignored: T) -> Int
 	return MemoryLayout<T>.alignment
 }
 
-
 //public func hexString(x:UInt64) -> String {
 //let s = String(x, radix:16)
 //switch s.count {

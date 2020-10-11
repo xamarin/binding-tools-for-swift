@@ -9,11 +9,11 @@ using SwiftRuntimeLibrary;
 namespace SwiftReflector.Demangling {
 	public class Swift5NodeToTLDefinition {
 		static List<NodeKind> nominalNodeKinds = new List<NodeKind> {
-			NodeKind.Class, NodeKind.Enum, NodeKind.Structure
+			NodeKind.Class, NodeKind.Enum, NodeKind.Structure, NodeKind.Protocol
 		};
 
 		static List<NodeKind> nominalNodeAndModuleKinds = new List<NodeKind> {
-			NodeKind.Class, NodeKind.Enum, NodeKind.Structure, NodeKind.Module
+			NodeKind.Class, NodeKind.Enum, NodeKind.Structure, NodeKind.Protocol, NodeKind.Module
 		};
 
 		static List<NodeKind> identifierOrOperatorOrPrivateDecl = new List<NodeKind> {
@@ -99,6 +99,12 @@ namespace SwiftReflector.Demangling {
 						}
 					}
 
+				},
+				new MatchRule {
+					Name = "DispatchThunk",
+					NodeKind = NodeKind.DispatchThunk,
+					Reducer = ConvertToDispatchThunk,
+					ChildRules = new List<MatchRule> () { }
 				},
 				new MatchRule {
 					Name = "DynamicSelf",
@@ -773,6 +779,8 @@ namespace SwiftReflector.Demangling {
 			case NodeKind.WillSet:
 			case NodeKind.ModifyAccessor:
 				return ConvertFunctionProp (node);
+			case NodeKind.DispatchThunk:
+				return ConvertDispatchThunk (node);
 			case NodeKind.Variable:
 				return ConvertVariable (node, false);
 			case NodeKind.PropertyDescriptor:
@@ -825,6 +833,42 @@ namespace SwiftReflector.Demangling {
 				return null;
 			}
 		}
+
+
+		TLDefinition ConvertDispatchThunk (Node node)
+		{
+			switch (node.Children [0].Kind) {
+			case NodeKind.Getter:
+			case NodeKind.Setter:
+			case NodeKind.DidSet:
+			case NodeKind.MaterializeForSet:
+			case NodeKind.WillSet:
+			case NodeKind.ModifyAccessor:
+				return ConvertFunctionProp (node);
+			case NodeKind.Static:
+				return ConvertStaticDispatchThunk (node);
+			case NodeKind.Function:
+				return ConvertFunction (node, false);
+			default:
+				return null;
+			}
+		}
+
+		TLDefinition ConvertStaticDispatchThunk (Node node)
+		{
+			if (node.Children [0].Children [0].Kind == NodeKind.Variable) {
+				return ConvertStaticDispatchThunkVariable (node);
+			}
+			else {
+				return ConvertStatic (node);
+			}
+		}
+
+		TLDefinition ConvertStaticDispatchThunkVariable (Node node)
+		{
+			return null;
+		}
+
 
 		TLFunction ConvertFunction (Node node, bool isMethodDescriptor)
 		{
@@ -1549,6 +1593,16 @@ namespace SwiftReflector.Demangling {
 		SwiftType ConvertToSubscriptModifier (Node node, bool isReference, SwiftName name)
 		{
 			return ConvertToSubscriptEtter (node.Children [0], isReference, name, PropertyType.ModifyAccessor);
+		}
+
+		SwiftType ConvertToDispatchThunk (Node node, bool isReference, SwiftName name)
+		{
+			var thunkType = ConvertFirstChildToSwiftType (node, isReference, name);
+			if (thunkType == null)
+				return null;
+			if (thunkType is SwiftBaseFunctionType funcType)
+				return funcType.AsThunk ();
+			return null;
 		}
 
 		SwiftType ConvertToTupleElement (Node node, bool isReference, SwiftName name)

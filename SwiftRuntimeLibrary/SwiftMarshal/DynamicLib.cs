@@ -22,6 +22,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 	internal class DynamicLib : IDisposable {
 		[DllImport ("libSystem.B.dylib", EntryPoint = "dlopen")]
 		static extern IntPtr DLOpen ([MarshalAs (UnmanagedType.LPStr)]string file, DLOpenMode flags);
+#if DEBUG
+		[DllImport ("libSystem.b.dylib", EntryPoint = "dlopen_preflight")]
+		static extern bool DLOpenPreflight ([MarshalAs (UnmanagedType.LPStr)] string file);
+#endif
 
 		[DllImport ("libSystem.B.dylib", EntryPoint = "dlerror")]
 		static extern IntPtr _DLError ();
@@ -57,16 +61,19 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			};
 
 			var sb = new StringBuilder ();
+
 			foreach (string file in possibleFiles) {
 				FileName = file;
 				handle = DLOpen (file, flags);
 				if (handle == IntPtr.Zero) {
+					var err = DLError;
 					sb.Append ('\n');
-					sb.Append ($"+{file} {(File.Exists (file) ? "(exists)" : " (does not exist)")}");
-					string err = DLError;
+					sb.Append ($"+{file} {(File.Exists (file) ? "(exists)" : " (does not exist)")} flags: {flags}");
 					if (err != null) {
 						sb.Append (": ");
 						sb.Append (err);
+					} else {
+						sb.Append (": no error available");
 					}
 				} else {
 					break;

@@ -32,7 +32,7 @@ namespace SwiftReflector {
 			CSLine fooDecl = CSVariableDeclaration.VarLine (new CSSimpleType ($"FooWGSRF{appendage}", false,
 										    new CSSimpleType (cstype)),
 								   "foo", new CSFunctionCall ($"FooWGSRF{appendage}<{cstype}>", true,
-											   new CSFunctionCall ("SwiftNominalCtorArgument", true)));
+											   new CSFunctionCall ("SwiftValueTypeCtorArgument", true)));
 
 
 			CSLine printer = CSFunctionCall.ConsoleWriteLine (CSFunctionCall.Function ("foo.Func", (CSIdentifier)val1));

@@ -8,7 +8,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.Set")]
 	[SwiftStruct(SwiftCoreConstants.LibSwiftCore, SwiftCoreConstants.SwiftSet_NominalTypeDescriptor, "", "")]
-	public class SwiftSet<T> : ISwiftStruct {
+	public class SwiftSet<T> : SwiftNativeValueType, ISwiftStruct {
 
 		public SwiftSet ()
 			: this ((nint)0)
@@ -16,19 +16,19 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		public SwiftSet (nint capacity)
-			: this (SwiftNominalCtorArgument.None)
+			: this (SwiftValueTypeCtorArgument.None)
 		{
 			unsafe {
-				fixed (byte* retvalData = StructMarshal.Marshaler.PrepareNominal (this)) {
+				fixed (byte* retvalData = StructMarshal.Marshaler.PrepareValueType (this)) {
 					SetPI.NewSet (new IntPtr (retvalData), capacity, StructMarshal.Marshaler.Metatypeof (typeof (T)),
 							 StructMarshal.Marshaler.ProtocolWitnessof (typeof (ISwiftHashable), typeof (T)));
 				}
 			}
 		}
 
-		internal SwiftSet (SwiftNominalCtorArgument unused)
+		internal SwiftSet (SwiftValueTypeCtorArgument unused)
+			: base ()
 		{
-			StructMarshal.Marshaler.PrepareNominal (this);
 		}
 
 
@@ -41,23 +41,6 @@ namespace SwiftRuntimeLibrary {
 		~SwiftSet ()
 		{
 			Dispose (false);
-		}
-
-		public byte [] SwiftData { get; set; }
-
-		bool disposed = false;
-		public void Dispose ()
-		{
-			if (!disposed) {
-				disposed = true;
-				Dispose (true);
-				GC.SuppressFinalize (this);
-			}
-		}
-
-		void Dispose (bool disposing)
-		{
-			StructMarshal.Marshaler.NominalDestroy (this);
 		}
 
 		public unsafe nint Count {

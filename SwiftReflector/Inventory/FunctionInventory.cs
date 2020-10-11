@@ -30,6 +30,46 @@ namespace SwiftReflector.Inventory {
 			overloads.Add (tlf, srcStm);
 		}
 
+		public TLFunction ContainsEquivalentFunction (TLFunction func)
+		{
+			// for finding a func with the same name and signature which may or may not be a thunk
+			var nameMatched = MethodsWithName (func.Signature.Name);
+			if (nameMatched.Count == 0)
+				return null;
+			foreach (var candidate in nameMatched) {
+				if (ArgumentsMatch (candidate, func) && ReturnsMatch (candidate, func) && candidate.Signature.CanThrow == func.Signature.CanThrow)
+					return candidate;
+			}
+			return null;
+		}
+
+		public void ReplaceFunction (TLFunction original, TLFunction replacement)
+		{
+			var overloads = values [original.Name];
+			if (overloads == null)
+				throw new ArgumentException ("original function name must be in the inventory");
+			if (!overloads.Functions.Remove (original))
+				throw new ArgumentException ("original function not found");
+			overloads.Functions.Add (replacement);
+		}
+
+		static bool ArgumentsMatch (TLFunction candidate, TLFunction func)
+		{
+			if (candidate.Signature.ParameterCount != func.Signature.ParameterCount)
+				return false;
+
+			for (int i = 0; i < candidate.Signature.ParameterCount; i++) {
+				if (!candidate.Signature.GetParameter (i).Equals (func.Signature.GetParameter (i)))
+					return false;
+			}
+			return true;
+		}
+
+		static bool ReturnsMatch (TLFunction candidate, TLFunction func)
+		{
+			return candidate.Signature.ReturnType.Equals (func.Signature.ReturnType);
+		}
+
 		public IEnumerable<Tuple<SwiftName, TLFunction>> AllMethodsNoCDTor ()
 		{
 			foreach (SwiftName key in values.Keys) {

@@ -68,7 +68,7 @@ namespace SwiftRuntimeLibrary {
 		static string GetErrorDescription (IntPtr handle)
 		{
 			unsafe {
-				using (var desc = new SwiftString (SwiftNominalCtorArgument.None)) {
+				using (var desc = new SwiftString (SwiftValueTypeCtorArgument.None)) {
 					fixed (byte* p = desc.SwiftData) {
 						GetErrorDescription (new IntPtr (p), handle);
 					}

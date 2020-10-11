@@ -65,6 +65,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		{
 			var funcs = GetFunctionsToSearch ();
 			return funcs.FirstOrDefault (f => f.IsProperty &&
+				f.IsStatic == IsStatic &&
 				f.Name.StartsWith (prefix, StringComparison.Ordinal) &&
 				(f.Name.Length == prefix.Length + Name.Length) &&
 				string.CompareOrdinal (f.Name, prefix.Length, Name, 0, Name.Length) == 0);

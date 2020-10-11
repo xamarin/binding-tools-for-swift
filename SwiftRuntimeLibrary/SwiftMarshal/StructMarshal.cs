@@ -160,7 +160,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 #endif
 			if (t.IsEnum) {
-				if (TryGetNominalMetadata (t, out mt))
+				if (TryGetValueTypeMetadata (t, out mt))
 					return true;
 			}
 
@@ -373,10 +373,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 		SwiftMetatype GetNominalMetatype (Type t)
 		{
-			var attr = t.GetCustomAttributes ().OfType<SwiftNominalTypeAttribute> ().FirstOrDefault ();
+			var attr = t.GetCustomAttributes ().OfType<SwiftValueTypeAttribute> ().FirstOrDefault ();
 			if (attr == null) {
 				throw new SwiftRuntimeException (String.Format ("Can't retrieve metatype for type {0}, there is no {1} value attached to it.",
-				    t.Name, typeof (SwiftNominalTypeAttribute).Name));
+				    t.Name, typeof (SwiftValueTypeAttribute).Name));
 			}
 			if (String.IsNullOrEmpty (attr.Metadata)) {
 				return SwiftObjectMetatype (t);
@@ -390,7 +390,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-		bool TryGetNominalMetadata (Type t, out SwiftMetatype mt)
+		bool TryGetValueTypeMetadata (Type t, out SwiftMetatype mt)
 		{
 			try {
 				mt = GetNominalMetatype (t);
@@ -492,19 +492,6 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-
-		NominalSizeStride GetNominalSizeStride (Type t)
-		{
-			lock (cacheLock) {
-				NominalSizeStride set = null;
-				if (!nominalCache.TryGetValue (t, out set)) {
-					set = NominalSizeStride.FromType (t);
-					nominalCache.Add (t, set);
-				}
-				return set;
-			}
-		}
-
 		public SwiftMetatype ExistentialMetatypeof (params Type [] interfaceTypes)
 		{
 			if (interfaceTypes.Length == 1) {
@@ -584,27 +571,27 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return (int)SwiftCore.AlignmentOf (mt);
 		}
 
-		public static T DefaultNominal<T> () where T : ISwiftNominalType
+		public static T DefaultValueType<T> () where T : ISwiftValueType
 		{
-			ConstructorInfo constructorInfo = GetNominalCtor (typeof (T));
+			ConstructorInfo constructorInfo = GetValueTypeCtor (typeof (T));
 			if (constructorInfo == null)
-				throw new SwiftRuntimeException ($"Unable to find Constuctor (SwiftNominalCtorArgument) for {typeof(T)}");
+				throw new SwiftRuntimeException ($"Unable to find Constuctor ({typeof (SwiftValueTypeCtorArgument).Name}) for {typeof (T)}");
 
-			return (T)constructorInfo.Invoke (new object [] { SwiftNominalCtorArgument.None });
+			return (T)constructorInfo.Invoke (new object [] { SwiftValueTypeCtorArgument.None });
 		}
 
-		static ConstructorInfo GetNominalCtor (Type type)
+		static ConstructorInfo GetValueTypeCtor (Type type)
 		{
 			var ctors = type.GetConstructors (BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
 			for (int i = 0; i < ctors.Length; ++i) {
 				var param = ctors [i].GetParameters ();
-				if (param.Length == 1 && param [0].ParameterType == typeof (SwiftNominalCtorArgument))
+				if (param.Length == 1 && param [0].ParameterType == typeof (SwiftValueTypeCtorArgument))
 					return ctors [i];
 			}
 			return null;
 		}
 
-		public byte [] PrepareNominal (ISwiftNominalType nominal)
+		public byte [] PrepareValueType (ISwiftValueType nominal)
 		{
 			var size = Strideof (nominal.GetType ());
 			if (nominal.SwiftData == null || nominal.SwiftData.Length != size) {
@@ -622,7 +609,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 		internal unsafe IntPtr ToSwift (Type t, object o, byte* swiftDestinationMemory)
 		{
-			return ToSwift (t, o, (IntPtr) swiftDestinationMemory);
+			return ToSwift (t, o, (IntPtr)swiftDestinationMemory);
 		}
 
 		public IntPtr ToSwift (Type t, object o, IntPtr swiftDestinationMemory)
@@ -641,10 +628,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return swiftDestinationMemory;
 			}
 #if !TOM_SWIFTY
-	    		if (t == typeof (nfloat)) {
-	    			Write ((nfloat)o, swiftDestinationMemory);
-	    			return swiftDestinationMemory;
-	    		}
+			if (t == typeof (nfloat)) {
+				Write ((nfloat)o, swiftDestinationMemory);
+				return swiftDestinationMemory;
+			}
 #endif
 
 			if (IsSwiftTrivialEnum (t)) {
@@ -680,6 +667,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return swiftDestinationMemory;
 			}
 #endif
+			if (IsSwiftProtocol (t)) {
+				return MarshalProtocolToSwift (t, o, swiftDestinationMemory);
+			}
 
 			if (IsSwiftError (t)) {
 				return MarshalSwiftErrorToSwift ((SwiftError)o, swiftDestinationMemory);
@@ -700,10 +690,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 			throw new SwiftRuntimeException (String.Format ("Unable to marshal type {0} to swift.", o.GetType ().Name));
 		}
-			
+
 		unsafe internal T ToNet<T> (byte* swiftSourceMemory, bool owns)
 		{
-			return ToNet<T> ((IntPtr) swiftSourceMemory, owns);
+			return ToNet<T> ((IntPtr)swiftSourceMemory, owns);
 		}
 
 		// FIXME: call the 'owns' overload from our code, and remove this overload
@@ -738,9 +728,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 
 #if !TOM_SWIFTY
-	    		if (t == typeof (nfloat)) {
-	    			return ReadNfloat (swiftSourceMemory);
-	    		}
+			if (t == typeof (nfloat)) {
+				return ReadNfloat (swiftSourceMemory);
+			}
 #endif
 
 			if (t.IsTuple ()) {
@@ -1096,6 +1086,12 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
+		public IntPtr MarshalProtocolToSwift (Type t, object implementsProtocol, IntPtr swiftDestinationMemory)
+		{
+			var container = SwiftObjectRegistry.Registry.ExistentialContainerForProtocols (implementsProtocol, t);
+			return container.CopyTo (swiftDestinationMemory);
+		}
+
 
 		public IntPtr MarshalTupleToSwift (Type t, object tuple, IntPtr swiftDestinationMemory)
 		{
@@ -1308,7 +1304,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return (T)ExistentialPayload (typeof (T), container);
 		}
 
-		public unsafe object ExistentialPayload(Type t, ISwiftExistentialContainer container)
+		public unsafe object ExistentialPayload (Type t, ISwiftExistentialContainer container)
 		{
 			var metadataOfContainer = container.ObjectMetadata;
 
@@ -1459,7 +1455,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			if (valueTYple == null)
 				throw new ArgumentNullException (nameof (valueTYple));
 			var mt = Metatypeof (t);
-			byte [] payload = PrepareNominal ((ISwiftNominalType)valueTYple);
+			byte [] payload = PrepareValueType ((ISwiftValueType)valueTYple);
 			var initWithCopy = GetNominalInitializeWithCopy (t);
 			fixed (byte* src = payload) {
 				initWithCopy (swiftDestinationMemory, new IntPtr (src), mt);
@@ -1472,7 +1468,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			NominalDestroy (t, new IntPtr (memoryContainingSwiftValueType));
 		}
 
-		public unsafe void NominalDestroy (ISwiftNominalType obj)
+		public unsafe void NominalDestroy (ISwiftValueType obj)
 		{
 			var data = obj.SwiftData;
 			if (data != null) {
@@ -1535,7 +1531,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				return;
 			}
 #endif
-
+			if (IsSwiftProtocol (type)) {
+				return;
+			}
 			throw new SwiftRuntimeException ($"Don't know how to release a swift pointer to {type}.");
 		}
 
@@ -1562,7 +1560,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return destroy;
 		}
 
-		public unsafe IntPtr NominalInitializeWithCopy (ISwiftNominalType obj)
+		public unsafe IntPtr NominalInitializeWithCopy (ISwiftValueType obj)
 		{
 			if (obj == null)
 				throw new ArgumentNullException (nameof (obj));
@@ -1663,17 +1661,17 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-		static object [] nomCtorArgs = new object [] { SwiftNominalCtorArgument.None };
-		public ISwiftNominalType MarshalNominalToNet (IntPtr swiftSourceMemory, Type t, bool owns)
+		static object [] nomCtorArgs = new object [] { SwiftValueTypeCtorArgument.None };
+		public ISwiftValueType MarshalNominalToNet (IntPtr swiftSourceMemory, Type t, bool owns)
 		{
-			var ci = GetNominalCtor (t);
+			var ci = GetValueTypeCtor (t);
 			if (ci == null)
-				throw new SwiftRuntimeException ($"Nominal type {t.Name} is missing a SwiftNominalCtorArgument constructor.");
-			var o = ci.Invoke (nomCtorArgs) as ISwiftNominalType;
+				throw new SwiftRuntimeException ($"Value type {t.Name} is missing a {typeof (SwiftValueTypeCtorArgument).Name} constructor.");
+			var o = ci.Invoke (nomCtorArgs) as ISwiftValueType;
 			if (o == null)
-				throw new SwiftRuntimeException ($"Supposed nominal type {t.Name} does not implement ISwiftNominalType.");
+				throw new SwiftRuntimeException ($"Supposed value type {t.Name} does not implement {typeof (ISwiftValueType).Name}.");
 
-			PrepareNominal (o);
+			PrepareValueType (o);
 			var payload = o.SwiftData; 
 			Marshal.Copy (swiftSourceMemory, payload, 0, payload.Length);
 
@@ -1976,12 +1974,12 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 
 		static bool IsSwiftTrivialEnum (Type t)
 		{
-			return t.IsEnum && t.GetCustomAttributes ().OfType<SwiftNominalTypeAttribute> () != null;
+			return t.IsEnum && t.GetCustomAttributes ().OfType<SwiftValueTypeAttribute> () != null;
 		}
 
 		internal static bool IsSwiftNominal (Type t)
 		{
-			return t.IsClass && t.GetCustomAttributes ().OfType<SwiftNominalTypeAttribute> ().FirstOrDefault () != null;
+			return t.IsClass && t.GetCustomAttributes ().OfType<SwiftValueTypeAttribute> ().FirstOrDefault () != null;
 		}
 
 

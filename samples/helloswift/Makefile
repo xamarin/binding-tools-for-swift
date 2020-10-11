@@ -11,7 +11,8 @@ libHello.dylib: *.swift *.cs
 	@cp ../../lib/SwiftInterop/SwiftRuntimeLibrary.Mac.dll .
 	@cp ../../lib/SwiftInterop/mac/XamGlue.framework/XamGlue .
 	$(SWIFTC) $(SWIFTARGS) -module-name $(OUTPUT_MODULE) *.swift
-	$(BINDINGTOOLSFORSWIFT) --retain-swift-wrappers -o . -C . $(OUTPUT_MODULE) 
+	$(BINDINGTOOLSFORSWIFT) --retain-swift-wrappers -o . -C . -module-name $(OUTPUT_MODULE) 
+	@xcrun install_name_tool -change "@rpath/XamGlue.framework/XamGlue" XamGlue libXamWrapping.dylib
 	mcs -nowarn:CS0169 -lib:../lib -r:SwiftRuntimeLibrary.Mac -lib:. *.cs -out:$(OUTPUT_MODULE).exe
 
 runit:
