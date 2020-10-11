@@ -19,6 +19,7 @@ resources:
 variables:
   - group: xamops-azdev-secrets
   - group: Xamarin-Secrets
+  - group: Xamarin Release
 
 jobs:
 - job: ContinuousIntegration
