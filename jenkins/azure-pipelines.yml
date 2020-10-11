@@ -59,6 +59,7 @@ jobs:
   - script: |
       set -e
       set -x
+      ls -la
       ./binding-tools-for-swift/jenkins/provision-deps.sh
     displayName: 'Provision dependencies'
 
