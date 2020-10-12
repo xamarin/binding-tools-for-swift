@@ -1729,5 +1729,18 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (pd, "not a property descriptor");
 			Assert.AreEqual ("val", pd.Name.Name, "name mismatch");
 		}
+
+		[Test]
+		public void TestPropertyThunk ()
+		{
+			var tld = Decomposer.Decompose ("_$s7CanFind3BarC1xSbvgTj", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "null function");
+			var getter = tlf.Signature as SwiftPropertyThunkType;
+			Assert.IsNotNull (getter, "not a property");
+			Assert.AreEqual (PropertyType.Getter, getter.PropertyType, "not a getter");
+			Assert.AreEqual ("x", getter.Name.Name, "wrong name");
+		}
 	}
 }
