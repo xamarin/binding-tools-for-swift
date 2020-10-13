@@ -454,6 +454,8 @@ namespace SwiftReflector {
 		public bool IsPrivate { get { return PrivateName != null; } }
 		public bool IsGlobal { get { return UncurriedParameter == null; }}
 
+		public SwiftPropertyThunkType Thunk { get; set; }
+
 		public SwiftPropertyType RecastAsStatic()
 		{
 			if (IsStatic)
@@ -468,6 +470,35 @@ namespace SwiftReflector {
 			newProp.DiscretionaryString = DiscretionaryString;
 			newProp.ExtensionOn = this.ExtensionOn;
 			return newProp;
+		}
+
+		public SwiftPropertyThunkType AsSwiftPropertyThunkType ()
+		{
+			if (IsSubscript) {
+				var pt = new SwiftPropertyThunkType (UncurriedParameter, PropertyType, Name,
+					PrivateName, OfType as SwiftFunctionType, IsStatic, IsReference, ExtensionOn);
+				pt.DiscretionaryString = DiscretionaryString;
+				return pt;
+			} else {
+				var pt = new SwiftPropertyThunkType (UncurriedParameter, PropertyType, Name,
+					PrivateName, OfType, IsStatic, IsReference, ExtensionOn);
+				pt.DiscretionaryString = DiscretionaryString;
+				return pt;
+			}
+		}
+	}
+
+	public class SwiftPropertyThunkType : SwiftPropertyType {
+		public SwiftPropertyThunkType (SwiftType unCurriedParameter, PropertyType propType, SwiftName propName,
+					  SwiftName privateName, SwiftType ofType, bool isStatic, bool isReference, SwiftType extensionOn = null)
+			: base (unCurriedParameter, propType, propName, privateName, ofType, isStatic, isReference, extensionOn)
+		{
+		}
+
+		public SwiftPropertyThunkType (SwiftType unCurriedParameter, PropertyType propType, SwiftName propName,
+			  SwiftName privateName, SwiftFunctionType accessor, bool isStatic, bool isReference, SwiftType extensionOn = null)
+			: base (unCurriedParameter, propType, propName, privateName, accessor, isStatic, isReference, extensionOn)
+		{
 		}
 	}
 

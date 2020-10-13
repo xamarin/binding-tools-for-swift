@@ -101,6 +101,12 @@ namespace SwiftReflector.Demangling {
 
 				},
 				new MatchRule {
+					Name = "DispatchThunk",
+					NodeKind = NodeKind.DispatchThunk,
+					Reducer = ConvertToThunk,
+					ChildRules = new List<MatchRule> () { }
+				},
+				new MatchRule {
 					Name = "DynamicSelf",
 		    			NodeKind = NodeKind.DynamicSelf,
 					Reducer = ConvertFirstChildToSwiftType
@@ -772,6 +778,7 @@ namespace SwiftReflector.Demangling {
 			case NodeKind.MaterializeForSet:
 			case NodeKind.WillSet:
 			case NodeKind.ModifyAccessor:
+			case NodeKind.DispatchThunk:
 				return ConvertFunctionProp (node);
 			case NodeKind.Variable:
 				return ConvertVariable (node, false);
@@ -1549,6 +1556,15 @@ namespace SwiftReflector.Demangling {
 		SwiftType ConvertToSubscriptModifier (Node node, bool isReference, SwiftName name)
 		{
 			return ConvertToSubscriptEtter (node.Children [0], isReference, name, PropertyType.ModifyAccessor);
+		}
+
+		SwiftType ConvertToThunk (Node node, bool isReference, SwiftName name)
+		{
+			var thunkType = ConvertFirstChildToSwiftType (node, isReference, name);
+			if (thunkType == null)
+				return null;
+			var propThunk = thunkType as SwiftPropertyType;
+			return propThunk.AsSwiftPropertyThunkType ();
 		}
 
 		SwiftType ConvertToTupleElement (Node node, bool isReference, SwiftName name)

@@ -50,32 +50,54 @@ namespace SwiftReflector.Inventory {
 			} else {
 				switch (prop.PropertyType) {
 				case PropertyType.Getter:
-					Getter = prop;
-					TLFGetter = tlf;
+					var oldget = Getter;
+					Getter = ConditionalChainThunk (prop, oldget);
+					TLFGetter = oldget == null || Getter != prop ? tlf : TLFGetter;
 					break;
 				case PropertyType.Setter:
-					Setter = prop;
-					TLFSetter = tlf;
+					var oldset = Setter;
+					Setter = ConditionalChainThunk (prop, oldset);
+					TLFSetter = oldset == null || Setter != prop ? tlf : TLFSetter;
 					break;
 				case PropertyType.Materializer:
-					Materializer = prop;
-					TLFMaterializer = tlf;
+					var oldmaterialize = Materializer;
+					Materializer = ConditionalChainThunk (prop, oldmaterialize);
+					TLFMaterializer = oldmaterialize == null || Materializer != prop ? tlf : TLFMaterializer;
 					break;
 				case PropertyType.DidSet:
-					DidSet = prop;
-					TLFDidSet = tlf;
+					var olddidset = DidSet;
+					DidSet = ConditionalChainThunk (prop, olddidset);
+					TLFDidSet = olddidset == null || DidSet != prop ? tlf : TLFDidSet;
 					break;
 				case PropertyType.WillSet:
-					WillSet = prop;
-					TLFWillSet = tlf;
+					var oldwillset = WillSet;
+					WillSet = ConditionalChainThunk (prop, oldwillset);
+					TLFWillSet = oldwillset == null || WillSet != prop ? tlf : TLFWillSet;
 					break;
 				case PropertyType.ModifyAccessor:
-					ModifyAccessor = prop;
-					TLFModifyAccessor = tlf;
+					var oldmodify = WillSet;
+					ModifyAccessor = ConditionalChainThunk (prop, oldmodify);
+					TLFModifyAccessor = oldmodify == null || ModifyAccessor != prop ? tlf : TLFModifyAccessor;
 					break;
 				default:
 					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 2, $"Unexpected property element {prop.PropertyType.ToString ()}");
 				}
+			}
+		}
+
+		static SwiftPropertyType ConditionalChainThunk (SwiftPropertyType newProp, SwiftPropertyType oldProp)
+		{
+			if (oldProp == null) {
+				return newProp;
+			}
+			if (oldProp is SwiftPropertyThunkType oldthunk) {
+				newProp.Thunk = oldthunk;
+				return newProp;
+			} else if (newProp is SwiftPropertyThunkType newthunk) {
+				oldProp.Thunk = newthunk;
+				return oldProp;
+			} else {
+				throw new NotImplementedException ("At least one needs to be a thunk - should never happen");
 			}
 		}
 
