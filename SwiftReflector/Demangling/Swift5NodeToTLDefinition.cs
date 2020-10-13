@@ -1598,7 +1598,7 @@ namespace SwiftReflector.Demangling {
 			var thunkType = ConvertFirstChildToSwiftType (node, isReference, name);
 			if (thunkType == null)
 				return null;
-			if (thunkType is SwiftPropertyThunkType propThunk)
+			if (thunkType is SwiftPropertyType propThunk)
 				return propThunk.AsSwiftPropertyThunkType ();
 			if (thunkType is SwiftStaticFunctionType staticFunc) {
 				return staticFunc.AsSwiftStaticFunctionThunkType ();
