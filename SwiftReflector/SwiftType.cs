@@ -363,6 +363,21 @@ namespace SwiftReflector {
 		}
 
 		public SwiftClassType OfClass { get; private set; }
+		public SwiftStaticFunctionThunkType Thunk { get; set; }
+
+		public SwiftStaticFunctionThunkType AsSwiftStaticFunctionThunkType ()
+		{
+			var func = new SwiftStaticFunctionThunkType (Parameters, ReturnType, IsReference, CanThrow, OfClass, Name, ExtensionOn);
+			func.DiscretionaryString = DiscretionaryString;
+			return func;
+		}
+	}
+
+	public class SwiftStaticFunctionThunkType : SwiftStaticFunctionType {
+		public SwiftStaticFunctionThunkType (SwiftType parms, SwiftType ret, bool isReference, bool canThrow, SwiftClassType ofClass, SwiftName name = null, SwiftType extensionOn = null)
+			: base (parms, ret, isReference, canThrow, ofClass, name, extensionOn)
+		{
+		}
 	}
 
 
@@ -462,10 +477,21 @@ namespace SwiftReflector {
 				return this;
 			SwiftPropertyType newProp = null;
 			if (OfType is SwiftFunctionType) {
-				newProp = new SwiftPropertyType (UncurriedParameter, PropertyType, Name, PrivateName, OfType as SwiftFunctionType,
-							      true, IsReference);
+				if (this is SwiftPropertyThunkType) {
+					newProp = new SwiftPropertyThunkType (UncurriedParameter, PropertyType, Name, PrivateName, OfType as SwiftFunctionType,
+			      true, IsReference);
+
+				} else {
+					newProp = new SwiftPropertyType (UncurriedParameter, PropertyType, Name, PrivateName, OfType as SwiftFunctionType,
+								      true, IsReference);
+				}
 			} else {
-				newProp = new SwiftPropertyType (UncurriedParameter, PropertyType, Name, PrivateName, OfType, true, IsReference);
+				if (this is SwiftPropertyThunkType) {
+					newProp = new SwiftPropertyThunkType (UncurriedParameter, PropertyType, Name, PrivateName, OfType, true, IsReference);
+
+				} else {
+					newProp = new SwiftPropertyType (UncurriedParameter, PropertyType, Name, PrivateName, OfType, true, IsReference);
+				}
 			}
 			newProp.DiscretionaryString = DiscretionaryString;
 			newProp.ExtensionOn = this.ExtensionOn;

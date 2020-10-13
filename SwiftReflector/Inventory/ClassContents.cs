@@ -75,7 +75,22 @@ namespace SwiftReflector.Inventory {
 		    			else
 						Methods.Add (tlf, srcStm);
 				} else if (IsStaticMethod (tlf.Signature, tlf.Class)) {
-					StaticFunctions.Add (tlf, srcStm);
+					var oldTLF = StaticFunctions.ContainsEquivalentFunction (tlf);
+					if (oldTLF == null)
+						StaticFunctions.Add (tlf, srcStm);
+					else {
+						var newSig = tlf.Signature as SwiftStaticFunctionType;
+						var oldSig = oldTLF.Signature as SwiftStaticFunctionType;
+						// if the old sig is the thunk, chain it into the new and
+						// replace the old with the new.
+						// Else chain the new (thunk) into the old.
+						if (oldSig is SwiftStaticFunctionThunkType thunk) {
+							newSig.Thunk = thunk;
+							StaticFunctions.ReplaceFunction (oldTLF, tlf);
+						} else {
+							oldSig.Thunk = newSig as SwiftStaticFunctionThunkType;
+						}
+					}
 				} else if (IsWitnessTable (tlf.Signature, tlf.Class)) {
 					WitnessTable.Add (tlf, srcStm);
 				} else if (IsInitializer (tlf.Signature, tlf.Class)) {
