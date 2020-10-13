@@ -103,7 +103,7 @@ namespace SwiftReflector.Demangling {
 				new MatchRule {
 					Name = "DispatchThunk",
 					NodeKind = NodeKind.DispatchThunk,
-					Reducer = ConvertToThunk,
+					Reducer = ConvertToDispatchThunk,
 					ChildRules = new List<MatchRule> () { }
 				},
 				new MatchRule {
@@ -778,8 +778,9 @@ namespace SwiftReflector.Demangling {
 			case NodeKind.MaterializeForSet:
 			case NodeKind.WillSet:
 			case NodeKind.ModifyAccessor:
-			case NodeKind.DispatchThunk:
 				return ConvertFunctionProp (node);
+			case NodeKind.DispatchThunk:
+				return ConvertDispatchThunk (node);
 			case NodeKind.Variable:
 				return ConvertVariable (node, false);
 			case NodeKind.PropertyDescriptor:
@@ -832,6 +833,40 @@ namespace SwiftReflector.Demangling {
 				return null;
 			}
 		}
+
+
+		TLDefinition ConvertDispatchThunk (Node node)
+		{
+			switch (node.Children [0].Kind) {
+			case NodeKind.Getter:
+			case NodeKind.Setter:
+			case NodeKind.DidSet:
+			case NodeKind.MaterializeForSet:
+			case NodeKind.WillSet:
+			case NodeKind.ModifyAccessor:
+				return ConvertFunctionProp (node);
+			case NodeKind.Static:
+				return ConvertStaticDispatchThunk (node);
+			default:
+				return null;
+			}
+		}
+
+		TLDefinition ConvertStaticDispatchThunk (Node node)
+		{
+			if (node.Children [0].Children [0].Kind == NodeKind.Variable) {
+				return ConvertStaticDispatchThunkVariable (node);
+			}
+			else {
+				return ConvertStatic (node);
+			}
+		}
+
+		TLDefinition ConvertStaticDispatchThunkVariable (Node node)
+		{
+			return null;
+		}
+
 
 		TLFunction ConvertFunction (Node node, bool isMethodDescriptor)
 		{
@@ -1558,13 +1593,17 @@ namespace SwiftReflector.Demangling {
 			return ConvertToSubscriptEtter (node.Children [0], isReference, name, PropertyType.ModifyAccessor);
 		}
 
-		SwiftType ConvertToThunk (Node node, bool isReference, SwiftName name)
+		SwiftType ConvertToDispatchThunk (Node node, bool isReference, SwiftName name)
 		{
 			var thunkType = ConvertFirstChildToSwiftType (node, isReference, name);
 			if (thunkType == null)
 				return null;
-			var propThunk = thunkType as SwiftPropertyType;
-			return propThunk.AsSwiftPropertyThunkType ();
+			if (thunkType is SwiftPropertyThunkType propThunk)
+				return propThunk.AsSwiftPropertyThunkType ();
+			if (thunkType is SwiftStaticFunctionType staticFunc) {
+				return staticFunc.AsSwiftStaticFunctionThunkType ();
+			}
+			return null;
 		}
 
 		SwiftType ConvertToTupleElement (Node node, bool isReference, SwiftName name)
