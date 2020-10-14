@@ -483,30 +483,44 @@ namespace SwiftReflector {
 
 		public static SwiftType GetPropertyType (PropertyDeclaration decl, ModuleInventory modInventory)
 		{
-			if (decl.Storage == StorageKind.Computed) {
-				if (modInventory.TryGetValue (decl.Module.Name, out ModuleContents contents)) {
-					if (contents.Functions.TryGetValue (decl.Name, out OverloadInventory getterOverload)) {
-						foreach (var func in getterOverload.Functions) {
-							if (func.Signature.ParameterCount == 0 && func.Signature.ReturnType != null && !func.Signature.ReturnType.IsEmptyTuple)
-								return func.Signature.ReturnType;
-						}
-					}
+			if (modInventory.TryGetValue (decl.Module.Name, out ModuleContents contents)) {
+				if (decl.Storage == StorageKind.Computed) {
+					var type = ComputedPropertyType (decl, contents);
+					if (type != null)
+						return type;
+				} else {
+					var type = VariablePropertyType (decl, contents) ?? ComputedPropertyType (decl, contents);
+					if (type != null)
+						return type;
 				}
-			} else {
-				if (modInventory.TryGetValue (decl.Module.Name, out ModuleContents contents)) {
-					if (contents.Variables.TryGetValue (decl.Name, out VariableContents variable)) {
-						if (variable.Addressors.Count > 0) {
-							SwiftAddressorType addressor = variable.Addressors [0].Signature as SwiftAddressorType;
-							if (addressor != null) {
-								return addressor.ReturnType;
-							}
-						} else {
-							return variable.Variable.OfType;
-						}
+			} 
+			throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 2, $"unable to find the type ({decl.TypeName}) of property {decl.ToFullyQualifiedName ()}");
+		}
+
+		static SwiftType VariablePropertyType (PropertyDeclaration decl, ModuleContents contents)
+		{
+			if (contents.Variables.TryGetValue (decl.Name, out VariableContents variable)) {
+				if (variable.Addressors.Count > 0) {
+					SwiftAddressorType addressor = variable.Addressors [0].Signature as SwiftAddressorType;
+					if (addressor != null) {
+						return addressor.ReturnType;
 					}
+				} else {
+					return variable.Variable.OfType;
 				}
 			}
-			throw ErrorHelper.CreateError (ReflectorError.kWrappingBase + 2, $"unable to find the type ({decl.TypeName}) of property {decl.ToFullyQualifiedName ()}");
+			return null;
+		}
+
+		static SwiftType ComputedPropertyType (PropertyDeclaration decl, ModuleContents contents)
+		{
+			if (contents.Functions.TryGetValue (decl.Name, out OverloadInventory getterOverload)) {
+				foreach (var func in getterOverload.Functions) {
+					if (func.Signature.ParameterCount == 0 && func.Signature.ReturnType != null && !func.Signature.ReturnType.IsEmptyTuple)
+						return func.Signature.ReturnType;
+				}
+			}
+			return null;
 		}
 
 
