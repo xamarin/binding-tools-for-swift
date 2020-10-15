@@ -90,11 +90,11 @@ namespace SwiftReflector.Inventory {
 			if (oldProp == null) {
 				return newProp;
 			}
-			if (oldProp is SwiftPropertyThunkType oldthunk) {
-				newProp.Thunk = oldthunk;
+			if (oldProp.IsThunk) {
+				newProp.Thunk = oldProp;
 				return newProp;
-			} else if (newProp is SwiftPropertyThunkType newthunk) {
-				oldProp.Thunk = newthunk;
+			} else if (newProp.IsThunk) {
+				oldProp.Thunk = newProp;
 				return oldProp;
 			} else {
 				throw new NotImplementedException ("At least one needs to be a thunk - should never happen");
