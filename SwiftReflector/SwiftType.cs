@@ -230,6 +230,10 @@ namespace SwiftReflector {
 		public List<GenericArgument> GenericArguments { get; private set; }
 		public bool CanThrow { get; private set; }
 		public bool IsExtension { get { return ExtensionOn != null; } }
+		public virtual bool IsThunk => false;
+		public SwiftBaseFunctionType Thunk { get; set; }
+
+		public abstract SwiftBaseFunctionType AsThunk ();
 
 		// for short-lived discretionary storage of information
 		public string DiscretionaryString { get; set; }
@@ -304,6 +308,24 @@ namespace SwiftReflector {
 				return MemberType.CFunction;
 			}
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftCFunctionTypeThunk (Parameters, ReturnType, IsReference, Name);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftCFunctionTypeThunk : SwiftCFunctionType {
+		public SwiftCFunctionTypeThunk (SwiftType parms, SwiftType ret, bool isReference, SwiftName name = null)
+			: base (parms, ret, isReference, name)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftAddressorType : SwiftBaseFunctionType {
@@ -318,6 +340,24 @@ namespace SwiftReflector {
 				return MemberType.Addressor;
 			}
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftAddressorThunkType (AddressorType, ReturnType, IsReference, Name);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftAddressorThunkType : SwiftAddressorType {
+		public SwiftAddressorThunkType (AddressorType addressor, SwiftType ret, bool isReference, SwiftName name = null)
+			: base (addressor, ret, isReference, name)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftInitializerType : SwiftBaseFunctionType {
@@ -335,6 +375,24 @@ namespace SwiftReflector {
 				return MemberType.Initializer;
 			}
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftInitializerThunkType (InitializerType, ReturnType, Owner, Name);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftInitializerThunkType : SwiftInitializerType {
+		public SwiftInitializerThunkType (InitializerType initType, SwiftType ret, SwiftClassType owner, SwiftName name)
+			: base (initType, ret, owner, name)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftFunctionType : SwiftBaseFunctionType {
@@ -346,6 +404,24 @@ namespace SwiftReflector {
 
 		public override MemberType MemberType { get { return MemberType.Function; } }
 		public bool IsEscaping { get; private set; }
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftFunctionThunkType (Parameters, ReturnType, IsReference, CanThrow, Name, ExtensionOn, IsEscaping);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftFunctionThunkType : SwiftFunctionType {
+		public SwiftFunctionThunkType (SwiftType parms, SwiftType ret, bool isReference, bool canThrow, SwiftName name = null, SwiftType extensionOn = null, bool isEscaping = true)
+			: base (parms, ret, isReference, canThrow, name, extensionOn, isEscaping)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftCFunctionPointerType : SwiftFunctionType {
@@ -353,6 +429,24 @@ namespace SwiftReflector {
 		    : base (parms, ret, isReference, canThrow, name, null)
 		{
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftCFunctionPointerThunkType (Parameters, ReturnType, IsReference, CanThrow, Name);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftCFunctionPointerThunkType : SwiftCFunctionPointerType {
+		public SwiftCFunctionPointerThunkType (SwiftType parms, SwiftType ret, bool isReference, bool canThrow, SwiftName name = null)
+		    : base (parms, ret, isReference, canThrow, name)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftStaticFunctionType : SwiftFunctionType {
@@ -363,9 +457,8 @@ namespace SwiftReflector {
 		}
 
 		public SwiftClassType OfClass { get; private set; }
-		public SwiftStaticFunctionThunkType Thunk { get; set; }
 
-		public SwiftStaticFunctionThunkType AsSwiftStaticFunctionThunkType ()
+		public override SwiftBaseFunctionType AsThunk ()
 		{
 			var func = new SwiftStaticFunctionThunkType (Parameters, ReturnType, IsReference, CanThrow, OfClass, Name, ExtensionOn);
 			func.DiscretionaryString = DiscretionaryString;
@@ -378,6 +471,10 @@ namespace SwiftReflector {
 			: base (parms, ret, isReference, canThrow, ofClass, name, extensionOn)
 		{
 		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 
@@ -386,6 +483,24 @@ namespace SwiftReflector {
 		    : base (SwiftTupleType.Empty, Exceptions.ThrowOnNull (meta, "meta"), isReference, false, Decomposer.kSwiftClassConstructorName)
 		{
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftClassConstructorThunkType (ReturnType as SwiftMetaClassType, IsReference);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftClassConstructorThunkType : SwiftClassConstructorType {
+		public SwiftClassConstructorThunkType (SwiftMetaClassType meta, bool isReference)
+			: base (meta, isReference)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftUncurriedFunctionType : SwiftBaseFunctionType {
@@ -411,6 +526,26 @@ namespace SwiftReflector {
 			var ucf = other as SwiftUncurriedFunctionType;
 			return ucf != null && ucf.UncurriedParameter.Equals (UncurriedParameter) && base.LLEquals(other);
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftUncurriedFunctionThunkType (UncurriedParameter, Parameters, ReturnType, IsReference, CanThrow, Name, ExtensionOn);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftUncurriedFunctionThunkType : SwiftUncurriedFunctionType
+	{
+		public SwiftUncurriedFunctionThunkType (SwiftType unCurriedParameter,
+						   SwiftType parms, SwiftType ret, bool isReference, bool canThrow, SwiftName name = null, SwiftType extensionOn = null)
+			: base (unCurriedParameter, parms, ret, isReference, canThrow, name, extensionOn)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 
@@ -421,6 +556,25 @@ namespace SwiftReflector {
 			    Decomposer.kSwiftNonAllocatingConstructorName, extensionOn)
 		{
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftConstructorThunkType (MemberType == MemberType.Allocator, UncurriedParameter,
+				Parameters, ReturnType, IsReference, CanThrow, ExtensionOn);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftConstructorThunkType : SwiftConstructorType {
+		public SwiftConstructorThunkType (bool isAllocating, SwiftType unCurriedParameter, SwiftType parms, SwiftType ret, bool isReference, bool canThrow, SwiftType extensionOn = null)
+			: base (isAllocating, unCurriedParameter, parms, ret, isReference, canThrow, extensionOn)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftDestructorType : SwiftBaseFunctionType {
@@ -432,6 +586,24 @@ namespace SwiftReflector {
 		}
 		MemberType memberType;
 		public override MemberType MemberType { get { return memberType; } }
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftDestructorThunkType (Name == Decomposer.kSwiftDeallocatingDestructorName, ReturnType as SwiftClassType, IsReference, CanThrow);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftDestructorThunkType : SwiftDestructorType {
+		public SwiftDestructorThunkType (bool isDeallocating, SwiftClassType classType, bool isReference, bool canThrow)
+			: base (isDeallocating, classType, isReference, canThrow)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftPropertyType : SwiftUncurriedFunctionType {
@@ -469,8 +641,6 @@ namespace SwiftReflector {
 		public bool IsPrivate { get { return PrivateName != null; } }
 		public bool IsGlobal { get { return UncurriedParameter == null; }}
 
-		public SwiftPropertyThunkType Thunk { get; set; }
-
 		public SwiftPropertyType RecastAsStatic()
 		{
 			if (IsStatic)
@@ -498,7 +668,7 @@ namespace SwiftReflector {
 			return newProp;
 		}
 
-		public SwiftPropertyThunkType AsSwiftPropertyThunkType ()
+		public override SwiftBaseFunctionType AsThunk ()
 		{
 			if (IsSubscript) {
 				var pt = new SwiftPropertyThunkType (UncurriedParameter, PropertyType, Name,
@@ -526,6 +696,10 @@ namespace SwiftReflector {
 			: base (unCurriedParameter, propType, propName, privateName, accessor, isStatic, isReference, extensionOn)
 		{
 		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftExplicitClosureType : SwiftBaseFunctionType {
@@ -539,6 +713,24 @@ namespace SwiftReflector {
 				return MemberType.ExplicitClosure;
 			}
 		}
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftExplicitClosureThunkType (IsReference);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftExplicitClosureThunkType : SwiftExplicitClosureType {
+		public SwiftExplicitClosureThunkType (bool isReference)
+			: base (isReference)
+		{
+		}
+
+		public override bool IsThunk => true;
+
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftWitnessTableType : SwiftUncurriedFunctionType {
@@ -552,6 +744,23 @@ namespace SwiftReflector {
 		}
 		public WitnessType WitnessType { get; private set; }
 		public SwiftClassType ProtocolType { get; private set; }
+
+		public override SwiftBaseFunctionType AsThunk ()
+		{
+			var thunk = new SwiftWitnessTableThunkType (WitnessType, ProtocolType, UncurriedParameter as SwiftClassType);
+			thunk.DiscretionaryString = DiscretionaryString;
+			return thunk;
+		}
+	}
+
+	public class SwiftWitnessTableThunkType : SwiftWitnessTableType {
+		public SwiftWitnessTableThunkType (WitnessType witnessType, SwiftClassType protocolType = null, SwiftClassType owningType = null)
+			: base (witnessType, protocolType, owningType)
+		{
+		}
+
+		public override bool IsThunk => true;
+		public override SwiftBaseFunctionType AsThunk () => this;
 	}
 
 	public class SwiftTupleType : SwiftType {

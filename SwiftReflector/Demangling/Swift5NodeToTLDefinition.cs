@@ -9,11 +9,11 @@ using SwiftRuntimeLibrary;
 namespace SwiftReflector.Demangling {
 	public class Swift5NodeToTLDefinition {
 		static List<NodeKind> nominalNodeKinds = new List<NodeKind> {
-			NodeKind.Class, NodeKind.Enum, NodeKind.Structure
+			NodeKind.Class, NodeKind.Enum, NodeKind.Structure, NodeKind.Protocol
 		};
 
 		static List<NodeKind> nominalNodeAndModuleKinds = new List<NodeKind> {
-			NodeKind.Class, NodeKind.Enum, NodeKind.Structure, NodeKind.Module
+			NodeKind.Class, NodeKind.Enum, NodeKind.Structure, NodeKind.Protocol, NodeKind.Module
 		};
 
 		static List<NodeKind> identifierOrOperatorOrPrivateDecl = new List<NodeKind> {
@@ -847,6 +847,8 @@ namespace SwiftReflector.Demangling {
 				return ConvertFunctionProp (node);
 			case NodeKind.Static:
 				return ConvertStaticDispatchThunk (node);
+			case NodeKind.Function:
+				return ConvertFunction (node, false);
 			default:
 				return null;
 			}
@@ -1598,11 +1600,8 @@ namespace SwiftReflector.Demangling {
 			var thunkType = ConvertFirstChildToSwiftType (node, isReference, name);
 			if (thunkType == null)
 				return null;
-			if (thunkType is SwiftPropertyType propThunk)
-				return propThunk.AsSwiftPropertyThunkType ();
-			if (thunkType is SwiftStaticFunctionType staticFunc) {
-				return staticFunc.AsSwiftStaticFunctionThunkType ();
-			}
+			if (thunkType is SwiftBaseFunctionType funcType)
+				return funcType.AsThunk ();
 			return null;
 		}
 
