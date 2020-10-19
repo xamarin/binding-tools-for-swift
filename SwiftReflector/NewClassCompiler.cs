@@ -3637,17 +3637,10 @@ namespace SwiftReflector {
 					MakeOptionalConstructor (cl, picl, usedPinvokeNames, classDecl, superClassContents ?? classContents, use, csClassType, wrapper, swiftLibraryPath, funcDecl, tlf, errors);
 					continue;
 				}
-				if (MethodWrapping.FuncNeedsWrapping (funcDecl, TypeMapper)) {
-					foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType, tlf,
-								    superClassName, use, wrapper, superClassContents ?? classContents,
-								    PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), errors, genericNamer, isAssociatedTypeProxy))
-						yield return m;
-				} else {
-					string pinvokeName = isSubclass ? PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath) : PInvokeName (swiftLibraryPath);
-					foreach (var m in ConstructorToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames,
-									       csClassType, tlf, superClassName, use, pinvokeName, wrapper, errors, isAssociatedTypeProxy))
-						yield return m;
-				}
+				foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType, tlf,
+								superClassName, use, wrapper, superClassContents ?? classContents,
+								PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), errors, genericNamer, isAssociatedTypeProxy))
+					yield return m;
 			}
 			string className = StubbedClassName (superClassName ?? classContents.Name);
 			if (!inheritsISwiftObject && classDecl.IsObjCOrInheritsObjC (TypeMapper))
