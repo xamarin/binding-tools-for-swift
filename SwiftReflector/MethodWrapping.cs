@@ -542,6 +542,8 @@ namespace SwiftReflector {
 				return true;
 			if (fn.IsExtension)
 				return true;
+			if (fn.IsConstructor)
+				return true;
 			var tlf = XmlToTLFunctionMapper.ToTLFunction (fn, modInventory, typeMapper);
 			if (tlf == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 1, $"Unable to find function for declaration of {fn.ToFullyQualifiedName ()}.");
@@ -561,6 +563,8 @@ namespace SwiftReflector {
 			if (fn.IsOperator)
 				return true;
 			if (fn.IsExtension)
+				return true;
+			if (fn.IsConstructor)
 				return true;
 			bool hasReturn = fn.ReturnTypeSpec != null && !fn.ReturnTypeSpec.IsEmptyTuple;
 			bool returnNeedsWrapping = false;
@@ -1216,17 +1220,15 @@ namespace SwiftReflector {
 						continue;
 					if (BoundClosureError (funcDecl, cl, "wrapping an overrider constructor in a class"))
 						continue;
-					if (FuncNeedsWrapping (funcDecl, typeMapper)) {
-						SLFunc func = null;
-						try {
-							func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
-						} catch (Exception e) {
-							SkipWithWarning (funcDecl, cl, "wrapping an overrider constructor in a class", e);
-							continue;
-						}
-						funcs.Add (func);
-						AddFunctionToOverallList (externalCl, func.Name.Name);
+					SLFunc func = null;
+					try {
+						func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
+					} catch (Exception e) {
+						SkipWithWarning (funcDecl, cl, "wrapping an overrider constructor in a class", e);
+						continue;
 					}
+					funcs.Add (func);
+					AddFunctionToOverallList (externalCl, func.Name.Name);
 				}
 
 				foreach (FunctionDeclaration funcDecl in externalCl.AllMethodsNoCDTor ().Where (fd => fd.Access == Accessibility.Internal
@@ -1295,19 +1297,17 @@ namespace SwiftReflector {
 				foreach (FunctionDeclaration funcDecl in cl.AllConstructors ().Where (fd => fd.Access == Accessibility.Public)) {
 					if (ShouldSkipDeprecated (funcDecl, "Constructor"))
 						continue;
-					if (FuncNeedsWrapping (funcDecl, typeMapper)) {
-						if (BoundClosureError (funcDecl, cl, "wrapping a constructor in a class"))
-							continue;
-						SLFunc func = null;
-						try {
-							func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
-						} catch (Exception e) {
-							SkipWithWarning (funcDecl, cl, "wrapping a constructor in a class", e);
-							continue;
-						}
-						funcs.Add (func);
-						AddFunctionToOverallList (cl, func.Name.Name);
+					if (BoundClosureError (funcDecl, cl, "wrapping a constructor in a class"))
+						continue;
+					SLFunc func = null;
+					try {
+						func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
+					} catch (Exception e) {
+						SkipWithWarning (funcDecl, cl, "wrapping a constructor in a class", e);
+						continue;
 					}
+					funcs.Add (func);
+					AddFunctionToOverallList (cl, func.Name.Name);
 				}
 			}
 
