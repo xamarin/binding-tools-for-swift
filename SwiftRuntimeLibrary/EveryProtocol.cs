@@ -22,7 +22,7 @@ namespace SwiftRuntimeLibrary {
 		static IntPtr _XamEveryProtocolCtorImpl ()
 		{
 			IntPtr retvalIntPtr;
-			retvalIntPtr = NativeMethodsForEveryProtocol.PI_EveryProtocol (EveryProtocol.GetSwiftMetatype ());
+			retvalIntPtr = NativeMethodsForEveryProtocol.PI_MakeEveryProtocol ();
 			return retvalIntPtr;
 
 		}
@@ -51,7 +51,7 @@ namespace SwiftRuntimeLibrary {
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.EveryProtocol_MetadataAccessor)]
 		internal static extern SwiftMetatype PIMetadataAccessor_EveryProtocol (SwiftMetadataRequest request);
 
-		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.EveryProtocolNew)]
-		internal static extern IntPtr PI_EveryProtocol (SwiftMetatype metaClass);
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.MakeEveryProtocol)]
+		internal static extern IntPtr PI_MakeEveryProtocol ();
 	}
 }
