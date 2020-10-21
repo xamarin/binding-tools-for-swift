@@ -32,11 +32,6 @@ jobs:
   - checkout: self
 
   - bash: |
-      ln -s /Applications/Xcode_12.app
-      /Applications/Xcode_12.0.0.app
-    displayName: 'Confirming Xcode Version'
-
-  - bash: |
       set -x
       set -e
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
