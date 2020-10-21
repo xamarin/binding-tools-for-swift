@@ -363,7 +363,6 @@ namespace SwiftReflector.Importing {
 			// SafariServices
 			"SafariServices.SFSafariViewControllerDismissButtonStyle",
 			"SafariServices.SFContentBlockerErrorCode",
-
 			// SceneKit
 			"SceneKit.SCNErrorCode", // can't find it
 			"SceneKit.SCNTessellationSmoothingMode", // can't find it
