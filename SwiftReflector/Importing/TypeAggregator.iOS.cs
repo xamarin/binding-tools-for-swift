@@ -362,6 +362,7 @@ namespace SwiftReflector.Importing {
 			"PdfKit.PdfPrintScalingMode", // macOS only
 			// SafariServices
 			"SafariServices.SFSafariViewControllerDismissButtonStyle",
+			"SafariServices.SFContentBlockerErrorCode",
 			// SceneKit
 			"SceneKit.SCNErrorCode", // can't find it
 			"SceneKit.SCNTessellationSmoothingMode", // can't find it
@@ -843,7 +844,6 @@ namespace SwiftReflector.Importing {
 			// ReplayKit
 			{ "ReplayKit.RPRecordingError", "RPRecordingErrorCode" },
 			// SafariServices
-			{ "SafariServices.SFContentBlockerErrorCode", "SFError.Code" },
 			{ "SafariServices.SFErrorCode", "SFError.Code" },
 			// SceneKit
 			{ "SceneKit.SCNAnimationImportPolicy", "SCNSceneSource.AnimationImportPolicy" },
