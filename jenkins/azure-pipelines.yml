@@ -27,16 +27,16 @@ jobs:
   timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
   pool:
     vmImage: 'macOS-10.15'
-  
-  - bash: |
-      ln -s /Applications/Xcode_12.app
-      /Applications/Xcode_12.0.0.app
-    displayName: 'Confirming Xcode Version'
 
   steps:
   - checkout: maccore
     persistCredentials: true
   - checkout: self
+
+  - bash: |
+      ln -s /Applications/Xcode_12.app
+      /Applications/Xcode_12.0.0.app
+    displayName: 'Confirming Xcode Version'
 
   - bash: |
       set -x
