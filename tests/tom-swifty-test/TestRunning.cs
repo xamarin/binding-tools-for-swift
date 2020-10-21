@@ -36,7 +36,8 @@ namespace tomwiftytest {
 			return usings;
 		}
 
-		public static CSFile GenerateTestEntry (CodeElementCollection<ICodeElement> callingCode, string testName, string nameSpace, PlatformName platform, CSClass otherClass = null)
+		public static CSFile GenerateTestEntry (CodeElementCollection<ICodeElement> callingCode, string testName, string nameSpace, PlatformName platform, CSClass otherClass = null,
+			bool enforceUTF8Encoding = false)
 		{
 			var use = GetTestEntryPointUsings (nameSpace, platform);
 
@@ -45,6 +46,9 @@ namespace tomwiftytest {
 				ns.Block.Add (otherClass);
 
 			var mainBody = new CSCodeBlock (callingCode);
+			if (enforceUTF8Encoding) {
+				InsertUTF8Assertion (mainBody);
+			}
 			mainBody.Add (CaptureSwiftOutputPostlude (testName));
 			var main = new CSMethod (CSVisibility.Public, CSMethodKind.Static, CSSimpleType.Void,
 						 (CSIdentifier)"Main", new CSParameterList (new CSParameter (CSSimpleType.CreateArray ("string"), "args")),
@@ -119,7 +123,8 @@ namespace tomwiftytest {
 		}
 
 		public static Tuple<CSNamespace, CSUsingPackages> CreateTestClass (CodeElementCollection<ICodeElement> callingCode, string testName,
-					  string expectedOutput, string nameSpace, string testClassName, CSClass otherClass, string skipReason, PlatformName platform)
+					  string expectedOutput, string nameSpace, string testClassName, CSClass otherClass, string skipReason, PlatformName platform,
+					  bool enforceUTF8Encoding = false)
 		{
 			var use = GetTestClassUsings (nameSpace);
 			
@@ -140,6 +145,10 @@ namespace tomwiftytest {
 				ns.Block.Add (otherClass);
 
 			CSCodeBlock body = new CSCodeBlock (callingCode);
+			if (enforceUTF8Encoding) {
+				InsertUTF8Assertion (body);
+			}
+			body.AddRange (callingCode);
 			body.Add (CaptureSwiftOutputPostlude (testName));
 
 			CSMethod run = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void, new CSIdentifier ("Run"),
@@ -156,6 +165,12 @@ namespace tomwiftytest {
 				attr.AttachBefore (testClass);
 			}
 			return new Tuple<CSNamespace, CSUsingPackages> (ns, use);
+		}
+
+		static void InsertUTF8Assertion (CSCodeBlock body)
+		{
+			body.Insert (0, CSAssignment.Assign ("System.Console.OutputEncoding",
+				new CSFunctionCall ("System.Text.UTF8Encoding", true, CSConstant.Val (false))));
 		}
 
 		static CSProperty MakeGetOnlyStringProp (string name, string val)
@@ -285,7 +300,8 @@ namespace tomwiftytest {
 					    PlatformName platform = PlatformName.None,
 					    UnicodeMapper unicodeMapper = null, int expectedErrorCount = 0,
 					    Action<string> postCompileCheck = null,
-					    string[] expectedOutputContains = null)
+					    string[] expectedOutputContains = null,
+					    bool enforceUTF8Encoding = false)
 		{
 			SetInvokingTestNameIfUnset (ref testName, out string nameSpace);
 			string testClassName = "TomTest" + testName;
@@ -303,7 +319,7 @@ namespace tomwiftytest {
 					postCompileCheck (tempDirectoryPath);
 
 				Tuple<CSNamespace, CSUsingPackages> testClassParts = TestRunningCodeGenerator.CreateTestClass (callingCode, testName, iosExpectedOutput ?? expectedOutput, nameSpace,
-										       testClassName, otherClass, skipReason, platform);
+										       testClassName, otherClass, skipReason, platform, enforceUTF8Encoding);
 
 				var thisTestPath = Path.Combine (Compiler.kSwiftDeviceTestRoot, nameSpace);
 				Directory.CreateDirectory (thisTestPath);
@@ -362,7 +378,7 @@ namespace tomwiftytest {
 					File.WriteAllText (csTestFilePath, csPrefix + File.ReadAllText (csTestFilePath) + csSuffix);
 				}
 
-				var csFile = TestRunningCodeGenerator.GenerateTestEntry (callingCode, testName, nameSpace, platform, otherClass);
+				var csFile = TestRunningCodeGenerator.GenerateTestEntry (callingCode, testName, nameSpace, platform, otherClass, enforceUTF8Encoding);
 				csFile.Namespaces.Add (CreateManagedConsoleRedirect ());
 				CodeWriter.WriteToFile (Path.Combine (tempDirectoryPath, "NameNotImportant.cs"), csFile);
 
