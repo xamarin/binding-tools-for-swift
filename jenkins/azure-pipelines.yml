@@ -33,7 +33,7 @@ jobs:
 
   - bash: |
       ls -la
-      cd $(System.DefaultWorkingDirectory)
+      cd $(Agent.HomeDirectory)
       ls -la
       ln -s /Applications/Xcode_12.app
       /Applications/Xcode_12.0.0.app
