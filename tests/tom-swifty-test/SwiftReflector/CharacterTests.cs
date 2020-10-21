@@ -44,7 +44,7 @@ namespace SwiftReflector {
 				}
 			}
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString ());
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString (), enforceUTF8Encoding: true);
 		}
 
 		[Test]
@@ -88,7 +88,7 @@ public class CharacterEcho
 				callingCode.Add (block);
 			}
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString ());
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString (), enforceUTF8Encoding: true);
 		}
 
 		[Test]
@@ -123,7 +123,7 @@ public class CharacterHolder
 				testCharacter (new CSCastExpression ((CSSimpleType)"SwiftCharacter", testIdentifier));	
 			}
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString ());
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected.ToString (), enforceUTF8Encoding: true);
 		}
 	}
 }

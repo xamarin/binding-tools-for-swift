@@ -147,7 +147,7 @@ public enum BoringEnum3 {
 
 			if (hexEncode) {
 				nameExpr = new CSFunctionCall ("BitConverter.ToString", false,
-					new CSFunctionCall ("System.Text.Encoding.Default.GetBytes", false, nameExpr));
+					new CSFunctionCall ("new System.Text.UTF8Encoding (false).GetBytes", false, nameExpr));
 			}
 
 			var printer = CSFunctionCall.ConsoleWriteLine (nameExpr);
