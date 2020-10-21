@@ -8,6 +8,18 @@ trigger:
 pr:
 - '*'
 
+resources:
+  repositories:
+  - repository: maccore
+    type: github
+    name: xamarin/maccore
+    ref: refs/heads/main
+    endpoint: xamarin
+
+variables:
+  - group: xamops-azdev-secrets
+  - group: Xamarin-Secrets
+
 jobs:
 - job: ContinuousIntegration
   timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
@@ -15,6 +27,21 @@ jobs:
     vmImage: 'macOS-10.14'
 
   steps:
+  - checkout: maccore
+    persistCredentials: true
+  - checkout: self
+
+  - bash: |
+      set -x
+      set -e
+      rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
+      rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
+      cd $(System.DefaultWorkingDirectory)
+      ./maccore/tools/install-qa-provisioning-profiles.sh -v
+    displayName: 'Add provisioning profiles'
+    env:
+      LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
+
   - script: |
       set +e # we don't care about errors here
       set -x
@@ -30,13 +57,13 @@ jobs:
   - script: |
       set -e
       set -x
-      ./jenkins/provision-deps.sh
+      ./binding-tools-for-swift/jenkins/provision-deps.sh
     displayName: 'Provision dependencies'
 
   - script: |
       set -e
       set -x
-      ./jenkins/build-swift.sh --publish
+      ./binding-tools-for-swift/jenkins/build-swift.sh --publish
       mkdir -p ../toolchain
       if test -f Pack-Man/SwiftToolchain-*.zip; then
         cp -c Pack-Man/SwiftToolchain-*.zip ../toolchain
@@ -60,14 +87,14 @@ jobs:
   - script: |
       set -e
       set -x
-      ./jenkins/build.sh
+      ./binding-tools-for-swift/jenkins/build.sh
     displayName: 'Build'
 
   - script: |
       set -e
       set -x
-      ./jenkins/build-package.sh
-      ls -la ../package || true
+      ./binding-tools-for-swift/jenkins/build-package.sh
+      ls -la ./package || true
     displayName: 'Package'
 
   # This will upload the packages to Azure Devops
@@ -76,15 +103,32 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Upload Packages'
     inputs:
-      PathtoPublish: '../package'
+      PathtoPublish: './package'
       ArtifactName: 'drop'
       publishLocation: 'Container'
 
   - script: |
       set -e
       set -x
-      ./jenkins/run-tests.sh
+      ./binding-tools-for-swift/jenkins/run-tests.sh
     displayName: 'Run tests'
+
+  - task: PublishTestResults@2
+    displayName: 'Publish NUnit Device Test Results'
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TestResult*.xml'
+      failTaskOnFailedTests: true
+    continueOnError: true
+    condition: succeededOrFailed()
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Artifact: TestResult'
+    inputs:
+      targetPath: $(System.DefaultWorkingDirectory)/binding-tools-for-swift/tests/tom-swifty-test/TestResult.xml
+      artifactName: TestResults
+    continueOnError: true
+    condition: succeededOrFailed()
 
 - job: UploadToolchain
   dependsOn: ContinuousIntegration
@@ -128,7 +172,7 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
 
 - job: UploadPackages
