@@ -6,9 +6,7 @@ trigger:
 - '*'
 
 pr:
-  branches:
-    include:
-    - '*'
+- '*'
 
 resources:
   repositories:
@@ -26,7 +24,7 @@ jobs:
 - job: ContinuousIntegration
   timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
   pool:
-    vmImage: 'internal-macos-10.15'
+    vmImage: 'macos-10.15'
 
   steps:
   - checkout: maccore
@@ -34,14 +32,21 @@ jobs:
   - checkout: self
 
   - bash: |
-<<<<<<< HEAD
-      ls -la ln -s /Applications/Xcode_12.app
-=======
-      ls -la
-      cd $(Agent.HomeDirectory)
-      ls -la
-      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.0.app
->>>>>>> `ln -s` should be all on the same line
+      if [ -L /Applications/Xcode_12.0.1.app ]
+      then
+        unlink /Applications/Xcode_12.0.1.app
+      fi
+      if [ -L /Applications/Xcode_12.0.0.app ]
+      then
+        unlink /Applications/Xcode_12.0.0.app
+      fi
+      if [ -L /Applications/Xcode.app ]
+      then
+        unlink /Applications/Xcode.app
+      fi
+      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.1.app
+      ln -s /Applications/Xcode_12.app /Applications/Xcode.app
+      xcode-select -p
     displayName: 'Confirming Xcode Version'
 
   - bash: |
