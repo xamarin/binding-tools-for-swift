@@ -496,7 +496,7 @@ function install_versioned_product () {
 	fi
 
 	log "Installing $PRODUCT_NAME $PRODUCT_VERSION from $PRODUCT_SOURCE..."
-	$SUDO installer -pkg "$PRODUCT_PKG" -target /
+	$SUDO installer -pkg "$PRODUCT_PKG" -target /Applications
 
 	rm -f "$PRODUCT_PKG"
 }
