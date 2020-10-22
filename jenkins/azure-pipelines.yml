@@ -32,7 +32,10 @@ jobs:
   - checkout: self
 
   - bash: |
-      ls -la ln -s /Applications/Xcode_12.app
+      ls -la
+      cd $(Agent.HomeDirectory)
+      ls -la
+      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.0.app
     displayName: 'Confirming Xcode Version'
 
   - bash: |
