@@ -597,19 +597,14 @@ namespace SwiftReflector {
 		                               WrappingResult wrapper, string swiftLibPath, List<CSMethod> methods, CSClass picl,
 		                               List<string> usedPinvokeNames)
 		{
-			var originalFunc = XmlToTLFunctionMapper.ToTLFunction (func, moduleInventory, TypeMapper);
-			if (originalFunc == null)
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 11, $"Unable to find original function for {func.ToFullyQualifiedName ()}.");
-
-			var wrapperFunction = FindWrapperForFunction (func, originalFunc, wrapper);
-			if (wrapperFunction == null)
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 12, $"Unable to find wrapper function for {func.ToFullyQualifiedName ()}.");
-			var wrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunction, TypeMapper, wrapper);
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+			var wrapperFunc = finder.FindWrapper (func);
 			if (wrapperFunc == null)
-				throw new NotImplementedException ();
+				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 12, $"Unable to find wrapper function for {func.ToFullyQualifiedName ()}.");
 
-			// wrapperFunction.Name has aready been Cleansed, but also includes things that we don't want in C#
-			var functionPIBaseName = new SwiftName (TypeMapper.SanitizeIdentifier (wrapperFunction.Name.Name), false);
+			var wrapperFunction = FindEquivalentTLFunctionForWrapperFunction (wrapperFunc, TypeMapper, wrapper);
+
+			var functionPIBaseName = new SwiftName (TypeMapper.SanitizeIdentifier (wrapperFunc.Name), false);
 			string operatorFunctionName = func.IsOperator ? ToOperatorName (func) : null;
 
 			var homonymSuffix = Homonyms.HomonymSuffix (func, peerFunctions, TypeMapper);
@@ -624,7 +619,7 @@ namespace SwiftReflector {
 			picl.Methods.Add (piMethod);
 
 			var publicMethodOrig = TLFCompiler.CompileMethod (func, use, PInvokeName (swiftLibPath),
-									  originalFunc.MangledName, operatorFunctionName,
+									  mangledName: "", operatorFunctionName,
 									  false, false, false);
 
 			CSIdentifier wrapperName = GetMethodWrapperName (func, publicMethodOrig, homonymSuffix);
@@ -4876,14 +4871,11 @@ namespace SwiftReflector {
 			if (!funcFilter (methodToWrap))
 				return;
 
-			var wrapperFunction = FindWrapperForMethod (funcToWrap, methodToWrap, wrapper);
+			FunctionDeclarationWrapperFinder finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+			var wrapperFunc = finder.FindWrapper (funcToWrap);
 
-			if (wrapperFunction == null) {
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 77, $"Unable to find wrapper function for method {methodToWrap.Name.Name} in class {methodToWrap.Class.ClassName.ToFullyQualifiedName (true)}.");
-			}
-			var wrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunction, TypeMapper, wrapper);
-			if (wrapperFunc == null)
-				throw new NotImplementedException ();
+			var wrapperFunction = FindEquivalentTLFunctionForWrapperFunction (wrapperFunc, TypeMapper, wrapper);
+
 			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, piClassName, funcToWrap, use, isFinal, wrapper, swiftLibraryPath, wrapperFunction, homonymSuffix);
 		}
 
@@ -5103,46 +5095,12 @@ namespace SwiftReflector {
 
 		}
 
-		TLFunction FindWrapperForFunction (FunctionDeclaration funcDecl, TLFunction functionToWrap, WrappingResult wrapper)
-		{
-			string wrapperName = functionToWrap.Operator == OperatorType.None ?
-							   MethodWrapping.WrapperFuncName (functionToWrap.Module.Name, functionToWrap.Name.Name) :
-			                                   MethodWrapping.WrapperOperatorName (TypeMapper, functionToWrap.Module.Name, functionToWrap.Name.Name, functionToWrap.Operator);
-			return FindWrapperForFunction (funcDecl, functionToWrap, wrapperName, wrapper);
-		}
-
-		TLFunction FindWrapperForFunction (FunctionDeclaration funcDecl, TLFunction functionToWrap, string wrapperName, WrappingResult wrapper)
-		{
-			var referenceCodedWrapper = LookupReferenceCodeForFunctionDeclaration (funcDecl, wrapperName, wrapper, "function");
-			if (referenceCodedWrapper != null)
-				return referenceCodedWrapper;
-
-			var allwrappers = wrapper.Contents.Functions.MethodsWithName (wrapperName);
-			if (allwrappers == null || allwrappers.Count == 0)
-				return null;
-
-			var bft = functionToWrap.Signature;
-			int amountToSkip = TypeMapper.MustForcePassByReference (bft.ReturnType) || functionToWrap.Signature.CanThrow ? 1 : 0;
-			return allwrappers.FirstOrDefault (tlf => ParametersMatchExceptSkippingFirstN (tlf.Signature,
-				functionToWrap.Signature, amountToSkip, TypeMapper) && ReturnTypesMatch (functionToWrap, tlf));
-		}
-
-
 		TLFunction FindWrapperForMethod (FunctionDeclaration funcToWrap, TLFunction methodToWrap, PropertyType propType, WrappingResult wrapper)
 		{
 			var prop = methodToWrap.Signature as SwiftPropertyType;
 			if (prop == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 34, $"Expected a SwiftPropertyType for method signature, but got {methodToWrap.Signature.GetType ().Name}");
 			var wrapperName = MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, propType, prop.IsSubscript, funcToWrap.IsExtension, prop.IsStatic);
-			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
-		}
-
-
-		TLFunction FindWrapperForMethod (FunctionDeclaration funcToWrap, TLFunction methodToWrap, WrappingResult wrapper)
-		{
-			string wrapperName = methodToWrap.Operator == OperatorType.None ?
-							 MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, funcToWrap.IsExtension, funcToWrap.IsStatic) :
-			                                 MethodWrapping.WrapperOperatorName (TypeMapper, funcToWrap.Parent.ToFullyQualifiedName (true), methodToWrap.Name.Name, funcToWrap.OperatorType);
 			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
 		}
 
@@ -5433,24 +5391,29 @@ namespace SwiftReflector {
 												fn.ParameterLists.Last ().Count).ToList ();
 			
 			foreach (FunctionDeclaration decl in allWrappers) {
-				if (!ParametersMatch (decl, func, mapper, decl.IsSubscript))
-					continue;
-
-				if (!decl.ReturnTypeSpec.ContainsGenericParameters && decl.IsTypeSpecGeneric(decl.ReturnTypeSpec)) {
-					if (decl.ReturnTypeSpec is NamedTypeSpec && !(func.Signature.ReturnType is SwiftGenericArgReferenceType)) {
-						continue;
-					}
-					return decl;
-				}
-
-				// match return type (thanks again, swift)
-				var returnntb1 = mapper.MapType (func.Signature.ReturnType ?? SwiftTupleType.Empty, true, true);
-				var returnntb2 = mapper.MapType (decl, decl.ReturnTypeSpec ?? TupleTypeSpec.Empty, true, true);
-				if (NetTypeBundleMatch(returnntb1, returnntb2))
+				if (FunctionDeclarationMatchesTLFunction (func, decl, mapper))
 					return decl;
 			}
 			return null;
 
+		}
+
+		public static bool FunctionDeclarationMatchesTLFunction (TLFunction func, FunctionDeclaration decl, TypeMapper mapper)
+		{
+			if (!ParametersMatch (decl, func, mapper, decl.IsSubscript))
+				return false;
+
+			if (!decl.ReturnTypeSpec.ContainsGenericParameters && decl.IsTypeSpecGeneric (decl.ReturnTypeSpec)) {
+				if (decl.ReturnTypeSpec is NamedTypeSpec && !(func.Signature.ReturnType is SwiftGenericArgReferenceType)) {
+					return false;
+				}
+				return true;
+			}
+
+			// match return type (thanks again, swift)
+			var returnntb1 = mapper.MapType (func.Signature.ReturnType ?? SwiftTupleType.Empty, true, true);
+			var returnntb2 = mapper.MapType (decl, decl.ReturnTypeSpec ?? TupleTypeSpec.Empty, true, true);
+			return NetTypeBundleMatch (returnntb1, returnntb2);
 		}
 
 		static bool NetTypeBundleMatch(NetTypeBundle ntb1, NetTypeBundle ntb2)
@@ -5463,9 +5426,24 @@ namespace SwiftReflector {
 			return true;
 		}
 
+		public static TLFunction FindTLFunctionForFunctionDeclaration (FunctionDeclaration funcDecl, TypeMapper mapper, FunctionInventory coll)
+		{
+			var allWrappers = coll.MethodsWithName (funcDecl.Name).Where (fn => fn.Signature.ParameterCount == funcDecl.ParameterLists.Last ().Count).ToList ();
+			foreach (var func in allWrappers) {
+				if (FunctionDeclarationMatchesTLFunction (func, funcDecl, mapper))
+					return func;
+			}
+			return null;
+		}
+
 		public static FunctionDeclaration FindEquivalentFunctionDeclarationForWrapperFunction (TLFunction func, TypeMapper mapper, WrappingResult wrapper)
 		{
 			return FindFunctionDeclarationForTLFunction (func, mapper, wrapper.Module.Functions);
+		}
+
+		public static TLFunction FindEquivalentTLFunctionForWrapperFunction (FunctionDeclaration funcDecl, TypeMapper mapper, WrappingResult wrapper)
+		{
+			return FindTLFunctionForFunctionDeclaration (funcDecl, mapper, wrapper.Contents.Functions);
 		}
 
 		static bool ParametersMatchExceptSkippingFirst (SwiftType wrapper, SwiftType toWrap, TypeMapper typeMapper)

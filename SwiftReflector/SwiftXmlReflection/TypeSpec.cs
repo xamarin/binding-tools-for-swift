@@ -148,6 +148,42 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return LLEquals (spec, true);
 		}
 
+		public virtual bool EqualsReferenceInvaraint (TypeSpec type)
+		{
+			var a = ProjectAsNonReference (this);
+			var b = ProjectAsNonReference (type);
+
+			if (b.Kind != a.Kind)
+				return false;
+			if (b.GetType () != a.GetType ())
+				return false;
+			// shouldn't do Name equality except in functions
+			return a.LLEquals (b, false);
+		}
+
+		public TypeSpec NonReferenceCloneOf ()
+		{
+			if (!IsInOut)
+				return this;
+			var ty = MemberwiseClone () as TypeSpec;
+			ty.IsInOut = false;
+			return ty;
+		}
+
+		static TypeSpec ProjectAsNonReference (TypeSpec a)
+		{
+			if (a.IsInOut) {
+				return a.NonReferenceCloneOf ();
+			}
+			var namedType = a as NamedTypeSpec;
+			if (namedType != null && namedType.GenericParameters.Count == 1) {
+				if (namedType.Name == "Swift.UnsafePointer" || namedType.Name == "Swift.UnsafeMutablePointer")
+					return namedType.GenericParameters [0];
+			}
+			return a;
+		}
+
+
 		public override int GetHashCode ()
 		{
 			return ToString ().GetHashCode ();
@@ -610,6 +646,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 			} else {
 				yield return Arguments;
 			}
+		}
+
+		public TypeSpec GetArgument (int index)
+		{
+			if (index < 0 || index >= ArgumentCount ())
+				throw new ArgumentOutOfRangeException (nameof (index));
+			if (Arguments is TupleTypeSpec tuple)
+				return tuple.Elements [index];
+			return Arguments;
 		}
 
 		public bool IsEscaping {
