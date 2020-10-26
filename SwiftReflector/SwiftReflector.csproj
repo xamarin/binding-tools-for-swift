@@ -171,6 +171,7 @@
     <Compile Include="ProtocolMethodMatcher.cs" />
     <Compile Include="PatToGenericMap.cs" />
     <Compile Include="SwiftXmlReflection\GenericReferenceAssociatedTypeProtocol.cs" />
+    <Compile Include="FunctionDeclarationWrapperFinder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
