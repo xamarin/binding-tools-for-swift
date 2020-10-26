@@ -2,4 +2,4 @@
 SWIFT_BRANCH=release/5.3-TJ
 SWIFT_SCHEME=release/5.3-TJ
 # this hash should be the most recent in the above branch
-SWIFT_HASH=cd986306c83f4b0fc5d8ffdf2460a9c5b6dc4302
+SWIFT_HASH=ef3177280e5d3d674979781a4ce66e943d8af654
