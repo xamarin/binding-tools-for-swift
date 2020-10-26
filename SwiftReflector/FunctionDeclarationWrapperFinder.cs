@@ -21,9 +21,28 @@ namespace SwiftReflector {
 		public FunctionDeclaration FindWrapper (FunctionDeclaration original)
 		{
 			var name = original.IsProperty ? original.PropertyName : original.Name;
+
+			var parentOrModuleFull = original.Parent != null ?
+				original.Parent.ToFullyQualifiedName (true) : original.Module.Name;
+			var parentOrModuleBrief = original.Parent != null ?
+				original.Parent.ToFullyQualifiedName (false) : original.Module.Name;
 			var wrapperName = original.IsOperator ?
-				MethodWrapping.WrapperOperatorName (typeMapper, original.Parent.ToFullyQualifiedName (true), name, original.OperatorType) :
-				MethodWrapping.WrapperName (original.Parent.ToFullyQualifiedName (false), name, original.IsExtension, original.IsStatic);
+				MethodWrapping.WrapperOperatorName (typeMapper, parentOrModuleFull, name, original.OperatorType) :
+				MethodWrapping.WrapperName (parentOrModuleBrief, name, original.IsExtension, original.IsStatic);
+
+			return FindWrapperForMethod (original, wrapperName);
+		}
+
+		public FunctionDeclaration FindWrapperForTopLevelFunction (FunctionDeclaration original)
+		{
+			var name = original.IsProperty ? original.PropertyName : original.Name;
+
+			var parentOrModuleBrief = original.Parent != null ?
+				original.Parent.ToFullyQualifiedName (false) : original.Module.Name;
+
+			var wrapperName = original.IsOperator ?
+				MethodWrapping.WrapperOperatorName (typeMapper, original.Module.Name, name, original.OperatorType) :
+				MethodWrapping.WrapperFuncName (original.Module.Name, name);
 
 			return FindWrapperForMethod (original, wrapperName);
 		}
@@ -39,16 +58,41 @@ namespace SwiftReflector {
 				return null;
 
 			// if this is not a static function, then there is an extra argument for the instance
-			var instanceSkip =  funcDecl.IsStatic ? 0 : 1;
+			var instanceSkip =  funcDecl.IsStatic || funcDecl.Parent == null ? 0 : 1;
 
 			var hasReturn = !TypeSpec.IsNullOrEmptyTuple (funcDecl.ReturnTypeSpec);
 			var returnOrExceptionSkip = (hasReturn && typeMapper.MustForcePassByReference (funcDecl, funcDecl.ReturnTypeSpec)) ||
 				funcDecl.HasThrows ? 1 : 0;
 
-			var argumentsToSkip = +instanceSkip + returnOrExceptionSkip;
+			var argumentsToSkip = instanceSkip + returnOrExceptionSkip;
 
 			return allWrappers.FirstOrDefault (fn => ParametersMatchExceptSkippingFirstN (fn, funcDecl, argumentsToSkip) &&
 							   ReturnTypesMatch (fn, funcDecl));
+		}
+
+		public FunctionDeclaration FindWrapperForConstructor (BaseDeclaration parent, FunctionDeclaration funcToWrap)
+		{
+			string wrapperName = MethodWrapping.WrapperCtorName (parent.ToFullyQualifiedName (false), parent.Name, funcToWrap.IsExtension);
+			return FindWrapperForConstructor (funcToWrap, wrapperName);
+		}
+
+		FunctionDeclaration FindWrapperForConstructor (FunctionDeclaration funcDecl, string wrapperName)
+		{
+			var referenceCodedWrapper = LookupReferenceCodeForFunctionDeclaration (funcDecl, wrapperName, "constructor");
+			if (referenceCodedWrapper != null)
+				return referenceCodedWrapper;
+
+			var allWrappers = wrappingResult.Module.Functions.Where (fn => fn.Name == wrapperName).ToList ();
+			if (allWrappers == null || allWrappers.Count == 0)
+				return null;
+
+			var returnType = funcDecl.ReturnTypeSpec;
+			var entity = typeMapper.GetEntityForTypeSpec (returnType);
+			var isTrivialEnum = entity.EntityType == EntityType.TrivialEnum;
+			var isClass = entity.EntityType == EntityType.Class;
+			int skipCount = isClass || isTrivialEnum ? 0 : 1;
+
+			return allWrappers.FirstOrDefault (fn => ParametersMatchExceptSkippingFirstN (fn, funcDecl, skipCount));
 		}
 
 		bool ParametersMatchExceptSkippingFirstN (FunctionDeclaration wrapper, FunctionDeclaration toWrap, int n)
