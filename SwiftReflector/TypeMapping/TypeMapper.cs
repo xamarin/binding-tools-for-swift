@@ -1055,6 +1055,8 @@ namespace SwiftReflector.TypeMapping {
 		{
 			if (sp.IsEmptyTuple)
 				return false;
+			if (sp is TupleTypeSpec tuple)
+				return tuple.Elements.Count > 1;
 			if (sp is ClosureTypeSpec)
 				return false;
 			if (context.IsTypeSpecGeneric (sp) && context.IsTypeSpecGenericReference (sp))

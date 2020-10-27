@@ -598,7 +598,7 @@ namespace SwiftReflector {
 		                               List<string> usedPinvokeNames)
 		{
 			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
-			var wrapperFunc = finder.FindWrapper (func);
+			var wrapperFunc = finder.FindWrapperForTopLevelFunction (func);
 			if (wrapperFunc == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 12, $"Unable to find wrapper function for {func.ToFullyQualifiedName ()}.");
 
@@ -3235,6 +3235,11 @@ namespace SwiftReflector {
 			return "PIMetadataAccessor_" + StubbedClassName (name);
 		}
 
+		string PICCTorName (string fullClassName, TypeMapper mapper)
+		{
+			return "PIMetadataAccessor_" + StubbedClassName (fullClassName, mapper);
+		}
+
 		string PICCTorReference (SwiftClassName name)
 		{
 			return PIClassName (name) + "." + PICCTorName (name);
@@ -3243,6 +3248,11 @@ namespace SwiftReflector {
 		string PICTorName (SwiftClassName name)
 		{
 			return "PI_" + StubbedClassName (name);
+		}
+
+		string PICTorName (string fullClassName, TypeMapper mapper)
+		{
+			return "PI_" + StubbedClassName (fullClassName, mapper);
 		}
 
 		string PICTorReference (SwiftClassName name)
@@ -3612,19 +3622,13 @@ namespace SwiftReflector {
 							  bool hasDynamicSelf = false)
 		{
 			var allCtors = classDecl.AllConstructors ().Where (cn => cn.Access == Accessibility.Public || cn.Access == Accessibility.Open).ToList ();
-			foreach (TLFunction tlf in classContents.Constructors.AllocatingConstructors ()) {
-				var funcDecl = CorrespondingConstructor (tlf, classContents, allCtors);
-				if (funcDecl == null) {
-					var ex = ErrorHelper.CreateWarning (ReflectorError.kCompilerReferenceBase + 59, $"Unable to find constructor in class {classDecl.ToFullyQualifiedName ()} with {tlf.Signature.ParameterCount} parameters, skipping.");
-					errors.Add (new ReflectorError (ex));
-					continue;
-				}
-				allCtors.Remove (funcDecl);
+
+			foreach (var funcDecl in allCtors) {
 				if (funcDecl.IsOptionalConstructor) {
-					MakeOptionalConstructor (cl, picl, usedPinvokeNames, classDecl, superClassContents ?? classContents, use, csClassType, wrapper, swiftLibraryPath, funcDecl, tlf, errors);
+					MakeOptionalConstructor (cl, picl, usedPinvokeNames, classDecl, superClassContents ?? classContents, use, csClassType, wrapper, swiftLibraryPath, funcDecl, errors);
 					continue;
 				}
-				foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType, tlf,
+				foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType,
 								superClassName, use, wrapper, superClassContents ?? classContents,
 								PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath), errors, genericNamer, isAssociatedTypeProxy))
 					yield return m;
@@ -3641,18 +3645,17 @@ namespace SwiftReflector {
 		void MakeOptionalConstructor (CSClass cl, CSClass picl, List<string> usedPinvokeNames,
 		                              TypeDeclaration classDecl, ClassContents classContents,
 		                              CSUsingPackages use, CSType csClassType, WrappingResult wrapper,
-		                              string swiftLibraryPath, FunctionDeclaration funcDecl, TLFunction tlf, ErrorHandling errors)
+		                              string swiftLibraryPath, FunctionDeclaration funcDecl, ErrorHandling errors)
 		{
-			var wrapperFunc = FindWrapperForConstructor (classContents, funcDecl, tlf, wrapper);
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+			var wrapperFuncDecl = finder.FindWrapperForConstructor (classDecl, funcDecl);
+			var wrapperFunc = wrapperFuncDecl != null ? FindEquivalentTLFunctionForWrapperFunction (wrapperFuncDecl, TypeMapper, wrapper) : null;
+
 			if (wrapperFunc == null) {
 				var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 60, $"Unable to find wrapper for optional constructor in {funcDecl.ToFullyQualifiedName (true)}");
 				errors.Add (ex);
 				return;
 			}
-			var wrapperFuncDecl = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunc, TypeMapper, wrapper);
-			if (wrapperFuncDecl == null)
-				throw new NotImplementedException ();
-
 			// we're given a func in the form .ctor( ...parameters... ) -> Swift.Optional<ClassName>
 			// we need to transform it into: static ClassNameOptional( ...parameters...) -> Swift.Optional<ClassName>
 
@@ -3741,29 +3744,15 @@ namespace SwiftReflector {
 		                                              ClassContents classContents, CSUsingPackages use, CSType csStructType,
 		                                              WrappingResult wrapper, string swiftLibraryPath, ErrorHandling errors)
 		{
-			foreach (TLFunction tlf in classContents.Constructors.AllocatingConstructors ()) {
-				FunctionDeclaration funcDecl = null;
-				try {
-					funcDecl = FindFunctionDeclarationForTLFunction (tlf, TypeMapper, structDecl.Members.OfType<FunctionDeclaration> ());
-					if (funcDecl.Access.IsPrivateOrInternal ())
-						continue;
-				}
-				catch (Exception err) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 61, $"Unable to find constructor function declaration for struct {structDecl.ToFullyQualifiedName (true)} from method {tlf.MangledName}: {err.Message}");
-					errors.Add (ex);
-					continue;
-				}
-				if (funcDecl == null) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 62, $"Unable to find constructor function declaration for struct {structDecl.ToFullyQualifiedName (true)} from method {tlf.MangledName}");
-					errors.Add (ex);
-					continue;
-				}
+			var allCtors = structDecl.AllConstructors ().Where (ctor => ctor.IsPublicOrOpen).ToList ();
+
+			foreach (var funcDecl in allCtors) {
 				if (funcDecl.IsOptionalConstructor) {
 					MakeOptionalConstructor (st, picl, usedPinvokeNames, structDecl, classContents, use, csStructType, wrapper, swiftLibraryPath,
-					                         funcDecl, tlf, errors);
+					                         funcDecl, errors);
 					continue;
 				}
-				foreach (CSMethod m in StructConstructorToMethod (structDecl, funcDecl, st, picl, usedPinvokeNames, csStructType, classContents, tlf, use, wrapper, swiftLibraryPath, errors))
+				foreach (CSMethod m in StructConstructorToMethod (structDecl, funcDecl, st, picl, usedPinvokeNames, csStructType, classContents, use, wrapper, swiftLibraryPath, errors))
 					yield return m;
 			}
 			yield return ValueTypeDefaultConstructor (csStructType, classContents, use);
@@ -3784,7 +3773,7 @@ namespace SwiftReflector {
 		}
 
 		IEnumerable<CSMethod> StructConstructorToMethod (StructDeclaration structDecl, FunctionDeclaration funcDecl, CSClass st, CSClass picl, List<string> usedPinvokeNames,
-		                                                 CSType csType, ClassContents classContents, TLFunction tlf,
+		                                                 CSType csType, ClassContents classContents,
 		                                                 CSUsingPackages use, WrappingResult wrapper, string swiftLibraryPath, ErrorHandling errors)
 		{
 			CSMethod publicCons = null, piConstructor = null;
@@ -3793,23 +3782,23 @@ namespace SwiftReflector {
 				var homonymSuffix = Homonyms.HomonymSuffix (funcDecl, structDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
 				var isHomonym = homonymSuffix.Length > 0;
 				var libraryPath = PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath);
-				var classType = tlf.Class;
-				var consName = StubbedClassName (classType.ClassName) + homonymSuffix;
-				var pinvokeConsName = PICTorName (classType.ClassName) + homonymSuffix;
+				var className = structDecl.ToFullyQualifiedName ();
+				var consName = StubbedClassName (className, TypeMapper) + homonymSuffix;
+				var pinvokeConsName = PICTorName (className, TypeMapper) + homonymSuffix;
 				pinvokeConsName = Uniqueify (pinvokeConsName, usedPinvokeNames);
 				usedPinvokeNames.Add (pinvokeConsName);
 
-				var pinvokeConsRef = PIClassName (classType.ClassName) + "." + pinvokeConsName;
+				var pinvokeConsRef = PIClassName (TypeMapper.GetDotNetNameForSwiftClassName(className)) + "." + pinvokeConsName;
 
-				var wrapperFunction = FindWrapperForConstructor (classContents, funcDecl, tlf, wrapper);
+				var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+				var wrapperFunc = finder.FindWrapperForConstructor (structDecl, funcDecl);
+				var wrapperFunction = wrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (wrapperFunc, TypeMapper, wrapper) : null;
+
 				if (wrapperFunction == null) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 63, $"Unable to find matching constructor declaration for {tlf.MangledName} in struct {structDecl.ToFullyQualifiedName ()}, skipping.");
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 63, $"Unable to find matching constructor declaration for {funcDecl} in struct {structDecl.ToFullyQualifiedName ()}, skipping.");
 					errors.Add (ex);
 					yield break;
 				}
-				var wrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunction, TypeMapper, wrapper);
-				if (wrapperFunc == null)
-					throw new NotImplementedException ();
 				piConstructor = TLFCompiler.CompileMethod (wrapperFunc, use,
 					libraryPath, wrapperFunction.MangledName, pinvokeConsName, true, true, false);
 
@@ -3819,9 +3808,7 @@ namespace SwiftReflector {
 								  publicCons.Parameters, publicCons.Body);
 				}
 
-				var piCCTorName = PICCTorName (classType.ClassName);
-
-				var swiftCons = tlf.Signature as SwiftConstructorType;
+				var piCCTorName = PICCTorName (className, TypeMapper);
 
 				var localIdents = new List<String> {
 					publicCons.Name.Name,
@@ -3831,9 +3818,6 @@ namespace SwiftReflector {
 				};
 
 				var engine = new MarshalEngine (use, localIdents, TypeMapper, wrapper.Module.SwiftCompilerVersion);
-				var returnClassType = swiftCons.ReturnType is SwiftBoundGenericType ?
-							       ((SwiftBoundGenericType)swiftCons.ReturnType).BaseType as SwiftClassType :
-							       swiftCons.ReturnType as SwiftClassType;
 
 				publicCons.Body.AddRange (engine.MarshalConstructor (structDecl, st, funcDecl, wrapperFunc, pinvokeConsRef, publicCons.Parameters,
 							funcDecl.ReturnTypeSpec, csType, piCCTorName, null, wrapper, isHomonym));
@@ -3924,35 +3908,38 @@ namespace SwiftReflector {
 		}
 
 		IEnumerable<CSMethod> ConstructorWrapperToMethod (TypeDeclaration classDecl, TypeDeclaration superClassDecl, FunctionDeclaration funcDecl, CSClass cl, CSClass picl, List<string> usedPinvokeNames,
-								  CSType csType, TLFunction tlf, SwiftClassName superClassName,
+								  CSType csType, SwiftClassName superClassName,
 								  CSUsingPackages use, WrappingResult wrapper, ClassContents contents, string libraryPath,
 								  ErrorHandling errors, Func<int, int, string> genericNamer, bool isAssociatedTypeProxy)
 		{
 			var homonymSuffix = Homonyms.HomonymSuffix (funcDecl, classDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
 			var isHomonym = homonymSuffix.Length > 0;
-			var wrapperTlf = FindWrapperForConstructor (contents, funcDecl, tlf, wrapper);
+			var referentialClass = superClassDecl ?? classDecl;
+
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+			var wrapperFunc = finder.FindWrapperForConstructor (referentialClass, funcDecl);
+
+			var wrapperTlf = wrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (wrapperFunc, TypeMapper, wrapper) : null;
 			if (wrapperTlf == null) {
-				var ex = ErrorHelper.CreateWarning (ReflectorError.kCompilerReferenceBase + 64, $"Unable to find wrapper for constructor {tlf.MangledName} in class {classDecl.ToFullyQualifiedName ()}, skipping.");
+				var ex = ErrorHelper.CreateWarning (ReflectorError.kCompilerReferenceBase + 64, $"Unable to find wrapper for constructor {funcDecl} in class {classDecl.ToFullyQualifiedName ()}, skipping.");
 				errors.Add (ex);
 				yield break;
 			}
-			var wrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperTlf, TypeMapper, wrapper);
-			if (wrapperFunc == null)
-				throw new NotImplementedException ();
 
 			CSMethod publicCons = null, privateConsImpl = null;
 			try {
-				var piCtorName = PICTorName (tlf.Class.ClassName) + homonymSuffix;
+				var piCtorName = PICTorName (referentialClass.ToFullyQualifiedName (), TypeMapper) + homonymSuffix;
 				piCtorName = Uniqueify (piCtorName, usedPinvokeNames);
 				usedPinvokeNames.Add (piCtorName);
 
-				var pictorRef = PIClassName (tlf.Class.ClassName) + "." + piCtorName;
+				var pictorRef = PIClassName (TypeMapper.GetDotNetNameForSwiftClassName (classDecl.ToFullyQualifiedName ())) + "." + piCtorName;
 				var piConstructor = TLFCompiler.CompileMethod (wrapperFunc, use, libraryPath, wrapperTlf.MangledName,
 									       piCtorName, true, true, true);
 				picl.Methods.Add (piConstructor);
-				string stubbedName = StubbedClassName (superClassName ?? tlf.Class.ClassName);
+				var className = superClassName != null ? superClassName.ToFullyQualifiedName () : classDecl.ToFullyQualifiedName ();
+				string stubbedName = StubbedClassName (className, TypeMapper);
 
-				publicCons = TLFCompiler.CompileMethod (funcDecl, use, "", tlf.MangledName, stubbedName,
+				publicCons = TLFCompiler.CompileMethod (funcDecl, use, libraryPath: "", mangledName: "", stubbedName,
 									    false, true, false);
 
 				if (isHomonym) {
@@ -4243,47 +4230,34 @@ namespace SwiftReflector {
 							      ClassContents classContents, CSUsingPackages use,
 							      WrappingResult wrapper, string swiftLibraryPath, ErrorHandling errors)
 		{
-			foreach (TLFunction tlf in classContents.Constructors.AllocatingConstructors ()) {
-				FunctionDeclaration funcDecl = null;
-				try {
-					funcDecl = FindFunctionDeclarationForTLFunction (tlf, TypeMapper, enumDecl.Members.OfType<FunctionDeclaration> ());
-					if (funcDecl.Access.IsPrivateOrInternal ())
-						continue;
-				} catch (Exception err) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 85, $"Unable to find constructor function declaration for enum {enumDecl.ToFullyQualifiedName (true)} from method {tlf.MangledName}: {err.Message}");
-					errors.Add (ex);
-					continue;
-				}
-				if (funcDecl == null) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 86, $"Unable to find constructor function declaration for struct {enumDecl.ToFullyQualifiedName (true)} from method {tlf.MangledName}");
-					errors.Add (ex);
-					continue;
-				}
+			var allCtors = enumDecl.AllConstructors ().Where (ct => ct.IsPublicOrOpen).ToList ();
+			foreach (var funcDecl in allCtors) {
 				var recastCtor = RecastEnumCtorAsStaticFactory (enumDecl, funcDecl);
 				var isOptional = IsOptional (funcDecl.ReturnTypeSpec);
 				var optionalSuffix = isOptional ? "Optional" : "";
 
 				var homonymSuffix = Homonyms.HomonymSuffix (funcDecl, enumDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
 				var libraryPath = PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath);
-				var classType = tlf.Class;
 				var consName = "Init" + optionalSuffix + homonymSuffix;
-				var pinvokeConsName = PICTorName (classType.ClassName) + optionalSuffix + homonymSuffix;
+				var pinvokeConsName = PICTorName (enumDecl.ToFullyQualifiedName (), TypeMapper) + optionalSuffix + homonymSuffix;
 				var csReturnType = TypeMapper.MapType (funcDecl, funcDecl.ReturnTypeSpec, isPinvoke: false, isReturnValue: true).ToCSType (use);
 
 				pinvokeConsName = Uniqueify (pinvokeConsName, usedPinvokeNames);
 				usedPinvokeNames.Add (pinvokeConsName);
 
-				var pinvokeConsRef = PIClassName (classType.ClassName) + "." + pinvokeConsName;
+				var pinvokeConsRef = PIClassName (TypeMapper.GetDotNetNameForSwiftClassName (enumDecl.ToFullyQualifiedName ())) + "." + pinvokeConsName;
 
-				var wrapperFunction = FindWrapperForConstructor (classContents, funcDecl, tlf, wrapper);
-				if (wrapperFunction == null) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 87, $"Unable to find matching constructor declaration for {tlf.MangledName} in enum {enumDecl.ToFullyQualifiedName ()}, skipping.");
+				var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+				var wrapperFunc = finder.FindWrapperForConstructor (enumDecl, funcDecl);
+				if (wrapperFunc == null) {
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 88, $"Unable to find wrapper mapper.GetDotNetNameForSwiftClassName (fullSwiftClassName)FunctionDeclaration for wrapper function {funcDecl} in enum {enumDecl.ToFullyQualifiedName ()}, skipping.");
 					errors.Add (ex);
 					continue;
 				}
-				var wrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperFunction, TypeMapper, wrapper);
-				if (wrapperFunc == null) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 88, $"Unable to find FunctionDeclaration for wrapper function {wrapperFunction.MangledName} in enum {enumDecl.ToFullyQualifiedName ()}, skipping.");
+
+				var wrapperFunction = FindEquivalentTLFunctionForWrapperFunction (wrapperFunc, TypeMapper, wrapper);
+				if (wrapperFunction == null) {
+					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 87, $"Unable to find matching constructor declaration for {funcDecl} in enum {enumDecl.ToFullyQualifiedName ()}, skipping.");
 					errors.Add (ex);
 					continue;
 				}
@@ -4293,9 +4267,7 @@ namespace SwiftReflector {
 
 					var publicCons = TLFCompiler.CompileMethod (recastCtor, use, libraryPath, wrapperFunction.MangledName,
 						consName, isPinvoke: false, isFinal: true, isStatic: true);
-					var piCCTorName = PICCTorName (classType.ClassName);
-
-					var swiftCons = tlf.Signature as SwiftConstructorType;
+					var piCCTorName = PICCTorName (enumDecl.ToFullyQualifiedName (), TypeMapper);
 
 					var localIdents = new List<String> {
 						publicCons.Name.Name,
@@ -5102,41 +5074,6 @@ namespace SwiftReflector {
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 34, $"Expected a SwiftPropertyType for method signature, but got {methodToWrap.Signature.GetType ().Name}");
 			var wrapperName = MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, propType, prop.IsSubscript, funcToWrap.IsExtension, prop.IsStatic);
 			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
-		}
-
-		TLFunction FindWrapperForConstructor (ClassContents cl, FunctionDeclaration funcToWrap, TLFunction constructorToWrap, WrappingResult wrapper)
-		{
-			string wrapperName = MethodWrapping.WrapperCtorName (cl.Name, funcToWrap.IsExtension);
-			return FindWrapperForConstructor (funcToWrap, constructorToWrap, wrapperName, wrapper);
-		}
-
-		TLFunction FindWrapperForConstructor (FunctionDeclaration funcDecl, TLFunction constructorToWrap, string wrapperName, WrappingResult wrapper)
-		{
-			var referenceCodedWrapper = LookupReferenceCodeForFunctionDeclaration (funcDecl, wrapperName, wrapper, "constructor");
-			if (referenceCodedWrapper != null)
-				return referenceCodedWrapper;
-
-			var allwrappers = wrapper.Contents.Functions.MethodsWithName (wrapperName);
-			if (allwrappers == null || allwrappers.Count == 0)
-				return null;
-			if (constructorToWrap == null) { // default constructor only - there can be only one
-				if (allwrappers.Count != 0)
-					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 35, "Error wrapping default constructor - there should only have been one.");
-				return allwrappers [0];
-			}
-
-			var bft = constructorToWrap.Signature as SwiftBaseFunctionType;
-			if (bft == null)
-				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 36, "Yikes! Expected a SwiftBaseFunctionType but got " + constructorToWrap.Signature.GetType ());
-
-			var isTrivialEnum = false;
-			if (constructorToWrap.Signature.ReturnType.IsEnum) {
-				var entity = TypeMapper.GetEntityForTypeSpec (funcDecl.ReturnTypeSpec);
-				isTrivialEnum = entity?.EntityType == EntityType.TrivialEnum;
-			}
-			int skipCount = constructorToWrap.Signature.ReturnType.IsClass || isTrivialEnum ? 0 : 1;
-			return allwrappers.FirstOrDefault (tlf => ParametersMatchExceptSkippingFirstN (tlf.Signature,
-				constructorToWrap.Signature, skipCount, TypeMapper));
 		}
 
 		TLFunction FindWrapperForMethod (FunctionDeclaration funcDecl, TLFunction methodToWrap, string wrapperName, WrappingResult wrapper)

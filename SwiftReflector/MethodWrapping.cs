@@ -99,8 +99,13 @@ namespace SwiftReflector {
 
 		public static string WrapperCtorName (SwiftClassName name, bool isExtension)
 		{
-			string classPrefix = name.ToFullyQualifiedName (false).Replace ('.', 'D');
-			return $"{kXamPrefix}{classPrefix}{(isExtension ? 'E' : 'D')}{name.Terminus}";
+			return WrapperCtorName (name.ToFullyQualifiedName (false), name.Terminus.Name, isExtension);
+		}
+
+		public static string WrapperCtorName (string fullyQualifedNameNoModule, string classNameAlone, bool isExtension)
+		{
+			var classPrefix = fullyQualifedNameNoModule.Replace ('.', 'D');
+			return $"{kXamPrefix}{classPrefix}{(isExtension ? 'E' : 'D')}{classNameAlone}";
 		}
 
 		public static string WrapperName (SwiftClassName name, string methodName, PropertyType propType, bool isSubScript, bool isExtension, bool isStatic)
