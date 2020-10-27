@@ -33,7 +33,7 @@ jobs:
 
   - bash: |
       ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.0.app
-      if [ ls -l /Applications/Xcode.app ]
+      if [ -L /Applications/Xcode.app ]
       then
         rm /Applications/Xcode.app
         ln -s /Applications/Xcode_12.0.0.app /Applications/Xcode.app
