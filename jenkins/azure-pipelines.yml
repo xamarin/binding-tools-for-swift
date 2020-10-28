@@ -32,6 +32,7 @@ jobs:
   - checkout: self
 
   - bash: |
+      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.0.app
       if [ -L /Applications/Xcode.app ]
       then
         rm /Applications/Xcode.app
