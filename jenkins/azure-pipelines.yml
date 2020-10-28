@@ -32,12 +32,16 @@ jobs:
   - checkout: self
 
   - bash: |
-      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.0.app
       if [ -L /Applications/Xcode.app ]
       then
         rm /Applications/Xcode.app
-        ln -s /Applications/Xcode_12.0.0.app /Applications/Xcode.app
       fi
+      if [ -L /Applications/Xcode_12.app ]
+      then
+        rm /Applications/Xcode.app
+      fi
+      ln -s /Applications/Xcode_12.0.0.app /Applications/Xcode.app
+      ln -s /Applications/Xcode_12.0.0.app /Applications/Xcode_12.app
     displayName: 'Confirming Xcode Version'
 
   - bash: |
