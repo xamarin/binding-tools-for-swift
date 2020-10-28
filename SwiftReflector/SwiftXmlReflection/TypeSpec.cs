@@ -625,6 +625,14 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return Arguments != null && !Arguments.IsEmptyTuple;
 		}
 
+		public TupleTypeSpec ArgumentsAsTuple {
+			get {
+				if (Arguments is TupleTypeSpec tuple)
+					return tuple;
+				return new TupleTypeSpec (Arguments);
+			}
+		}
+
 		public int ArgumentCount ()
 		{
 			if (!HasArguments ())

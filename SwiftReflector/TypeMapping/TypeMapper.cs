@@ -1059,6 +1059,11 @@ namespace SwiftReflector.TypeMapping {
 				return tuple.Elements.Count > 1;
 			if (sp is ClosureTypeSpec)
 				return false;
+			if (sp is ProtocolListTypeSpec protolist) {
+				if (protolist.Protocols.Count > 1)
+					return true;
+				return MustForcePassByReference (context, protolist.Protocols.ElementAt (0).Key);
+			}
 			if (context.IsTypeSpecGeneric (sp) && context.IsTypeSpecGenericReference (sp))
 				return true;
 			if (context.IsProtocolWithAssociatedTypesFullPath (sp as NamedTypeSpec, this))
