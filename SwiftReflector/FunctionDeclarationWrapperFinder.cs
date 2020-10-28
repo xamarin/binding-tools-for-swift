@@ -33,6 +33,14 @@ namespace SwiftReflector {
 			return FindWrapperForMethod (original, wrapperName);
 		}
 
+		public FunctionDeclaration FindWrapperForMethod (BaseDeclaration parent, FunctionDeclaration funcToWrap, PropertyType propType)
+		{
+			if (!funcToWrap.IsProperty)
+				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 34, $"Expected a property for method signature, but got {funcToWrap}");
+			var wrapperName = MethodWrapping.WrapperName (parent.ToFullyQualifiedName (), funcToWrap.PropertyName, propType, funcToWrap.IsSubscript, funcToWrap.IsExtension, funcToWrap.IsStatic);
+			return FindWrapperForMethod (funcToWrap, wrapperName);
+		}
+
 		public FunctionDeclaration FindWrapperForTopLevelFunction (FunctionDeclaration original)
 		{
 			var name = original.IsProperty ? original.PropertyName : original.Name;
@@ -45,6 +53,21 @@ namespace SwiftReflector {
 				MethodWrapping.WrapperFuncName (original.Module.Name, name);
 
 			return FindWrapperForMethod (original, wrapperName);
+		}
+
+		public FunctionDeclaration FindWrapperForExtension (FunctionDeclaration funcDeclToWrap, BaseDeclaration extensionOn)
+		{
+			string wrapperName = null;
+			if (funcDeclToWrap.IsProperty) {
+				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (true), funcDeclToWrap.PropertyName,
+									  (funcDeclToWrap.IsGetter ? PropertyType.Getter :
+									   (funcDeclToWrap.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDeclToWrap.IsExtension,
+									  funcDeclToWrap.IsStatic);
+			} else {
+				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (false), funcDeclToWrap.Name, true, funcDeclToWrap.IsStatic);
+			}
+			return FindWrapperForMethod (funcDeclToWrap, wrapperName);
+
 		}
 
 		FunctionDeclaration FindWrapperForMethod (FunctionDeclaration funcDecl, string wrapperName)
@@ -137,14 +160,18 @@ namespace SwiftReflector {
 				var namedType = wrapperArg as NamedTypeSpec;
 				if (!IsUnsafeMutablePointer (namedType)) // returns false on null
 					return false;
-				var actualParms = namedType.GenericParameters;
-				var toWrapParms = toWrapFunc.GenericParameters;
+				var actualParms = UndoATuple (namedType.GenericParameters);
+				var toWrapParms = toWrapFunc.ArgumentsAsTuple.Elements;
 				bool argsMatch = TypeListMatches (wrapper, actualParms, toWrap, toWrapParms);
 				if (!argsMatch)
 					return false;
 			}
-			if (wrapperFunc.ArgumentCount () == 2 && TypeSpec.IsNullOrEmptyTuple (toWrapFunc.ReturnType))
+			var emptyWrapReturn = toWrapFunc.ArgumentCount () > 0 ? wrapperFunc.ArgumentCount () == 2 : wrapperFunc.ArgumentCount () == 1;
+			var emptyReturn = TypeSpec.IsNullOrEmptyTuple (toWrapFunc.ReturnType);
+			if (emptyReturn && emptyWrapReturn)
 				return true;
+			if (emptyReturn && !emptyWrapReturn)
+				return false;
 			var wrapperReturn = wrapperFunc.GetArgument (0);
 			var returnNamedTypeSpec = wrapperReturn as NamedTypeSpec;
 			if (!IsUnsafeMutablePointer (returnNamedTypeSpec))
@@ -152,6 +179,15 @@ namespace SwiftReflector {
 			var actualReturn = returnNamedTypeSpec.GenericParameters [0];
 			var toWrapReturn = toWrapFunc.ReturnType;
 			return TypeListMatches (wrapper, new List<TypeSpec> () { actualReturn }, toWrap, new List<TypeSpec> () { toWrapReturn });
+		}
+
+		static List<TypeSpec> UndoATuple (List<TypeSpec> spec)
+		{
+			if (spec.Count == 1 && spec [0] is TupleTypeSpec tuple) {
+				return tuple.Elements;
+			} else {
+				return spec;
+			}
 		}
 
 		static bool IsUnsafeMutablePointer (NamedTypeSpec nt)
@@ -231,7 +267,7 @@ namespace SwiftReflector {
 					wrapReturn = named.GenericParameters [0];
 				}
 			} else {
-				wrapReturn = toWrap.ReturnTypeSpec ?? TupleTypeSpec.Empty;
+				wrapReturn = wrapper.ReturnTypeSpec ?? TupleTypeSpec.Empty;
 			}
 
 			bool aIsGeneric = toWrap.IsTypeSpecGenericReference (toWrapReturn);

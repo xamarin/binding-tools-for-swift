@@ -855,7 +855,7 @@ namespace SwiftReflector {
 
 			ImplementMethods (enumClass, enumPI, usedPinvokeNames, swiftEnumName, classContents, enumDecl, use, wrapper, tlf => true, swiftLibPath, errors);
 			ImplementProperties (enumClass, enumPI, usedPinvokeNames, enumDecl, classContents, null, use, wrapper, true, false, tlf => true, swiftLibPath, errors);
-			ImplementSubscripts (enumClass, enumPI, usedPinvokeNames, enumDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibPath, errors);
+			ImplementSubscripts (enumClass, enumPI, usedPinvokeNames, enumDecl, enumDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibPath, errors);
 
 			var usedNames = new List<string> {
 				enumCaseName,
@@ -1513,7 +1513,7 @@ namespace SwiftReflector {
 			st.Constructors.AddRange (cctors);
 			ImplementMethods (st, picl, usedPinvokeNames, swiftClassName, classContents, structDecl, use, wrapper, tlf => true, swiftLibraryPath, errors);
 			ImplementProperties (st, picl, usedPinvokeNames, structDecl, classContents, null, use, wrapper, true, false, tlf => true, swiftLibraryPath, errors);
-			ImplementSubscripts (st, picl, usedPinvokeNames, structDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
+			ImplementSubscripts (st, picl, usedPinvokeNames, structDecl, structDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
 			TypeNameAttribute (structDecl, use).AttachBefore (st);
 			return st;
@@ -1937,18 +1937,8 @@ namespace SwiftReflector {
 			IEnumerable<CSMethod> ctors = MakeConstructors (cl, picl, usedPinvokeNames, subclassDecl, subclassContents, classDecl, classContents, swiftClassName, use,
 			                                                new CSSimpleType (className), wrapper, swiftLibraryPath, true, errors, inheritsISwiftObject);
 
-			Func<TLFunction, bool> filter = tlf => {
-				FunctionDeclaration matchDecl = null;
-				foreach (FunctionDeclaration funcDecl in classDecl.Members.OfType<FunctionDeclaration> ()) {
-					TLFunction matchtlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, classContents, TypeMapper);
-					if (matchtlf == tlf) {
-						matchDecl = funcDecl;
-						break;
-					}
-				}
-				var isPublic = matchDecl != null && matchDecl.Access == Accessibility.Public;
-				var isFinal = matchDecl != null && matchDecl.IsFinal;
-				return isPublic || isFinal || tlf.Signature is SwiftStaticFunctionType;
+			Func<FunctionDeclaration, bool> filter = fn => {
+				return fn.Access == Accessibility.Public || fn.IsFinal || fn.IsStatic;
 			};
 
 			if (isObjC)
@@ -1957,7 +1947,7 @@ namespace SwiftReflector {
 
 			ImplementMethods (cl, picl, usedPinvokeNames, subclassSwiftClassName, classContents, classDecl, use, wrapper, filter, swiftLibraryPath, errors);
 			ImplementProperties (cl, picl, usedPinvokeNames, classDecl, classContents, subclassSwiftClassName, use, wrapper, false, false, filter, swiftLibraryPath, errors);
-			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl.AllSubscripts (), classContents, subclassSwiftClassName, use, wrapper, true, null, swiftLibraryPath, errors);
+			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl, classDecl.AllSubscripts (), classContents, subclassSwiftClassName, use, wrapper, true, null, swiftLibraryPath, errors);
 
 
 			cl.Constructors.AddRange (cctor);
@@ -2144,10 +2134,6 @@ namespace SwiftReflector {
 		{
 			var homonymSuffix = Homonyms.HomonymSuffix (func, classDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
 			var subClassSwiftName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
-			var tlf = XmlToTLFunctionMapper.ToTLFunction (func, classContents, TypeMapper);
-			if (tlf == null) {
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 38, $"Unable to find virtual function for {func.Name} in class {classDecl.ToFullyQualifiedName (true)}.");
-			}
 
 			var delegateDecl = TLFCompiler.CompileToDelegateDeclaration (func, use, null, "Del" + OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), true, CSVisibility.Public, false);
 			vtable.Delegates.Add (delegateDecl);
@@ -2165,7 +2151,7 @@ namespace SwiftReflector {
 
 			var superWrapperFunc = FindSuperWrapper (superFunc, wrapper);
 
-			string superMethodName = "Base" + TypeMapper.SanitizeIdentifier (tlf.Name.Name);
+			string superMethodName = "Base" + TypeMapper.SanitizeIdentifier (func.Name);
 
 			var superFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superFuncWrapper == null) {
@@ -2174,9 +2160,9 @@ namespace SwiftReflector {
 
 			CSMethod publicOverload = null;
 			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, subClassSwiftName, superFunc, use, true, wrapper,
-			                                   swiftLibraryPath, superFuncWrapper, homonymSuffix, true);
+			                                   swiftLibraryPath, superFuncWrapper, homonymSuffix, true, alternativeName: superMethodName);
 			                                   
-			ImplementVirtualMethod (cl, func, tlf, superMethodName, use, wrapper, ref publicOverload, swiftLibraryPath, homonymSuffix);
+			ImplementVirtualMethod (cl, func, superMethodName, use, wrapper, ref publicOverload, swiftLibraryPath, homonymSuffix);
 
 			var existsInParent = classDecl.VirtualMethodExistsInInheritedBoundType (func, TypeMapper) || IsImportedInherited (classDecl, publicOverload);
 			if (existsInParent) {
@@ -2431,7 +2417,8 @@ namespace SwiftReflector {
 			CSMethod protocolMethod = null;
 			CSParameterList callingArgList = null;
 
-			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, subClassSwiftName, superEtterFunc, use, true, wrapper, swiftLibraryPath, superEtterFuncWrapper, "", true);
+			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, subClassSwiftName, superEtterFunc, use, true, wrapper, swiftLibraryPath,
+				superEtterFuncWrapper, "", true, alternativeName: superEtterName);
 			var superEtterMethod = cl.Methods.Last ();
 
 			if (isAnyProtocolList) {
@@ -2476,8 +2463,7 @@ namespace SwiftReflector {
 				}
 			}
 
-			var recv = ImplementVirtualSubscriptStaticReceiver (cl.ToCSType (), null, etterDelegateDecl, use, etterFunc,
-			                                                    wrapperProp, protocolMethod, vtable.Name, classDecl.IsObjCOrInheritsObjC (TypeMapper));
+			var recv = ImplementVirtualSubscriptStaticReceiver (cl.ToCSType (), null, etterDelegateDecl, use, etterFunc,wrapperProp, protocolMethod, vtable.Name, classDecl.IsObjCOrInheritsObjC (TypeMapper));
 			cl.Methods.Add (recv);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
@@ -2643,24 +2629,19 @@ namespace SwiftReflector {
 						 Func<int, int, string> genericRenamer = null)
 		{
 			var swiftClassName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
-			var tlEtter = XmlToTLFunctionMapper.ToTLFunction (etterFunc, classContents, TypeMapper);
-			if (tlEtter == null) {
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 83, $"Unable to find compiled function for {(isSetter ? "setter" : "getter")} for property {etterFunc.Name} in {classDecl.ToFullyQualifiedName (true)}.");
-			}
-
 			var etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
 			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), false);
 			vtable.Delegates.Add (etterDelegateDecl);
 
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+			var etterWrapperFunc = finder.FindWrapperForMethod (classDecl ?? subclassDecl, etterFunc, isSetter ? PropertyType.Setter : PropertyType.Getter);
 
-			TLFunction etterWrapper = null;
-			etterWrapper = FindWrapperForMethod (etterFunc, tlEtter, isSetter ? PropertyType.Setter : PropertyType.Getter, wrapper);
+			var etterWrapper = etterWrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (etterWrapperFunc, TypeMapper, wrapper) : null;
+
 			if (etterWrapper == null) {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 50, $"Unable to find wrapper function for {(isSetter ? "setter" : "getter")} for property {etterFunc.Name} in {classDecl.ToFullyQualifiedName (true)}.");
 			}
-			var etterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (etterWrapper, TypeMapper, wrapper);
-			if (etterWrapperFunc == null)
-				throw new NotImplementedException ();
+
 			var piEtterName = PIMethodName (swiftClassName, etterWrapper.Name, isSetter ? PropertyType.Setter : PropertyType.Getter);
 			piEtterName = Uniqueify (piEtterName, usedPinvokeNames);
 			usedPinvokeNames.Add (piEtterName);
@@ -2680,7 +2661,7 @@ namespace SwiftReflector {
 			}
 
 			var superEtterWrapperFunc = FindSuperWrapper (superEtterFunc, wrapper);
-			string superEtterName = "Base" + TypeMapper.SanitizeIdentifier (tlEtter.Name.Name);
+			string superEtterName = "Base" + TypeMapper.SanitizeIdentifier (etterFunc.PropertyName);
 
 			var superEtterFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superEtterWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superEtterFuncWrapper == null) {
@@ -2708,8 +2689,8 @@ namespace SwiftReflector {
 				}
 			}
 
-			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, swiftClassName, superEtterFunc, use, true, wrapper, swiftLibraryPath, superEtterFuncWrapper, "", true,
-				genericRenamer: genericRenamer);
+			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, swiftClassName, superEtterFunc, use, true, wrapper, swiftLibraryPath,
+				superEtterFuncWrapper, homonymSuffix:"", true, alternativeName: superEtterName, genericRenamer: genericRenamer);
 			var propertyImplMethod = cl.Methods.Last ();
 			CSMethod protoListMethod = null;
 			if (returnIsProtocolList) {
@@ -2976,29 +2957,16 @@ namespace SwiftReflector {
 			var usedPinvokeNames = new List<string> ();
 
 			var functions = extension.Members.OfType<FunctionDeclaration> ().Where (fn => fn.IsPublicOrOpen && !fn.IsMaterializer).ToList ();
-			var extensionToTLFMap = BuildExtensionMap (extensionOnDeclaration, extension.ExtensionOnType, functions, moduleContents, TypeMapper);
+
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
 
 			foreach (var funcDecl in functions) {
-				TLFunction originalFunc = null;
-				if (!extensionToTLFMap.TryGetValue(funcDecl, out originalFunc)) {
-					// surprise!
-					// When swift can, it promotes an extension to a member and it doesn't end up in the extensions.
-					ClassContents classContents = XmlToTLFunctionMapper.LocateClassContents (moduleContents, XmlToTLFunctionMapper.ToSwiftClassName (entity.Type));
-					if (classContents != null)
-						originalFunc = XmlToTLFunctionMapper.ToTLFunction (funcDecl, classContents, TypeMapper);
-
-					if (originalFunc == null) {
-						var ex = ErrorHelper.CreateWarning (ReflectorError.kCompilerReferenceBase + 56, $"Unable to find original compiled function for {funcDecl.Name} while compiling extension on {extension.ExtensionOnTypeName}");
-						errors.Add (ex);
-						continue;
-					}
-				}
-				var wrapperTLF = FindWrapperForExtension (funcDecl, extensionOnDeclaration, originalFunc, wrapper);
+				var wrapperFunc = finder.FindWrapperForExtension (funcDecl, extensionOnDeclaration);
+				if (wrapperFunc == null)
+					continue;
+				var wrapperTLF = FindEquivalentTLFunctionForWrapperFunction (wrapperFunc, TypeMapper, wrapper);
 				if (wrapperTLF == null) // if there's no wrapper, we had to skip it.
 					continue;
-				var wrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (wrapperTLF, TypeMapper, wrapper);
-				if (wrapperFunc == null)
-					throw new NotImplementedException ();
 				var method = ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, funcDecl, use, false, wrapper, swiftLibraryPath, wrapperTLF);
 			}
 			return cl;
@@ -3078,7 +3046,7 @@ namespace SwiftReflector {
 
 			ImplementMethods (cl, picl, usedPinvokeNames, swiftClassName, classContents, classDecl, use, wrapper, tlf => true, swiftLibraryPath, errors);
 			ImplementProperties (cl, picl, usedPinvokeNames, classDecl, classContents, null, use, wrapper, false, false, tlf => true, swiftLibraryPath, errors);
-			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
+			ImplementSubscripts (cl, picl, usedPinvokeNames, classDecl, classDecl.AllSubscripts (), classContents, null, use, wrapper, true, tlf => true, swiftLibraryPath, errors);
 
 			TypeNameAttribute (classDecl, use).AttachBefore (cl);
 			return cl;
@@ -3625,7 +3593,7 @@ namespace SwiftReflector {
 
 			foreach (var funcDecl in allCtors) {
 				if (funcDecl.IsOptionalConstructor) {
-					MakeOptionalConstructor (cl, picl, usedPinvokeNames, classDecl, superClassContents ?? classContents, use, csClassType, wrapper, swiftLibraryPath, funcDecl, errors);
+					MakeOptionalConstructor (cl, picl, usedPinvokeNames, classDecl, superClassDecl, superClassContents ?? classContents, use, csClassType, wrapper, swiftLibraryPath, funcDecl, errors);
 					continue;
 				}
 				foreach (var m in ConstructorWrapperToMethod (classDecl, superClassDecl, funcDecl, cl, picl, usedPinvokeNames, csClassType,
@@ -3643,12 +3611,12 @@ namespace SwiftReflector {
 
 
 		void MakeOptionalConstructor (CSClass cl, CSClass picl, List<string> usedPinvokeNames,
-		                              TypeDeclaration classDecl, ClassContents classContents,
+		                              TypeDeclaration classDecl, TypeDeclaration superClassDecl, ClassContents classContents,
 		                              CSUsingPackages use, CSType csClassType, WrappingResult wrapper,
 		                              string swiftLibraryPath, FunctionDeclaration funcDecl, ErrorHandling errors)
 		{
 			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
-			var wrapperFuncDecl = finder.FindWrapperForConstructor (classDecl, funcDecl);
+			var wrapperFuncDecl = finder.FindWrapperForConstructor (superClassDecl ?? classDecl, funcDecl);
 			var wrapperFunc = wrapperFuncDecl != null ? FindEquivalentTLFunctionForWrapperFunction (wrapperFuncDecl, TypeMapper, wrapper) : null;
 
 			if (wrapperFunc == null) {
@@ -3748,7 +3716,7 @@ namespace SwiftReflector {
 
 			foreach (var funcDecl in allCtors) {
 				if (funcDecl.IsOptionalConstructor) {
-					MakeOptionalConstructor (st, picl, usedPinvokeNames, structDecl, classContents, use, csStructType, wrapper, swiftLibraryPath,
+					MakeOptionalConstructor (st, picl, usedPinvokeNames, structDecl, superClassDecl: null, classContents, use, csStructType, wrapper, swiftLibraryPath,
 					                         funcDecl, errors);
 					continue;
 				}
@@ -4293,7 +4261,7 @@ namespace SwiftReflector {
 
 
 		void ImplementMethods (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName piClassName, ClassContents contents,
-		                       TypeDeclaration typeDecl, CSUsingPackages use, WrappingResult wrapper, Func<TLFunction, bool> funcFilter,
+		                       TypeDeclaration typeDecl, CSUsingPackages use, WrappingResult wrapper, Func<FunctionDeclaration, bool> funcFilter,
 		                       string swiftLibraryPath, ErrorHandling errors)
 		{
 
@@ -4312,18 +4280,9 @@ namespace SwiftReflector {
 				if (ent.Type.Access != Accessibility.Open)
 					isFinal = true;
 
-
-				var function = XmlToTLFunctionMapper.ToTLFunction (funcDecl, contents, TypeMapper);
-
-				if (function == null) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 67, $"Unable to find TLFunction for function declaration {funcDecl.ToFullyQualifiedName (true)}.");
-					errors.Add (ex);
-					continue;
-				}
-
 				try {
 					string homonymSuffix = Homonyms.HomonymSuffix (funcDecl, typeDecl.Members.OfType<FunctionDeclaration> (), TypeMapper);
-					ImplementOverload (cl, picl, usedPinvokeNames, piClassName, function, funcDecl, use, isFinal, wrapper, funcFilter, swiftLibraryPath, homonymSuffix);
+					ImplementOverload (cl, picl, usedPinvokeNames, piClassName, funcDecl, use, isFinal, wrapper, funcFilter, swiftLibraryPath, homonymSuffix);
 				} catch (RuntimeException err) {
 					var message = $"An error occurred while creating C# function for {funcDecl.ToFullyQualifiedName ()}, skipping. ({err.Message})";
 					err = new RuntimeException (err.Code, false, err, message);
@@ -4338,7 +4297,7 @@ namespace SwiftReflector {
 
 		void ImplementProperties (CSClass cl, CSClass picl, List<string> usedPinvokeNames, TypeDeclaration decl, ClassContents contents, SwiftClassName pinvokeName,
 		                          CSUsingPackages use, WrappingResult wrapper, bool isStruct, bool isTrivialEnum,
-		                          Func<TLFunction, bool> funcFilter, string swiftLibraryPath, ErrorHandling errors)
+		                          Func<FunctionDeclaration, bool> funcFilter, string swiftLibraryPath, ErrorHandling errors)
 		{
 			var usedIdentifiers = new List<string> { cl.Name.Name };
 
@@ -4355,9 +4314,9 @@ namespace SwiftReflector {
 				}
 				try {
 					if (isTrivialEnum) {
-						ImplementTrivialEnumProperty (cl, picl, usedPinvokeNames, contents, propDecl, prop, use, wrapper, usedIdentifiers, swiftLibraryPath);
+						ImplementTrivialEnumProperty (cl, picl, usedPinvokeNames, decl, propDecl, use, wrapper, usedIdentifiers, swiftLibraryPath);
 					} else {
-						ImplementProperty (cl, picl, usedPinvokeNames, pinvokeName ?? contents.Name, propDecl, prop, use, wrapper, isStruct, funcFilter, usedIdentifiers, swiftLibraryPath);
+						ImplementProperty (cl, picl, usedPinvokeNames, pinvokeName ?? contents.Name, propDecl, use, wrapper, isStruct, funcFilter, usedIdentifiers, swiftLibraryPath);
 					}
 				} catch (RuntimeException err) {
 					var message = $"An error occurred while creating C# property for {prop.Class.ClassName.ToString ()}.{prop.Name.Name}, skipping. ({err.Message})";
@@ -4371,15 +4330,15 @@ namespace SwiftReflector {
 			}
 		}
 
-		void ImplementSubscripts (CSClass cl, CSClass picl, List<string> usedPinvokeNames, List<SubscriptDeclaration> subScripts, ClassContents contents,
-		                          SwiftClassName pinvokeName, CSUsingPackages use, WrappingResult wrapper, bool isStruct, Func<TLFunction, bool> funcFilter,
+		void ImplementSubscripts (CSClass cl, CSClass picl, List<string> usedPinvokeNames, BaseDeclaration parent, List<SubscriptDeclaration> subScripts, ClassContents contents,
+		                          SwiftClassName pinvokeName, CSUsingPackages use, WrappingResult wrapper, bool isStruct, Func<FunctionDeclaration, bool> funcFilter,
 		                          string swiftLibraryPath, ErrorHandling errors)
 		{
 			foreach (SubscriptDeclaration subDecl in subScripts) {
 				try {
 					if ((subDecl.Getter != null && subDecl.Getter.Access == Accessibility.Public || subDecl.Getter.Access == Accessibility.Open) ||
 					    (subDecl.Setter != null && subDecl.Setter.Access == Accessibility.Public || subDecl.Setter.Access == Accessibility.Open))
-						ImplementSubscript (cl, picl, usedPinvokeNames, subDecl, contents, pinvokeName, use, wrapper, isStruct, funcFilter, swiftLibraryPath);
+						ImplementSubscript (cl, picl, usedPinvokeNames, parent, subDecl, contents, pinvokeName, use, wrapper, isStruct, funcFilter, swiftLibraryPath);
 				} catch (RuntimeException err) {
 					var message = $"An error occurred while creating C# indexer for {contents.Name.ToFullyQualifiedName ()}, skipping. ({err.Message}).";
 					err = new RuntimeException (err.Code, false, err, err.Message);
@@ -4392,9 +4351,9 @@ namespace SwiftReflector {
 			}
 		}
 
-		void ImplementSubscript (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SubscriptDeclaration subDecl, ClassContents contents,
+		void ImplementSubscript (CSClass cl, CSClass picl, List<string> usedPinvokeNames, BaseDeclaration parent, SubscriptDeclaration subDecl, ClassContents contents,
 		                         SwiftClassName pinvokeName, CSUsingPackages use, WrappingResult wrapper, bool isStruct,
-		                         Func<TLFunction, bool> funcFilter, string swiftLibraryPath)
+		                         Func<FunctionDeclaration, bool> funcFilter, string swiftLibraryPath)
 		{
 			funcFilter = funcFilter ?? (tlf => true);
 			if (subDecl.Getter == null && subDecl.Setter == null)
@@ -4427,34 +4386,32 @@ namespace SwiftReflector {
 			propSetName = Uniqueify (propSetName, usedPinvokeNames);
 			usedPinvokeNames.Add (propSetName);
 
-			var getter = FindSubscriptFoo (subDecl.Getter, contents.Subscripts, PropertyType.Getter);
-			var setter = FindSubscriptFoo (subDecl.Setter, contents.Subscripts, PropertyType.Setter);
-			if ((getter != null && !funcFilter (getter)) ||
-				(setter != null && !funcFilter (setter)))
+			if ((subDecl.Getter != null && !funcFilter (subDecl.Getter)) ||
+				(subDecl.Setter != null && !funcFilter (subDecl.Setter)))
 				return;
 
-			if (getter != null && funcFilter (getter)) {
-				getterWrapper = FindWrapperForMethod (subDecl.Getter, getter, PropertyType.Getter, wrapper);
-				if (getterWrapper == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 71, $"Unable to find wrapper function for subscript getter in class {getter.Class.ClassName.ToFullyQualifiedName (true)}.");
-				}
-				var getterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (getterWrapper, TypeMapper, wrapper);
-				if (getterWrapperFunc == null)
-					throw new NotImplementedException ();
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
 
+			if (subDecl.Getter != null && funcFilter (subDecl.Getter)) {
+				var getterWrapperFunc = finder.FindWrapperForMethod (parent, subDecl.Getter, PropertyType.Getter);
+
+				getterWrapper = getterWrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (getterWrapperFunc, TypeMapper, wrapper) : null;
+				if (getterWrapper == null) {
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 71, $"Unable to find wrapper function for subscript getter in class {parent.ToFullyQualifiedName (true)}.");
+				}
 
 				ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, pinvokeName ?? contents.Name, subDecl.Getter, use, true, wrapper, swiftLibraryPath,
 								  getterWrapper, "", forcePrivate, propGetName);
 			}
 
-			if (setter != null && funcFilter (getter)) {
-				setterWrapper = FindWrapperForMethod (subDecl.Setter, setter, PropertyType.Setter, wrapper);
+			if (subDecl.Setter != null && funcFilter (subDecl.Setter)) {
+				var setterWrapperFunc = finder.FindWrapperForMethod (parent, subDecl.Setter, PropertyType.Setter);
+
+				setterWrapper = setterWrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (setterWrapperFunc, TypeMapper, wrapper) : null;
 				if (setterWrapper == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 72, $"Wnable to find wrapper function for subscript setter in class {getter.Class.ClassName.ToFullyQualifiedName (true)}.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 72, $"Wnable to find wrapper function for subscript setter in class {parent.ToFullyQualifiedName (true)}.");
 				}
-				var setterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (setterWrapper, TypeMapper, wrapper);
-				if (setterWrapperFunc == null)
-					throw new NotImplementedException ();
+
 				ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, pinvokeName ?? contents.Name, subDecl.Setter, use, true, wrapper, swiftLibraryPath,
 												  setterWrapper, "", forcePrivate, propSetName);
 			}
@@ -4671,11 +4628,15 @@ namespace SwiftReflector {
 			return true;
 		}
 
-		void ImplementTrivialEnumProperty (CSClass cl, CSClass picl, List<string> usedPinvokeNames, ClassContents contents, PropertyDeclaration propDecl, PropertyContents prop,
+		void ImplementTrivialEnumProperty (CSClass cl, CSClass picl, List<string> usedPinvokeNames, BaseDeclaration parent, PropertyDeclaration propDecl, 
 		                                   CSUsingPackages use, WrappingResult wrapper, List<string> usedIdentifiers, string swiftLibraryPath)
 		{
-			if (prop.Getter == null && prop.Setter == null && prop.Materializer == null)
+			var propGetter = propDecl.GetGetter ();
+			var propSetter = propDecl.GetSetter ();
+			if (propGetter == null && propSetter == null)
 				return; // uhhh...should never happen?
+
+
 
 			TLFunction getterWrapper = null;
 			FunctionDeclaration getterWrapperFunc = null;
@@ -4687,32 +4648,33 @@ namespace SwiftReflector {
 			string piSetterName = null;
 			string piGetterRef = null;
 
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
 
-			if (prop.Getter != null) {
-				getterWrapper = FindWrapperForMethod (propDecl.GetGetter (), prop.TLFGetter, PropertyType.Getter, wrapper);
+			if (propGetter != null) {
+				getterWrapperFunc = finder.FindWrapperForMethod (parent, propGetter, PropertyType.Getter);
+				getterWrapper = getterWrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (getterWrapperFunc, TypeMapper, wrapper) : null;
 				if (getterWrapper == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 73, $"Unable to find wrapper function for getter for property {prop.Name.Name} in class {prop.TLFGetter.Class.ClassName.ToFullyQualifiedName (true)}.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 73, $"Unable to find wrapper function for getter for property {propGetter.PropertyName} in class {parent.ToFullyQualifiedName (true)}.");
 				}
-				getterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (getterWrapper, TypeMapper, wrapper);
 
-				piGetterName = PIMethodName (prop.TLFGetter.Class.ClassName, getterWrapper.Name, PropertyType.Getter);
+				piGetterName = PIMethodName (parent.ToFullyQualifiedName (), getterWrapper.Name, PropertyType.Getter);
 				piGetterName = Uniqueify (piGetterName, usedPinvokeNames);
 				usedPinvokeNames.Add (piGetterName);
 
-				piGetterRef = PIClassName (prop.TLFGetter.Class.ClassName) + "." + piGetterName;
+				piGetterRef = PIClassName (parent.ToFullyQualifiedName ()) + "." + piGetterName;
 
 				piGetter = TLFCompiler.CompileMethod (getterWrapperFunc, use, PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
 							getterWrapper.MangledName, piGetterName, true, true, true);
 			}
 
-			if (prop.Setter != null) {
-				setterWrapper = FindWrapperForMethod (propDecl.GetSetter (), prop.TLFSetter, PropertyType.Setter, wrapper);
+			if (propSetter != null) {
+				setterWrapperFunc = finder.FindWrapperForMethod (parent, propSetter, PropertyType.Setter);
+				setterWrapper = setterWrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (setterWrapperFunc, TypeMapper, wrapper) : null;
 				if (setterWrapper == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 74, $"Unable to find wrapper function for setter for property {prop.Name.Name} in class {prop.TLFSetter.Class.ClassName.ToFullyQualifiedName (true)}.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 74, $"Unable to find wrapper function for setter for property {propGetter.PropertyName} in class {parent.ToFullyQualifiedName (true)}.");
 				}
-				setterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (setterWrapper, TypeMapper, wrapper);
 
-				piSetterName = PIMethodName (prop.TLFSetter.Class.ClassName, setterWrapper.Name, PropertyType.Setter);
+				piSetterName = PIMethodName (parent.ToFullyQualifiedName (), setterWrapper.Name, PropertyType.Setter);
 				piSetterName = Uniqueify (piSetterName, usedPinvokeNames);
 				usedPinvokeNames.Add (piSetterName);
 
@@ -4721,7 +4683,7 @@ namespace SwiftReflector {
 			}
 
 
-			string propName = TypeMapper.SanitizeIdentifier (prop.Name.Name);
+			string propName = TypeMapper.SanitizeIdentifier (propGetter.PropertyName);
 			propName = MarshalEngine.Uniqueify (propName, usedIdentifiers);
 			usedIdentifiers.Add (propName);
 
@@ -4739,7 +4701,7 @@ namespace SwiftReflector {
 				picl.Methods.Add (piSetter);
 
 
-			if (prop.TLFGetter != null) {
+			if (propGetter != null) {
 				var marshaler = new MarshalEngine (use, useLocals, TypeMapper, wrapper.Module.SwiftCompilerVersion);
 
 				var wrapperGetter = TLFCompiler.CompileMethod (getterWrapperFunc, use, null, null, getterName, false, false, true);
@@ -4758,17 +4720,21 @@ namespace SwiftReflector {
 
 		}
 
-		void ImplementProperty (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName pinvokeName, PropertyDeclaration propDecl, PropertyContents prop,
-				       CSUsingPackages use, WrappingResult wrapper, bool isStruct, Func<TLFunction, bool> funcFilter,
+		void ImplementProperty (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName pinvokeName, PropertyDeclaration propDecl,
+				       CSUsingPackages use, WrappingResult wrapper, bool isStruct, Func<FunctionDeclaration, bool> funcFilter,
 		                        List<string> usedIdentifiers, string swiftLibraryPath)
 		{
 			funcFilter = funcFilter ?? (tlf => true);
-			if (prop.Getter == null && prop.Setter == null && prop.Materializer == null)
+
+			var propGetter = propDecl.GetGetter ();
+			var propSetter = propDecl.GetSetter ();
+
+			if (propGetter == null && propSetter == null)
 				return; // uhhh...should never happen? - verified - all props in swift must have at least a getter
 
 			TLFunction getterWrapper = null;
 			TLFunction setterWrapper = null;
-			string propName = TypeMapper.SanitizeIdentifier (prop.Name.Name);
+			string propName = TypeMapper.SanitizeIdentifier (propGetter.PropertyName);
 			propName = MarshalEngine.Uniqueify (propName, usedIdentifiers);
 			usedIdentifiers.Add (propName);
 			var getterName = $"__Get{propName}";
@@ -4779,8 +4745,8 @@ namespace SwiftReflector {
 			setterName = Uniqueify (setterName, usedIdentifiers);
 			usedIdentifiers.Add (setterName);
 
-			if ((prop.Getter != null && !funcFilter (prop.TLFGetter)) ||
-				prop.Setter != null && !funcFilter (prop.TLFSetter))
+			if ((propGetter != null && !funcFilter (propGetter)) ||
+				propSetter != null && !funcFilter (propSetter))
 				return;
 
 			if (propDecl.IsDeprecated || propDecl.IsUnavailable)
@@ -4788,27 +4754,31 @@ namespace SwiftReflector {
 
 			if (!propDecl.IsPublicOrOpen)
 				return;
-			if (prop.Getter != null && propDecl.GetGetter ().IsPublicOrOpen) {
-				getterWrapper = FindWrapperForMethod (propDecl.GetGetter (), prop.TLFGetter, PropertyType.Getter, wrapper);
+
+
+			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
+
+			if (propGetter != null && propGetter.IsPublicOrOpen) {
+				var getterWrapperFunc = finder.FindWrapperForMethod (propDecl.Parent, propGetter, PropertyType.Getter);
+				getterWrapper = getterWrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (getterWrapperFunc, TypeMapper, wrapper) : null;
 				if (getterWrapper == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 75, $"Unable to find wrapper function for getter for property {prop.Name.Name} in class {prop.TLFGetter.Class.ClassName.ToFullyQualifiedName (true)}.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 75, $"Unable to find wrapper function for getter for property {propDecl.Name} in class {propDecl.Parent.ToFullyQualifiedName (true)}.");
 				}
-				var getterWrapperFunc = FindEquivalentFunctionDeclarationForWrapperFunction (getterWrapper, TypeMapper, wrapper);
-				if (getterWrapperFunc == null)
-					throw new NotImplementedException ();
 				ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, pinvokeName, propDecl.GetGetter (), use, true, wrapper, swiftLibraryPath,
 				                                   getterWrapper, "", true, getterName);
 			}
 
-			if (prop.Setter != null && propDecl.GetSetter ().IsPublicOrOpen) {
-				setterWrapper = FindWrapperForMethod (propDecl.GetSetter (), prop.TLFSetter, PropertyType.Setter, wrapper);
+			if (propSetter != null && propSetter.IsPublicOrOpen) {
+				var setterWrapperFunc = finder.FindWrapperForMethod (propDecl.Parent, propSetter, PropertyType.Setter);
+				setterWrapper = setterWrapperFunc != null ? FindEquivalentTLFunctionForWrapperFunction (setterWrapperFunc, TypeMapper, wrapper) : null;
+
 				if (setterWrapper == null) {
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 76, $"Unable to find wrapper function for setter for property {prop.Name.Name} in class {prop.TLFSetter.Class.ClassName.ToFullyQualifiedName (true)}.");
+					throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 76, $"Unable to find wrapper function for setter for property {propDecl.Name} in class {propDecl.Parent.ToFullyQualifiedName (true)}.");
 				}
 
 				var csSetterImpl = ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, pinvokeName, propDecl.GetSetter (), use, true, wrapper, swiftLibraryPath,
 				                                   setterWrapper, "", true, setterName);
-				if (TypeMapper.IsCompoundProtocolListType (prop.Getter.ReturnType)) {
+				if (propGetter.ReturnTypeSpec is ProtocolListTypeSpec) {
 					// in the case of protocol list type, we need to change the implementation to
 					// a non-generic version with the value type of object.
 					var nonGeneric = CSMethod.RemoveGenerics (csSetterImpl);
@@ -4818,16 +4788,14 @@ namespace SwiftReflector {
 				}
 			}
 
-			var wrapperProp = TLFCompiler.CompileProperty (use, propName, propDecl.GetGetter (), propDecl.GetSetter (), prop.Getter.IsStatic ? CSMethodKind.Static : CSMethodKind.None);
+			var wrapperProp = TLFCompiler.CompileProperty (use, propName, propGetter, propSetter, propGetter.IsStatic ? CSMethodKind.Static : CSMethodKind.None);
 
 
-			var propType = (prop.Getter ?? prop.Setter ?? prop.Materializer).OfType;
-
-			if (prop.TLFGetter != null) {
+			if (propGetter != null) {
 				wrapperProp.Getter.Add (CSReturn.ReturnLine (new CSFunctionCall (getterName, false)));
 			}
 
-			if (prop.TLFSetter != null) {
+			if (propSetter != null) {
 				wrapperProp.Setter.Add (CSFunctionCall.FunctionCallLine (setterName, false, new CSIdentifier ("value")));
 			}
 
@@ -4835,12 +4803,12 @@ namespace SwiftReflector {
 		}
 
 
-		void ImplementOverload (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName piClassName, TLFunction methodToWrap, FunctionDeclaration funcToWrap,
-		                        CSUsingPackages use, bool isFinal, WrappingResult wrapper, Func<TLFunction, bool> funcFilter,
+		void ImplementOverload (CSClass cl, CSClass picl, List<string> usedPinvokeNames, SwiftClassName piClassName, FunctionDeclaration funcToWrap,
+		                        CSUsingPackages use, bool isFinal, WrappingResult wrapper, Func<FunctionDeclaration, bool> funcFilter,
 		                        string swiftLibraryPath, string homonymSuffix)
 		{
 			funcFilter = funcFilter ?? (tlf => true);
-			if (!funcFilter (methodToWrap))
+			if (!funcFilter (funcToWrap))
 				return;
 
 			FunctionDeclarationWrapperFinder finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
@@ -4851,11 +4819,11 @@ namespace SwiftReflector {
 			ImplementOverloadFromKnownWrapper (cl, picl, usedPinvokeNames, piClassName, funcToWrap, use, isFinal, wrapper, swiftLibraryPath, wrapperFunction, homonymSuffix);
 		}
 
-		void ImplementVirtualMethod (CSClass cl, FunctionDeclaration funcDecl, TLFunction method, string superCallName, CSUsingPackages use,
+		void ImplementVirtualMethod (CSClass cl, FunctionDeclaration funcDecl, string superCallName, CSUsingPackages use,
 		                             WrappingResult wrapper, ref CSMethod publicMethod, string swiftLibraryPath, string homonymSuffix)
 		{
 			publicMethod = TLFCompiler.CompileMethod (funcDecl, use, PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
-				method.MangledName, null, false, false, false);
+				mangledName: "", null, false, false, false);
 
 			var genericParameters = publicMethod.GenericParameters;
 			var genericConstraints = publicMethod.GenericConstraints;
@@ -5052,197 +5020,6 @@ namespace SwiftReflector {
 			return publicMethod;
 		}
 
-		TLFunction FindWrapperForExtension (FunctionDeclaration funcDeclToWrap, BaseDeclaration extensionOn, TLFunction funcToWrap, WrappingResult wrapper)
-		{
-			string wrapperName = null;
-			if (funcDeclToWrap.IsProperty) {
-				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (true), funcDeclToWrap.PropertyName,
-									  (funcDeclToWrap.IsGetter ? PropertyType.Getter :
-				                                           (funcDeclToWrap.IsSetter ? PropertyType.Setter : PropertyType.Materializer)), false, funcDeclToWrap.IsExtension,
-									  funcDeclToWrap.IsStatic);
-			} else {
-				wrapperName = MethodWrapping.WrapperName (extensionOn.ToFullyQualifiedName (false), funcDeclToWrap.Name, true, funcDeclToWrap.IsStatic);
-			}
-			return FindWrapperForMethod (funcDeclToWrap, funcToWrap, wrapperName, wrapper);
-
-		}
-
-		TLFunction FindWrapperForMethod (FunctionDeclaration funcToWrap, TLFunction methodToWrap, PropertyType propType, WrappingResult wrapper)
-		{
-			var prop = methodToWrap.Signature as SwiftPropertyType;
-			if (prop == null)
-				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 34, $"Expected a SwiftPropertyType for method signature, but got {methodToWrap.Signature.GetType ().Name}");
-			var wrapperName = MethodWrapping.WrapperName (methodToWrap.Class.ClassName, methodToWrap.Name.Name, propType, prop.IsSubscript, funcToWrap.IsExtension, prop.IsStatic);
-			return FindWrapperForMethod (funcToWrap, methodToWrap, wrapperName, wrapper);
-		}
-
-		TLFunction FindWrapperForMethod (FunctionDeclaration funcDecl, TLFunction methodToWrap, string wrapperName, WrappingResult wrapper)
-		{
-			var referenceCodedWrapper = LookupReferenceCodeForFunctionDeclaration (funcDecl, wrapperName, wrapper, "method");
-			if (referenceCodedWrapper != null)
-				return referenceCodedWrapper;
-
-			var allWrappers = wrapper.Contents.Functions.MethodsWithName (wrapperName);
-			if (allWrappers == null || allWrappers.Count == 0)
-				return null;
-
-			var bft = methodToWrap.Signature;
-
-			// if this is not a static function, then there is an extra argument for the instance
-			var instanceSkip = IsStaticFunction (methodToWrap.Signature) ? 0 : 1;
-
-			// if the return type needs to be passed by reference or if the method throws, then there is an extra argument for the return
-			var returnOrExceptionSkip = (bft.ReturnType != null && TypeMapper.MustForcePassByReference (bft.ReturnType)) || bft.CanThrow ? 1 : 0;
-
-			var argumentsToSkip = + instanceSkip + returnOrExceptionSkip;
-			var instanceType = InstanceType (methodToWrap.Signature as SwiftUncurriedFunctionType);
-
-
-			return allWrappers.FirstOrDefault (tlf => ParametersMatchExceptSkippingFirstN (tlf.Signature, methodToWrap.Signature, argumentsToSkip, TypeMapper) &&
-			                                   ReturnTypesMatch(methodToWrap, tlf));
-		}
-
-
-		TLFunction LookupReferenceCodeForFunctionDeclaration (FunctionDeclaration funcDecl, string wrapperName, WrappingResult wrapper, string functionKind)
-		{
-			var referenceCode = wrapper.FunctionReferenceCodeMap.ReferenceCodeFor (funcDecl);
-			if (referenceCode != null) {
-				var wrappers = wrapper.Contents.Functions.MethodsWithName (MethodWrapping.FuncNameWithReferenceCode (wrapperName, referenceCode.Value));
-				if (wrappers == null)
-					return null;
-				if (wrappers.Count != 1)
-					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 37, $"The {functionKind} {funcDecl.ToFullyQualifiedName (true)} has {wrappers.Count} reference codes and should have exactly 1");
-				return wrappers [0];
-			}
-			return null;
-		}
-
-		bool IsStaticFunction (SwiftBaseFunctionType bft)
-		{
-			if (bft is SwiftStaticFunctionType) return true;
-			var prop = bft as SwiftPropertyType;
-			if (prop != null && prop.IsStatic)
-				return true;
-			return false;
-		}
-
-		static SwiftType InstanceType (SwiftUncurriedFunctionType functionType)
-		{
-			return functionType?.UncurriedParameter;
-		}
-
-
-		bool ReturnTypesMatch(TLFunction methodToWrap, TLFunction methodToMatch)
-		{
-			var ret1 = methodToWrap.Signature.ReturnType ?? SwiftTupleType.Empty;
-			SwiftType ret2 = null;
-			if (methodToWrap.Signature.ReturnType != null && TypeMapper.MustForcePassByReference(methodToWrap.Signature.ReturnType)
-			    || methodToWrap.Signature.CanThrow)
-			{
-				var returnParam = methodToMatch.Signature.GetParameter (0);
-				SwiftBoundGenericType bgt = returnParam as SwiftBoundGenericType;
-				if (bgt == null)
-					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 38, $"failed to match return type passed by reference. Expected a SwiftBoundGenericType but got {returnParam.GetType ().Name}");
-				var classType = bgt.BaseType as SwiftClassType;
-				if (classType == null)
-					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 39, $"failed to match return type passed by reference. Expected a generic nominal type but got {bgt.BaseType.GetType ().Name}");
-				if (classType.ClassName.ToFullyQualifiedName (true) != "Swift.UnsafeMutablePointer")
-					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 40, $"failed to match return type passed by reference. Expected an UnsafeMutablePointer, but got {classType.ClassName.ToFullyQualifiedName (true)}");
-				if (methodToWrap.Signature.CanThrow) {
-					var medusaTuple = bgt.BoundTypes [0] as SwiftTupleType;
-					if (medusaTuple == null)
-						throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 41, $"failed to match return type passed by reference. Expected an UnsafeMutablePointer<SwiftTupleType>, but got {bgt.BoundTypes [0].GetType ().Name}");
-					ret2 = medusaTuple.Contents [0];
-				} else {
-					ret2 = bgt.BoundTypes [0];					
-				}
-			} else {
-				ret2 = methodToMatch.Signature.ReturnType ?? SwiftTupleType.Empty;
-			}
-
-			bool aIsGeneric = ret1 is SwiftGenericArgReferenceType;
-			bool bIsGeneric = ret2 is SwiftGenericArgReferenceType;
-			if ((aIsGeneric && !bIsGeneric) || (!aIsGeneric && bIsGeneric))
-				return false;
-
-			if (ret1 is SwiftFunctionType clos1 && ret2 is SwiftFunctionType clos2) {
-				return ClosureTypesMatch (clos1, clos2);
-			} else {
-				return ret1.Equals (ret2);
-			}
-			
-		}
-
-		bool ClosureTypesMatch (SwiftFunctionType closureToWrap, SwiftFunctionType closureToMatch)
-		{
-			// to wrap will be: ()->()
-			// to match will be: ()->()
-			// or
-			// to wrap will be: (args)->return
-			// to match will be: (UnsafeMutablePointer<return>, UnsafeMutablePointer<(args)>)->()
-			// or
-			// to wrap will be (args)->()
-			// to match will be (UnsafeMutablePointer<(args)>)-> ()
-
-			if (closureToMatch.ReturnType != null && !closureToMatch.ReturnType.IsEmptyTuple)
-				return false;
-
-			if (IsVoidOnVoid (closureToWrap) && IsVoidOnVoid (closureToMatch))
-				return true;
-
-			SwiftType toMatchReturn = null;
-			int toMatchArgsIndex = 0;
-			if (closureToWrap.ReturnType != null && !closureToWrap.ReturnType.IsEmptyTuple) {
-				if (closureToMatch.ParameterCount < 1 || closureToMatch.ParameterCount > 2)
-					return false;
-				toMatchArgsIndex = closureToWrap.ParameterCount == 0 ? -1 : 1;
-				toMatchReturn = GetUnsafeMutablePointerBoundType (closureToMatch.GetParameter (0));
-				if (toMatchReturn == null)
-					return false;
-			}
-
-			if (toMatchReturn != null) {
-				if (!toMatchReturn.Equals (closureToWrap.ReturnType))
-					return false;
-			}
-
-			if (toMatchArgsIndex >= 0) {
-				if (closureToMatch.ParameterCount != toMatchArgsIndex + 1)
-					return false;
-				var toMatchArgs = GetUnsafeMutablePointerBoundType (closureToMatch.GetParameter (toMatchArgsIndex));
-				if (!(toMatchArgs is SwiftTupleType))
-					toMatchArgs = new SwiftTupleType (false, null, toMatchArgs);
-
-				var toWrapArgs = closureToWrap.Parameters;
-				if (!(toWrapArgs is SwiftTupleType))
-					toWrapArgs = new SwiftTupleType (false, null, toWrapArgs);
-
-				if (!TuplesMatch (toWrapArgs as SwiftTupleType, toMatchArgs as SwiftTupleType, TypeMapper, false))
-					return false;
-			}
-			return true;
-		}
-
-		static bool IsVoidOnVoid (SwiftFunctionType clos)
-		{
-			return (clos.Parameters == null || clos.Parameters.IsEmptyTuple) &&
-				(clos.ReturnType == null || clos.ReturnType.IsEmptyTuple);
-		}
-
-		SwiftType GetUnsafeMutablePointerBoundType (SwiftType t)
-		{
-			var bgt = t as SwiftBoundGenericType;
-			if (bgt == null)
-				return null;
-			var ct = bgt.BaseType as SwiftClassType;
-			if (ct == null)
-				return null;
-			if (ct.ClassName.ToFullyQualifiedName (true) != "Swift.UnsafeMutablePointer")
-				return null;
-			return bgt.BoundTypes [0];
-		}
-
-
 		static bool ParametersMatch (FunctionDeclaration decl, TLFunction tlf, TypeMapper mapper, bool ignoreParameterNames = false)
 		{
 			if (decl.ParameterLists.Last ().Count () != tlf.Signature.ParameterCount)
@@ -5275,51 +5052,6 @@ namespace SwiftReflector {
 					return false;
 			}
 			return true;
-		}
-
-		public static Dictionary<FunctionDeclaration, TLFunction> BuildExtensionMap (BaseDeclaration context, TypeSpec extensionOn, IEnumerable<FunctionDeclaration> funcs, ModuleContents moduleContents, TypeMapper mapper)
-		{
-			var extensionOnNtb = mapper.MapType (context, extensionOn, false);
-			var collection = new Dictionary<FunctionDeclaration, TLFunction> ();
-			foreach (var overloads in moduleContents.Extensions.Values) {
-				foreach (var tlf in overloads.Functions) {
-					if (tlf.Signature is SwiftPropertyType prop &&
-							(prop.PropertyType == PropertyType.Materializer || prop.PropertyType == PropertyType.ModifyAccessor) )
-						continue;
-					var fnExtensionOn = mapper.MapType (context, extensionOn, false);
-					if (!NetTypeBundleMatch (extensionOnNtb, fnExtensionOn))
-						continue;
-					foreach (FunctionDeclaration decl in funcs) {
-						var declName = decl.IsProperty ? decl.PropertyName : decl.Name;
-						if (tlf.Name.Name != declName)
-							continue;
-						if (!ParametersMatch (decl, tlf, mapper, decl.IsSubscript))
-							continue;
-
-						if (!decl.ReturnTypeSpec.ContainsGenericParameters && decl.IsTypeSpecGeneric (decl.ReturnTypeSpec)) {
-							if (!(tlf.Signature.ReturnType is SwiftGenericArgReferenceType)) {
-								continue;
-							}
-							collection.Add (decl, tlf);
-							break;
-						}
-
-						// match return type (thanks again, swift)
-						NetTypeBundle returnntb1 = null, returnntb2 = null;
-						try {
-							returnntb1 = mapper.MapType (tlf.Signature.ReturnType ?? SwiftTupleType.Empty, true, true);
-							returnntb2 = mapper.MapType (decl, decl.ReturnTypeSpec ?? TupleTypeSpec.Empty, true, true);
-						} catch {
-							continue;
-						}
-						if (!NetTypeBundleMatch (returnntb1, returnntb2))
-							continue;
-						collection.Add (decl, tlf);
-						break;
-					}
-				}
-			}
-			return collection;
 		}
 
 		public static FunctionDeclaration FindFunctionDeclarationForTLFunction(TLFunction func, TypeMapper mapper, IEnumerable<FunctionDeclaration> coll)
