@@ -1431,8 +1431,11 @@ namespace SwiftReflector {
 		{
 			return callParms.Select ((ntp, i) => {
 				if (originalParms [i].TypeSpec is TupleTypeSpec) {
+					var interiorType = ntp.TypeAnnotation;
+					if (ntp.TypeAnnotation is SLBoundGenericType bgt && (bgt.Name == "UnsafePointer" || bgt.Name == "UnsafeMutablePointer"))
+						interiorType = bgt.BoundTypes [0];
 					string type = ntp.ParameterKind == SLParameterKind.InOut ? "UnsafeMutablePointer" : "UnsafePointer";
-					return new SLParameter (ntp.PublicName, ntp.PrivateName, new SLBoundGenericType (type, ntp.TypeAnnotation));
+					return new SLParameter (ntp.PublicName, ntp.PrivateName, new SLBoundGenericType (type, interiorType));
 				} else {
 					return ntp;
 				}
