@@ -37,6 +37,12 @@ jobs:
       then
         unlink /Applications/Xcode.app
       fi
+      if [ -L /Applications/Xcode_12.app ]
+      then
+        echo "Xcode_12.app is symlink"
+      else
+        echo "Xcode_12.app is NOT a symlink"
+      fi
       ln -s /Applications/Xcode_12.app /Applications/Xcode.app
       xcode-select -p
     displayName: 'Confirming Xcode Version'
