@@ -190,6 +190,7 @@ public var DoubleStr: String {
 		}
 
 		[Test]
+		[Ignore ("Ignore due to https://bugs.swift.org/browse/SR-13790")]
 		public void ClosureTLProp ()
 		{
 			var swiftCode = @"

@@ -1400,5 +1400,30 @@ public protocol Simple {
 			Assert.IsNotNull (proto, "no protocol");
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
+
+		[Test]
+		public void TopLevelLet ()
+		{
+			var code = "public let myVar:Int = 42";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var prop = module.Properties.Where (p => p.Name == "myVar").FirstOrDefault ();
+			Assert.IsNotNull (prop, "no prop");
+			Assert.IsTrue (prop.IsLet, "not a let");
+			Assert.IsNull (prop.GetSetter (), "why is there a setter");
+		}
+
+
+		[Test]
+		public void TheEpsilonIssue ()
+		{
+			string code = "public let 𝑒 = 2.718\n";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var prop = module.Properties.Where (p => p.Name == "𝑒").FirstOrDefault ();
+			Assert.IsNotNull (prop, "no prop");
+			Assert.IsTrue (prop.IsLet, "not a let");
+			Assert.IsNull (prop.GetSetter (), "why is there a setter");
+		}
 	}
 }
