@@ -1418,28 +1418,6 @@ namespace SwiftReflector {
 			return false;
 		}
 
-		SwiftClassType GetSwiftClassTypeFromProperty (TLFunction func)
-		{
-			if (func == null)
-				return null;
-			return func.Class;
-		}
-
-
-		IEnumerable<SLParameter> FilterCallParams (BaseDeclaration declContext, List<SLParameter> callParms, List<ParameterItem> originalParms,
-			SLImportModules modules)
-		{
-			return callParms.Select ((ntp, i) => {
-				if (originalParms [i].TypeSpec is TupleTypeSpec) {
-					string type = ntp.ParameterKind == SLParameterKind.InOut ? "UnsafeMutablePointer" : "UnsafePointer";
-					return new SLParameter (ntp.PublicName, ntp.PrivateName, new SLBoundGenericType (type, ntp.TypeAnnotation));
-				} else {
-					return ntp;
-				}
-			});
-		}
-
-
 		SLFunc MapFuncDeclToWrapperFunc (SwiftClassName className, SLImportModules modules, FunctionDeclaration funcDecl)
 		{
 			var usedNames = new List<string> ();
@@ -1457,7 +1435,7 @@ namespace SwiftReflector {
 
 			typeMapper.TypeSpecMapper.MapParams (typeMapper, funcDecl, modules, callParms, funcDecl.ParameterLists.Last (), false, genericDeclaration,
 				!String.IsNullOrEmpty (substituteForSelf), substituteForSelf);
-			parms.AddRange (FilterCallParams (funcDecl, callParms, funcDecl.ParameterLists.Last (), modules));
+			parms.AddRange (callParms);
 
 			usedNames.AddRange (parms.Select (p => p.PrivateName.Name));
 			usedNames.Add (funcDecl.Name);
@@ -1833,7 +1811,7 @@ namespace SwiftReflector {
 				callParms [i] = candidateParm;
 			}
 
-			parms.AddRange (FilterCallParams (funcDecl, callParms, funcDecl.ParameterLists.Last (), modules));
+			parms.AddRange (callParms);
 
 			var retType = funcDecl.ReturnTypeSpec;
 
