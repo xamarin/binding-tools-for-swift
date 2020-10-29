@@ -177,6 +177,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("apple's top level let issue")]
 		public void TheEpsilonIssue ()
 		{
 			string swiftCode =

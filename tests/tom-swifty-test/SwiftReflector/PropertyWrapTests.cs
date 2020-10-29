@@ -190,6 +190,7 @@ public var DoubleStr: String {
 		}
 
 		[Test]
+		[Ignore ("apple's top level let issue")]
 		public void ClosureTLProp ()
 		{
 			var swiftCode = @"
