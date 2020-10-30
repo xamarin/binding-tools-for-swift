@@ -119,15 +119,15 @@ git reset --hard "$SWIFT_HASH"
 echo "Updating swift dependencies..."
 ./utils/update-checkout --clone --skip-repository swift -j 1 --scheme "$SWIFT_SCHEME"
 
-echo "Checking codesign of Xcode_12.app"
-codesign --verify /Applications/Xcode_12.app
+# echo "Checking codesign of Xcode_12.app"
+# codesign --verify /Applications/Xcode_12.app
 
 echo "Checking version of Xcode_12.app"
 defaults read /Applications/Xcode_12.app/Contents/Info CFBundleShortVersionString
 
 echo "Attempting to replace <math.h> in header file"
 # NewMathHLocation='#include<\/Applications\/Xcode\.app\/Contents\/Developer\/Toolchains\/XcodeDefault\.xctoolchain\/usr\/include\/c++\/v1\/math\.h>'
-NewMathHLocation2='#include<\"\.\/math\.h\">'
+NewMathHLocation2='#include \"\.\/math\.h\"'
 sed -i '' -e "s/#include <math.h>/${NewMathHLocation2}/" /Applications/Xcode_12.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/cmath
 less -FX /Applications/Xcode_12.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/cmath
 
