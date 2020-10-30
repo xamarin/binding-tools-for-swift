@@ -124,7 +124,7 @@ defaults read /Applications/Xcode_12.app/Contents/Info CFBundleShortVersionStrin
 
 echo "Attempting to replace <math.h> in header file"
 NewMathHLocation='#include</Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/math.h>'
-sed -i "s/^<math.h>/${NewMathHLocation}/" /Applications/Xcode_12\.app/Contents/Developer/Toolchains/XcodeDefault\.xctoolchain/usr/include/c++/v1/cmath
+sed -i '' -e "s/^<math.h>/${NewMathHLocation}/" /Applications/Xcode_12\.app/Contents/Developer/Toolchains/XcodeDefault\.xctoolchain/usr/include/c++/v1/cmath
 less -FX /Applications/Xcode_12.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/cmath
 
 echo "Building swift (not so swiftly, some patience is required)..."
