@@ -119,6 +119,14 @@ git reset --hard "$SWIFT_HASH"
 echo "Updating swift dependencies..."
 ./utils/update-checkout --clone --skip-repository swift -j 1 --scheme "$SWIFT_SCHEME"
 
+echo "Checking version of Xcode_12.app"
+defaults read /Applications/Xcode_12.app/Contents/Info CFBundleShortVersionString
+
+echo "Attempting to replace <math.h> in header file"
+NewMathHLocation='#include</Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/math.h>'
+sed -i "s/^<math.h>/${NewMathHLocation}/" /Applications/Xcode_12.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/cmath
+less -FX /Applications/Xcode_12.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/cmath
+
 echo "Building swift (not so swiftly, some patience is required)..."
 ./utils/build-script --clean -R --ios --tvos --watchos --extra-cmake-options=-DSWIFT_DARWIN_ENABLE_STABLE_ABI_BIT:BOOL=TRUE
 
