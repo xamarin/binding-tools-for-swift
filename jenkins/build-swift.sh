@@ -123,7 +123,7 @@ echo "Checking version of Xcode_12.app"
 defaults read /Applications/Xcode_12.app/Contents/Info CFBundleShortVersionString
 
 echo "Building swift (not so swiftly, some patience is required)..."
-./utils/build-script --clean -R --ios --tvos --watchos --extra-cmake-options=-DSWIFT_DARWIN_ENABLE_STABLE_ABI_BIT:BOOL=TRUE
+./utils/build-script --clean -R --ios --tvos --watchos --extra-cmake-options=-DSWIFT_DARWIN_ENABLE_STABLE_ABI_BIT:BOOL=TRUE --show_sdks
 
 complete_swift_build
 

@@ -32,7 +32,10 @@ jobs:
   - checkout: self
 
   - bash: |
-      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.1.app
+      if [ -L /Applications/Xcode_12.0.1.app ]
+      then
+        unlink /Applications/Xcode_12.0.1.app
+      fi
       if [ -L /Applications/Xcode_12.0.0.app ]
       then
         unlink /Applications/Xcode_12.0.0.app
@@ -41,6 +44,7 @@ jobs:
       then
         unlink /Applications/Xcode.app
       fi
+      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.0.app
       ln -s /Applications/Xcode_12.app /Applications/Xcode.app
       xcode-select -p
     displayName: 'Confirming Xcode Version'
