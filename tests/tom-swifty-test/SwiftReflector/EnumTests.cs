@@ -11,6 +11,7 @@ namespace SwiftReflector {
 	[TestFixture]
 	public class EnumTests {
 		[Test]
+		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void PropOnTrivialEnum ()
 		{
 			var swiftCode = @"
@@ -30,6 +31,7 @@ public enum Rocks {
 		}
 
 		[Test]
+		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void TrivialEnumCtor ()
 		{
 			var swiftCode = @"
@@ -80,6 +82,7 @@ public enum SomeForce {
 		}
 
 		[Test]
+		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void NestedEnum ()
 		{
 			var swiftCode = @"
