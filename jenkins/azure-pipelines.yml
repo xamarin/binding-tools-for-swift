@@ -42,7 +42,7 @@ jobs:
       fi
       if [ -L /Applications/Xcode.app ]
       then
-        unlink /Applications/Xcode_12.app
+        unlink /Applications/Xcode.app
       fi
       ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.1.app
       ln -s /Applications/Xcode_12.app /Applications/Xcode.app
