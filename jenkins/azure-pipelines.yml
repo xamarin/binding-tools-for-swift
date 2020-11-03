@@ -82,13 +82,12 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/build-swift.sh --publish
       echo "This directory"
-        ls -la
-        echo "ls ../"
-        ls -la ../
-        echo "ls ../../"
-        ls -la ../../
+      ls -la
+      echo "ls ../"
+      ls -la ../
+      echo "ls ../../"
+      ls -la ../../
       if test -f Pack-Man/SwiftToolchain-*.zip; then
         echo "This directory"
         ls -la
@@ -96,7 +95,7 @@ jobs:
         ls -la ../
         echo "ls ../../"
         ls -la ../../
-        cp -c Pack-Man/SwiftToolchain-*.zip ../toolchain
+        cp -c Pack-Man/SwiftToolchain-*.zip ../../toolchain
         echo "This directory"
         ls -la
         echo "ls ../"
@@ -110,13 +109,44 @@ jobs:
     displayName: 'Build Swift'
     name: BuildSwift
 
+    # - script: |
+    #   set -e
+    #   set -x
+    #   ./binding-tools-for-swift/jenkins/build-swift.sh --publish
+    #   echo "This directory"
+    #   ls -la
+    #   echo "ls ../"
+    #   ls -la ../
+    #   echo "ls ../../"
+    #   ls -la ../../
+    #   if test -f Pack-Man/SwiftToolchain-*.zip; then
+    #     echo "This directory"
+    #     ls -la
+    #     echo "ls ../"
+    #     ls -la ../
+    #     echo "ls ../../"
+    #     ls -la ../../
+    #     cp -c Pack-Man/SwiftToolchain-*.zip ../toolchain
+    #     echo "This directory"
+    #     ls -la
+    #     echo "ls ../"
+    #     ls -la ../
+    #     echo "ls ../../"
+    #     ls -la ../../
+    #     echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
+    #   else
+    #     echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
+    #   fi
+    # displayName: 'Build Swift'
+    # name: BuildSwift
+
   # This will upload the updated toolchain zip (if any) to Azure Devops
   # A later job further down will then publish the toolchain to Azure Blob Storage.
   # This is a two-step process because the task that can publish to Azure Blob Storage only works on Windows :/
   - task: PublishBuildArtifacts@1
     displayName: 'Upload Swift Toolchain'
     inputs:
-      PathtoPublish: './toolchain'
+      PathtoPublish: '../toolchain'
       ArtifactName: 'toolchain'
       publishLocation: 'Container'
 
