@@ -2,6 +2,7 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 WORKSPACE=$(pwd)
+echo "Workspace is $WORKSPACE"
 
 # SC1091: Not following: SwiftVersion.mk was not specified as input (see shellcheck -x).
 # shellcheck disable=SC1091
