@@ -82,26 +82,8 @@ jobs:
   - script: |
       set -e
       set -x
-      echo "This directory"
-      ls -la
-      echo "ls ../"
-      ls -la ../
-      echo "ls ../../"
-      ls -la ../../
       if test -f Pack-Man/SwiftToolchain-*.zip; then
-        echo "This directory"
-        ls -la
-        echo "ls ../"
-        ls -la ../
-        echo "ls ../../"
-        ls -la ../../
         cp -c Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
-        echo "This directory"
-        ls -la
-        echo "ls ../"
-        ls -la ../
-        echo "ls ../../"
-        ls -la ../../
         echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
       else
         echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
