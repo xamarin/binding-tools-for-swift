@@ -91,6 +91,50 @@ jobs:
   #   displayName: 'Build Swift'
   #   name: BuildSwift
 
+  # - script: |
+  #     set -e
+  #     set -x
+  #     ./binding-tools-for-swift/jenkins/build-swift.sh --publish
+  #     echo "This directory"
+  #     ls -la
+  #     echo "ls ../"
+  #     ls -la ../
+  #     echo "ls ../../"
+  #     ls -la ../../
+  #     if test -f Pack-Man/SwiftToolchain-*.zip; then
+  #       echo "if: This directory"
+  #       ls -la
+  #       echo "ls ../"
+  #       ls -la ../
+  #       echo "ls ../../"
+  #       ls -la ../../
+  #       cp -c Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
+  #       echo "This directory"
+  #       ls -la
+  #       echo "ls ../"
+  #       ls -la ../
+  #       echo "ls ../../"
+  #       ls -la ../../
+  #       echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
+  #     else
+  #       echo "else: This directory"
+  #       ls -la
+  #       echo "ls ../"
+  #       ls -la ../
+  #       echo "ls ../../"
+  #       ls -la ../../
+  #       cp -c Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
+  #       echo "This directory"
+  #       ls -la
+  #       echo "ls ../"
+  #       ls -la ../
+  #       echo "ls ../../"
+  #       ls -la ../../
+  #       echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
+  #     fi
+  #   displayName: 'Build Swift'
+  #   name: BuildSwift
+
   - script: |
       set -e
       set -x
@@ -102,7 +146,7 @@ jobs:
       echo "ls ../../"
       ls -la ../../
       if test -f Pack-Man/SwiftToolchain-*.zip; then
-        echo "This directory"
+        echo "if: This directory"
         ls -la
         echo "ls ../"
         ls -la ../
@@ -117,6 +161,19 @@ jobs:
         ls -la ../../
         echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
       else
+        echo "else: This directory"
+        ls -la
+        echo "ls ../"
+        ls -la ../
+        echo "ls ../../"
+        ls -la ../../
+        cp -c Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
+        echo "This directory"
+        ls -la
+        echo "ls ../"
+        ls -la ../
+        echo "ls ../../"
+        ls -la ../../
         echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
       fi
     displayName: 'Build Swift'
