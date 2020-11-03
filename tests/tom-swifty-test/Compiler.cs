@@ -186,7 +186,7 @@ namespace tomwiftytest {
 
 		public static string CSCompile (string workingDirectory, string [] sourceFiles, string outputFile, string extraOptions = "", PlatformName platform = PlatformName.None)
 		{
-			return ExecAndCollect.Run ("/Library/Frameworks/Mono.framework/Versions/Current/bin/mcs", BuildCSCompileArgs (sourceFiles, outputFile, extraOptions, platform), workingDirectory: workingDirectory ?? "");
+			return ExecAndCollect.Run ("/Library/Frameworks/Mono.framework/Versions/Current/bin/csc", BuildCSCompileArgs (sourceFiles, outputFile, extraOptions, platform), workingDirectory: workingDirectory ?? "");
 		}
 
 		static string BuildCSCompileArgs (string [] sourceFiles, string outputFile, string extraOptions, PlatformName platform = PlatformName.None)
@@ -203,19 +203,19 @@ namespace tomwiftytest {
 			switch (platform) {
 			case PlatformName.macOS:
 				sb.Append ($"-lib:{ConstructorTests.kSwiftRuntimeMacOutputDirectory} ");
-				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibraryMac} ");
+				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibraryMac}.dll ");
 				sb.Append ($"-lib:{ConstructorTests.kXamarinMacDir} ");
-				sb.Append ($"-r:Xamarin.Mac ");
+				sb.Append ($"-r:Xamarin.Mac.dll ");
 				break;
 			case PlatformName.iOS:
 				sb.Append ($"-lib:{ConstructorTests.kSwiftRuntimeiOSOutputDirectory} ");
-				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibraryiOS} ");
+				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibraryiOS}.dll ");
 				sb.Append ($"-lib:{ConstructorTests.kXamariniOSDir} ");
-				sb.Append ($"-r:Xamarin.iOS ");
+				sb.Append ($"-r:Xamarin.iOS.dll ");
 				break;
 			case PlatformName.None:
 				sb.Append ($"-lib:{ConstructorTests.kSwiftRuntimeOutputDirectory} ");
-				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibrary} ");
+				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibrary}.dll ");
 				break;
 			default:
 				throw new NotImplementedException (platform.ToString ());
