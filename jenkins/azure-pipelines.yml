@@ -95,7 +95,7 @@ jobs:
         ls -la ../
         echo "ls ../../"
         ls -la ../../
-        cp -c Pack-Man/SwiftToolchain-*.zip ../../toolchain
+        cp -c Pack-Man/SwiftToolchain-*.zip ../toolchain
         echo "This directory"
         ls -la
         echo "ls ../"
