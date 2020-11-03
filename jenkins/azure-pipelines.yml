@@ -91,7 +91,7 @@ jobs:
   #   displayName: 'Build Swift'
   #   name: BuildSwift
 
-    - script: |
+  - script: |
       set -e
       set -x
       ./binding-tools-for-swift/jenkins/build-swift.sh --publish
