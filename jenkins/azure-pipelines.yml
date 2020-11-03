@@ -95,7 +95,7 @@ jobs:
         ls -la ../
         echo "ls ../../"
         ls -la ../../
-        cp -c Pack-Man/SwiftToolchain-*.zip ../toolchain
+        cp -c Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
         echo "This directory"
         ls -la
         echo "ls ../"
@@ -146,7 +146,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Upload Swift Toolchain'
     inputs:
-      PathtoPublish: '../toolchain'
+      PathtoPublish: $(System.DefaultWorkingDirectory)/toolchain
       ArtifactName: 'toolchain'
       publishLocation: 'Container'
 
