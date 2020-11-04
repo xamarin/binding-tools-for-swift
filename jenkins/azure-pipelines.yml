@@ -32,6 +32,7 @@ jobs:
   - checkout: self
 
   - bash: |
+      ls -la $(System.DefaultWorkingDirectory)
       if [ -L /Applications/Xcode_12.0.1.app ]
       then
         unlink /Applications/Xcode_12.0.1.app
@@ -159,12 +160,12 @@ jobs:
     inputs:
       source: current
       artifact: toolchain
-      path: 'toolchain'
+      path: $(System.DefaultWorkingDirectory)/downloadToolchain
 
   - task: AzureFileCopy@2
     displayName: 'Publish toolchain to Azure'
     inputs:
-      SourcePath: 'toolchain'
+      SourcePath: $(System.DefaultWorkingDirectory)/downloadToolchain
       azureSubscription: BOSStorageMirror
       Destination: AzureBlob
       storage: bosstoragemirror
@@ -176,7 +177,9 @@ jobs:
   - bash: |
       set -e
       set -x
-      ZIPS=(toolchain/*.zip)
+      ls -la
+      ls -la $(System.DefaultWorkingDirectory)
+      ZIPS=($(System.DefaultWorkingDirectory)/downloadToolchain/*.zip)
       if (( ${#ZIPS[@]} == 1 )); then
         if test -f "${ZIPS[0]}"; then
           FILE=${ZIPS[0]}
