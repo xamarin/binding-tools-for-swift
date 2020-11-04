@@ -83,6 +83,7 @@ jobs:
       set -e
       set -x
       ./binding-tools-for-swift/jenkins/build-swift.sh --publish
+      mkdir -p $(System.DefaultWorkingDirectory)/toolchain
       echo "This directory"
       if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
         cp -c $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain

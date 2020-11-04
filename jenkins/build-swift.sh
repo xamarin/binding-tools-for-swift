@@ -122,8 +122,8 @@ git reset --hard "$SWIFT_HASH"
 echo "Updating swift dependencies..."
 ./utils/update-checkout --clone --skip-repository swift -j 1 --scheme "$SWIFT_SCHEME"
 
-echo "Checking version of Xcode_12.app"
-defaults read /Applications/Xcode_12.app/Contents/Info CFBundleShortVersionString
+# echo "Checking version of Xcode_12.app"
+# defaults read /Applications/Xcode_12.app/Contents/Info CFBundleShortVersionString
 
 echo "Attempting to replace <math.h> in header file"
 NewMathHLocation='#include \"\.\/math\.h\"'
