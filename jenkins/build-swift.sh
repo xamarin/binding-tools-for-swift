@@ -22,6 +22,7 @@ if test -f "$PACKAGED_STAMPFILE$FORCE_SWIFT_BUILD"; then
 	exit 0
 fi
 
+cd "$WORKSPACE/Pack-Man"
 # Check if we already have a swift package uploaded
 # Bump 'v#' whenever a new package must be uploaded with the same swift hash (it can be bumped back to 1 every time we bump the swift hash if we wish)
 # (for instance if changes to Pack-Man were required to adjust which files are packaged)
