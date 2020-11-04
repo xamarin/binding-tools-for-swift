@@ -178,7 +178,6 @@ jobs:
       set -e
       set -x
       ls -la
-      ls -la $(System.DefaultWorkingDirectory)
       ZIPS=($(System.DefaultWorkingDirectory)/downloadToolchain/*.zip)
       if (( ${#ZIPS[@]} == 1 )); then
         if test -f "${ZIPS[0]}"; then
