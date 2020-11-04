@@ -185,6 +185,10 @@ jobs:
           FILE=${ZIPS[0]}
         else
           echo "Could not find any zip files to upload"
+          if [ -d $(System.DefaultWorkingDirectory)/downloadToolchain ]
+          then
+            ls -la $(System.DefaultWorkingDirectory)/downloadToolchain
+          fi
           exit 1
         fi
       elif (( ${#ZIPS[@]} > 1 )); then
