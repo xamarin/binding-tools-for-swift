@@ -22,13 +22,12 @@ if test -f "$PACKAGED_STAMPFILE$FORCE_SWIFT_BUILD"; then
 	exit 0
 fi
 
-cd "$WORKSPACE/Pack-Man"
 # Check if we already have a swift package uploaded
 # Bump 'v#' whenever a new package must be uploaded with the same swift hash (it can be bumped back to 1 every time we bump the swift hash if we wish)
 # (for instance if changes to Pack-Man were required to adjust which files are packaged)
 SWIFT_TOOLCHAIN_NAME="SwiftToolchain-v1-$SWIFT_HASH"
 if test -z "$FORCE_SWIFT_BUILD"; then
-	toolchain_url="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$SWIFT_TOOLCHAIN_NAME.zip"
+	toolchain_url="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/"
 	echo "Checking if we already have a toolchain built for $SWIFT_HASH ($toolchain_url)"
 	echo "Checking this directory"
 	ls -la 
