@@ -1312,6 +1312,7 @@ public enum Counters {
 		}
 
 		[Test]
+		[Ignore ("Waiting on Apple issue https://bugs.swift.org/browse/SR-13832")]
 		public void WatchThoseConstructors ()
 		{
 			var swiftCode = @"
