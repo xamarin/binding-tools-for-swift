@@ -47,8 +47,6 @@ clean:
 
 # Compute the list of test modules
 MODULES:=$(shell ls -d devicetests/*/swiftsrc/*[!_]?????.swift 2>/dev/null | sed -e 's_devicetests/__' -e 's_/swiftsrc__' -e 's_/.*swift__'  | uniq)
-# MODULES:=$(shell find devicetests -maxdepth 1 -mindepth 1 -type d \! -exec test -e '{}/swiftsrc/*[!_]?????.swift' \; -print | sed -e 's_devicetests/__')
-
 
 #
 # Define a template that can compile the swift code for the device tests

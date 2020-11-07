@@ -47,7 +47,7 @@ jobs:
       ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.1.app
       ln -s /Applications/Xcode_12.app /Applications/Xcode.app
       xcode-select -p
-    displayName: 'Confirming Xcode Version'
+    displayName: 'Managing Xcode Symlinks'
 
   - bash: |
       set -x

@@ -2,7 +2,6 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 WORKSPACE=$(pwd)
-echo "Workspace is $WORKSPACE"
 
 # SC1091: Not following: SwiftVersion.mk was not specified as input (see shellcheck -x).
 # shellcheck disable=SC1091
@@ -29,8 +28,6 @@ SWIFT_TOOLCHAIN_NAME="SwiftToolchain-v1-$SWIFT_HASH"
 if test -z "$FORCE_SWIFT_BUILD"; then
 	toolchain_url="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$SWIFT_TOOLCHAIN_NAME.zip"
 	echo "Checking if we already have a toolchain built for $SWIFT_HASH ($toolchain_url)"
-	echo "Checking this directory"
-	ls -la 
 
 	# Extract only if not already extracted
 	if ! test -d "$SWIFT_TOOLCHAIN_NAME"; then
