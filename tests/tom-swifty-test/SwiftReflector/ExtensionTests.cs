@@ -301,23 +301,6 @@ public extension HotDogOnUserType
 			TestRunning.TestAndExecute (swiftCode, callingCode, "2.99\n");
 		}
 
-
-		[Test]
-		public void NonPublicExtensionOnNotification ()
-		{
-			var swiftCode = @"import Foundation
-			import CoreGraphics
-	extension Notification {
-	
-	    func myFrame () -> CGRect? {
-	        return CGRect.init ();
-	    }
-	}";
-
-			var callingCode = CSCodeBlock.Create ();
-			TestRunning.TestAndExecute (swiftCode, callingCode, "");
-		}
-
 		[Test]
 		public void GenericExtensionOnDictionary ()
 		{

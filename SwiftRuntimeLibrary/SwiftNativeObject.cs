@@ -27,7 +27,6 @@ namespace SwiftRuntimeLibrary {
 			class_handle = classHandle;
 			SwiftObject = handle;
 			registry.Add (this);
-			SwiftCore.Retain (SwiftObject);
 		}
 
 		protected override void Dispose (bool disposing)
