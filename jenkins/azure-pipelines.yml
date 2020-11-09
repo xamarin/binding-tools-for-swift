@@ -144,7 +144,7 @@ jobs:
       testResultsFiles: '**/TestResult*.xml'
       failTaskOnFailedTests: true
     continueOnError: true
-    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
@@ -152,7 +152,7 @@ jobs:
       targetPath: $(System.DefaultWorkingDirectory)/binding-tools-for-swift/tests/tom-swifty-test/TestResult.xml
       artifactName: TestResults
     continueOnError: true
-    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
 - job: UploadToolchain
   dependsOn: ContinuousIntegration
