@@ -290,8 +290,6 @@ namespace dlopentest
 				Assert.AreEqual (expected, output);
 				var typeBasedClassName = typeName.Replace('.', '_');
 
-				
-
 				var tsource = $@"using System;
 using NewClassCompilerTests;
 using SwiftRuntimeLibrary;

@@ -23,7 +23,7 @@ variables:
 parameters:
 - name: RunningTests
   type: boolean
-  default: false # we can change this to true when we want to run tests
+  default: false # we can change this to true or check the box in pipelines when we want to run tests
 
 jobs:
 - job: ContinuousIntegration
