@@ -638,6 +638,7 @@ public func Eat () { }
 		}
 
 		[Test]
+		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void EnumSmokeTest4 ()
 		{
 			EnumSmokeTest4RawValueImpl ("FooAST4", "FooAST4.A", "2");
@@ -964,6 +965,7 @@ public enum Position {
 		}
 
 		[Test]
+		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void TestPropMatchesClassEnumName ()
 		{
 			string swiftCode =
@@ -984,6 +986,7 @@ public enum Position {
 		}
 
 		[Test]
+		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void TestPropMatchesTrivialEnumName ()
 		{
 			string swiftCode =
@@ -1264,6 +1267,7 @@ open class LazyVariable
 
 
 		[Test]
+		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void TrivialEnumMember ()
 		{
 			var swiftCode = @"
@@ -1308,6 +1312,7 @@ public enum Counters {
 		}
 
 		[Test]
+		[Ignore ("Waiting on Apple issue https://bugs.swift.org/browse/SR-13832")]
 		public void WatchThoseConstructors ()
 		{
 			var swiftCode = @"

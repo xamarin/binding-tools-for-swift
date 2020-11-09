@@ -400,7 +400,7 @@ namespace SwiftReflector {
 			CodeWriter writer = null;
 			try {
 				writer = new CodeWriter (stm);
-				WrapStruct (st, writer, modInventory, errors);
+				WrapStruct (st, writer);
 				writer.TextWriter.Flush ();
 				provider.NotifyStreamDone (sn, stm);
 			} catch (Exception err) {
@@ -628,9 +628,6 @@ namespace SwiftReflector {
 						continue;
 					if (BoundClosureError (funcDecl, en, "wrapping a constructor in an enum"))
 						continue;
-					TLFunction ctorTlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, modInventory, typeMapper);
-					if (ctorTlf == null)
-						throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 3, $"Unable to find constructor for struct {funcDecl.ToFullyQualifiedName (true)}.");
 					SLFunc func = null;
 					try {
 						func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);
@@ -980,7 +977,7 @@ namespace SwiftReflector {
 			return func;
 		}
 
-		void WrapStruct (StructDeclaration st, CodeWriter cw, ModuleInventory modInventory, ErrorHandling errors)
+		void WrapStruct (StructDeclaration st, CodeWriter cw)
 		{
 			SLFile file = new SLFile (null);
 			var modules = file.Imports;
@@ -996,12 +993,6 @@ namespace SwiftReflector {
 						continue;
 					if (BoundClosureError (funcDecl, st, "wrapping a constructor in a struct"))
 						continue;
-					var ctorTlf = XmlToTLFunctionMapper.ToTLFunction (funcDecl, modInventory, typeMapper);
-					if (ctorTlf == null) {
-						var ex = ErrorHelper.CreateWarning (ReflectorError.kCompilerReferenceBase + 24, $"Unable to find constructor for struct {funcDecl.ToFullyQualifiedName ()}, skipping.");
-						errors.Add (ex);
-						continue;
-					}
 					SLFunc func = null;
 					try {
 						func = MapFuncDeclToWrapperFunc (swiftClassName, modules, funcDecl);

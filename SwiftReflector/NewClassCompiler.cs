@@ -198,12 +198,6 @@ namespace SwiftReflector {
 			var declsPerModule = new List<List<BaseDeclaration>> ();
 			foreach (ModuleDeclaration moduleDeclaration in moduleDeclarations) {
 				var allTypesAndTopLevel = moduleDeclaration.AllTypesAndTopLevelDeclarations;
-
-				var modContents = ModuleContentsForModuleDeclaration (moduleDeclaration, moduleInventory);
-				if (modContents == null) {
-					var ex = ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 4, $"Unable to find module contents for module {moduleDeclaration.Name}");
-					errors.Add (ex); 
-				}
 				TypeMapper.RegisterClasses (allTypesAndTopLevel.OfType<TypeDeclaration> ());
 				declsPerModule.Add (allTypesAndTopLevel);
 			}
