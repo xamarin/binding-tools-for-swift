@@ -119,7 +119,7 @@ git reset --hard "$SWIFT_HASH"
 echo "Updating swift dependencies..."
 ./utils/update-checkout --clone --skip-repository swift -j 1 --scheme "$SWIFT_SCHEME"
 
-echo "Attempting to replace <math.h> in header file"
+echo "Pointing to different math.h for Clang/Catalina issue"
 NewMathHLocation='#include \"\.\/math\.h\"'
 sed -i '' -e "s/#include <math.h>/${NewMathHLocation}/" /Applications/Xcode_12.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/cmath
 
