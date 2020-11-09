@@ -19,9 +19,11 @@ resources:
 variables:
   - group: xamops-azdev-secrets
   - group: Xamarin-Secrets
-  - name: RunningTests
-    type: boolean
-    default: false # we can change this to true when we want to run tests
+
+parameters:
+- name: RunningTests
+  type: boolean
+  default: false # we can change this to true when we want to run tests
 
 jobs:
 - job: ContinuousIntegration
