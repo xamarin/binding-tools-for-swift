@@ -172,7 +172,7 @@ namespace dlopentest
 
 				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
 				Assert.AreEqual (expected, output);
-				var typeBasedClassName = typeName.Replace('.', '_');
+				var typeBasedClassName = typeName.Replace ('.', '_');
 
 				string tsource = $@"using System;
 using NewClassCompilerTests;
@@ -230,7 +230,7 @@ namespace dlopentest
 
 				var output = TestRunning.Execute (temp.DirectoryPath, "TestIt.exe", PlatformName.macOS);
 				Assert.AreEqual (expected, output);
-				var typeBasedClassName = typeName.Replace('.', '_');
+				var typeBasedClassName = typeName.Replace ('.', '_');
 
 				var tsource = $@"using System;
 using NewClassCompilerTests;

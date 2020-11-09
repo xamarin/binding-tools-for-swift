@@ -105,8 +105,7 @@ if test -d swift; then
 	cd swift
 fi
 
-echo "Reinstalling six"
-pip uninstall six
+echo "Installing six"
 pip install six
 
 echo "Checking out swift..."
