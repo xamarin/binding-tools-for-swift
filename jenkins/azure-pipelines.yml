@@ -19,6 +19,9 @@ resources:
 variables:
   - group: xamops-azdev-secrets
   - group: Xamarin-Secrets
+  - name: RunningTests
+    type: boolean
+    default: false # we can change this to true when we want to run tests
 
 jobs:
 - job: ContinuousIntegration
@@ -130,7 +133,7 @@ jobs:
       set -x
       ./binding-tools-for-swift/jenkins/run-tests.sh
     displayName: 'Run tests'
-    enabled: false
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishTestResults@2
     displayName: 'Publish NUnit Device Test Results'
@@ -139,7 +142,7 @@ jobs:
       testResultsFiles: '**/TestResult*.xml'
       failTaskOnFailedTests: true
     continueOnError: true
-    condition: succeededOrFailed()
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
@@ -147,7 +150,7 @@ jobs:
       targetPath: $(System.DefaultWorkingDirectory)/binding-tools-for-swift/tests/tom-swifty-test/TestResult.xml
       artifactName: TestResults
     continueOnError: true
-    condition: succeededOrFailed()
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
 - job: UploadToolchain
   dependsOn: ContinuousIntegration
@@ -177,7 +180,6 @@ jobs:
   - bash: |
       set -e
       set -x
-      ls -la
       ZIPS=(toolchain/*.zip)
       if (( ${#ZIPS[@]} == 1 )); then
         if test -f "${ZIPS[0]}"; then
