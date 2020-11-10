@@ -105,6 +105,7 @@ if test -d swift; then
 	cd swift
 fi
 
+# To fix complaints in './utils/build-script' that six is not found
 echo "Installing six"
 pip install six
 
