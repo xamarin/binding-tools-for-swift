@@ -78,6 +78,7 @@ TYPE_O_MATIC_COMMON_NAMESPACES= \
 	MapKit \
 	MediaAccessibility \
 	MediaPlayer \
+	MediaSetup \
 	MediaToolbox \
 	Metal \
 	MetalKit \
