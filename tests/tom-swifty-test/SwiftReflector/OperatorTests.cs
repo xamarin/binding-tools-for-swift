@@ -309,7 +309,6 @@ public func ^++^ (left: IntOrFloat, right: IntOrFloat) -> IntOrFloat {
 		}
 
 		[Test]
-		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void SimpleEnumInfixOpTest ()
 		{
 			var swiftCode = @"
@@ -338,7 +337,6 @@ public prefix func ^-^(val: CompassPoints) -> CompassPoints {
 		}
 
 		[Test]
-		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void SimpleEnumPostfixOpTest ()
 		{
 			var swiftCode = @"
@@ -454,7 +452,6 @@ public class NumRep1 {
 		}
 
 		[Test]
-		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void EnumInlineInfixOperator ()
 		{
 			var swiftCode = @"
@@ -481,7 +478,6 @@ public enum CompassPoints3 {
 
 
 		[Test]
-		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void EnumInlinePrefixOperator ()
 		{
 			var swiftCode = @"

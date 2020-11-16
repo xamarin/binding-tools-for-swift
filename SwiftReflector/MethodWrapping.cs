@@ -2324,7 +2324,7 @@ namespace SwiftReflector {
 			var en = t.GetEntityForTypeSpec (item.TypeSpec);
 			if (en == null)
 				return false;
-			return en.IsStructOrEnum && en.EntityType != EntityType.TrivialEnum;
+			return en.IsStructOrEnum;
 		}
 
 		public static bool IsProtocol (TypeMapper t, ParameterItem item)

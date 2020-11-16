@@ -165,9 +165,9 @@ namespace SwiftReflector {
 							identifiersUsed.Add (returnIdent.Name);
 							Tuple<int, int> depthIndex = func.GetGenericDepthAndIndex (returnTypeSpec);
 							var retvalDecl = new SLDeclaration (true, returnIdent, null,
-							                                              new SLFunctionCall (String.Format ("UnsafeMutablePointer<{0}>.allocate", SLGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2)),
-							                                                                  false, new SLArgument (new SLIdentifier ("capacity"), SLConstant.Val (1), true)),
-							                                              Visibility.None);
+												      new SLFunctionCall (String.Format ("UnsafeMutablePointer<{0}>.allocate", SLGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2)),
+															  false, new SLArgument (new SLIdentifier ("capacity"), SLConstant.Val (1), true)),
+												      Visibility.None);
 							preMarshalCode.Add (new SLLine (retvalDecl));
 							closureArgs.Insert (0, new SLFunctionCall ("toIntPtr", false, new SLArgument (new SLIdentifier ("value"), returnIdent, true)));
 							SLIdentifier actualReturnIdent = new SLIdentifier (MarshalEngine.Uniqueify ("actualRetval", identifiersUsed));
@@ -176,8 +176,8 @@ namespace SwiftReflector {
 							returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
 
 							var actualRetvalDecl = new SLDeclaration (true, actualReturnIdent, null,
-							                                                    new SLFunctionCall (String.Format ("{0}.move", returnIdent.Name), false),
-							                                                    Visibility.None);
+													    new SLFunctionCall (String.Format ("{0}.move", returnIdent.Name), false),
+													    Visibility.None);
 							postMarshalCode.Add (new SLLine (actualRetvalDecl));
 							postMarshalCode.Add (SLFunctionCall.FunctionCallLine (String.Format ("{0}.deallocate", returnIdent.Name)));
 							postMarshalCode.Add (SLReturn.ReturnLine (actualReturnIdent));
@@ -206,90 +206,75 @@ namespace SwiftReflector {
 							var entity = typeMapper.GetEntityForTypeSpec (returnTypeSpec);
 							if (returnTypeSpec is NamedTypeSpec && entity == null && !func.ReturnTypeSpec.IsDynamicSelf)
 								throw new NotImplementedException ($"Function {func.ToFullyQualifiedName (true)} has an unknown return type {returnTypeSpec.ToString ()}");
-							if (entity?.EntityType == EntityType.TrivialEnum) {
-								imports.AddIfNotPresent (entity.Type.Module.Name);
-								var slSelf = new SLIdentifier ($"{entity.Type.Name}.self");
-								SLBaseExpr callExpr = new SLFunctionCall ("unsafeBitCast", false,
-									new SLArgument (new SLIdentifier ("_"), new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)), false),
-									new SLArgument (new SLIdentifier ("to"), slSelf, true));
-								if (postMarshalCode.Count == 0) {
-									returnLine = SLReturn.ReturnLine (callExpr);
-								} else {
-									returnIdent = new SLIdentifier (MarshalEngine.Uniqueify ("retval", identifiersUsed));
-									identifiersUsed.Add (returnIdent.Name);
-									var retvalDecl = new SLDeclaration (true, returnIdent, null, callExpr, Visibility.None);
-									returnLine = new SLLine (retvalDecl);
-									postMarshalCode.Add (SLReturn.ReturnLine (returnIdent));
-								}
-							} else {
-								switch (returnTypeSpec.Kind) {
-								case TypeSpecKind.Closure:
 
-									// let retval:CT = allocSwiftClosureToFunc_ARGS ()
-									// _vtable.entry!(retval, args)
-									// let actualReturn = netFuncToSwiftClosure (retval.move())
-									// retval.deallocate()
-									// return actualReturn
+							switch (returnTypeSpec.Kind) {
+							case TypeSpecKind.Closure:
 
-									var ct = returnTypeSpec as ClosureTypeSpec;
-									var slct = new SLBoundGenericType ("UnsafeMutablePointer", ToMarshaledClosureType (func, ct));
-									var ptrName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
-									identifiersUsed.Add (ptrName);
+								// let retval:CT = allocSwiftClosureToFunc_ARGS ()
+								// _vtable.entry!(retval, args)
+								// let actualReturn = netFuncToSwiftClosure (retval.move())
+								// retval.deallocate()
+								// return actualReturn
 
-									var ptrAllocCallSite = ct.HasReturn () ? $"allocSwiftClosureToFunc_{ct.ArgumentCount()}" : $"allocSwiftClosureToAction_{ct.ArgumentCount ()}";
-									var ptrAllocCall = new SLFunctionCall (ptrAllocCallSite, false);
-									var ptrDecl = new SLDeclaration (true, new SLIdentifier (ptrName), slct, ptrAllocCall, Visibility.None);
-									preMarshalCode.Add (new SLLine (ptrDecl));
-									closureArgs.Insert (0, new SLIdentifier (ptrName));
+								var ct = returnTypeSpec as ClosureTypeSpec;
+								var slct = new SLBoundGenericType ("UnsafeMutablePointer", ToMarshaledClosureType (func, ct));
+								var ptrName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
+								identifiersUsed.Add (ptrName);
 
-									returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
+								var ptrAllocCallSite = ct.HasReturn () ? $"allocSwiftClosureToFunc_{ct.ArgumentCount ()}" : $"allocSwiftClosureToAction_{ct.ArgumentCount ()}";
+								var ptrAllocCall = new SLFunctionCall (ptrAllocCallSite, false);
+								var ptrDecl = new SLDeclaration (true, new SLIdentifier (ptrName), slct, ptrAllocCall, Visibility.None);
+								preMarshalCode.Add (new SLLine (ptrDecl));
+								closureArgs.Insert (0, new SLIdentifier (ptrName));
 
-									var actualReturnName = MarshalEngine.Uniqueify ("actualReturn", identifiersUsed);
-									identifiersUsed.Add (actualReturnName);
-									var convertCallSite = ct.HasReturn () ? "netFuncToSwiftClosure" : "netActionToSwiftClosure";
-									var isEmptyClosure = !ct.HasReturn () && !ct.HasArguments ();
-									var pointerMove = new SLFunctionCall ($"{ptrName}.move", false);
-									var convertCall = isEmptyClosure ? pointerMove : new SLFunctionCall (convertCallSite, false, new SLArgument (new SLIdentifier ("a1"), pointerMove, true));
-									var actualDecl = new SLDeclaration (true, actualReturnName, value: convertCall, vis: Visibility.None);
-									postMarshalCode.Add (new SLLine (actualDecl));
-									postMarshalCode.Add (new SLReturn (new SLIdentifier (actualReturnName)));
-									break;
-								case TypeSpecKind.ProtocolList:
-								case TypeSpecKind.Tuple:
-								case TypeSpecKind.Named:
-									var namedReturn = returnTypeSpec as NamedTypeSpec;
-									// enums and structs can't get returned directly
-									// instead they will be inserted at the head of the argument list
-									// let retval = UnsafeMutablePointer<StructOrEnumType>.allocate(capacity: 1)
-									// _vtable.entry!(retval, args)
-									// T actualRetval = retval.move()
-									// retval.deallocate()
-									// return actualRetval
-									string allocCallSite = $"UnsafeMutablePointer<{returnTypeSpec}>.allocate";
-									if (namedReturn != null && !namedReturn.IsDynamicSelf)
-										imports.AddIfNotPresent (namedReturn.Module);
-									string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
-									identifiersUsed.Add (retvalName);
-									var retDecl = new SLDeclaration (true, retvalName,
-													 null, new SLFunctionCall (allocCallSite, false, new SLArgument (new SLIdentifier ("capacity"),
-																					 SLConstant.Val (1), true)), Visibility.None);
-									preMarshalCode.Add (new SLLine (retDecl));
-									closureArgs.Insert (0, new SLIdentifier (retvalName));
-									returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
+								returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
 
-									SLIdentifier actualReturnIdent = new SLIdentifier (MarshalEngine.Uniqueify ("actualRetval", identifiersUsed));
-									identifiersUsed.Add (actualReturnIdent.Name);
-									var actualRetvalDecl = new SLDeclaration (true, actualReturnIdent, null,
-															    new SLFunctionCall (String.Format ("{0}.move", retvalName), false),
-															    Visibility.None);
-									postMarshalCode.Add (new SLLine (actualRetvalDecl));
-									postMarshalCode.Add (SLFunctionCall.FunctionCallLine (
-										String.Format ("{0}.deallocate", retvalName)));
-									postMarshalCode.Add (SLReturn.ReturnLine (actualReturnIdent));
+								var actualReturnName = MarshalEngine.Uniqueify ("actualReturn", identifiersUsed);
+								identifiersUsed.Add (actualReturnName);
+								var convertCallSite = ct.HasReturn () ? "netFuncToSwiftClosure" : "netActionToSwiftClosure";
+								var isEmptyClosure = !ct.HasReturn () && !ct.HasArguments ();
+								var pointerMove = new SLFunctionCall ($"{ptrName}.move", false);
+								var convertCall = isEmptyClosure ? pointerMove : new SLFunctionCall (convertCallSite, false, new SLArgument (new SLIdentifier ("a1"), pointerMove, true));
+								var actualDecl = new SLDeclaration (true, actualReturnName, value: convertCall, vis: Visibility.None);
+								postMarshalCode.Add (new SLLine (actualDecl));
+								postMarshalCode.Add (new SLReturn (new SLIdentifier (actualReturnName)));
+								break;
+							case TypeSpecKind.ProtocolList:
+							case TypeSpecKind.Tuple:
+							case TypeSpecKind.Named:
+								var namedReturn = returnTypeSpec as NamedTypeSpec;
+								// enums and structs can't get returned directly
+								// instead they will be inserted at the head of the argument list
+								// let retval = UnsafeMutablePointer<StructOrEnumType>.allocate(capacity: 1)
+								// _vtable.entry!(retval, args)
+								// T actualRetval = retval.move()
+								// retval.deallocate()
+								// return actualRetval
+								string allocCallSite = $"UnsafeMutablePointer<{returnTypeSpec}>.allocate";
+								if (namedReturn != null && !namedReturn.IsDynamicSelf)
+									imports.AddIfNotPresent (namedReturn.Module);
+								string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
+								identifiersUsed.Add (retvalName);
+								var retDecl = new SLDeclaration (true, retvalName,
+												 null, new SLFunctionCall (allocCallSite, false, new SLArgument (new SLIdentifier ("capacity"),
+																				 SLConstant.Val (1), true)), Visibility.None);
+								preMarshalCode.Add (new SLLine (retDecl));
+								closureArgs.Insert (0, new SLIdentifier (retvalName));
+								returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
 
-									break;
-								}
+								SLIdentifier actualReturnIdent = new SLIdentifier (MarshalEngine.Uniqueify ("actualRetval", identifiersUsed));
+								identifiersUsed.Add (actualReturnIdent.Name);
+								var actualRetvalDecl = new SLDeclaration (true, actualReturnIdent, null,
+														    new SLFunctionCall (String.Format ("{0}.move", retvalName), false),
+														    Visibility.None);
+								postMarshalCode.Add (new SLLine (actualRetvalDecl));
+								postMarshalCode.Add (SLFunctionCall.FunctionCallLine (
+									String.Format ("{0}.deallocate", retvalName)));
+								postMarshalCode.Add (SLReturn.ReturnLine (actualReturnIdent));
+
+								break;
 							}
+
 						}
 					}
 				}

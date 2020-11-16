@@ -103,6 +103,23 @@ namespace Dynamo.CSLang {
 			return FooOf (iSizeof, expr);
 		}
 
+		static CSIdentifier iDefault = new CSIdentifier ("default");
+
+		public static CSFunctionCall Default (Type t)
+		{
+			return Default (t.Name);
+		}
+
+		public static CSFunctionCall Default (string t)
+		{
+			return FooOf (iDefault, new CSIdentifier (t));
+		}
+
+		public static CSFunctionCall Default (CSSimpleType t)
+		{
+			return Default (t.Name);
+		}
+
 		static CSFunctionCall FooOf (CSIdentifier foo, CSBaseExpression parameter)
 		{
 			CommaListElementCollection<CSBaseExpression> parms = new CommaListElementCollection<CSBaseExpression> ();

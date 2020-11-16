@@ -238,7 +238,8 @@ namespace SwiftReflector {
 			var returnIsProtocolList = hasReturn && swiftReturnType is ProtocolListTypeSpec;
 			var returnIsObjCProtocol = hasReturn && returnEntity != null && returnEntity.IsObjCProtocol;
 			var returnNeedsPostProcessing = (hasReturn && (returnIsClass || returnIsProtocolList || returnIsInterfaceFromProtocol || returnIsNonTrivialTuple ||
-				returnIsGeneric || returnIsNonScalarStruct || returnIsAssocPath || (returnIsSelf && !restoreDynamicSelf))) || originalThrows;
+				returnIsGeneric || returnIsNonScalarStruct || returnIsAssocPath || (returnIsSelf && !restoreDynamicSelf))) || originalThrows
+				|| returnIsTrivialEnum;
 
 			includeCastToReturnType = includeCastToReturnType || returnIsTrivialEnum;
 			includeIntermediateCastToLong = includeIntermediateCastToLong || returnIsTrivialEnum;
@@ -282,7 +283,7 @@ namespace SwiftReflector {
 					bool returnsIntPtrForReal = returnEntity != null && returnEntity.IsStructClassOrEnum &&
 						(returnType is CSSimpleType && ((CSSimpleType)returnType).Name == "IntPtr");
 
-					if (!returnsIntPtrForReal && !returnIsTrivialEnum) {
+					if (!returnsIntPtrForReal) {
 						returnIdent = new CSIdentifier (Uniqueify ("retval", identifiersUsed));
 						identifiersUsed.Add (returnIdent.Name);
 					}
@@ -357,6 +358,10 @@ namespace SwiftReflector {
 						preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, returnType.Default ()));
 						indexOfReturn = 0;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
+					} else if (returnIsTrivialEnum) {
+						absolutelyMustBeFirst.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, CSFunctionCall.Default ((CSSimpleType)returnType)));
+						indexOfReturn = 0;
+						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.Out));
 					}
 				}
 			}
@@ -693,7 +698,7 @@ namespace SwiftReflector {
 			case EntityType.Protocol:
 				return MarshalProtocol (p, swiftType as NamedTypeSpec, marshalProtocolAsValueType);
 			case EntityType.TrivialEnum:
-				return MarshalTrivialEnum (p, swiftType as NamedTypeSpec);
+				return MarshalTrivialEnumAsPointer (p, isReturnVariable);
 			case EntityType.Closure:
 				return MarshalClosure (p);
 			case EntityType.ProtocolList:
@@ -777,8 +782,9 @@ namespace SwiftReflector {
 			var entity = typeMapper.GetEntityForTypeSpec (pointsTo);
 			switch (entityType) {
 			case EntityType.Scalar:
-			case EntityType.TrivialEnum:
 				return MarshalScalarAsPointer (p);
+			case EntityType.TrivialEnum:
+				return MarshalTrivialEnumAsPointer (p, isReturnVariable);
 			case EntityType.Class:
 				return MarshalClassAsPointer (p, funcDecl, pointsTo as NamedTypeSpec, marshalProtocolAsValueType, isReturnVariable);
 			case EntityType.Enum:
@@ -816,25 +822,29 @@ namespace SwiftReflector {
 			return new CSIdentifier ($"ref {p.Name}");
 		}
 
-		CSBaseExpression MarshalTrivialEnumAsPointer (CSParameter p)
+		CSBaseExpression MarshalTrivialEnumAsPointer (CSParameter p, bool isReturnVariable)
 		{
-			// for a built-in type, we can do this:
-			// unsafe {
-			// simpleType *pPtr = &pName;
-			// ...
-			// SomePiCall(... new IntPtr(pPtr) ...);
-			// }
-			var cst = p.CSType as CSSimpleType;
-			if (cst == null)
-				throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 43, "Expected a swift built-in type to be a CSSimple type.");
-			string pPtrName = Uniqueify (p.Name.Name + "Ptr", identifiersUsed);
-			var pPtr = new CSIdentifier (pPtrName);
+			// var pVal = (nint)(long)p;
+			// var pPtr = &pVal;
+			// ... new IntPtr (pPtr);
+			// p = (PType)pVal;
+			var pValName = Uniqueify (p.Name.Name + "Val", identifiersUsed);
+			identifiersUsed.Add (pValName);
+			var pValID = new CSIdentifier (pValName);
+			var pCast = new CSCastExpression (new CSSimpleType ("nint"), new CSCastExpression (CSSimpleType.Long, p.Name));
+			var pValDecl = CSVariableDeclaration.VarLine (pValID, pCast);
+			preMarshalCode.Add (pValDecl);
+			var pPtrName = Uniqueify (p.Name.Name + "Ptr", identifiersUsed);
 			identifiersUsed.Add (pPtrName);
-
+			var pPtrID = new CSIdentifier (pPtrName);
+			var pPtrDecl = CSVariableDeclaration.VarLine (pPtrID, new CSUnaryExpression (CSUnaryOperator.AddressOf, pValID));
+			preMarshalCode.Add (pPtrDecl);
+			if (p.ParameterKind == CSParameterKind.Out || p.ParameterKind == CSParameterKind.Ref) {
+				var reAssign = CSAssignment.Assign (p.Name, new CSCastExpression (p.CSType, new CSCastExpression (CSSimpleType.Long, pValID)));
+				postMarshalCode.Add (reAssign);
+			}
 			RequiredUnsafeCode = true;
-			var varDecl = CSVariableDeclaration.VarLine (cst.Star, pPtr, new CSUnaryExpression (CSUnaryOperator.AddressOf, p.Name));
-			preMarshalCode.Add (varDecl);
-			return new CSFunctionCall ("IntPtr", true, pPtr);
+			return new CSFunctionCall ("IntPtr", true, pPtrID);
 		}
 
 		CSBaseExpression MarshalClassAsPointer (CSParameter p, FunctionDeclaration funcDecl, NamedTypeSpec swiftType, bool marshalProtocolAsValueType, bool isReturnVariable)
