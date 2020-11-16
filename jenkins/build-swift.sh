@@ -105,6 +105,10 @@ if test -d swift; then
 	cd swift
 fi
 
+# To fix complaints in './utils/build-script' that six is not found
+echo "Installing six"
+pip install six
+
 echo "Checking out swift..."
 git clone https://github.com/xamarin/binding-tools-for-swift-reflector swift
 cd swift

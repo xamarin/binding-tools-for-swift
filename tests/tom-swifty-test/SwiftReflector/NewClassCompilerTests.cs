@@ -79,7 +79,7 @@ namespace SwiftReflector {
 		public void OneWithEverythingOnItPlease ()
 		{
 			string swiftCode = @"import Foundation;
-public enum Bread {
+public enum BreadType {
     case Wheat
     case White
 }
@@ -90,7 +90,7 @@ public protocol Food {
 
 public struct Bun
 {
-    var MadeOf : Bread;
+    var MadeOf : BreadType;
     var Length : Int;
 }
 

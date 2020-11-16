@@ -172,6 +172,7 @@ namespace dlopentest
 
 				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
 				Assert.AreEqual (expected, output);
+				var typeBasedClassName = typeName.Replace ('.', '_');
 
 				string tsource = $@"using System;
 using NewClassCompilerTests;
@@ -181,7 +182,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace MetatypeTests
 {{
-	public class CheckTypeOne{typeName} : ITomTest
+	public class CheckTypeOne{typeBasedClassName} : ITomTest
 	{{
 	    public void Run()
 		{{
@@ -229,6 +230,7 @@ namespace dlopentest
 
 				var output = TestRunning.Execute (temp.DirectoryPath, "TestIt.exe", PlatformName.macOS);
 				Assert.AreEqual (expected, output);
+				var typeBasedClassName = typeName.Replace ('.', '_');
 
 				var tsource = $@"using System;
 using NewClassCompilerTests;
@@ -238,12 +240,12 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace MetatypeTests
 {{
-	public class CheckName{typeName} : ITomTest
+	public class CheckName{typeBasedClassName} : ITomTest
 	{{
 		public void Run()
 		{{
 			SwiftNominalTypeDescriptor nt = StructMarshal.Marshaler.Metatypeof(typeof({typeName})).GetNominalTypeDescriptor();
-			Console.WriteLine(nt.GetMangledName());
+			Console.WriteLine(nt.GetFullName());
 		}}
 
 		public string TestName {{ get {{ return ""CheckName{typeName}""; }} }}
@@ -286,6 +288,7 @@ namespace dlopentest
 
 				var output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
 				Assert.AreEqual (expected, output);
+				var typeBasedClassName = typeName.Replace('.', '_');
 
 				var tsource = $@"using System;
 using NewClassCompilerTests;
@@ -295,12 +298,12 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace MetatypeTests
 {{
-	public class CheckName{typeName} : ITomTest
+	public class CheckName{typeBasedClassName} : ITomTest
 	{{
 		public void Run()
 		{{
 			SwiftNominalTypeDescriptor nt = StructMarshal.Marshaler.Metatypeof(typeof({typeName})).GetNominalTypeDescriptor();
-			Console.WriteLine(nt.GetMangledName());
+			Console.WriteLine(nt.GetFullName());
 		}}
 
 		public string TestName {{ get {{ return ""CheckName{typeName}""; }} }}

@@ -10,13 +10,11 @@ all: build run-tests
 
 check: run-tests
 
-run-tests:
-	echo "tests are offline for now."
 
 # new (incompatible but much more powerful) runner syntax means using FIXTURES has to look like
 # FIXTURES="--where=test=SwiftReflector.LinkageTests.TestMissingNSObject" make
 # https://github.com/nunit/docs/wiki/Test-Selection-Language
-offline-run-tests: bin/Debug/tom-swifty-test.dll
+run-tests: bin/Debug/tom-swifty-test.dll
 	rm -f .failed-stamp
 	rm -Rf bin/devicetests # remove any existing device test output
 	DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):$(SWIFTLIB)/macosx:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
@@ -48,7 +46,7 @@ clean:
 	@rm -rf bin obj TestResult.xml devicetests/*
 
 # Compute the list of test modules
-MODULES:=$(shell ls -d devicetests/*/swiftsrc 2>/dev/null | sed -e 's_devicetests/__' -e 's_/swiftsrc__')
+MODULES:=$(shell ls -d devicetests/*/swiftsrc/*[!_]?????.swift 2>/dev/null | sed -e 's_devicetests/__' -e 's_/swiftsrc__' -e 's_/.*swift__'  | uniq)
 
 #
 # Define a template that can compile the swift code for the device tests
@@ -133,13 +131,9 @@ tomswiftydevicetests/%/tomswiftydevicetests.csproj: tomswiftydevicetests/%/tomsw
 
 csproj-iphone: tomswiftydevicetests/iphone/tomswiftydevicetests.csproj
 
-#all-ios: build-iphone csproj-iphone
-all-ios: 
-	echo "device tests are offline for swift 5"
+all-ios: build-iphone csproj-iphone
 
-#build-device-tests: all-ios tomswiftydevicetests.zip
-build-device-tests: 
-	echo "device tests are offline for swift 5"
+build-device-tests: all-ios tomswiftydevicetests.zip
 
 tomswiftydevicetests/iphone/bin/iPhone/Debug/tomswiftydevicetests.app: build-iphone csproj-iphone $(wildcard tomswiftydevicetests/*/*.cs)
 	msbuild tomswiftydevicetests/iphone/tomswiftydevicetests.csproj /p:Platform=iPhone

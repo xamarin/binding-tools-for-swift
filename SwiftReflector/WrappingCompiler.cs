@@ -91,7 +91,7 @@ namespace SwiftReflector {
 						                 inputModDirs, inputLibraryDirectories, inModuleNamesList.ToArray (),
 						                 targets [i], outputIsFramework);
 					} catch (Exception e) {
-						throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 66, e, $"Failed to compile the generated swift wrapper code.");
+						throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 66, e, $"Failed to compile the generated swift wrapper code: {e.Message}");
 					} finally {
 						locations.DisposeAll ();
 					}
