@@ -11,7 +11,25 @@ namespace SwiftReflector {
 	[TestFixture]
 	public class EnumTests {
 		[Test]
-		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
+		public void TestTrivialEnumReturn ()
+		{
+			var swiftCode = @"
+public enum ArmBones {
+	case ulna, radius, brachia
+}
+public func getArmBone () -> ArmBones {
+	return .radius;
+}
+";
+			var gottenID = new CSIdentifier ("arm");
+			var getterDecl = CSVariableDeclaration.VarLine (gottenID, new CSFunctionCall ("TopLevelEntities.GetArmBone", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (gottenID == new CSIdentifier ("ArmBones.Radius"));
+			var callingCode = CSCodeBlock.Create (getterDecl, printer);
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n");
+
+		}
+		[Test]
 		public void PropOnTrivialEnum ()
 		{
 			var swiftCode = @"
@@ -31,7 +49,6 @@ public enum Rocks {
 		}
 
 		[Test]
-		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void TrivialEnumCtor ()
 		{
 			var swiftCode = @"
@@ -82,7 +99,6 @@ public enum SomeForce {
 		}
 
 		[Test]
-		[Ignore ("apple bug - https://bugs.swift.org/browse/SR-13798")]
 		public void NestedEnum ()
 		{
 			var swiftCode = @"

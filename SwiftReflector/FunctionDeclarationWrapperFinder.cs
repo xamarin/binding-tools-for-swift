@@ -111,9 +111,9 @@ namespace SwiftReflector {
 
 			var returnType = funcDecl.ReturnTypeSpec;
 			var entity = typeMapper.GetEntityForTypeSpec (returnType);
-			var isTrivialEnum = entity.EntityType == EntityType.TrivialEnum;
+//			var isTrivialEnum = entity.EntityType == EntityType.TrivialEnum;
 			var isClass = entity.EntityType == EntityType.Class;
-			int skipCount = isClass || isTrivialEnum ? 0 : 1;
+			int skipCount = isClass ? 0 : 1;
 
 			return allWrappers.FirstOrDefault (fn => ParametersMatchExceptSkippingFirstN (fn, funcDecl, skipCount));
 		}
