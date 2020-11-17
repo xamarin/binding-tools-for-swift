@@ -37,7 +37,7 @@ namespace tomwiftytest {
 		}
 
 		public static CSFile GenerateTestEntry (CodeElementCollection<ICodeElement> callingCode, string testName, string nameSpace, PlatformName platform, CSClass otherClass = null,
-			bool enforceUTF8Encoding = false)
+			bool enforceUTF8Encoding = false, CSMethod optionalMethod = null)
 		{
 			var use = GetTestEntryPointUsings (nameSpace, platform);
 
@@ -54,6 +54,8 @@ namespace tomwiftytest {
 						 (CSIdentifier)"Main", new CSParameterList (new CSParameter (CSSimpleType.CreateArray ("string"), "args")),
 						 mainBody);
 			var mainClass = new CSClass (CSVisibility.Public, "NameNotImportant", new CSMethod [] { main });
+			if (optionalMethod != null)
+				mainClass.Methods.Add (optionalMethod);
 			AddSupportingCode (mainClass, platform);
 
 			ns.Block.Add (mainClass);
@@ -124,7 +126,7 @@ namespace tomwiftytest {
 
 		public static Tuple<CSNamespace, CSUsingPackages> CreateTestClass (CodeElementCollection<ICodeElement> callingCode, string testName,
 					  string expectedOutput, string nameSpace, string testClassName, CSClass otherClass, string skipReason, PlatformName platform,
-					  bool enforceUTF8Encoding = false)
+					  bool enforceUTF8Encoding = false, CSMethod optionalMethod = null)
 		{
 			var use = GetTestClassUsings (nameSpace);
 			
@@ -134,6 +136,7 @@ namespace tomwiftytest {
 			//    public testClassName() { }
 			//    public string TestName { get { return testName; } }
 			//    public string ExpectedOutput { get { return expectedOuput; } }
+			//    type OptionalMethod () { }
 			//    public void Run() {
 			//       callingCode;
 			//    }
@@ -157,6 +160,8 @@ namespace tomwiftytest {
 			testClass.Inheritance.Add (new CSIdentifier ("ITomTest"));
 			testClass.Properties.Add (MakeGetOnlyStringProp ("TestName", testName));
 			testClass.Properties.Add (MakeGetOnlyStringProp ("ExpectedOutput", expectedOutput));
+			if (optionalMethod != null)
+				testClass.Methods.Add (optionalMethod);
 			ns.Block.Add (testClass);
 			if (skipReason != null) {
 				CSArgumentList al = new CSArgumentList ();
@@ -318,8 +323,10 @@ namespace tomwiftytest {
 				if (postCompileCheck != null)
 					postCompileCheck (tempDirectoryPath);
 
+				var testPathDumper = BuildDumpLibPaths ();
+
 				Tuple<CSNamespace, CSUsingPackages> testClassParts = TestRunningCodeGenerator.CreateTestClass (callingCode, testName, iosExpectedOutput ?? expectedOutput, nameSpace,
-										       testClassName, otherClass, skipReason, platform, enforceUTF8Encoding);
+										       testClassName, otherClass, skipReason, platform, enforceUTF8Encoding, optionalMethod: testPathDumper);
 
 				var thisTestPath = Path.Combine (Compiler.kSwiftDeviceTestRoot, nameSpace);
 				Directory.CreateDirectory (thisTestPath);
@@ -378,7 +385,7 @@ namespace tomwiftytest {
 					File.WriteAllText (csTestFilePath, csPrefix + File.ReadAllText (csTestFilePath) + csSuffix);
 				}
 
-				var csFile = TestRunningCodeGenerator.GenerateTestEntry (callingCode, testName, nameSpace, platform, otherClass, enforceUTF8Encoding);
+				var csFile = TestRunningCodeGenerator.GenerateTestEntry (callingCode, testName, nameSpace, platform, otherClass, enforceUTF8Encoding, testPathDumper);
 				csFile.Namespaces.Add (CreateManagedConsoleRedirect ());
 				CodeWriter.WriteToFile (Path.Combine (tempDirectoryPath, "NameNotImportant.cs"), csFile);
 
@@ -403,6 +410,46 @@ namespace tomwiftytest {
 					}
 				}
 			}
+		}
+
+		static CSMethod BuildDumpLibPaths ()
+		{
+			// static void DumpLibPaths ()
+			// {
+			//     var pathvar = Environment.GetEnvironmentVariable ("DYLD_LIBRARY_PATH");
+			//     var paths = pathvar.Split(':');
+			//     foreach (string var path in paths) {
+			//         if (path == "") continue;
+			//         Console.WriteLine (path);
+			//         var contents = Directory.GetFiles(path);
+			//         foreach (string var file in contents) {
+			//             Console.WriteLine("    " + file);
+			//         }
+			//     }
+			// }
+			var pathvarID = new CSIdentifier ("pathvar");
+			var pathsID = new CSIdentifier ("paths");
+			var pathvarDecl = CSVariableDeclaration.VarLine (pathvarID, new CSFunctionCall ("Environment.GetEnvironmentVariable", false, CSConstant.Val ("DYLD_LIBRARY_PATH")));
+			var pathsDecl = CSVariableDeclaration.VarLine (pathsID, new CSFunctionCall ($"{pathvarID.Name}.Split", false, CSConstant.Val (':')));
+
+			var pathID = new CSIdentifier ("path");
+			var contentsID = new CSIdentifier ("contents");
+
+			var fileID = new CSIdentifier ("file");
+			var innerForeachBlock = CSCodeBlock.Create (CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("    ") + fileID));
+			var innerForEach = new CSForEach (CSSimpleType.String, fileID, contentsID, innerForeachBlock);
+
+			var outerForeachBlock = CSCodeBlock.Create (
+				new CSIfElse (pathID == CSConstant.Val (""), CSCodeBlock.Create (CSShortCircuit.Continue ())),
+				CSFunctionCall.ConsoleWriteLine (pathID),
+				CSVariableDeclaration.VarLine (contentsID, new CSFunctionCall ("Directory.GetFiles", false, pathID)),
+				innerForEach
+				);
+			var outerForeach = new CSForEach (CSSimpleType.String, pathID, pathsID, outerForeachBlock);
+
+			var body = CSCodeBlock.Create (pathvarDecl, pathsDecl, outerForeach);
+			return new CSMethod (CSVisibility.None, CSMethodKind.Static, CSSimpleType.Void, new CSIdentifier ("DumpLibPaths"),
+				new CSParameterList (), body);
 		}
 
 		public static string CreateSwiftConsoleRedirect ()

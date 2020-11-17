@@ -79,5 +79,10 @@ namespace Dynamo.CSLang {
 		Params,
 		This
 	}
+
+	public enum CSShortCircuitKind {
+		Break,
+		Continue,
+	}
 }
 

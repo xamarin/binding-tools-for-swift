@@ -144,6 +144,7 @@
     <Compile Include="Dynamo.CSLang\CSConditionalCompilation.cs" />
     <Compile Include="Dynamo.CSLang\CSInject.cs" />
     <Compile Include="Dynamo.SwiftLang\SLInject.cs" />
+    <Compile Include="Dynamo.CSLang\CSShortCircuit.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

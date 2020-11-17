@@ -25,6 +25,27 @@ namespace SwiftRuntimeLibrary {
 
 		public IntPtr Handle { get { return handle; }}
 
+		delegate IntPtr MetadataDelegate ();
+
+		static MetadataDelegate GetMetadataDelegate (DynamicLib dylib, string symbol)
+		{
+			var addr = dylib.FindSymbolAddress (symbol);
+			if (addr == IntPtr.Zero)
+				return null;
+			return (MetadataDelegate)Marshal.GetDelegateForFunctionPointer (addr, typeof (MetadataDelegate));
+		}
+
+		internal static SwiftMetatype? FromAccessor (DynamicLib dylib, string symbol)
+		{
+			var accessor = GetMetadataDelegate (dylib, symbol);
+			if (accessor == null)
+				return null;
+			var mdAddr = accessor ();
+			if (mdAddr == IntPtr.Zero)
+				return null;
+			return new SwiftMetatype (mdAddr);
+		}
+
 		internal static SwiftMetatype? FromDylib (DynamicLib dylib, string metaDescName)
 		{
 			return FromDylib (dylib, metaDescName, 0);
