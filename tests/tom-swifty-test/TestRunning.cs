@@ -323,7 +323,8 @@ namespace tomwiftytest {
 				if (postCompileCheck != null)
 					postCompileCheck (tempDirectoryPath);
 
-				var testPathDumper = BuildDumpLibPaths ();
+				// Uncomment to add in a method to dump out lib paths and their contents
+				var testPathDumper = (CSMethod)null; // BuildDumpLibPaths ();
 
 				Tuple<CSNamespace, CSUsingPackages> testClassParts = TestRunningCodeGenerator.CreateTestClass (callingCode, testName, iosExpectedOutput ?? expectedOutput, nameSpace,
 										       testClassName, otherClass, skipReason, platform, enforceUTF8Encoding, optionalMethod: testPathDumper);
