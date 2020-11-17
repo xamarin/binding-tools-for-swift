@@ -5,7 +5,8 @@
 
 set -o pipefail
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
+echo "This is where it is cd $(dirname "$0")/../.."
 
 FAIL=
 PROVISION_DOWNLOAD_DIR=/tmp/x-provisioning

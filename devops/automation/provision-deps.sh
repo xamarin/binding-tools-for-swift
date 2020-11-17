@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 #WORKSPACE=$(pwd)
 
 # make the login keychain the default

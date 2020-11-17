@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 WORKSPACE=$(pwd)
 
 # SC1091: Not following: SwiftVersion.mk was not specified as input (see shellcheck -x).
