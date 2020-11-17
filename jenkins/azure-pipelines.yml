@@ -1,0 +1,245 @@
+# Pipeline for Binding Tools for Swift.
+#
+# yaml help: https://aka.ms/yaml
+
+trigger:
+- '*'
+
+pr:
+- '*'
+
+resources:
+  repositories:
+  - repository: maccore
+    type: github
+    name: xamarin/maccore
+    ref: refs/heads/main
+    endpoint: xamarin
+
+variables:
+  - group: xamops-azdev-secrets
+  - group: Xamarin-Secrets
+
+parameters:
+- name: RunningTests
+  type: boolean
+  default: false # we can change this to true or check the box in pipelines when we want to run tests
+
+jobs:
+- job: ContinuousIntegration
+  timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
+  pool:
+    vmImage: 'macos-10.15'
+
+  steps:
+  - checkout: maccore
+    persistCredentials: true
+  - checkout: self
+
+  - bash: |
+      if [ -L /Applications/Xcode_12.0.1.app ]
+      then
+        unlink /Applications/Xcode_12.0.1.app
+      fi
+      if [ -L /Applications/Xcode_12.0.0.app ]
+      then
+        unlink /Applications/Xcode_12.0.0.app
+      fi
+      if [ -L /Applications/Xcode.app ]
+      then
+        unlink /Applications/Xcode.app
+      fi
+      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.1.app
+      ln -s /Applications/Xcode_12.app /Applications/Xcode.app
+      xcode-select -p
+    displayName: 'Managing Xcode Symlinks'
+
+  - bash: |
+      set -x
+      set -e
+      rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
+      rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
+      cd $(System.DefaultWorkingDirectory)
+      ./maccore/tools/install-qa-provisioning-profiles.sh -v
+    displayName: 'Add provisioning profiles'
+    env:
+      LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
+
+  - script: |
+      set +e # we don't care about errors here
+      set -x
+      pwd
+      env | sort
+      ls -la /Applications
+      system_profiler SPHardwareDataType
+      curl -s https://support-sp.apple.com/sp/product?cc=$(system_profiler SPHardwareDataType | awk '/Serial/ {print $4}' | cut -c 9-) | sed 's|.*<configCode>\(.*\)</configCode>.*|\1|'
+      sysctl -a | grep cpu
+      exit 0 # make sure we don't return an error code if the last command failed
+    displayName: 'Environment info'
+
+  - script: |
+      set -e
+      set -x
+      ./binding-tools-for-swift/jenkins/provision-deps.sh
+    displayName: 'Provision dependencies'
+
+  - script: |
+      set -e
+      set -x
+      ./binding-tools-for-swift/jenkins/build-swift.sh --publish
+      mkdir -p $(System.DefaultWorkingDirectory)/toolchain
+      if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
+        cp -c $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
+        echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
+      else
+        echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
+      fi
+    displayName: 'Build Swift'
+    name: BuildSwift
+
+  # This will upload the updated toolchain zip (if any) to Azure Devops
+  # A later job further down will then publish the toolchain to Azure Blob Storage.
+  # This is a two-step process because the task that can publish to Azure Blob Storage only works on Windows :/
+  - task: PublishBuildArtifacts@1
+    displayName: 'Upload Swift Toolchain'
+    inputs:
+      PathtoPublish: $(System.DefaultWorkingDirectory)/toolchain
+      ArtifactName: 'toolchain'
+      publishLocation: 'Container'
+
+  - script: |
+      set -e
+      set -x
+      ./binding-tools-for-swift/jenkins/build.sh
+    displayName: 'Build'
+
+  - script: |
+      set -e
+      set -x
+      ./binding-tools-for-swift/jenkins/build-package.sh
+      ls -la ./package || true
+    displayName: 'Package'
+
+  # This will upload the packages to Azure Devops
+  # A later job further down will then publish the package to Azure Blob Storage.
+  # This is a two-step process because the task that can publish to Azure Blob Storage only works on Windows :/
+  - task: PublishBuildArtifacts@1
+    displayName: 'Upload Packages'
+    inputs:
+      PathtoPublish: './package'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
+
+  - script: |
+      set -e
+      set -x
+      ./binding-tools-for-swift/jenkins/run-tests.sh
+    displayName: 'Run tests'
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
+
+  - task: PublishTestResults@2
+    displayName: 'Publish NUnit Device Test Results'
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TestResult*.xml'
+      failTaskOnFailedTests: true
+    continueOnError: true
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Artifact: TestResult'
+    inputs:
+      targetPath: $(System.DefaultWorkingDirectory)/binding-tools-for-swift/tests/tom-swifty-test/TestResult.xml
+      artifactName: TestResults
+    continueOnError: true
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
+
+- job: UploadToolchain
+  dependsOn: ContinuousIntegration
+  condition: eq(dependencies.ContinuousIntegration.outputs['BuildSwift.uploadtoolchain'], '1')
+  pool:
+    vmImage: windows-latest
+
+  steps:
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: current
+      artifact: toolchain
+      path: 'toolchain'
+
+  - task: AzureFileCopy@2
+    displayName: 'Publish toolchain to Azure'
+    inputs:
+      SourcePath: 'toolchain'
+      azureSubscription: BOSStorageMirror
+      Destination: AzureBlob
+      storage: bosstoragemirror
+      ContainerName: wrench
+      BlobPrefix: 'binding-tools-for-swift/toolchain'
+      outputStorageUri: ToolchainUrl
+      outputStorageContainerSasToken: ToolchainSasToken
+
+  - bash: |
+      set -e
+      set -x
+      ZIPS=(toolchain/*.zip)
+      if (( ${#ZIPS[@]} == 1 )); then
+        if test -f "${ZIPS[0]}"; then
+          FILE=${ZIPS[0]}
+        else
+          echo "Could not find any zip files to upload"
+          exit 1
+        fi
+      elif (( ${#ZIPS[@]} > 1 )); then
+        echo "More than one zip file!"
+        exit 1
+      fi
+      FILENAME="$(basename "$FILE")"
+      TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
+      ./binding-tools-for-swift/jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+    displayName: 'Add Toolchain as GitHub Status'
+    workingDirectory: $(System.DefaultWorkingDirectory)
+
+- job: UploadPackages
+  dependsOn: ContinuousIntegration
+  pool:
+    vmImage: windows-latest
+
+  steps:
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      source: current
+      artifact: drop
+      path: 'drop'
+
+  - task: AzureFileCopy@2
+    displayName: 'Publish package to Azure'
+    inputs:
+      SourcePath: 'drop'
+      azureSubscription: BOSStorageMirror
+      Destination: AzureBlob
+      storage: bosstoragemirror
+      ContainerName: wrench
+      BlobPrefix: 'binding-tools-for-swift/$(Build.SourceBranchName)/$(Build.SourceVersion)/$(Build.BuildId)'
+      outputStorageUri: PackageUrl
+      outputStorageContainerSasToken: PackageSasToken
+
+  - bash: |
+      set -e
+      set -x
+      ZIPS=(drop/*.zip)
+      if (( ${#ZIPS[@]} == 1 )); then
+        if test -f "${ZIPS[0]}"; then
+          FILE=${ZIPS[0]}
+        else
+          echo "Could not find any zip files"
+          exit 1
+        fi
+      elif (( ${#ZIPS[@]} > 1 )); then
+        echo "More than one zip file!"
+        exit 1
+      fi
+      FILENAME="$(basename "$FILE")"
+      TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
+      ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+    displayName: 'Add Packages as GitHub Status'
