@@ -99,10 +99,8 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		{
 			var path = Environment.GetEnvironmentVariable ("DYLD_LIBRARY_PATH");
 			if (path == null)
-				yield break;
-			foreach (var subPart in path.Split (':')) {
-				yield return subPart;
-			}
+				return new string [0];
+			return path.Split (':');
 		}
 
 		public string FileName { get; private set; }
