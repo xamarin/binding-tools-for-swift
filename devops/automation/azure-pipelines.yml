@@ -80,13 +80,13 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/provision-deps.sh
+      ./binding-tools-for-swift/devops/automation/provision-deps.sh
     displayName: 'Provision dependencies'
 
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/build-swift.sh --publish
+      ./binding-tools-for-swift/devops/automation/build-swift.sh --publish
       mkdir -p $(System.DefaultWorkingDirectory)/toolchain
       if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
         cp -c $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
@@ -110,13 +110,13 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/build.sh
+      ./binding-tools-for-swift/devops/automation/build.sh
     displayName: 'Build'
 
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/build-package.sh
+      ./binding-tools-for-swift/devops/automation/build-package.sh
       ls -la ./package || true
     displayName: 'Package'
 
@@ -133,7 +133,7 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/run-tests.sh
+      ./binding-tools-for-swift/devops/automation/run-tests.sh
     displayName: 'Run tests'
     condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
@@ -196,7 +196,7 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./binding-tools-for-swift/jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
     workingDirectory: $(System.DefaultWorkingDirectory)
 
@@ -241,5 +241,5 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ./devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'

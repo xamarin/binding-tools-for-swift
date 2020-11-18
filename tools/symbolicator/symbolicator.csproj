@@ -23,6 +23,6 @@
     </Compile>
   </ItemGroup>
   <Target Name="ProvisionDeps" BeforeTargets="ResolveAssemblyReferences">
-      <Exec Command="../../jenkins/provision-deps.sh" />
+      <Exec Command="../../devops/automation/provision-deps.sh" />
   </Target>
 </Project>

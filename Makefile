@@ -2,19 +2,19 @@ TOP=.
 GIT_DIR=$(TOP)/.git
 
 all: check-system
-	./jenkins/build-swift.sh
-	./jenkins/build.sh
+	./devops/automation/build-swift.sh
+	./devops/automation/build.sh
 
 include $(TOP)/Make.config
 
 provision:
-	./jenkins/provision-deps.sh
+	./devops/automation/provision-deps.sh
 
 swift:
-	./jenkins/build-swift.sh
+	./devops/automation/build-swift.sh
 
 som binding-tools-for-swift:
-	./jenkins/build.sh
+	./devops/automation/build.sh
 
 Constants.cs: Constants.cs.in $(GIT_DIR)/index Makefile
 	sed \
@@ -24,7 +24,7 @@ Constants.cs: Constants.cs.in $(GIT_DIR)/index Makefile
 		$< > $@
 
 package:
-	./jenkins/build-package.sh
+	./devops/automation/build-package.sh
 
 print-variable:
 	@echo $($(VARIABLE))
@@ -36,5 +36,5 @@ check-system:
 		echo "$(COLOR_RED)*** Once fixed, you need to commit the changes for them to pass this check.$(COLOR_CLEAR)"; \
 		exit 1; \
 	fi
-	@./jenkins/system-dependencies.sh
+	@./devops/automation/system-dependencies.sh
 	@echo "Building Binding Tools For Swift $(SOM_PACKAGE_VERSION)"
