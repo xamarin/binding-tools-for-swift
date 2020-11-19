@@ -22,6 +22,5 @@ MANUAL_BINDER_FINDER_LIBRARIES= \
 	libswiftSwiftReflectionTest \
 	libswiftXCTest \
 
-# There is an error with this one
+# There is an error with libswiftDispatch:
 # System.NotImplementedException: At least one needs to be a thunk - should never happen
-#libswiftDispatch \
