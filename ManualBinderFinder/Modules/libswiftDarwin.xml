@@ -1,0 +1,13 @@
+<Module name="libswiftDarwin">
+    <Classes>
+        <Class name="Darwin.DarwinBoolean"/>
+        <Class name="Darwin.MachErrorCode"/>
+        <Class name="Darwin.POSIXErrorCode"/>
+    </Classes>
+    <Structs>
+    </Structs>
+    <Enums>
+    </Enums>
+    <Protocols>
+    </Protocols>
+</Module>

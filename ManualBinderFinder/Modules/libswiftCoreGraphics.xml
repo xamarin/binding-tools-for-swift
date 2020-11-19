@@ -1,0 +1,22 @@
+<manualbinderfinder version="1.0" encoding="UTF - 8">
+<Module name="libswiftCoreGraphics">
+    <Classes>
+        <Class name="CoreGraphics.CGAffineTransform"/>
+        <Class name="CoreGraphics.CGFloat"/>
+        <Class name="CoreGraphics.CGPathFillRule"/>
+        <Class name="CoreGraphics.CGPoint"/>
+        <Class name="CoreGraphics.CGRect"/>
+        <Class name="CoreGraphics.CGSize"/>
+        <Class name="CoreGraphics.CGVector"/>
+        <Class name="__C.CGColorRef"/>
+    </Classes>
+    <Structs>
+        <Class name="CoreGraphics.CGPathFillRule"/>
+    </Structs>
+    <Enums>
+        <Class name="CoreGraphics.CGPathFillRule"/>
+    </Enums>
+    <Protocols>
+        <Protocol name="CoreGraphics._CGColorInitTrampoline"/>
+    </Protocols>
+</Module>
