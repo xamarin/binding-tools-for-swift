@@ -65,7 +65,8 @@ namespace SwiftReflector.Inventory {
 
 		// Change introduced by TJ Lambert
 		// GetClassesFromName, GetEnumsFromName, and GetStructsFromName
-		// take advantage of the IsClass, IsEnum, and IsStruct bool set
+		// is similar to ClassesForName () but it takes advantage
+		// of the IsClass, IsEnum, and IsStruct bool set
 		// inside ClassContent to filter classes, enums, and structs
 
 		public IEnumerable<ClassContents> GetClassesFromName (SwiftName modName)
@@ -73,7 +74,6 @@ namespace SwiftReflector.Inventory {
 			List<ClassContents> classes = new List<ClassContents> ();
 			ModuleContents modcont = null;
 			if (values.TryGetValue (modName, out modcont)) {
-
 				foreach (var v in modcont.Classes.Values){
 					if (v.Name.IsClass)
 						classes.Add (v);
@@ -87,7 +87,6 @@ namespace SwiftReflector.Inventory {
 			List<ClassContents> enums = new List<ClassContents> ();
 			ModuleContents modcont = null;
 			if (values.TryGetValue (modName, out modcont)) {
-
 				foreach (var v in modcont.Classes.Values) {
 					if (v.Name.IsEnum)
 						enums.Add (v);
@@ -101,7 +100,6 @@ namespace SwiftReflector.Inventory {
 			List<ClassContents> structs = new List<ClassContents> ();
 			ModuleContents modcont = null;
 			if (values.TryGetValue (modName, out modcont)) {
-
 				foreach (var v in modcont.Classes.Values) {
 					if (v.Name.IsStruct)
 						structs.Add (v);
