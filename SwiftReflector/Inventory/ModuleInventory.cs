@@ -27,6 +27,7 @@ namespace SwiftReflector.Inventory {
 			ModuleContents module = null;
 			if (!values.TryGetValue (tld.Module, out module)) {
 				module = new ModuleContents (tld.Module, SizeofMachinePointer);
+				//Console.WriteLine ($"Type {tld.Type} added to dictionary in Add ModuleInventory");
 				values.Add (tld.Module, module);
 			}
 			module.Add (tld, srcStm);
@@ -62,6 +63,53 @@ namespace SwiftReflector.Inventory {
 			}
 		}
 
+		// Change introduced by TJ Lambert
+		// GetClassesFromName, GetEnumsFromName, and GetStructsFromName
+		// take advantage of the IsClass, IsEnum, and IsStruct bool set
+		// inside ClassContent to filter classes, enums, and structs
+
+		public IEnumerable<ClassContents> GetClassesFromName (SwiftName modName)
+		{
+			List<ClassContents> classes = new List<ClassContents> ();
+			ModuleContents modcont = null;
+			if (values.TryGetValue (modName, out modcont)) {
+
+				foreach (var v in modcont.Classes.Values){
+					if (v.Name.IsClass)
+						classes.Add (v);
+				}
+			} 
+			return classes;
+		}
+
+		public IEnumerable<ClassContents> GetEnumsFromName (SwiftName modName)
+		{
+			List<ClassContents> enums = new List<ClassContents> ();
+			ModuleContents modcont = null;
+			if (values.TryGetValue (modName, out modcont)) {
+
+				foreach (var v in modcont.Classes.Values) {
+					if (v.Name.IsEnum)
+						enums.Add (v);
+				}
+			}
+			return enums;
+		}
+
+		public IEnumerable<ClassContents> GetStructsFromName (SwiftName modName)
+		{
+			List<ClassContents> structs = new List<ClassContents> ();
+			ModuleContents modcont = null;
+			if (values.TryGetValue (modName, out modcont)) {
+
+				foreach (var v in modcont.Classes.Values) {
+					if (v.Name.IsStruct)
+						structs.Add (v);
+				}
+			}
+			return structs;
+		}
+
 		public ClassContents FindClass (string fullyQualifiedName)
 		{
 			string moduleName = fullyQualifiedName.Substring (0, fullyQualifiedName.IndexOf ('.'));
@@ -92,7 +140,7 @@ namespace SwiftReflector.Inventory {
 			try {
 				stm = new FileStream (pathToDynamicLibrary, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 			} catch (Exception e) {
-				errors.Add (ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 57, e, "unable to open file {0}: {1}", pathToDynamicLibrary, e.Message));
+				errors.Add (ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 57, e, "unable to open file {0}: {1} \n{e.Message}", pathToDynamicLibrary, e.Message));
 			}
 			try {
 				return FromStream (stm, errors, pathToDynamicLibrary);

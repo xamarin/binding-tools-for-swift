@@ -1,0 +1,14 @@
+<Module name="libswiftObjectiveC">
+    <Classes>
+        <Class name="ObjectiveC.NSZone">
+        <Class name="ObjectiveC.ObjCBool">
+        <Class name="ObjectiveC.Selector">
+        <Class name="__C.NSObject">
+    </Classes>
+    <Structs>
+    </Structs>
+    <Enums>
+    </Enums>
+    <Protocols>
+    </Protocols>
+</Module>
