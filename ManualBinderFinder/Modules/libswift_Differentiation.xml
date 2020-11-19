@@ -1,0 +1,22 @@
+<manualbinderfinder version="1.01" encoding="UTF - 8">
+<Module name="libswift_Differentiation">
+    <Classes>
+    </Classes>
+    <Structs>
+        <Struct name="Swift.Array"/>
+        <Struct name="Swift.Double"/>
+        <Struct name="Swift.Float"/>
+        <Struct name="Swift.Float16"/>
+        <Struct name="Swift.Float80"/>
+        <Struct name="_Differentiation.AnyDerivative"/>
+        <Struct name="_Differentiation.AnyDerivative.OpaqueZero"/>
+        <Struct name="_Differentiation.AnyDifferentiable"/>
+        <Struct name="_Differentiation._ConcreteDerivativeBox"/>
+    </Structs>
+    <Enums>
+    </Enums>
+    <Protocols>
+        <Protocol name="_Differentiation.Differentiable"/>
+        <Protocol name="_Differentiation._AnyDerivativeBox"/>
+    </Protocols>
+</Module>

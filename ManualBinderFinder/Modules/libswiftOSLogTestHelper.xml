@@ -1,0 +1,21 @@
+<manualbinderfinder version="1.01" encoding="UTF - 8">
+<Module name="libswiftOSLogTestHelper">
+    <Classes>
+    </Classes>
+    <Structs>
+        <Struct name="OSLogTestHelper.OSLogArguments"/>
+        <Struct name="OSLogTestHelper.OSLogIntegerFormatting"/>
+        <Struct name="OSLogTestHelper.OSLogInterpolation"/>
+        <Struct name="OSLogTestHelper.OSLogMessage"/>
+        <Struct name="OSLogTestHelper.OSLogStringAlignment"/>
+    </Structs>
+    <Enums>
+        <Enum name="OSLogTestHelper.OSLogCollectionBound"/>
+        <Enum name="OSLogTestHelper.OSLogInterpolation.ArgumentFlag"/>
+        <Enum name="OSLogTestHelper.OSLogInterpolation.ArgumentType"/>
+        <Enum name="OSLogTestHelper.OSLogInterpolation.PreambleBitMask"/>
+        <Enum name="OSLogTestHelper.OSLogPrivacy"/>
+    </Enums>
+    <Protocols>
+    </Protocols>
+</Module>

@@ -1,11 +1,12 @@
+<manualbinderfinder version="1.01" encoding="UTF - 8">
 <Module name="libswiftObjectiveC">
     <Classes>
-        <Class name="ObjectiveC.NSZone">
-        <Class name="ObjectiveC.ObjCBool">
-        <Class name="ObjectiveC.Selector">
-        <Class name="__C.NSObject">
+        <Class name="__C.NSObject"/>
     </Classes>
     <Structs>
+        <Struct name="ObjectiveC.NSZone"/>
+        <Struct name="ObjectiveC.ObjCBool"/>
+        <Struct name="ObjectiveC.Selector"/>
     </Structs>
     <Enums>
     </Enums>

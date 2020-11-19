@@ -1,13 +1,11 @@
 <manualbinderfinder version="1.01" encoding="UTF - 8">
-<Module name="libswiftDarwin">
+<Module name="libswiftSwiftReflectionTest">
     <Classes>
     </Classes>
     <Structs>
-        <Struct name="Darwin.DarwinBoolean"/>
     </Structs>
     <Enums>
-        <Enum name="Darwin.MachErrorCode"/>
-        <Enum name="Darwin.POSIXErrorCode"/>
+        <Enum name="SwiftReflectionTest.InstanceKind"/>
     </Enums>
     <Protocols>
     </Protocols>
