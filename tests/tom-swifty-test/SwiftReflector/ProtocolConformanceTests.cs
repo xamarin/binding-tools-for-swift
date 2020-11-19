@@ -202,6 +202,7 @@ public func blindAssocFuncAny{nameSuffix} () -> Any {{
 
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssoc ()
 		{
 			var swiftCode = @"
@@ -216,6 +217,7 @@ public protocol Iterator0 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssocGetProp ()
 		{
 			var swiftCode = @"
@@ -230,6 +232,7 @@ public protocol Iterator1 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssocGetSetProp ()
 		{
 			var swiftCode = @"
@@ -244,6 +247,7 @@ public protocol Iterator2 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssocFuncArg ()
 		{
 			var swiftCode = @"
@@ -258,6 +262,7 @@ public protocol Iterator3 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SomeProtocolAssocSubscriptGet ()
 		{
 			var swiftCode = @"
@@ -274,6 +279,7 @@ public protocol Iterator4 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SomeProtocolAssocSubscriptGetSet ()
 		{
 			var swiftCode = @"
@@ -290,6 +296,7 @@ public protocol Iterator5 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SomeProtocolAssocSubscriptGetSetParams ()
 		{
 			var swiftCode = @"
@@ -306,6 +313,7 @@ public protocol Iterator6 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SimplestProtocolAssocTest ()
 		{
 			var swiftCode = @"
@@ -313,7 +321,7 @@ public protocol Simplest0 {
 	associatedtype Item
 	func printAndGetIt () -> Item
 }
-public func doPrint<T>(a:T) where T:Simplest0 {
+public func doPrintSimplest0<T>(a:T) where T:Simplest0 {
 	let _ = a.printAndGetIt ()
 }
 ";
@@ -333,12 +341,13 @@ public func doPrint<T>(a:T) where T:Simplest0 {
 
 			var instID = new CSIdentifier ("inst");
 			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple0Impl", true));
-			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint<Simple0Impl, SwiftString>", false, instID);
+			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrintSimplest0<Simple0Impl, SwiftString>", false, instID);
 			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SimplestProtocolPropGetAssocTest ()
 		{
 			var swiftCode = @"
@@ -346,7 +355,7 @@ public protocol Simplest1 {
 	associatedtype Item
 	var printThing: Item { get }
 }
-public func doPrint<T>(a:T) where T:Simplest1 {
+public func doPrintSimplest1<T>(a:T) where T:Simplest1 {
 	let _ = a.printThing
 }
 ";
@@ -366,12 +375,13 @@ public func doPrint<T>(a:T) where T:Simplest1 {
 
 			var instID = new CSIdentifier ("inst");
 			var instDecl = CSVariableDeclaration.VarLine (instID, new CSFunctionCall ("Simple1Impl", true));
-			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrint<Simple1Impl, SwiftString>", false, instID);
+			var doPrint = CSFunctionCall.FunctionCallLine ("TopLevelEntities.DoPrintSimplest1<Simple1Impl, SwiftString>", false, instID);
 			var callingCode = CSCodeBlock.Create (instDecl, doPrint);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here!\n", otherClass: altClass);
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolPropGetSetAssocTest ()
 		{
 			var swiftCode = @"
@@ -401,6 +411,7 @@ public func doSetProp<T, U> (a: inout T, b:U) where T:Simplest2, U==T.Item {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolProGetSetAssocTestAltSyntax ()
 		{
 			var swiftCode = @"
@@ -430,6 +441,7 @@ public func doSetProp<T> (a: inout T, b:T.Item) where T:Simplest3 {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolProGetIndexer ()
 		{
 			var swiftCode = @"
@@ -464,6 +476,7 @@ public func doGetIt<T:Simplest4> (a: T, i: Int) -> T.Item {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolProGetSetIndexer ()
 		{
 			var swiftCode = @"

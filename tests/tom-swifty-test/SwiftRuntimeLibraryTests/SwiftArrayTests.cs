@@ -9,6 +9,8 @@ using System.Linq;
 using SwiftRuntimeLibrary;
 
 using NUnit.Framework;
+using tomwiftytest;
+using System.Runtime.InteropServices;
 
 namespace SwiftRuntimeLibraryTests {
 	[TestFixture]
@@ -40,7 +42,7 @@ namespace SwiftRuntimeLibraryTests {
 				Assert.GreaterOrEqual (arr.Capacity, 20, "Capacity 2");
 			}
 
-			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<long> ((long)-1));
+			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<int> ((long)-1));
 		}
 
 		[Test]

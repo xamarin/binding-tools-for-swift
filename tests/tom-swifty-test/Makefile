@@ -10,16 +10,14 @@ all: build run-tests
 
 check: run-tests
 
-run-tests:
-	echo "tests are offline for now."
 
 # new (incompatible but much more powerful) runner syntax means using FIXTURES has to look like
 # FIXTURES="--where=test=SwiftReflector.LinkageTests.TestMissingNSObject" make
 # https://github.com/nunit/docs/wiki/Test-Selection-Language
-offline-run-tests: bin/Debug/tom-swifty-test.dll
+run-tests: bin/Debug/tom-swifty-test.dll
 	rm -f .failed-stamp
 	rm -Rf bin/devicetests # remove any existing device test output
-	DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):$(SWIFTLIB)/macosx:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
+	DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):/usr/lib/swift:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
 	mono --debug --runtime=v4.0 $(TOP)/packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=4 --framework=mono-4.0 --nocolor --labels=All --shadowcopy $(FIXTURES) || touch .failed-stamp
 	@# Create an html file and tell MonkeyWrench to upload it (if we're running there)
 	@[[ -z "$$BUILD_REPOSITORY" ]] || \
@@ -31,7 +29,7 @@ build: bin/Debug/tom-swifty-test.dll
 
 run-runtime-library-tests: bin/Debug/tom-swifty-test.dll
 	rm -f .$@-failed-stamp
-	LEAKTEST_DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):$(SWIFTLIB)/macosx:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
+	LEAKTEST_DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):/usr/lib/swift:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
 	$(TOP)/leaktest/bin/Debug/leaktest mono --debug --runtime=v4.0 $(TOP)/packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=1 --framework=mono-4.0 --nocolor --labels=All --shadowcopy --where=namespace=SwiftRuntimeLibraryTests --inprocess || touch .failed-stamp
 
 bin/Debug/tom-swifty-test.dll: $(shell git ls-files . | grep '[.]cs$$') tom-swifty-test.csproj SwiftRuntimeLibrary.Mac.dll.config
@@ -48,7 +46,7 @@ clean:
 	@rm -rf bin obj TestResult.xml devicetests/*
 
 # Compute the list of test modules
-MODULES:=$(shell ls -d devicetests/*/swiftsrc 2>/dev/null | sed -e 's_devicetests/__' -e 's_/swiftsrc__')
+MODULES:=$(shell ls -d devicetests/*/swiftsrc/*[!_]?????.swift 2>/dev/null | sed -e 's_devicetests/__' -e 's_/swiftsrc__' -e 's_/.*swift__'  | uniq)
 
 #
 # Define a template that can compile the swift code for the device tests
@@ -133,13 +131,9 @@ tomswiftydevicetests/%/tomswiftydevicetests.csproj: tomswiftydevicetests/%/tomsw
 
 csproj-iphone: tomswiftydevicetests/iphone/tomswiftydevicetests.csproj
 
-#all-ios: build-iphone csproj-iphone
-all-ios: 
-	echo "device tests are offline for swift 5"
+all-ios: build-iphone csproj-iphone
 
-#build-device-tests: all-ios tomswiftydevicetests.zip
-build-device-tests: 
-	echo "device tests are offline for swift 5"
+build-device-tests: all-ios tomswiftydevicetests.zip
 
 tomswiftydevicetests/iphone/bin/iPhone/Debug/tomswiftydevicetests.app: build-iphone csproj-iphone $(wildcard tomswiftydevicetests/*/*.cs)
 	msbuild tomswiftydevicetests/iphone/tomswiftydevicetests.csproj /p:Platform=iPhone

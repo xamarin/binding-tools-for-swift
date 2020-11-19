@@ -5,7 +5,7 @@
 
 set -o pipefail
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 FAIL=
 PROVISION_DOWNLOAD_DIR=/tmp/x-provisioning
@@ -404,7 +404,7 @@ function check_specific_xcode () {
 
 	if ! test -d "$XCODE_DEVELOPER_ROOT"; then
 		if ! test -z "$PROVISION_XCODE"; then
-			if ! test -z "$JENKINS_URL"; then
+			if ! test -z "$SYSTEM.ACCESSTOKEN"; then
 				install_specific_xcode
 			else
 				fail "Automatic provisioning of Xcode is only supported for provisioning internal build bots."

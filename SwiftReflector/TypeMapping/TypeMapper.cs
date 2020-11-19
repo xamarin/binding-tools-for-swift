@@ -999,7 +999,7 @@ namespace SwiftReflector.TypeMapping {
 			// can't big structs, non-blitable structs, or plain enums
 			if (en.EntityType == EntityType.Scalar)
 				return false;
-			return en.EntityType == EntityType.Struct || (en.EntityType == EntityType.Protocol && !en.IsObjCProtocol) || en.EntityType == EntityType.Enum;
+			return en.IsStructOrEnum || (en.EntityType == EntityType.Protocol && !en.IsObjCProtocol);
 		}
 
 		public bool MustForcePassByReference (TypeDeclaration decl)
@@ -1108,7 +1108,7 @@ namespace SwiftReflector.TypeMapping {
 							}
 						}
 					}
-					return new NetTypeBundle ("System", "nint", false, false, EntityType.None);
+					return new NetTypeBundle ("System", "IntPtr", false, false, EntityType.None);
 				} else {
 					return new NetTypeBundle (en.SharpNamespace, en.SharpTypeName, false, isReference, en.EntityType);
 				}

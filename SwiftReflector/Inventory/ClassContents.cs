@@ -249,6 +249,17 @@ namespace SwiftReflector.Inventory {
 				yield return prop;
 		}
 
+		public TLFunction SoleMetadataAccessor {
+			get {
+				if (ClassConstructor == null || ClassConstructor.Values.Count () == 0)
+					return null;
+				var elem = ClassConstructor.Values.ElementAt (0);
+				if (elem.Functions.Count == 0)
+					return null;
+				return elem.Functions [0];
+			}
+		}
+
 
 		public SwiftClassName Name { get; private set; }
 		public FunctionInventory Constructors { get; private set; }

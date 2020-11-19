@@ -554,6 +554,10 @@ namespace tomwiftytest {
 			}
 
 			var sb = new StringBuilder ();
+			// uncomment this to see the DYLD_LIBRARY_PATH in the output.
+			// Do NOT leave this uncommented as it will fail nearly all the tests
+//			sb.AppendLine ("DYLD_LIBRARY_PATH: " + env ["DYLD_LIBRARY_PATH"]);
+
 			var rv = RunCommandWithLeaks (executable, args, env, sb, workingDirectory: workingDirectory ?? string.Empty);
 
 			if (rv != 0) {

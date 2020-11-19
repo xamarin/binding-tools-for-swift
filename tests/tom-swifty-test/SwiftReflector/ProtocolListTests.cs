@@ -66,17 +66,17 @@ public func infoOn(a: ProtoA & ProtoB) -> String {
 		{
 			var swiftCode = @"
 public protocol ProtoRA {
-    func constantA () -> Int
+    func constantRA () -> Int
 }
 public protocol ProtoRB {
-    func constantB () -> Int
+    func constantRB () -> Int
 }
 public class ImplRARB : ProtoRA, ProtoRB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantRA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantRB () -> Int {
         return 4
     }
 }
@@ -88,7 +88,7 @@ public func getDual () -> ProtoRA & ProtoRB {
 
 			var thingID = new CSIdentifier ("due");
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("(ImplRARB)TopLevelEntities.GetDual", false));
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantA", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantRA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
@@ -99,17 +99,17 @@ public func getDual () -> ProtoRA & ProtoRB {
 		{
 			var swiftCode = @"
 public protocol ProtoPA {
-    func constantA () -> Int
+    func constantPA () -> Int
 }
 public protocol ProtoPB {
-    func constantB () -> Int
+    func constantPB () -> Int
 }
 public class ImplPAPB : ProtoPA, ProtoPB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantPA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantPB () -> Int {
         return 4
     }
 }
@@ -119,7 +119,7 @@ public var DualProp : ProtoPA & ProtoPB = ImplPAPB ()
 
 			var thingID = new CSIdentifier ("due");
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("(ImplPAPB)TopLevelEntities.GetDualProp", false));
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantA", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantPA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
@@ -130,24 +130,24 @@ public var DualProp : ProtoPA & ProtoPB = ImplPAPB ()
 		{
 			var swiftCode = @"
 public protocol ProtoMPA {
-    func constantA () -> Int
+    func constantMPA () -> Int
 }
 public protocol ProtoMPB {
-    func constantB () -> Int
+    func constantMPB () -> Int
 }
 public class ImplMPAMPB : ProtoMPA, ProtoMPB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantMPA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantMPB () -> Int {
         return 4
     }
 
     public func infoOn(a: ProtoMPA & ProtoMPB) -> String
     {
-        let x = a.constantA()
-        let y = a.constantB()
+        let x = a.constantMPA()
+        let y = a.constantMPB()
         let z = x + y
         return ""\(x) \(y) \(z)""
     }
@@ -167,17 +167,17 @@ public class ImplMPAMPB : ProtoMPA, ProtoMPB {
 		{
 			var swiftCode = @"
 public protocol ProtoMRA {
-    func constantA () -> Int
+    func constantMRA () -> Int
 }
 public protocol ProtoMRB {
-    func constantB () -> Int
+    func constantMRB () -> Int
 }
 public class ImplMRAMRB : ProtoMRA, ProtoMRB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantMRA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantMRB () -> Int {
         return 4
     }
 
@@ -192,7 +192,7 @@ public class ImplMRAMRB : ProtoMRA, ProtoMRB {
 			var anotherID = new CSIdentifier ("tre");
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplMRAMRB", true));
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"(ImplMRAMRB){thingID.Name}.GetMeA", false));
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantA", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantMRA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
@@ -203,18 +203,18 @@ public class ImplMRAMRB : ProtoMRA, ProtoMRB {
 		{
 			var swiftCode = @"
 public protocol ProtoMPRA {
-    func constantA () -> Int
+    func constantMPRA () -> Int
 }
 public protocol ProtoMPRB {
-    func constantB () -> Int
+    func constantMPRB () -> Int
 }
 public class ImplMPRAMPRB : ProtoMPRA, ProtoMPRB {
     public init () {
     }
-    public func constantA () -> Int {
+    public func constantMPRA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantMPRB () -> Int {
         return 4
     }
 
@@ -238,7 +238,7 @@ public class ImplMPRAMPRB : ProtoMPRA, ProtoMPRB {
 			var anotherID = new CSIdentifier ("tre");
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplMPRAMPRB", true));
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSIdentifier ($"(ImplMPRAMPRB){thingID.Name}").Dot (new CSIdentifier ("PropStuff")));
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantA", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantMPRA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
@@ -250,18 +250,18 @@ public class ImplMPRAMPRB : ProtoMPRA, ProtoMPRB {
 		{
 			var swiftCode = @"
 public protocol ProtoMSRA {
-    func constantA () -> Int
+    func constantMSRA () -> Int
 }
 public protocol ProtoMSRB {
-    func constantB () -> Int
+    func constantMSRB () -> Int
 }
 public class ImplMSRAMSRB : ProtoMSRA, ProtoMSRB {
     public init () {
     }
-    public func constantA () -> Int {
+    public func constantMSRA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantMSRB () -> Int {
         return 4
     }
 
@@ -280,7 +280,7 @@ public class ImplMSRAMSRB : ProtoMSRA, ProtoMSRB {
 			var anotherID = new CSIdentifier ("tre");
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplMSRAMSRB", true));
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"(ImplMSRAMSRB){thingID.Name}.GetSubscript", false, CSConstant.Val (7)));
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantA", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.ConstantMSRA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
@@ -290,25 +290,25 @@ public class ImplMSRAMSRB : ProtoMSRA, ProtoMSRB {
 		{
 			var swiftCode = @"
 public protocol ProtoMEA {
-    func constantA () -> Int
+    func constantMEA () -> Int
 }
 public protocol ProtoMEB {
-    func constantB () -> Int
+    func constantMEB () -> Int
 }
-public enum NotParticularlyUseful {
+public enum NotParticularlyUsefulPayload {
     case intValue(Int)
     case protoValue(ProtoMEA & ProtoMEB)
 }
 public class ImplMEAMEB : ProtoMEA, ProtoMEB {
     public init () {
     }
-    public func constantA () -> Int {
+    public func constantMEA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantMEB () -> Int {
         return 4
     }
-    public func getPayload() -> NotParticularlyUseful {
+    public func getPayload() -> NotParticularlyUsefulPayload {
         return .protoValue(self)
     }
 }
@@ -319,7 +319,7 @@ public class ImplMEAMEB : ProtoMEA, ProtoMEB {
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplMEAMEB", true));
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"{thingID.Name}.GetPayload", false));
 			var quaDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, quaID, new CSFunctionCall ($"(ImplMEAMEB){anotherID.Name}.GetValueProtoValue", false));
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{quaID.Name}.ConstantA", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{quaID.Name}.ConstantMEA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, quaDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
@@ -329,10 +329,10 @@ public class ImplMEAMEB : ProtoMEA, ProtoMEB {
 		{
 			var swiftCode = @"
 public protocol ProtoMEFA {
-    func constantA () -> Int
+    func constantMEFA () -> Int
 }
 public protocol ProtoMEFB {
-    func constantB () -> Int
+    func constantMEFB () -> Int
 }
 public enum NotParticularlyUseful {
     case intValue(Int)
@@ -341,10 +341,10 @@ public enum NotParticularlyUseful {
 public class ImplMEFAMFEB : ProtoMEFA, ProtoMEFB {
     public init () {
     }
-    public func constantA () -> Int {
+    public func constantMEFA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantMEFB () -> Int {
         return 4
     }
     public func getPayload() -> NotParticularlyUseful {
@@ -369,17 +369,17 @@ public class ImplMEFAMFEB : ProtoMEFA, ProtoMEFB {
 		{
 			var swiftCode = @"
 public protocol ProtoERA {
-    func constantA () -> Int
+    func constantERA () -> Int
 }
 public protocol ProtoERB {
-    func constantB () -> Int
+    func constantERB () -> Int
 }
 public class ImplERAERB : ProtoERA, ProtoERB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantERA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantERB () -> Int {
         return 4
     }
 }
@@ -398,7 +398,7 @@ public func getDual (doThrow: Bool) throws -> ProtoERA & ProtoERB {
 
 			var thingID = new CSIdentifier ("due");
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("(ImplERAERB)TopLevelEntities.GetDual", false, CSConstant.Val (false)));
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantA", false));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.ConstantERA", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "3\n");
 		}
@@ -408,17 +408,17 @@ public func getDual (doThrow: Bool) throws -> ProtoERA & ProtoERB {
 		{
 			var swiftCode = @"
 public protocol ProtoVA {
-    func constantA () -> Int
+    func constantVA () -> Int
 }
 public protocol ProtoVB {
-    func constantB () -> Int
+    func constantVB () -> Int
 }
-public class ImplVAVB : ProtoVA, ProtoVB {
+public class ImplVAVBFunc : ProtoVA, ProtoVB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantVA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantVB () -> Int {
         return 4
     }
 }
@@ -426,13 +426,13 @@ public class ImplVAVB : ProtoVA, ProtoVB {
 open class UsingClass {
     public init () { }
     open func doAThing (a: ProtoVA & ProtoVB) -> Int {
-        return a.constantA() + a.constantB()
+        return a.constantVA() + a.constantVB()
     }
 }
 ";
 			var thingID = new CSIdentifier ("due");
 			var anotherID = new CSIdentifier ("tre");
-			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplVAVB", true));
+			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("ImplVAVBFunc", true));
 
 			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"UsingClass", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{anotherID.Name}.DoAThing", false, thingID));
@@ -445,17 +445,17 @@ open class UsingClass {
 		{
 			var swiftCode = @"
 public protocol ProtoVPA {
-    func constantA () -> Int
+    func constantVPA () -> Int
 }
 public protocol ProtoVPB {
-    func constantB () -> Int
+    func constantVPB () -> Int
 }
-public class ImplVAVB : ProtoVPA, ProtoVPB {
+public class ImplVAVBProp : ProtoVPA, ProtoVPB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantVPA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantVPB () -> Int {
         return 4
     }
 }
@@ -463,7 +463,7 @@ public class ImplVAVB : ProtoVPA, ProtoVPB {
 open class UsingClassP {
     private var thing: ProtoVPA & ProtoVPB;
     public init () {
-        thing = ImplVAVB ()
+        thing = ImplVAVBProp ()
     }
     open var impl: ProtoVPA & ProtoVPB {
         get {
@@ -474,15 +474,15 @@ open class UsingClassP {
         }
     }
     public func doAThing () -> Int {
-        return thing.constantA() + thing.constantB()
+        return thing.constantVPA() + thing.constantVPB()
     }
 }";
 			var thingID = new CSIdentifier ("due");
 			var anotherID = new CSIdentifier ("tre");
 			var thingDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, thingID, new CSFunctionCall ("UsingClassP", true));
 
-			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"(ImplVAVB){thingID}.GetImpl", false));
-			var resetter = CSFunctionCall.FunctionCallLine ($"{thingID}.SetImpl", false, new CSFunctionCall ("ImplVAVB", true));
+			var anotherDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, anotherID, new CSFunctionCall ($"(ImplVAVBProp){thingID}.GetImpl", false));
+			var resetter = CSFunctionCall.FunctionCallLine ($"{thingID}.SetImpl", false, new CSFunctionCall ("ImplVAVBProp", true));
 			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{thingID.Name}.DoAThing", false));
 			var callingCode = CSCodeBlock.Create (thingDecl, anotherDecl, resetter, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "7\n");
@@ -493,17 +493,17 @@ open class UsingClassP {
 		{
 			var swiftCode = @"
 public protocol ProtoVIPA {
-    func constantA () -> Int
+    func constantVIPA () -> Int
 }
 public protocol ProtoVIPB {
-    func constantB () -> Int
+    func constantVIPB () -> Int
 }
 public class ImplVIPAVIPB : ProtoVIPA, ProtoVIPB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantVIPA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantVIPB () -> Int {
         return 4
     }
 }
@@ -524,7 +524,7 @@ open class UsingClassPI {
     }
 
     public func doAThing () -> Int {
-        return thing.constantA() + thing.constantB()
+        return thing.constantVIPA() + thing.constantVIPB()
     }
 }";
 			var thingID = new CSIdentifier ("due");
@@ -543,17 +543,17 @@ open class UsingClassPI {
 		{
 			var swiftCode = @"
 public protocol ProtoProtoFA {
-    func constantA () -> Int
+    func constantFA () -> Int
 }
 public protocol ProtoProtoFB {
-    func constantB () -> Int
+    func constantFB () -> Int
 }
 public class ImplProtoFAProtoFB : ProtoProtoFA, ProtoProtoFB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantFA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantFB () -> Int {
         return 4
     }
 }
@@ -563,7 +563,7 @@ public protocol UsingProto {
 public class UsingClassPP : UsingProto {
     public init () { }
     public func tryItOut (a: ProtoProtoFA & ProtoProtoFB) -> Int {
-        return a.constantA() + a.constantB()
+        return a.constantFA() + a.constantFB()
     }
 }
 ";
@@ -586,26 +586,26 @@ public class UsingClassPP : UsingProto {
 		{
 			var swiftCode = @"
 public protocol ProtoProtoPA {
-    func constantA () -> Int
+    func constantProtoPA () -> Int
 }
 public protocol ProtoProtoPB {
-    func constantB () -> Int
+    func constantProtoPB () -> Int
 }
-public class ImplProtoFAProtoFB : ProtoProtoPA, ProtoProtoPB {
+public class ImplProtoPropFAProtoFB : ProtoProtoPA, ProtoProtoPB {
     public init () { }
-    public func constantA () -> Int {
+    public func constantProtoPA () -> Int {
         return 3
     }
-    public func constantB () -> Int {
+    public func constantProtoPB () -> Int {
         return 4
     }
 }
-public protocol UsingProto {
+public protocol UsingProtoProp {
     var prop : ProtoProtoPA & ProtoProtoPB  { get }
 }
-public class UsingClassPProp : UsingProto {
+public class UsingClassPProp : UsingProtoProp {
     public init () {
-        x = ImplProtoFAProtoFB ()
+        x = ImplProtoPropFAProtoFB ()
     }
     private var x: ProtoProtoPA & ProtoProtoPB
     public var prop : ProtoProtoPA & ProtoProtoPB {
@@ -617,7 +617,7 @@ public class UsingClassPProp : UsingProto {
 
 public func tryItOut (a: UsingClassPProp) -> Int {
     let p = a.prop
-    return p.constantA() + p.constantB()
+    return p.constantProtoPA() + p.constantProtoPB()
 }
 ";
 			// var tre = new UsingClassPProp ();

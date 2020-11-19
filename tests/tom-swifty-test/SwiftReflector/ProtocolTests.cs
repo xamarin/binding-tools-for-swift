@@ -105,36 +105,42 @@ namespace SwiftReflector {
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyBool ()
 		{
 			WrapSingleSubscriptGetOnly ("Bool", "bool", "false", "true", "false\ntrue\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyInt ()
 		{
 			WrapSingleSubscriptGetOnly ("Int32", "int", "43", "-40", "43\n-40\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyUInt ()
 		{
 			WrapSingleSubscriptGetOnly ("UInt32", "uint", "(uint)43", "(uint)40", "43\n40\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyDouble ()
 		{
 			WrapSingleSubscriptGetOnly ("Double", "double", "43.0", "40.0", "43.0\n40.0\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyFloat ()
 		{
 			WrapSingleSubscriptGetOnly ("Float", "float", "43.0f", "40.0f", "43.0\n40.0\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyString ()
 		{
 			WrapSingleSubscriptGetOnly ("String", "SwiftString", "SwiftString.FromString(\"one\")",
@@ -145,13 +151,13 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
-				       $"public protocol MontyWSPGO{type} {{ var prop : {type} {{ get }} \n  }}\n" +
-				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.prop, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
+				       $"public protocol MontyWSPGO{type} {{ var propWSPGO{type} : {type} {{ get }} \n  }}\n" +
+				       $"public class TestMontyWSPGO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGO{type}) {{\nvar s = \"\"\nprint(m.propWSPGO{type}, to:&s)\nwriteToFile(s, \"WrapSinglePropertyGetOnly{appendage}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSPGO{type}");
 			overCS.Inheritance.Add (new CSIdentifier ($"IMontyWSPGO{type}"));
 			CSCodeBlock overBody = CSCodeBlock.Create (CSReturn.ReturnLine (new CSIdentifier (csReplacement)));
-			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ("Prop"),
+			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ($"PropWSPGO{type}"),
 						CSVisibility.Public, overBody, CSVisibility.Public, null);
 
 			overCS.Properties.Add (overProp);
@@ -204,19 +210,19 @@ namespace SwiftReflector {
 		{
 			string swiftCode =
 			    TestRunningCodeGenerator.kSwiftFileWriter +
-			    $"public protocol MontyWSPGSO{type} {{ var prop : {type} {{ get set }} \n  }}\n" +
-			    $"public class TestMontyWSPGSO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGSO{type}) {{\nvar x = m\nvar s = \"\", t = \"\"\nprint(x.prop, to:&s)\nx.prop = {swiftReplacement}\nprint(x.prop, to:&t)\nwriteToFile(s + t, \"WrapSinglePropertyGetSetOnly{type}\")\n}}\n}}\n";
+			    $"public protocol MontyWSPGSO{type} {{ var propWSPGSO{type} : {type} {{ get set }} \n  }}\n" +
+			    $"public class TestMontyWSPGSO{type} {{\npublic init() {{ }}\npublic func doIt(m:MontyWSPGSO{type}) {{\nvar x = m\nvar s = \"\", t = \"\"\nprint(x.propWSPGSO{type}, to:&s)\nx.propWSPGSO{type} = {swiftReplacement}\nprint(x.propWSPGSO{type}, to:&t)\nwriteToFile(s + t, \"WrapSinglePropertyGetSetOnly{type}\")\n}}\n}}\n";
 
 			CSClass overCS = new CSClass (CSVisibility.Public, $"OverWSPGSO{type}");
 			overCS.Inheritance.Add (new CSIdentifier ($"IMontyWSPGSO{type}"));
-			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ("Prop"),
+			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, new CSIdentifier ($"PropWSPGSO{type}"),
 			    CSVisibility.Public, new CSCodeBlock (), CSVisibility.Public, new CSCodeBlock ());
 
 			overCS.Properties.Add (overProp);
 
 			CSLine decl = CSVariableDeclaration.VarLine (new CSSimpleType ($"OverWSPGSO{type}"), "myOver", new CSFunctionCall ($"OverWSPGSO{type}", true));
 			CSLine decl1 = CSVariableDeclaration.VarLine (new CSSimpleType ($"TestMontyWSPGSO{type}"), "tester", new CSFunctionCall ($"TestMontyWSPGSO{type}", true));
-			CSLine initer = CSAssignment.Assign ("myOver.Prop", new CSIdentifier (csVal));
+			CSLine initer = CSAssignment.Assign ($"myOver.PropWSPGSO{type}", new CSIdentifier (csVal));
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, initer, invoker);
 
@@ -288,36 +294,42 @@ namespace SwiftReflector {
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetBool ()
 		{
 			WrapSubscriptGetSetOnly ("Bool", "bool", "true", "false", "true\nfalse\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetInt ()
 		{
 			WrapSubscriptGetSetOnly ("Int32", "int", "5", "6", "5\n6\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetUInt ()
 		{
 			WrapSubscriptGetSetOnly ("UInt32", "uint", "5", "6", "5\n6\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetFloat ()
 		{
 			WrapSubscriptGetSetOnly ("Float", "float", "5.0f", "6.0", "5.0\n6.0\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetDouble ()
 		{
 			WrapSubscriptGetSetOnly ("Double", "double", "5.0", "6.0", "5.0\n6.0\n");
 		}
 
 		[Test]
+		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetString ()
 		{
 			WrapSubscriptGetSetOnly ("String", "SwiftString", "SwiftString.FromString(\"hi\")", "\"mom\"", "hi\nmom\n");
@@ -569,6 +581,7 @@ public func isThisATrait (a: ThisServesAsATrait) -> Bool {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void EqConstraintSmokeTest ()
 		{
 			var swiftCode = @"
@@ -591,6 +604,7 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 		}
 
 		[Test]
+		[Ignore ("vtable should be fileprivate")]
 		public void TestProtocolTypeAttribute ()
 		{
 			var swiftCode = @"

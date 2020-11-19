@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 WORKSPACE=$(pwd)
 
 # SC1091: Not following: SwiftVersion.mk was not specified as input (see shellcheck -x).
@@ -104,6 +104,10 @@ if test -d swift; then
 	mkdir swift
 	cd swift
 fi
+
+# To fix complaints in './utils/build-script' that six is not found
+echo "Installing six"
+pip install six
 
 echo "Checking out swift..."
 git clone https://github.com/xamarin/binding-tools-for-swift-reflector swift

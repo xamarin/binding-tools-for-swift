@@ -2,7 +2,9 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -55,12 +57,19 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				throw new ArgumentOutOfRangeException (nameof (flags));
 
 			string selfPath = Path.GetDirectoryName (typeof (DynamicLib).Assembly.Location);
-			string [] possibleFiles = new string [] {
+			List<string> possibleFiles = new List<string> () {
 				fileName,
 				Path.Combine(selfPath, Path.Combine($"Frameworks/{fileName}.framework/{fileName}"))
 			};
 
 			var sb = new StringBuilder ();
+			var dylibPaths = LibraryPaths ();
+			sb.AppendLine ("DYLD_LIBRARY_PATH: ");
+			foreach (var path in dylibPaths) {
+				sb.AppendLine (path);
+				possibleFiles.Add (Path.Combine (path, fileName));
+			}
+			sb.AppendLine ("Checking possible files:");
 
 			foreach (string file in possibleFiles) {
 				FileName = file;
@@ -84,6 +93,14 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				throw new ArgumentException ($"Unable to load library {fileName}:{sbbuff}", nameof (fileName));
 			}
 
+		}
+
+		IEnumerable<string> LibraryPaths ()
+		{
+			var path = Environment.GetEnvironmentVariable ("DYLD_LIBRARY_PATH");
+			if (path == null)
+				return new string [0];
+			return path.Split (':');
 		}
 
 		public string FileName { get; private set; }

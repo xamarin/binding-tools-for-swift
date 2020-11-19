@@ -20,16 +20,39 @@ variables:
   - group: xamops-azdev-secrets
   - group: Xamarin-Secrets
 
+parameters:
+- name: RunningTests
+  type: boolean
+  default: false # we can change this to true or check the box in pipelines when we want to run tests
+
 jobs:
 - job: ContinuousIntegration
   timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macos-10.15'
 
   steps:
   - checkout: maccore
     persistCredentials: true
   - checkout: self
+
+  - bash: |
+      if [ -L /Applications/Xcode_12.0.1.app ]
+      then
+        unlink /Applications/Xcode_12.0.1.app
+      fi
+      if [ -L /Applications/Xcode_12.0.0.app ]
+      then
+        unlink /Applications/Xcode_12.0.0.app
+      fi
+      if [ -L /Applications/Xcode.app ]
+      then
+        unlink /Applications/Xcode.app
+      fi
+      ln -s /Applications/Xcode_12.app /Applications/Xcode_12.0.1.app
+      ln -s /Applications/Xcode_12.app /Applications/Xcode.app
+      xcode-select -p
+    displayName: 'Managing Xcode Symlinks'
 
   - bash: |
       set -x
@@ -57,16 +80,16 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/provision-deps.sh
+      ./binding-tools-for-swift/devops/automation/provision-deps.sh
     displayName: 'Provision dependencies'
 
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/build-swift.sh --publish
-      mkdir -p ../toolchain
-      if test -f Pack-Man/SwiftToolchain-*.zip; then
-        cp -c Pack-Man/SwiftToolchain-*.zip ../toolchain
+      ./binding-tools-for-swift/devops/automation/build-swift.sh --publish
+      mkdir -p $(System.DefaultWorkingDirectory)/toolchain
+      if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
+        cp -c $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
         echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
       else
         echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
@@ -80,20 +103,20 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: 'Upload Swift Toolchain'
     inputs:
-      PathtoPublish: '../toolchain'
+      PathtoPublish: $(System.DefaultWorkingDirectory)/toolchain
       ArtifactName: 'toolchain'
       publishLocation: 'Container'
 
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/build.sh
+      ./binding-tools-for-swift/devops/automation/build.sh
     displayName: 'Build'
 
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/build-package.sh
+      ./binding-tools-for-swift/devops/automation/build-package.sh
       ls -la ./package || true
     displayName: 'Package'
 
@@ -110,8 +133,9 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/jenkins/run-tests.sh
+      ./binding-tools-for-swift/devops/automation/run-tests.sh
     displayName: 'Run tests'
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishTestResults@2
     displayName: 'Publish NUnit Device Test Results'
@@ -120,7 +144,7 @@ jobs:
       testResultsFiles: '**/TestResult*.xml'
       failTaskOnFailedTests: true
     continueOnError: true
-    condition: succeededOrFailed()
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
@@ -128,7 +152,7 @@ jobs:
       targetPath: $(System.DefaultWorkingDirectory)/binding-tools-for-swift/tests/tom-swifty-test/TestResult.xml
       artifactName: TestResults
     continueOnError: true
-    condition: succeededOrFailed()
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
 - job: UploadToolchain
   dependsOn: ContinuousIntegration
@@ -172,8 +196,9 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./binding-tools-for-swift/jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
+    workingDirectory: $(System.DefaultWorkingDirectory)
 
 - job: UploadPackages
   dependsOn: ContinuousIntegration
@@ -216,5 +241,5 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./jenkins/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ./devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
