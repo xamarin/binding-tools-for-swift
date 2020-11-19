@@ -1,0 +1,43 @@
+<manualbinderfinder version="1.01" encoding="UTF - 8">
+<Module name="libswiftStdlibUnittest">
+    <Classes>
+        <Class name="StdlibUnittest.Box"/>
+        <Class name="StdlibUnittest.GenericMinimalHashableClass"/>
+        <Class name="StdlibUnittest.LifetimeTracked"/>
+        <Class name="StdlibUnittest.MinimalHashableClass"/>
+        <Class name="StdlibUnittest.ResettableValue"/>
+        <Class name="StdlibUnittest.TestSuite"/>
+        <Class name="StdlibUnittest.TypeIndexed"/>
+    </Classes>
+    <Structs>
+        <Struct name="StdlibUnittest.AssertionResult"/>
+        <Struct name="StdlibUnittest.CustomPrintableValue"/>
+        <Struct name="StdlibUnittest.GenericMinimalHashableValue"/>
+        <Struct name="StdlibUnittest.LinearCongruentialGenerator"/>
+        <Struct name="StdlibUnittest.MinimalComparableValue"/>
+        <Struct name="StdlibUnittest.MinimalEquatableValue"/>
+        <Struct name="StdlibUnittest.MinimalHashableValue"/>
+        <Struct name="StdlibUnittest.MinimalStrideableValue"/>
+        <Struct name="StdlibUnittest.Observation1UInt"/>
+        <Struct name="StdlibUnittest.Observation3Int"/>
+        <Struct name="StdlibUnittest.Observation4Int"/>
+        <Struct name="StdlibUnittest.Observation4UInt"/>
+        <Struct name="StdlibUnittest.Observation5Int"/>
+        <Struct name="StdlibUnittest.Observation9Int"/>
+        <Struct name="StdlibUnittest.OpaqueValue"/>
+        <Struct name="StdlibUnittest.SourceLoc"/>
+        <Struct name="StdlibUnittest.SourceLocStack"/>
+        <Struct name="StdlibUnittest.TestSuite._TestBuilder"/>
+        <Struct name="StdlibUnittest.TypeIdentifier"/>
+    </Structs>
+    <Enums>
+        <Enum name="StdlibUnittest.ExpectedComparisonResult"/>
+        <Enum name="StdlibUnittest.OSVersion"/>
+        <Enum name="StdlibUnittest.RaceTestObservationEvaluation"/>
+        <Enum name="StdlibUnittest.SwiftRuntime"/>
+        <Enum name="StdlibUnittest.TestRunPredicate"/>
+    </Enums>
+    <Protocols>
+        <Protocol name="StdlibUnittest.RaceTestWithPerTrialData"/>
+    </Protocols>
+</Module>

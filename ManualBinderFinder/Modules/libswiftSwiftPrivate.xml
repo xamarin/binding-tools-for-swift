@@ -1,0 +1,17 @@
+<manualbinderfinder version="1.01" encoding="UTF - 8">
+<Module name="libswiftSwiftPrivate">
+    <Classes>
+        <Class name="SwiftPrivate._stdlib_AtomicInt"/>
+    </Classes>
+    <Structs>
+        <Struct name="SwiftPrivate._FDInputStream"/>
+        <Struct name="SwiftPrivate._FDOutputStream"/>
+        <Struct name="SwiftPrivate._Stderr"/>
+        <Struct name="SwiftPrivate._stdlib_ShardedAtomicCounter"/>
+        <Struct name="SwiftPrivate._stdlib_ShardedAtomicCounter.PRNG"/>
+    </Structs>
+    <Enums>
+    </Enums>
+    <Protocols>
+    </Protocols>
+</Module>

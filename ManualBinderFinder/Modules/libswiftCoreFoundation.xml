@@ -1,2 +1,12 @@
+<manualbinderfinder version="1.01" encoding="UTF - 8">
 <Module name="libswiftCoreFoundation">
+    <Classes>
+    </Classes>
+    <Structs>
+    </Structs>
+    <Enums>
+    </Enums>
+    <Protocols>
+        <Protocol name="CoreFoundation._CFObject"/>
+    </Protocols>
 </Module>

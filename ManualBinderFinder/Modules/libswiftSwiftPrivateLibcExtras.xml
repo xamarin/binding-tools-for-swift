@@ -1,13 +1,12 @@
 <manualbinderfinder version="1.01" encoding="UTF - 8">
-<Module name="libswiftDarwin">
+<Module name="libswiftSwiftPrivateLibcExtras">
     <Classes>
     </Classes>
     <Structs>
-        <Struct name="Darwin.DarwinBoolean"/>
+        <Struct name="SwiftPrivateLibcExtras._stdlib_fd_set"/>
     </Structs>
     <Enums>
-        <Enum name="Darwin.MachErrorCode"/>
-        <Enum name="Darwin.POSIXErrorCode"/>
+        <Enum name="SwiftPrivateLibcExtras.ProcessTerminationStatus"/>
     </Enums>
     <Protocols>
     </Protocols>

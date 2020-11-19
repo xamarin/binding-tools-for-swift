@@ -1,0 +1,13 @@
+<manualbinderfinder version="1.01" encoding="UTF - 8">
+<Module name="libswiftSwiftPrivateThreadExtras">
+    <Classes>
+        <Class name="SwiftPrivateThreadExtras._stdlib_Barrier"/>
+    </Classes>
+    <Structs>
+        <Struct name="SwiftPrivateThreadExtras._stdlib_thread_barrier_t"/>
+    </Structs>
+    <Enums>
+    </Enums>
+    <Protocols>
+    </Protocols>
+</Module>

@@ -1,13 +1,11 @@
-<manualbinderfinder version="1.0" encoding="UTF - 8">
+<manualbinderfinder version="1.01" encoding="UTF - 8">
 <Module name="libswiftRuntimeUnittest">
     <Classes>
-        <Class name="RuntimeUnittest.SwiftRuntimeUnitTest"/>
     </Classes>
     <Structs>
-        <Class name="RuntimeUnittest.SwiftRuntimeUnitTest"/>
     </Structs>
     <Enums>
-        <Class name="RuntimeUnittest.SwiftRuntimeUnitTest"/>
+        <Enum name="RuntimeUnittest.SwiftRuntimeUnitTest"/>
     </Enums>
     <Protocols>
     </Protocols>
