@@ -18,8 +18,8 @@ namespace ManualBinderFinder {
 
 		static void WriteXmlFile (string moduleName, List<ClassContents> classesList, List<ClassContents> enumsList, List<ClassContents> structsList, List<ProtocolContents> protocolsList)
 		{
-			//using (StreamWriter sw = new StreamWriter ($"../../../Modules/{moduleName}.xml")) {
 			var version = "1.011";
+			//using (StreamWriter sw = new StreamWriter ($"../../../Modules/{moduleName}.xml")) {
 			using (StreamWriter sw = new StreamWriter ($"./Modules/{moduleName}.xml")) {
 				Console.WriteLine ($"Creating xml output for {moduleName} at ./Modules/{moduleName}.xml");
 

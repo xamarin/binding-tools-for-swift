@@ -1,0 +1,11 @@
+<manualbinderfinder version="1.011" encoding="UTF - 8">
+<Module name="libclang_rt">
+    <Classes>
+    </Classes>
+    <Structs>
+    </Structs>
+    <Enums>
+    </Enums>
+    <Protocols>
+    </Protocols>
+</Module>
