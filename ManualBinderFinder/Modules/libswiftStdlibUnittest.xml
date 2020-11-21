@@ -1,43 +1,174 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftStdlibUnittest">
     <Classes>
-        <Class name="StdlibUnittest.Box"/>
-        <Class name="StdlibUnittest.GenericMinimalHashableClass"/>
-        <Class name="StdlibUnittest.LifetimeTracked"/>
-        <Class name="StdlibUnittest.MinimalHashableClass"/>
-        <Class name="StdlibUnittest.ResettableValue"/>
-        <Class name="StdlibUnittest.TestSuite"/>
-        <Class name="StdlibUnittest.TypeIndexed"/>
+        <Class name="StdlibUnittest.Box">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="value"/>
+        </Class>
+        <Class name="StdlibUnittest.GenericMinimalHashableClass">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="description"/>
+            <Properties name="value"/>
+            <Properties name="identity"/>
+            <Properties name="hashValue"/>
+        </Class>
+        <Class name="StdlibUnittest.LifetimeTracked">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func advanced(by: Int) -> StdlibUnittest.LifetimeTracked"/>
+            <Functions signature="func distance(to: StdlibUnittest.LifetimeTracked) -> Int"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="description"/>
+            <Properties name="serialNumber"/>
+            <Properties name="value"/>
+            <Properties name="identity"/>
+            <Properties name="hashValue"/>
+        </Class>
+        <Class name="StdlibUnittest.MinimalHashableClass">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="description"/>
+            <Properties name="value"/>
+            <Properties name="identity"/>
+            <Properties name="hashValue"/>
+        </Class>
+        <Class name="StdlibUnittest.ResettableValue">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func reset()"/>
+            <Properties name="defaultValue"/>
+            <Properties name="value"/>
+        </Class>
+        <Class name="StdlibUnittest.TestSuite">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func setUp()"/>
+            <Functions signature="func tearDown()"/>
+            <Functions signature="func test(: Swift.String, file: Swift.String, line: UInt) -> StdlibUnittest.TestSuite._TestBuilder"/>
+        </Class>
+        <Class name="StdlibUnittest.TypeIndexed">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func reset()"/>
+        </Class>
     </Classes>
     <Structs>
-        <Struct name="StdlibUnittest.AssertionResult"/>
-        <Struct name="StdlibUnittest.CustomPrintableValue"/>
-        <Struct name="StdlibUnittest.GenericMinimalHashableValue"/>
-        <Struct name="StdlibUnittest.LinearCongruentialGenerator"/>
-        <Struct name="StdlibUnittest.MinimalComparableValue"/>
-        <Struct name="StdlibUnittest.MinimalEquatableValue"/>
-        <Struct name="StdlibUnittest.MinimalHashableValue"/>
-        <Struct name="StdlibUnittest.MinimalStrideableValue"/>
-        <Struct name="StdlibUnittest.Observation1UInt"/>
-        <Struct name="StdlibUnittest.Observation3Int"/>
-        <Struct name="StdlibUnittest.Observation4Int"/>
-        <Struct name="StdlibUnittest.Observation4UInt"/>
-        <Struct name="StdlibUnittest.Observation5Int"/>
-        <Struct name="StdlibUnittest.Observation9Int"/>
-        <Struct name="StdlibUnittest.OpaqueValue"/>
-        <Struct name="StdlibUnittest.SourceLoc"/>
-        <Struct name="StdlibUnittest.SourceLocStack"/>
-        <Struct name="StdlibUnittest.TestSuite._TestBuilder"/>
-        <Struct name="StdlibUnittest.TypeIdentifier"/>
+        <Struct name="StdlibUnittest.Box">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="value"/>
+        </Struct>
+        <Struct name="StdlibUnittest.GenericMinimalHashableClass">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="description"/>
+            <Properties name="value"/>
+            <Properties name="identity"/>
+            <Properties name="hashValue"/>
+        </Struct>
+        <Struct name="StdlibUnittest.LifetimeTracked">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func advanced(by: Int) -> StdlibUnittest.LifetimeTracked"/>
+            <Functions signature="func distance(to: StdlibUnittest.LifetimeTracked) -> Int"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="description"/>
+            <Properties name="serialNumber"/>
+            <Properties name="value"/>
+            <Properties name="identity"/>
+            <Properties name="hashValue"/>
+        </Struct>
+        <Struct name="StdlibUnittest.MinimalHashableClass">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="description"/>
+            <Properties name="value"/>
+            <Properties name="identity"/>
+            <Properties name="hashValue"/>
+        </Struct>
+        <Struct name="StdlibUnittest.ResettableValue">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func reset()"/>
+            <Properties name="defaultValue"/>
+            <Properties name="value"/>
+        </Struct>
+        <Struct name="StdlibUnittest.TestSuite">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func setUp()"/>
+            <Functions signature="func tearDown()"/>
+            <Functions signature="func test(: Swift.String, file: Swift.String, line: UInt) -> StdlibUnittest.TestSuite._TestBuilder"/>
+        </Struct>
+        <Struct name="StdlibUnittest.TypeIndexed">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func reset()"/>
+        </Struct>
     </Structs>
     <Enums>
-        <Enum name="StdlibUnittest.ExpectedComparisonResult"/>
-        <Enum name="StdlibUnittest.OSVersion"/>
-        <Enum name="StdlibUnittest.RaceTestObservationEvaluation"/>
-        <Enum name="StdlibUnittest.SwiftRuntime"/>
-        <Enum name="StdlibUnittest.TestRunPredicate"/>
+        <Enum name="StdlibUnittest.Box"/>
+        <Enum name="StdlibUnittest.GenericMinimalHashableClass"/>
+        <Enum name="StdlibUnittest.LifetimeTracked"/>
+        <Enum name="StdlibUnittest.MinimalHashableClass"/>
+        <Enum name="StdlibUnittest.ResettableValue"/>
+        <Enum name="StdlibUnittest.TestSuite"/>
+        <Enum name="StdlibUnittest.TypeIndexed"/>
     </Enums>
     <Protocols>
-        <Protocol name="StdlibUnittest.RaceTestWithPerTrialData"/>
+        <Protocol name="StdlibUnittest.RaceTestWithPerTrialData">
+            <Functions signature="func evaluateObservations(Swift.Array<Self.Observation>, StdlibUnittest.RaceTestObservationEvaluation)"/>
+            <Functions signature="func makeRaceData() -> Self.RaceData"/>
+            <Functions signature="func makeThreadLocalData() -> Self.ThreadLocalData"/>
+            <Functions signature="func thread1(Self.RaceData, Self.ThreadLocalData) -> Self.Observation"/>
+        </Protocol>
     </Protocols>
 </Module>

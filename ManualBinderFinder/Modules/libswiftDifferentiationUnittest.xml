@@ -1,12 +1,10 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftDifferentiationUnittest">
     <Classes>
     </Classes>
     <Structs>
-        <Struct name="DifferentiationUnittest.Tracked"/>
     </Structs>
     <Enums>
-        <Enum name="DifferentiationUnittest._GlobalLeakCount"/>
     </Enums>
     <Protocols>
     </Protocols>

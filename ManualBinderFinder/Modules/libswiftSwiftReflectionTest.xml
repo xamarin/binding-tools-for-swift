@@ -1,11 +1,10 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftSwiftReflectionTest">
     <Classes>
     </Classes>
     <Structs>
     </Structs>
     <Enums>
-        <Enum name="SwiftReflectionTest.InstanceKind"/>
     </Enums>
     <Protocols>
     </Protocols>

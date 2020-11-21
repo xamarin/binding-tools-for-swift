@@ -1,16 +1,47 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftSwiftPrivate">
     <Classes>
-        <Class name="SwiftPrivate._stdlib_AtomicInt"/>
+        <Class name="SwiftPrivate._stdlib_AtomicInt">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func addAndFetchInt -> Int"/>
+            <Functions signature="func andAndFetchInt -> Int"/>
+            <Functions signature="func compareExchange(expected: Int, desired: Int) -> Bool"/>
+            <Functions signature="func fetchAndAddInt -> Int"/>
+            <Functions signature="func fetchAndAndInt -> Int"/>
+            <Functions signature="func fetchAndOrInt -> Int"/>
+            <Functions signature="func fetchAndXorInt -> Int"/>
+            <Functions signature="func load() -> Int"/>
+            <Functions signature="func orAndFetchInt -> Int"/>
+            <Functions signature="func storeInt"/>
+            <Functions signature="func xorAndFetchInt -> Int"/>
+        </Class>
     </Classes>
     <Structs>
-        <Struct name="SwiftPrivate._FDInputStream"/>
-        <Struct name="SwiftPrivate._FDOutputStream"/>
-        <Struct name="SwiftPrivate._Stderr"/>
-        <Struct name="SwiftPrivate._stdlib_ShardedAtomicCounter"/>
-        <Struct name="SwiftPrivate._stdlib_ShardedAtomicCounter.PRNG"/>
+        <Struct name="SwiftPrivate._stdlib_AtomicInt">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func addAndFetchInt -> Int"/>
+            <Functions signature="func andAndFetchInt -> Int"/>
+            <Functions signature="func compareExchange(expected: Int, desired: Int) -> Bool"/>
+            <Functions signature="func fetchAndAddInt -> Int"/>
+            <Functions signature="func fetchAndAndInt -> Int"/>
+            <Functions signature="func fetchAndOrInt -> Int"/>
+            <Functions signature="func fetchAndXorInt -> Int"/>
+            <Functions signature="func load() -> Int"/>
+            <Functions signature="func orAndFetchInt -> Int"/>
+            <Functions signature="func storeInt"/>
+            <Functions signature="func xorAndFetchInt -> Int"/>
+        </Struct>
     </Structs>
     <Enums>
+        <Enum name="SwiftPrivate._stdlib_AtomicInt"/>
     </Enums>
     <Protocols>
     </Protocols>

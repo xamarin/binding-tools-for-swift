@@ -1,13 +1,10 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftDarwin">
     <Classes>
     </Classes>
     <Structs>
-        <Struct name="Darwin.DarwinBoolean"/>
     </Structs>
     <Enums>
-        <Enum name="Darwin.MachErrorCode"/>
-        <Enum name="Darwin.POSIXErrorCode"/>
     </Enums>
     <Protocols>
     </Protocols>

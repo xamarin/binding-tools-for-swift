@@ -1,462 +1,1522 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftCore">
     <Classes>
-        <Class name="Swift.AnyKeyPath"/>
-        <Class name="Swift.AnyObject"/>
-        <Class name="Swift.KeyPath"/>
-        <Class name="Swift.ManagedBuffer"/>
-        <Class name="Swift.PartialKeyPath"/>
-        <Class name="Swift.ReferenceWritableKeyPath"/>
-        <Class name="Swift.WritableKeyPath"/>
-        <Class name="Swift._AnyBidirectionalCollectionBox"/>
-        <Class name="Swift._AnyCollectionBox"/>
-        <Class name="Swift._AnyIteratorBoxBase"/>
-        <Class name="Swift._AnyRandomAccessCollectionBox"/>
-        <Class name="Swift._AnySequenceBox"/>
-        <Class name="Swift._BidirectionalCollectionBox"/>
-        <Class name="Swift._CollectionBox"/>
-        <Class name="Swift._ContiguousArrayStorage"/>
-        <Class name="Swift._DictionaryStorage"/>
-        <Class name="Swift._IndexBox"/>
-        <Class name="Swift._IteratorBox"/>
-        <Class name="Swift._RandomAccessCollectionBox"/>
-        <Class name="Swift._SequenceBox"/>
-        <Class name="Swift._SetStorage"/>
-        <Class name="Swift._SwiftNSMutableArray"/>
-        <Class name="Swift._SwiftNativeNSMutableArray"/>
-        <Class name="Swift.__CocoaDictionary.Iterator"/>
-        <Class name="Swift.__CocoaSet.Iterator"/>
-        <Class name="Swift.__ContiguousArrayStorageBase"/>
-        <Class name="Swift.__EmptyArrayStorage"/>
-        <Class name="Swift.__EmptyDictionarySingleton"/>
-        <Class name="Swift.__EmptySetSingleton"/>
-        <Class name="Swift.__RawDictionaryStorage"/>
-        <Class name="Swift.__RawSetStorage"/>
-        <Class name="Swift.__SwiftDeferredNSArray"/>
-        <Class name="Swift.__SwiftNativeNSArray"/>
-        <Class name="Swift.__SwiftNativeNSArrayWithContiguousStorage"/>
-        <Class name="Swift.__SwiftNativeNSDictionary"/>
-        <Class name="Swift.__SwiftNativeNSSet"/>
-        <Class name="Swift.__VaListBuilder"/>
-        <Class name="Swift._stdlib_AtomicInt"/>
+        <Class name="Swift.AnyKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="_kvcKeyPathString"/>
+            <Properties name="_storedInlineOffset"/>
+            <Properties name="hashValue"/>
+        </Class>
+        <Class name="Swift.AnyObject">
+        </Class>
+        <Class name="Swift.KeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _projectReadOnly(from: Self) -> (0,1)"/>
+        </Class>
+        <Class name="Swift.ManagedBuffer">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func withUnsafeMutablePointerToElementsSwift.UnsafeMutablePointer<(0,1)> -> (1,0) -> (1,0)"/>
+            <Functions signature="func withUnsafeMutablePointerToHeaderSwift.UnsafeMutablePointer<Self> -> (1,0) -> (1,0)"/>
+            <Functions signature="func withUnsafeMutablePointers(Swift.UnsafeMutablePointer<Self>, Swift.UnsafeMutablePointer<(0,1)>) -> (1,0) -> (1,0)"/>
+            <Properties name="headerAddress"/>
+            <Properties name="firstElementAddress"/>
+            <Properties name="header"/>
+            <Properties name="capacity"/>
+        </Class>
+        <Class name="Swift.PartialKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.ReferenceWritableKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _projectMutableAddress(from: Self) -> (pointer: Swift.UnsafeMutablePointer<(0,1)>, owner: Swift.Optional<Swift.AnyObject>)"/>
+        </Class>
+        <Class name="Swift.WritableKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _projectMutableAddress(from: Swift.UnsafePointer<Self>) -> (pointer: Swift.UnsafeMutablePointer<(0,1)>, owner: Swift.Optional<Swift.AnyObject>)"/>
+        </Class>
+        <Class name="Swift._AnyBidirectionalCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _formIndex(before: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(before: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+        </Class>
+        <Class name="Swift._AnyCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyCollectionBox<Self>"/>
+            <Properties name="_startIndex"/>
+            <Properties name="_count"/>
+            <Properties name="_endIndex"/>
+        </Class>
+        <Class name="Swift._AnyIteratorBoxBase">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<Self>"/>
+        </Class>
+        <Class name="Swift._AnyRandomAccessCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+        </Class>
+        <Class name="Swift._AnySequenceBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self>) -> (Swift.AnyIterator<Self>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self>"/>
+            <Functions signature="func __customContainsEquatableElementSelf -> Swift.Optional<Bool>"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnySequenceBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnySequenceBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift.Array<Self>"/>
+            <Functions signature="func _filterSelf -> Bool -> Swift.Array<Self>"/>
+            <Functions signature="func _forEachSelf"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self>"/>
+            <Functions signature="func _mapSelf -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift.Array<Self>"/>
+            <Functions signature="func _suffixInt -> Swift.Array<Self>"/>
+            <Properties name="_underestimatedCount"/>
+        </Class>
+        <Class name="Swift._BidirectionalCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _unbox(: Swift._AnyIndexBox, file: Swift.StaticString, line: UInt) -> Self.Index"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+            <Properties name="_count"/>
+        </Class>
+        <Class name="Swift._CollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _unbox(: Swift._AnyIndexBox, file: Swift.StaticString, line: UInt) -> Self.Index"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+            <Properties name="_count"/>
+        </Class>
+        <Class name="Swift._ContiguousArrayStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func canStoreElements(ofDynamicType: Existential Metatype Swift.Any) -> Bool"/>
+            <Properties name="_elementPointer"/>
+            <Properties name="staticElementType"/>
+        </Class>
+        <Class name="Swift._DictionaryStorage">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_keys"/>
+            <Properties name="_values"/>
+        </Class>
+        <Class name="Swift._IndexBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _isEqual(to: Swift._AnyIndexBox) -> Bool"/>
+            <Functions signature="func _isLess(than: Swift._AnyIndexBox) -> Bool"/>
+            <Functions signature="func _unbox() -> Swift.Optional<(1,0)>"/>
+            <Functions signature="func _unsafeUnboxSwift._AnyIndexBox -> Self"/>
+            <Properties name="_base"/>
+            <Properties name="_typeID"/>
+        </Class>
+        <Class name="Swift._IteratorBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<Self.Element>"/>
+            <Properties name="_base"/>
+        </Class>
+        <Class name="Swift._RandomAccessCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _unbox(: Swift._AnyIndexBox, file: Swift.StaticString, line: UInt) -> Self.Index"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+            <Properties name="_count"/>
+        </Class>
+        <Class name="Swift._SequenceBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnySequenceBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnySequenceBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift.Array<Self.Element>"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+        </Class>
+        <Class name="Swift._SetStorage">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_elements"/>
+        </Class>
+        <Class name="Swift._SwiftNSMutableArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift._SwiftNativeNSMutableArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.__CocoaDictionary.Iterator">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<(key: Swift.AnyObject, value: Swift.AnyObject)>"/>
+            <Functions signature="func nextKey() -> Swift.Optional<Swift.AnyObject>"/>
+        </Class>
+        <Class name="Swift.__CocoaSet.Iterator">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<Swift.AnyObject>"/>
+        </Class>
+        <Class name="Swift.__ContiguousArrayStorageBase">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func canStoreElements(ofDynamicType: Existential Metatype Swift.Any) -> Bool"/>
+            <Properties name="countAndCapacity"/>
+            <Properties name="staticElementType"/>
+        </Class>
+        <Class name="Swift.__EmptyArrayStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func canStoreElements(ofDynamicType: Existential Metatype Swift.Any) -> Bool"/>
+            <Properties name="staticElementType"/>
+        </Class>
+        <Class name="Swift.__EmptyDictionarySingleton">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.__EmptySetSingleton">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.__RawDictionaryStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_hashTable"/>
+            <Properties name="_rawValues"/>
+            <Properties name="_bucketCount"/>
+            <Properties name="_reservedScale"/>
+            <Properties name="_age"/>
+            <Properties name="_seed"/>
+            <Properties name="_count"/>
+            <Properties name="_scale"/>
+            <Properties name="_rawKeys"/>
+            <Properties name="_capacity"/>
+            <Properties name="_metadata"/>
+        </Class>
+        <Class name="Swift.__RawSetStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_hashTable"/>
+            <Properties name="_bucketCount"/>
+            <Properties name="_rawElements"/>
+            <Properties name="_reservedScale"/>
+            <Properties name="_age"/>
+            <Properties name="_seed"/>
+            <Properties name="_count"/>
+            <Properties name="_scale"/>
+            <Properties name="_capacity"/>
+            <Properties name="_metadata"/>
+        </Class>
+        <Class name="Swift.__SwiftDeferredNSArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_nativeStorage"/>
+        </Class>
+        <Class name="Swift.__SwiftNativeNSArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.__SwiftNativeNSArrayWithContiguousStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.__SwiftNativeNSDictionary">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.__SwiftNativeNSSet">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Class>
+        <Class name="Swift.__VaListBuilder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func appendSwift.CVarArg"/>
+            <Functions signature="func va_list() -> Swift.CVaListPointer"/>
+            <Properties name="fpRegistersUsed"/>
+            <Properties name="gpRegistersUsed"/>
+            <Properties name="header"/>
+            <Properties name="storage"/>
+        </Class>
+        <Class name="Swift._stdlib_AtomicInt">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func addAndFetchInt -> Int"/>
+            <Functions signature="func andAndFetchInt -> Int"/>
+            <Functions signature="func compareExchange(expected: Int, desired: Int) -> Bool"/>
+            <Functions signature="func fetchAndAddInt -> Int"/>
+            <Functions signature="func fetchAndAndInt -> Int"/>
+            <Functions signature="func fetchAndOrInt -> Int"/>
+            <Functions signature="func fetchAndXorInt -> Int"/>
+            <Functions signature="func load() -> Int"/>
+            <Functions signature="func orAndFetchInt -> Int"/>
+            <Functions signature="func storeInt"/>
+            <Functions signature="func xorAndFetchInt -> Int"/>
+        </Class>
     </Classes>
     <Structs>
-        <Struct name="Swift.AnyBidirectionalCollection"/>
-        <Struct name="Swift.AnyCollection"/>
-        <Struct name="Swift.AnyHashable"/>
-        <Struct name="Swift.AnyIndex"/>
-        <Struct name="Swift.AnyIterator"/>
-        <Struct name="Swift.AnyRandomAccessCollection"/>
-        <Struct name="Swift.AnySequence"/>
-        <Struct name="Swift.Array"/>
-        <Struct name="Swift.ArraySlice"/>
-        <Struct name="Swift.AutoreleasingUnsafeMutablePointer"/>
-        <Struct name="Swift.Bool"/>
-        <Struct name="Swift.CVaListPointer"/>
-        <Struct name="Swift.Character"/>
-        <Struct name="Swift.ClosedRange"/>
-        <Struct name="Swift.CodingUserInfoKey"/>
-        <Struct name="Swift.CollectionDifference"/>
-        <Struct name="Swift.CollectionDifference.Index"/>
-        <Struct name="Swift.CollectionOfOne"/>
-        <Struct name="Swift.CollectionOfOne.Iterator"/>
-        <Struct name="Swift.ContiguousArray"/>
-        <Struct name="Swift.DecodingError.Context"/>
-        <Struct name="Swift.DefaultIndicies"/>
-        <Struct name="Swift.DefaultStringInterpolation"/>
-        <Struct name="Swift.Dictionary"/>
-        <Struct name="Swift.Dictionary.Index"/>
-        <Struct name="Swift.Dictionary.Iterator"/>
-        <Struct name="Swift.Dictionary.Keys"/>
-        <Struct name="Swift.Dictionary.Keys.Iterator"/>
-        <Struct name="Swift.Dictionary.Values"/>
-        <Struct name="Swift.Dictionary.Values.Iterator"/>
-        <Struct name="Swift.Dictionary._Variant"/>
-        <Struct name="Swift.Double"/>
-        <Struct name="Swift.Double.SIMD16Storage"/>
-        <Struct name="Swift.Double.SIMD2Storage"/>
-        <Struct name="Swift.Double.SIMD32Storage"/>
-        <Struct name="Swift.Double.SIMD4Storage"/>
-        <Struct name="Swift.Double.SIMD64Storage"/>
-        <Struct name="Swift.Double.SIMD8Storage"/>
-        <Struct name="Swift.DropFirstSequence"/>
-        <Struct name="Swift.DropWhileSequence"/>
-        <Struct name="Swift.DropWhileSequence.Iterator"/>
-        <Struct name="Swift.EmptyCollection"/>
-        <Struct name="Swift.EmptyCollection.Iterator"/>
-        <Struct name="Swift.EncodingError.Context"/>
-        <Struct name="Swift.EnumeratedSequence"/>
-        <Struct name="Swift.EnumeratedSequence.Iterator"/>
-        <Struct name="Swift.FlattenSequence"/>
-        <Struct name="Swift.FlattenSequence.Iterator"/>
-        <Struct name="Swift.Float"/>
-        <Struct name="Swift.Float.SIMD16Storage"/>
-        <Struct name="Swift.Float.SIMD2Storage"/>
-        <Struct name="Swift.Float.SIMD32Storage"/>
-        <Struct name="Swift.Float.SIMD4Storage"/>
-        <Struct name="Swift.Float.SIMD64Storage"/>
-        <Struct name="Swift.Float.SIMD8Storage"/>
-        <Struct name="Swift.Float16"/>
-        <Struct name="Swift.Float16.SIMD16Storage"/>
-        <Struct name="Swift.Float16.SIMD2Storage"/>
-        <Struct name="Swift.Float16.SIMD32Storage"/>
-        <Struct name="Swift.Float16.SIMD4Storage"/>
-        <Struct name="Swift.Float16.SIMD64Storage"/>
-        <Struct name="Swift.Float16.SIMD8Storage"/>
-        <Struct name="Swift.Float80"/>
-        <Struct name="Swift.Float80._Representation"/>
-        <Struct name="Swift.Hasher"/>
-        <Struct name="Swift.Hasher._Core"/>
-        <Struct name="Swift.Hasher._State"/>
-        <Struct name="Swift.Hasher._TailBuffer"/>
-        <Struct name="Swift.IndexingIterator"/>
-        <Struct name="Swift.Int"/>
-        <Struct name="Swift.Int.SIMD16Storage"/>
-        <Struct name="Swift.Int.SIMD2Storage"/>
-        <Struct name="Swift.Int.SIMD32Storage"/>
-        <Struct name="Swift.Int.SIMD4Storage"/>
-        <Struct name="Swift.Int.SIMD64Storage"/>
-        <Struct name="Swift.Int.SIMD8Storage"/>
-        <Struct name="Swift.Int.Words"/>
-        <Struct name="Swift.Int16"/>
-        <Struct name="Swift.Int16.SIMD16Storage"/>
-        <Struct name="Swift.Int16.SIMD2Storage"/>
-        <Struct name="Swift.Int16.SIMD32Storage"/>
-        <Struct name="Swift.Int16.SIMD4Storage"/>
-        <Struct name="Swift.Int16.SIMD64Storage"/>
-        <Struct name="Swift.Int16.SIMD8Storage"/>
-        <Struct name="Swift.Int16.Words"/>
-        <Struct name="Swift.Int32"/>
-        <Struct name="Swift.Int32.SIMD16Storage"/>
-        <Struct name="Swift.Int32.SIMD2Storage"/>
-        <Struct name="Swift.Int32.SIMD32Storage"/>
-        <Struct name="Swift.Int32.SIMD4Storage"/>
-        <Struct name="Swift.Int32.SIMD64Storage"/>
-        <Struct name="Swift.Int32.SIMD8Storage"/>
-        <Struct name="Swift.Int32.Words"/>
-        <Struct name="Swift.Int64"/>
-        <Struct name="Swift.Int64.SIMD16Storage"/>
-        <Struct name="Swift.Int64.SIMD2Storage"/>
-        <Struct name="Swift.Int64.SIMD32Storage"/>
-        <Struct name="Swift.Int64.SIMD4Storage"/>
-        <Struct name="Swift.Int64.SIMD64Storage"/>
-        <Struct name="Swift.Int64.SIMD8Storage"/>
-        <Struct name="Swift.Int64.Words"/>
-        <Struct name="Swift.Int8"/>
-        <Struct name="Swift.Int8.SIMD16Storage"/>
-        <Struct name="Swift.Int8.SIMD2Storage"/>
-        <Struct name="Swift.Int8.SIMD32Storage"/>
-        <Struct name="Swift.Int8.SIMD4Storage"/>
-        <Struct name="Swift.Int8.SIMD64Storage"/>
-        <Struct name="Swift.Int8.SIMD8Storage"/>
-        <Struct name="Swift.Int8.Words"/>
-        <Struct name="Swift.IteratorSequence"/>
-        <Struct name="Swift.JoinedSequence"/>
-        <Struct name="Swift.JoinedSequence.Iterator"/>
-        <Struct name="Swift.KeyValuePairs"/>
-        <Struct name="Swift.KeyedDecodingContainer"/>
-        <Struct name="Swift.KeyedEncodingContainer"/>
-        <Struct name="Swift.LazyDropWhileSequence"/>
-        <Struct name="Swift.LazyDropWhileSequence.Iterator"/>
-        <Struct name="Swift.LazyFilterSequence"/>
-        <Struct name="Swift.LazyFilterSequence.Iterator"/>
-        <Struct name="Swift.LazyMapSequence"/>
-        <Struct name="Swift.LazyMapSequence.Iterator"/>
-        <Struct name="Swift.LazyPrefixWhileSequence"/>
-        <Struct name="Swift.LazyPrefixWhileSequence.Iterator"/>
-        <Struct name="Swift.LazySequence"/>
-        <Struct name="Swift.ManagedBufferPointer"/>
-        <Struct name="Swift.Mirror"/>
-        <Struct name="Swift.ObjectIdentifier"/>
-        <Struct name="Swift.OpaquePointer"/>
-        <Struct name="Swift.PartialRangeFrom"/>
-        <Struct name="Swift.PartialRangeThrough"/>
-        <Struct name="Swift.PartialRangeUpTo"/>
-        <Struct name="Swift.PrefixSequence"/>
-        <Struct name="Swift.PrefixSequence.Iterator"/>
-        <Struct name="Swift.Range"/>
-        <Struct name="Swift.Repeated"/>
-        <Struct name="Swift.ReversedCollection"/>
-        <Struct name="Swift.ReversedCollection.Index"/>
-        <Struct name="Swift.ReversedCollection.Iterator"/>
-        <Struct name="Swift.SIMD16"/>
-        <Struct name="Swift.SIMD2"/>
-        <Struct name="Swift.SIMD3"/>
-        <Struct name="Swift.SIMD32"/>
-        <Struct name="Swift.SIMD4"/>
-        <Struct name="Swift.SIMD64"/>
-        <Struct name="Swift.SIMD8"/>
-        <Struct name="Swift.SIMDMask"/>
-        <Struct name="Swift.Set"/>
-        <Struct name="Swift.Set.Index"/>
-        <Struct name="Swift.Set.Iterator"/>
-        <Struct name="Swift.Set._Variant"/>
-        <Struct name="Swift.Slice"/>
-        <Struct name="Swift.StaticString"/>
-        <Struct name="Swift.StrideThrough"/>
-        <Struct name="Swift.StrideThroughIterator"/>
-        <Struct name="Swift.StrideTo"/>
-        <Struct name="Swift.StrideToIterator"/>
-        <Struct name="Swift.String"/>
-        <Struct name="Swift.String.Index"/>
-        <Struct name="Swift.String.Iterator"/>
-        <Struct name="Swift.String.UTF16View"/>
-        <Struct name="Swift.String.UTF16View.Iterator"/>
-        <Struct name="Swift.String.UTF8View"/>
-        <Struct name="Swift.String.UnicodeScalarView"/>
-        <Struct name="Swift.String.UnicodeScalarView.Iterator"/>
-        <Struct name="Swift.Substring"/>
-        <Struct name="Swift.Substring.UTF16View"/>
-        <Struct name="Swift.Substring.UTF8View"/>
-        <Struct name="Swift.Substring.UnicodeScalarView"/>
-        <Struct name="Swift.SystemRandomNumberGenerator"/>
-        <Struct name="Swift.UInt"/>
-        <Struct name="Swift.UInt.SIMD16Storage"/>
-        <Struct name="Swift.UInt.SIMD2Storage"/>
-        <Struct name="Swift.UInt.SIMD32Storage"/>
-        <Struct name="Swift.UInt.SIMD4Storage"/>
-        <Struct name="Swift.UInt.SIMD64Storage"/>
-        <Struct name="Swift.UInt.SIMD8Storage"/>
-        <Struct name="Swift.UInt.Words"/>
-        <Struct name="Swift.UInt16"/>
-        <Struct name="Swift.UInt16.SIMD16Storage"/>
-        <Struct name="Swift.UInt16.SIMD2Storage"/>
-        <Struct name="Swift.UInt16.SIMD32Storage"/>
-        <Struct name="Swift.UInt16.SIMD4Storage"/>
-        <Struct name="Swift.UInt16.SIMD64Storage"/>
-        <Struct name="Swift.UInt16.SIMD8Storage"/>
-        <Struct name="Swift.UInt16.Words"/>
-        <Struct name="Swift.UInt32"/>
-        <Struct name="Swift.UInt32.SIMD16Storage"/>
-        <Struct name="Swift.UInt32.SIMD2Storage"/>
-        <Struct name="Swift.UInt32.SIMD32Storage"/>
-        <Struct name="Swift.UInt32.SIMD4Storage"/>
-        <Struct name="Swift.UInt32.SIMD64Storage"/>
-        <Struct name="Swift.UInt32.SIMD8Storage"/>
-        <Struct name="Swift.UInt32.Words"/>
-        <Struct name="Swift.UInt64"/>
-        <Struct name="Swift.UInt64.SIMD16Storage"/>
-        <Struct name="Swift.UInt64.SIMD2Storage"/>
-        <Struct name="Swift.UInt64.SIMD32Storage"/>
-        <Struct name="Swift.UInt64.SIMD4Storage"/>
-        <Struct name="Swift.UInt64.SIMD64Storage"/>
-        <Struct name="Swift.UInt64.SIMD8Storage"/>
-        <Struct name="Swift.UInt64.Words"/>
-        <Struct name="Swift.UInt8"/>
-        <Struct name="Swift.UInt8.SIMD16Storage"/>
-        <Struct name="Swift.UInt8.SIMD2Storage"/>
-        <Struct name="Swift.UInt8.SIMD32Storage"/>
-        <Struct name="Swift.UInt8.SIMD4Storage"/>
-        <Struct name="Swift.UInt8.SIMD64Storage"/>
-        <Struct name="Swift.UInt8.SIMD8Storage"/>
-        <Struct name="Swift.UInt8.Words"/>
-        <Struct name="Swift.UnfoldSequence"/>
-        <Struct name="Swift.Unicode.ASCII.Parser"/>
-        <Struct name="Swift.Unicode.CanonicalCombiningClass"/>
-        <Struct name="Swift.Unicode.Scalar"/>
-        <Struct name="Swift.Unicode.Scalar.Properties"/>
-        <Struct name="Swift.Unicode.Scalar.UTF16View"/>
-        <Struct name="Swift.Unicode.Scalar.UTF8View"/>
-        <Struct name="Swift.Unicode.UTF16.ForwardParser"/>
-        <Struct name="Swift.Unicode.UTF16.ReverseParser"/>
-        <Struct name="Swift.Unicode.UTF32.Parser"/>
-        <Struct name="Swift.Unicode.UTF8.ForwardParser"/>
-        <Struct name="Swift.Unicode.UTF8.ReverseParser"/>
-        <Struct name="Swift.Unmanaged"/>
-        <Struct name="Swift.UnsafeBufferPointer"/>
-        <Struct name="Swift.UnsafeBufferPointer.Iterator"/>
-        <Struct name="Swift.UnsafeMutableBufferPointer"/>
-        <Struct name="Swift.UnsafeMutablePointer"/>
-        <Struct name="Swift.UnsafeMutableRawBufferPointer"/>
-        <Struct name="Swift.UnsafeMutableRawPointer"/>
-        <Struct name="Swift.UnsafePointer"/>
-        <Struct name="Swift.UnsafeRawBufferPointer"/>
-        <Struct name="Swift.UnsafeRawBufferPointer.Iterator"/>
-        <Struct name="Swift.UnsafeRawPointer"/>
-        <Struct name="Swift.Zip2Sequence"/>
-        <Struct name="Swift.Zip2Sequence.Iterator"/>
-        <Struct name="Swift._ArrayBody"/>
-        <Struct name="Swift._ArrayBuffer"/>
-        <Struct name="Swift._BridgeStorage"/>
-        <Struct name="Swift._BridgeableMetatype"/>
-        <Struct name="Swift._ClosureBasedIterator"/>
-        <Struct name="Swift._ClosureBasedSequence"/>
-        <Struct name="Swift._CocoaArrayWrapper"/>
-        <Struct name="Swift._ContiguousArrayBuffer"/>
-        <Struct name="Swift._DependenceToken"/>
-        <Struct name="Swift._DictionaryBuilder"/>
-        <Struct name="Swift._EachFieldOptions"/>
-        <Struct name="Swift._GlobalRuntimeFunctionCountersState"/>
-        <Struct name="Swift._HashTable"/>
-        <Struct name="Swift._HashTable.Bucket"/>
-        <Struct name="Swift._HashTable.Index"/>
-        <Struct name="Swift._HashTable.Iterator"/>
-        <Struct name="Swift._NativeDictionary"/>
-        <Struct name="Swift._NativeDictionary.Iterator"/>
-        <Struct name="Swift._NativeSet"/>
-        <Struct name="Swift._NativeSet.Iterator"/>
-        <Struct name="Swift._ObjectRuntimeFunctionCountersState"/>
-        <Struct name="Swift._OpaqueStringSwitchCache"/>
-        <Struct name="Swift._OptionalNilComparisonType"/>
-        <Struct name="Swift._RuntimeFunctionCounters"/>
-        <Struct name="Swift._SetBuilder"/>
-        <Struct name="Swift._SliceBuffer"/>
-        <Struct name="Swift._SmallString"/>
-        <Struct name="Swift._StringGuts"/>
-        <Struct name="Swift._StringObject"/>
-        <Struct name="Swift._StringObject.CountAndFlags"/>
-        <Struct name="Swift._StringRepresentation"/>
-        <Struct name="Swift._UIntBuffer"/>
-        <Struct name="Swift._UIntBuffer.Index"/>
-        <Struct name="Swift._UIntBuffer.Iterator"/>
-        <Struct name="Swift._UnsafeBitset"/>
-        <Struct name="Swift._UnsafeBitset.Iterator"/>
-        <Struct name="Swift._UnsafeBitset.Word"/>
-        <Struct name="Swift._UnsafePartiallyInitializedContiguousArrayBuffer"/>
-        <Struct name="Swift._ValidUTF8Buffer"/>
-        <Struct name="Swift._ValidUTF8Buffer.Index"/>
-        <Struct name="Swift._ValidUTF8Buffer.Iterator"/>
-        <Struct name="Swift.__CocoaDictionary"/>
-        <Struct name="Swift.__CocoaDictionary.Index"/>
-        <Struct name="Swift.__CocoaSet"/>
-        <Struct name="Swift.__CocoaSet.Index"/>
-        <Struct name="Swift.__VaListBuilder.Header"/>
+        <Struct name="Swift.AnyKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="_kvcKeyPathString"/>
+            <Properties name="_storedInlineOffset"/>
+            <Properties name="hashValue"/>
+        </Struct>
+        <Struct name="Swift.AnyObject">
+        </Struct>
+        <Struct name="Swift.KeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _projectReadOnly(from: Self) -> (0,1)"/>
+        </Struct>
+        <Struct name="Swift.ManagedBuffer">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func withUnsafeMutablePointerToElementsSwift.UnsafeMutablePointer<(0,1)> -> (1,0) -> (1,0)"/>
+            <Functions signature="func withUnsafeMutablePointerToHeaderSwift.UnsafeMutablePointer<Self> -> (1,0) -> (1,0)"/>
+            <Functions signature="func withUnsafeMutablePointers(Swift.UnsafeMutablePointer<Self>, Swift.UnsafeMutablePointer<(0,1)>) -> (1,0) -> (1,0)"/>
+            <Properties name="headerAddress"/>
+            <Properties name="firstElementAddress"/>
+            <Properties name="header"/>
+            <Properties name="capacity"/>
+        </Struct>
+        <Struct name="Swift.PartialKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.ReferenceWritableKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _projectMutableAddress(from: Self) -> (pointer: Swift.UnsafeMutablePointer<(0,1)>, owner: Swift.Optional<Swift.AnyObject>)"/>
+        </Struct>
+        <Struct name="Swift.WritableKeyPath">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _projectMutableAddress(from: Swift.UnsafePointer<Self>) -> (pointer: Swift.UnsafeMutablePointer<(0,1)>, owner: Swift.Optional<Swift.AnyObject>)"/>
+        </Struct>
+        <Struct name="Swift._AnyBidirectionalCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _formIndex(before: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(before: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyBidirectionalCollectionBox<Self>"/>
+        </Struct>
+        <Struct name="Swift._AnyCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift._AnyCollectionBox<Self>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyCollectionBox<Self>"/>
+            <Properties name="_startIndex"/>
+            <Properties name="_count"/>
+            <Properties name="_endIndex"/>
+        </Struct>
+        <Struct name="Swift._AnyIteratorBoxBase">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<Self>"/>
+        </Struct>
+        <Struct name="Swift._AnyRandomAccessCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyRandomAccessCollectionBox<Self>"/>
+        </Struct>
+        <Struct name="Swift._AnySequenceBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self>) -> (Swift.AnyIterator<Self>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self>"/>
+            <Functions signature="func __customContainsEquatableElementSelf -> Swift.Optional<Bool>"/>
+            <Functions signature="func _drop(while: Self -> Bool) -> Swift._AnySequenceBox<Self>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnySequenceBox<Self>"/>
+            <Functions signature="func _dropLastInt -> Swift.Array<Self>"/>
+            <Functions signature="func _filterSelf -> Bool -> Swift.Array<Self>"/>
+            <Functions signature="func _forEachSelf"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self>"/>
+            <Functions signature="func _mapSelf -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self -> Bool) -> Swift.Array<Self>"/>
+            <Functions signature="func _suffixInt -> Swift.Array<Self>"/>
+            <Properties name="_underestimatedCount"/>
+        </Struct>
+        <Struct name="Swift._BidirectionalCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyBidirectionalCollectionBox<Self.Element>"/>
+            <Functions signature="func _unbox(: Swift._AnyIndexBox, file: Swift.StaticString, line: UInt) -> Self.Index"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+            <Properties name="_count"/>
+        </Struct>
+        <Struct name="Swift._CollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyCollectionBox<Self.Element>"/>
+            <Functions signature="func _unbox(: Swift._AnyIndexBox, file: Swift.StaticString, line: UInt) -> Self.Index"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+            <Properties name="_count"/>
+        </Struct>
+        <Struct name="Swift._ContiguousArrayStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func canStoreElements(ofDynamicType: Existential Metatype Swift.Any) -> Bool"/>
+            <Properties name="_elementPointer"/>
+            <Properties name="staticElementType"/>
+        </Struct>
+        <Struct name="Swift._DictionaryStorage">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_keys"/>
+            <Properties name="_values"/>
+        </Struct>
+        <Struct name="Swift._IndexBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _isEqual(to: Swift._AnyIndexBox) -> Bool"/>
+            <Functions signature="func _isLess(than: Swift._AnyIndexBox) -> Bool"/>
+            <Functions signature="func _unbox() -> Swift.Optional<(1,0)>"/>
+            <Functions signature="func _unsafeUnboxSwift._AnyIndexBox -> Self"/>
+            <Properties name="_base"/>
+            <Properties name="_typeID"/>
+        </Struct>
+        <Struct name="Swift._IteratorBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<Self.Element>"/>
+            <Properties name="_base"/>
+        </Struct>
+        <Struct name="Swift._RandomAccessCollectionBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _distance(from: Swift._AnyIndexBox, to: Swift._AnyIndexBox) -> Int"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _formIndex(after: Swift._AnyIndexBox)"/>
+            <Functions signature="func _index(after: Swift._AnyIndexBox) -> Swift._AnyIndexBox"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift._AnyRandomAccessCollectionBox<Self.Element>"/>
+            <Functions signature="func _unbox(: Swift._AnyIndexBox, file: Swift.StaticString, line: UInt) -> Self.Index"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+            <Properties name="_count"/>
+        </Struct>
+        <Struct name="Swift._SequenceBox">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func __copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Swift.AnyIterator<Self.Element>, Int)"/>
+            <Functions signature="func __copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func __customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func _drop(while: Self.Element -> Bool) -> Swift._AnySequenceBox<Self.Element>"/>
+            <Functions signature="func _dropFirstInt -> Swift._AnySequenceBox<Self.Element>"/>
+            <Functions signature="func _dropLastInt -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _filterSelf.Element -> Bool -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _forEachSelf.Element"/>
+            <Functions signature="func _makeIterator() -> Swift.AnyIterator<Self.Element>"/>
+            <Functions signature="func _mapSelf.Element -> (1,0) -> Swift.Array<(1,0)>"/>
+            <Functions signature="func _prefix(while: Self.Element -> Bool) -> Swift.Array<Self.Element>"/>
+            <Functions signature="func _suffixInt -> Swift.Array<Self.Element>"/>
+            <Properties name="_underestimatedCount"/>
+            <Properties name="_base"/>
+        </Struct>
+        <Struct name="Swift._SetStorage">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_elements"/>
+        </Struct>
+        <Struct name="Swift._SwiftNSMutableArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift._SwiftNativeNSMutableArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.__CocoaDictionary.Iterator">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<(key: Swift.AnyObject, value: Swift.AnyObject)>"/>
+            <Functions signature="func nextKey() -> Swift.Optional<Swift.AnyObject>"/>
+        </Struct>
+        <Struct name="Swift.__CocoaSet.Iterator">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<Swift.AnyObject>"/>
+        </Struct>
+        <Struct name="Swift.__ContiguousArrayStorageBase">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func canStoreElements(ofDynamicType: Existential Metatype Swift.Any) -> Bool"/>
+            <Properties name="countAndCapacity"/>
+            <Properties name="staticElementType"/>
+        </Struct>
+        <Struct name="Swift.__EmptyArrayStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func canStoreElements(ofDynamicType: Existential Metatype Swift.Any) -> Bool"/>
+            <Properties name="staticElementType"/>
+        </Struct>
+        <Struct name="Swift.__EmptyDictionarySingleton">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.__EmptySetSingleton">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.__RawDictionaryStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_hashTable"/>
+            <Properties name="_rawValues"/>
+            <Properties name="_bucketCount"/>
+            <Properties name="_reservedScale"/>
+            <Properties name="_age"/>
+            <Properties name="_seed"/>
+            <Properties name="_count"/>
+            <Properties name="_scale"/>
+            <Properties name="_rawKeys"/>
+            <Properties name="_capacity"/>
+            <Properties name="_metadata"/>
+        </Struct>
+        <Struct name="Swift.__RawSetStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_hashTable"/>
+            <Properties name="_bucketCount"/>
+            <Properties name="_rawElements"/>
+            <Properties name="_reservedScale"/>
+            <Properties name="_age"/>
+            <Properties name="_seed"/>
+            <Properties name="_count"/>
+            <Properties name="_scale"/>
+            <Properties name="_capacity"/>
+            <Properties name="_metadata"/>
+        </Struct>
+        <Struct name="Swift.__SwiftDeferredNSArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="_nativeStorage"/>
+        </Struct>
+        <Struct name="Swift.__SwiftNativeNSArray">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.__SwiftNativeNSArrayWithContiguousStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.__SwiftNativeNSDictionary">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.__SwiftNativeNSSet">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+        </Struct>
+        <Struct name="Swift.__VaListBuilder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func appendSwift.CVarArg"/>
+            <Functions signature="func va_list() -> Swift.CVaListPointer"/>
+            <Properties name="fpRegistersUsed"/>
+            <Properties name="gpRegistersUsed"/>
+            <Properties name="header"/>
+            <Properties name="storage"/>
+        </Struct>
+        <Struct name="Swift._stdlib_AtomicInt">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func addAndFetchInt -> Int"/>
+            <Functions signature="func andAndFetchInt -> Int"/>
+            <Functions signature="func compareExchange(expected: Int, desired: Int) -> Bool"/>
+            <Functions signature="func fetchAndAddInt -> Int"/>
+            <Functions signature="func fetchAndAndInt -> Int"/>
+            <Functions signature="func fetchAndOrInt -> Int"/>
+            <Functions signature="func fetchAndXorInt -> Int"/>
+            <Functions signature="func load() -> Int"/>
+            <Functions signature="func orAndFetchInt -> Int"/>
+            <Functions signature="func storeInt"/>
+            <Functions signature="func xorAndFetchInt -> Int"/>
+        </Struct>
     </Structs>
     <Enums>
-        <Enum name="Swift.CollectionDifference.Change"/>
-        <Enum name="Swift.CommandLine"/>
-        <Enum name="Swift.DecodingError"/>
-        <Enum name="Swift.Dictionary.Index._Variant"/>
-        <Enum name="Swift.Dictionary.Iterator._Variant"/>
-        <Enum name="Swift.EncodingError"/>
-        <Enum name="Swift.FloatingPointClassification"/>
-        <Enum name="Swift.FloatingPointRoundingRule"/>
-        <Enum name="Swift.FloatingPointSign"/>
-        <Enum name="Swift.JoinedSequence.Iterator._JoinIteratorState"/>
-        <Enum name="Swift.MemoryLayout"/>
-        <Enum name="Swift.Mirror.AncestorRepresentation"/>
-        <Enum name="Swift.Mirror.DisplayStyle"/>
-        <Enum name="Swift.Never"/>
-        <Enum name="Swift.Optional"/>
-        <Enum name="Swift.Result"/>
-        <Enum name="Swift.Set.Index._Variant"/>
-        <Enum name="Swift.Set.Iterator._Variant"/>
-        <Enum name="Swift.UnboundedRange_"/>
-        <Enum name="Swift.Unicode"/>
-        <Enum name="Swift.Unicode.ASCII"/>
-        <Enum name="Swift.Unicode.GeneralCategory"/>
-        <Enum name="Swift.Unicode.NumericType"/>
-        <Enum name="Swift.Unicode.ParseResult"/>
-        <Enum name="Swift.Unicode.UTF16"/>
-        <Enum name="Swift.Unicode.UTF32"/>
-        <Enum name="Swift.Unicode.UTF8"/>
-        <Enum name="Swift.UnicodeDecodingResult"/>
-        <Enum name="Swift._DebuggerSupport"/>
-        <Enum name="Swift._MergeError"/>
-        <Enum name="Swift._MetadataKind"/>
-        <Enum name="Swift._PlaygroundQuickLook"/>
-        <Enum name="Swift._StringComparisonResult"/>
-        <Enum name="Swift._StringObject.Nibbles"/>
-        <Enum name="Swift._StringRepresentation._Form"/>
+        <Enum name="Swift.AnyKeyPath"/>
+        <Enum name="Swift.AnyObject"/>
+        <Enum name="Swift.KeyPath"/>
+        <Enum name="Swift.ManagedBuffer"/>
+        <Enum name="Swift.PartialKeyPath"/>
+        <Enum name="Swift.ReferenceWritableKeyPath"/>
+        <Enum name="Swift.WritableKeyPath"/>
+        <Enum name="Swift._AnyBidirectionalCollectionBox"/>
+        <Enum name="Swift._AnyCollectionBox"/>
+        <Enum name="Swift._AnyIteratorBoxBase"/>
+        <Enum name="Swift._AnyRandomAccessCollectionBox"/>
+        <Enum name="Swift._AnySequenceBox"/>
+        <Enum name="Swift._BidirectionalCollectionBox"/>
+        <Enum name="Swift._CollectionBox"/>
+        <Enum name="Swift._ContiguousArrayStorage"/>
+        <Enum name="Swift._DictionaryStorage"/>
+        <Enum name="Swift._IndexBox"/>
+        <Enum name="Swift._IteratorBox"/>
+        <Enum name="Swift._RandomAccessCollectionBox"/>
+        <Enum name="Swift._SequenceBox"/>
+        <Enum name="Swift._SetStorage"/>
+        <Enum name="Swift._SwiftNSMutableArray"/>
+        <Enum name="Swift._SwiftNativeNSMutableArray"/>
+        <Enum name="Swift.__CocoaDictionary.Iterator"/>
+        <Enum name="Swift.__CocoaSet.Iterator"/>
+        <Enum name="Swift.__ContiguousArrayStorageBase"/>
+        <Enum name="Swift.__EmptyArrayStorage"/>
+        <Enum name="Swift.__EmptyDictionarySingleton"/>
+        <Enum name="Swift.__EmptySetSingleton"/>
+        <Enum name="Swift.__RawDictionaryStorage"/>
+        <Enum name="Swift.__RawSetStorage"/>
+        <Enum name="Swift.__SwiftDeferredNSArray"/>
+        <Enum name="Swift.__SwiftNativeNSArray"/>
+        <Enum name="Swift.__SwiftNativeNSArrayWithContiguousStorage"/>
+        <Enum name="Swift.__SwiftNativeNSDictionary"/>
+        <Enum name="Swift.__SwiftNativeNSSet"/>
+        <Enum name="Swift.__VaListBuilder"/>
+        <Enum name="Swift._stdlib_AtomicInt"/>
     </Enums>
     <Protocols>
-        <Protocol name="Swift.AdditiveArithmetic"/>
-        <Protocol name="Swift.BidirectionalCollection"/>
-        <Protocol name="Swift.BinaryFloatingPoint"/>
-        <Protocol name="Swift.BinaryInteger"/>
-        <Protocol name="Swift.CVarArg"/>
-        <Protocol name="Swift.CaseIterable"/>
-        <Protocol name="Swift.CodingKey"/>
-        <Protocol name="Swift.Collection"/>
-        <Protocol name="Swift.Comparable"/>
-        <Protocol name="Swift.CustomDebugStringConvertible"/>
-        <Protocol name="Swift.CustomLeafReflectable"/>
-        <Protocol name="Swift.CustomPlaygroundDisplayConvertible"/>
-        <Protocol name="Swift.CustomReflectable"/>
-        <Protocol name="Swift.CustomStringConvertible"/>
-        <Protocol name="Swift.Decodable"/>
-        <Protocol name="Swift.Decoder"/>
-        <Protocol name="Swift.Encodable"/>
-        <Protocol name="Swift.Encoder"/>
-        <Protocol name="Swift.Equatable"/>
-        <Protocol name="Swift.Error"/>
-        <Protocol name="Swift.ExpressibleByArrayLiteral"/>
-        <Protocol name="Swift.ExpressibleByBooleanLiteral"/>
-        <Protocol name="Swift.ExpressibleByDictionaryLiteral"/>
-        <Protocol name="Swift.ExpressibleByExtendedGraphemeClusterLiteral"/>
-        <Protocol name="Swift.ExpressibleByFloatLiteral"/>
-        <Protocol name="Swift.ExpressibleByIntegerLiteral"/>
-        <Protocol name="Swift.ExpressibleByNilLiteral"/>
-        <Protocol name="Swift.ExpressibleByStringInterpolation"/>
-        <Protocol name="Swift.ExpressibleByStringLiteral"/>
-        <Protocol name="Swift.ExpressibleByUnicodeScalarLiteral"/>
-        <Protocol name="Swift.FixedWidthInteger"/>
-        <Protocol name="Swift.FloatingPoint"/>
-        <Protocol name="Swift.Hashable"/>
-        <Protocol name="Swift.Identifiable"/>
-        <Protocol name="Swift.IteratorProtocol"/>
-        <Protocol name="Swift.KeyedDecodingContainerProtocol"/>
-        <Protocol name="Swift.KeyedEncodingContainerProtocol"/>
-        <Protocol name="Swift.LazyCollectionProtocol"/>
-        <Protocol name="Swift.LazySequenceProtocol"/>
-        <Protocol name="Swift.LosslessStringConvertible"/>
-        <Protocol name="Swift.MirrorPath"/>
-        <Protocol name="Swift.MutableCollection"/>
-        <Protocol name="Swift.Numeric"/>
-        <Protocol name="Swift.OptionSet"/>
-        <Protocol name="Swift.RandomAccessCollection"/>
-        <Protocol name="Swift.RandomNumberGenerator"/>
-        <Protocol name="Swift.RangeExpression"/>
-        <Protocol name="Swift.RangeReplaceableCollection"/>
-        <Protocol name="Swift.RawRepresentable"/>
-        <Protocol name="Swift.SIMD"/>
-        <Protocol name="Swift.SIMDScalar"/>
-        <Protocol name="Swift.SIMDStorage"/>
-        <Protocol name="Swift.Sequence"/>
-        <Protocol name="Swift.SetAlgebra"/>
-        <Protocol name="Swift.SignedInteger"/>
-        <Protocol name="Swift.SignedNumeric"/>
-        <Protocol name="Swift.SingleValueDecodingContainer"/>
-        <Protocol name="Swift.SingleValueEncodingContainer"/>
-        <Protocol name="Swift.Strideable"/>
-        <Protocol name="Swift.StringInterpolationProtocol"/>
-        <Protocol name="Swift.StringProtocol"/>
-        <Protocol name="Swift.TextOutputStream"/>
-        <Protocol name="Swift.TextOutputStreamable"/>
-        <Protocol name="Swift.UnicodeCodec"/>
-        <Protocol name="Swift.UnkeyedDecodingContainer"/>
-        <Protocol name="Swift.UnkeyedEncodingContainer"/>
-        <Protocol name="Swift.UnsignedInteger"/>
-        <Protocol name="Swift._AnyCollectionProtocol"/>
-        <Protocol name="Swift._AnyHashableBox"/>
-        <Protocol name="Swift._AnyIndexBox"/>
-        <Protocol name="Swift._AppendKeyPath"/>
-        <Protocol name="Swift._ArrayBufferProtocol"/>
-        <Protocol name="Swift._ArrayProtocol"/>
-        <Protocol name="Swift._CVarArgAligned"/>
-        <Protocol name="Swift._CVarArgPassedAsDouble"/>
-        <Protocol name="Swift._CustomPlaygroundQuickLookable"/>
-        <Protocol name="Swift._DestructorSafeContainer"/>
-        <Protocol name="Swift._ExpressibleByBuiltinBooleanLiteral"/>
-        <Protocol name="Swift._ExpressibleByBuiltinExtendedGraphemeClusterLiteral"/>
-        <Protocol name="Swift._ExpressibleByBuiltinFloatLiteral"/>
-        <Protocol name="Swift._ExpressibleByBuiltinIntegerLiteral"/>
-        <Protocol name="Swift._ExpressibleByBuiltinStringLiteral"/>
-        <Protocol name="Swift._ExpressibleByBuiltinUnicodeScalarLiteral"/>
-        <Protocol name="Swift._ExpressibleByColorLiteral"/>
-        <Protocol name="Swift._ExpressibleByFileReferenceLiteral"/>
-        <Protocol name="Swift._ExpressibleByImageLiteral"/>
-        <Protocol name="Swift._HasContiguousBytes"/>
-        <Protocol name="Swift._HasCustomAnyHashableRepresentation"/>
-        <Protocol name="Swift._HashTableDelegate"/>
-        <Protocol name="Swift._ObjectiveCBridgeable"/>
-        <Protocol name="Swift._Pointer"/>
-        <Protocol name="Swift._RuntimeFunctionCountersStats"/>
-        <Protocol name="Swift._StringElement"/>
-        <Protocol name="Swift._SwiftNewtypeWrapper"/>
-        <Protocol name="Swift._UTFParser"/>
-        <Protocol name="Swift._UnicodeEncoding"/>
-        <Protocol name="Swift._UnicodeParser"/>
-        <Protocol name="Swift.__DefaultCustomPlaygroundQuickLookable"/>
+        <Protocol name="Swift.AdditiveArithmetic">
+            <Functions signature="func +(Self, Self) -> Self"/>
+            <Functions signature="func +=(Self, Self)"/>
+            <Functions signature="func -(Self, Self) -> Self"/>
+            <Functions signature="func -=(Self, Self)"/>
+            <Functions signature="func zero() -> Self"/>
+        </Protocol>
+        <Protocol name="Swift.BidirectionalCollection">
+            <Functions signature="func distance(from: Self.Index, to: Self.Index) -> Int"/>
+            <Functions signature="func formIndex(before: Self.Index)"/>
+            <Functions signature="func index(: Self.Index, offsetBy: Int) -> Self.Index"/>
+            <Functions signature="func index(: Self.Index, offsetBy: Int, limitedBy: Self.Index) -> Swift.Optional<Self.Index>"/>
+            <Functions signature="func index(before: Self.Index) -> Self.Index"/>
+        </Protocol>
+        <Protocol name="Swift.BinaryFloatingPoint">
+            <Functions signature="func binade() -> Self"/>
+            <Functions signature="func exponentBitCount() -> Int"/>
+            <Functions signature="func exponentBitPattern() -> Self.RawExponent"/>
+            <Functions signature="func significandBitCount() -> Int"/>
+            <Functions signature="func significandBitPattern() -> Self.RawSignificand"/>
+            <Functions signature="func significandWidth() -> Int"/>
+        </Protocol>
+        <Protocol name="Swift.BinaryInteger">
+            <Functions signature="func %(Self, Self) -> Self"/>
+            <Functions signature="func %=(Self, Self)"/>
+            <Functions signature="func &(Self, Self) -> Self"/>
+            <Functions signature="func &=(Self, Self)"/>
+            <Functions signature="func /(Self, Self) -> Self"/>
+            <Functions signature="func /=(Self, Self)"/>
+            <Functions signature="func <<(Self, (1,0)) -> Self"/>
+            <Functions signature="func <<=(Self, (1,0))"/>
+            <Functions signature="func >>(Self, (1,0)) -> Self"/>
+            <Functions signature="func >>=(Self, (1,0))"/>
+            <Functions signature="func ^(Self, Self) -> Self"/>
+            <Functions signature="func ^=(Self, Self)"/>
+            <Functions signature="func _binaryLogarithm() -> Int"/>
+            <Functions signature="func _lowWord() -> UInt"/>
+            <Functions signature="func bitWidth() -> Int"/>
+            <Functions signature="func isMultiple(of: Self) -> Bool"/>
+            <Functions signature="func isSigned() -> Bool"/>
+            <Functions signature="func quotientAndRemainder(dividingBy: Self) -> (quotient: Self, remainder: Self)"/>
+            <Functions signature="func signum() -> Self"/>
+            <Functions signature="func trailingZeroBitCount() -> Int"/>
+            <Functions signature="func words() -> Self.Words"/>
+            <Functions signature="func |(Self, Self) -> Self"/>
+            <Functions signature="func |=(Self, Self)"/>
+            <Functions signature="func ~Self -> Self"/>
+        </Protocol>
+        <Protocol name="Swift.CVarArg">
+            <Functions signature="func _cVarArgEncoding() -> Swift.Array<Int>"/>
+        </Protocol>
+        <Protocol name="Swift.CaseIterable">
+            <Functions signature="func allCases() -> Self.AllCases"/>
+        </Protocol>
+        <Protocol name="Swift.CodingKey">
+            <Functions signature="func intValue() -> Swift.Optional<Int>"/>
+            <Functions signature="func stringValue() -> Swift.String"/>
+        </Protocol>
+        <Protocol name="Swift.Collection">
+            <Functions signature="func _customIndexOfEquatableElementSelf.Element -> Swift.Optional<Swift.Optional<Self.Index>>"/>
+            <Functions signature="func _customLastIndexOfEquatableElementSelf.Element -> Swift.Optional<Swift.Optional<Self.Index>>"/>
+            <Functions signature="func _failEarlyRangeCheck(: Self.Index, bounds: Swift.ClosedRange<Self.Index>)"/>
+            <Functions signature="func _failEarlyRangeCheck(: Self.Index, bounds: Swift.Range<Self.Index>)"/>
+            <Functions signature="func _failEarlyRangeCheck(: Swift.Range<Self.Index>, bounds: Swift.Range<Self.Index>)"/>
+            <Functions signature="func count() -> Int"/>
+            <Functions signature="func distance(from: Self.Index, to: Self.Index) -> Int"/>
+            <Functions signature="func endIndex() -> Self.Index"/>
+            <Functions signature="func formIndex(after: Self.Index)"/>
+            <Functions signature="func index(: Self.Index, offsetBy: Int) -> Self.Index"/>
+            <Functions signature="func index(: Self.Index, offsetBy: Int, limitedBy: Self.Index) -> Swift.Optional<Self.Index>"/>
+            <Functions signature="func index(after: Self.Index) -> Self.Index"/>
+            <Functions signature="func indices() -> Self.Indices"/>
+            <Functions signature="func isEmpty() -> Bool"/>
+            <Functions signature="func startIndex() -> Self.Index"/>
+            <Functions signature="func subscriptSwift.Range<Self.Index> -> Self.SubSequence"/>
+        </Protocol>
+        <Protocol name="Swift.Comparable">
+            <Functions signature="func <(Self, Self) -> Bool"/>
+            <Functions signature="func <=(Self, Self) -> Bool"/>
+            <Functions signature="func >(Self, Self) -> Bool"/>
+            <Functions signature="func >=(Self, Self) -> Bool"/>
+        </Protocol>
+        <Protocol name="Swift.CustomDebugStringConvertible">
+            <Functions signature="func debugDescription() -> Swift.String"/>
+        </Protocol>
+        <Protocol name="Swift.CustomLeafReflectable">
+        </Protocol>
+        <Protocol name="Swift.CustomPlaygroundDisplayConvertible">
+            <Functions signature="func playgroundDescription() -> Swift.Any"/>
+        </Protocol>
+        <Protocol name="Swift.CustomReflectable">
+            <Functions signature="func customMirror() -> Swift.Mirror"/>
+        </Protocol>
+        <Protocol name="Swift.CustomStringConvertible">
+            <Functions signature="func description() -> Swift.String"/>
+        </Protocol>
+        <Protocol name="Swift.Decodable">
+        </Protocol>
+        <Protocol name="Swift.Decoder">
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func container(keyedBy: Meta ) -> Swift.KeyedDecodingContainer<(1,0)>"/>
+            <Functions signature="func singleValueContainer() -> Swift.SingleValueDecodingContainer"/>
+            <Functions signature="func unkeyedContainer() -> Swift.UnkeyedDecodingContainer"/>
+            <Functions signature="func userInfo() -> Swift.Dictionary<Swift.CodingUserInfoKey, Swift.Any>"/>
+        </Protocol>
+        <Protocol name="Swift.Encodable">
+            <Functions signature="func encode(to: Swift.Encoder)"/>
+        </Protocol>
+        <Protocol name="Swift.Encoder">
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func container(keyedBy: Meta ) -> Swift.KeyedEncodingContainer<(1,0)>"/>
+            <Functions signature="func singleValueContainer() -> Swift.SingleValueEncodingContainer"/>
+            <Functions signature="func unkeyedContainer() -> Swift.UnkeyedEncodingContainer"/>
+            <Functions signature="func userInfo() -> Swift.Dictionary<Swift.CodingUserInfoKey, Swift.Any>"/>
+        </Protocol>
+        <Protocol name="Swift.Equatable">
+            <Functions signature="func ==(Self, Self) -> Bool"/>
+        </Protocol>
+        <Protocol name="Swift.Error">
+            <Functions signature="func _code() -> Int"/>
+            <Functions signature="func _domain() -> Swift.String"/>
+            <Functions signature="func _getEmbeddedNSError() -> Swift.Optional<Swift.AnyObject>"/>
+            <Functions signature="func _userInfo() -> Swift.Optional<Swift.AnyObject>"/>
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByArrayLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByBooleanLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByDictionaryLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByExtendedGraphemeClusterLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByFloatLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByIntegerLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByNilLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByStringInterpolation">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByStringLiteral">
+        </Protocol>
+        <Protocol name="Swift.ExpressibleByUnicodeScalarLiteral">
+        </Protocol>
+        <Protocol name="Swift.FixedWidthInteger">
+            <Functions signature="func &<<(Self, Self) -> Self"/>
+            <Functions signature="func &<<=(Self, Self)"/>
+            <Functions signature="func &>>(Self, Self) -> Self"/>
+            <Functions signature="func &>>=(Self, Self)"/>
+            <Functions signature="func addingReportingOverflowSelf -> (partialValue: Self, overflow: Bool)"/>
+            <Functions signature="func bigEndian() -> Self"/>
+            <Functions signature="func bitWidth() -> Int"/>
+            <Functions signature="func byteSwapped() -> Self"/>
+            <Functions signature="func dividedReportingOverflow(by: Self) -> (partialValue: Self, overflow: Bool)"/>
+            <Functions signature="func dividingFullWidth((high: Self, low: Self.Magnitude)) -> (quotient: Self, remainder: Self)"/>
+            <Functions signature="func leadingZeroBitCount() -> Int"/>
+            <Functions signature="func littleEndian() -> Self"/>
+            <Functions signature="func max() -> Self"/>
+            <Functions signature="func min() -> Self"/>
+            <Functions signature="func multipliedFullWidth(by: Self) -> (high: Self, low: Self.Magnitude)"/>
+            <Functions signature="func multipliedReportingOverflow(by: Self) -> (partialValue: Self, overflow: Bool)"/>
+            <Functions signature="func nonzeroBitCount() -> Int"/>
+            <Functions signature="func remainderReportingOverflow(dividingBy: Self) -> (partialValue: Self, overflow: Bool)"/>
+            <Functions signature="func subtractingReportingOverflowSelf -> (partialValue: Self, overflow: Bool)"/>
+        </Protocol>
+        <Protocol name="Swift.FloatingPoint">
+            <Functions signature="func /(Self, Self) -> Self"/>
+            <Functions signature="func /=(Self, Self)"/>
+            <Functions signature="func addProduct(Self, Self)"/>
+            <Functions signature="func addingProduct(Self, Self) -> Self"/>
+            <Functions signature="func exponent() -> Self.Exponent"/>
+            <Functions signature="func floatingPointClass() -> Swift.FloatingPointClassification"/>
+            <Functions signature="func formRemainder(dividingBy: Self)"/>
+            <Functions signature="func formSquareRoot()"/>
+            <Functions signature="func formTruncatingRemainder(dividingBy: Self)"/>
+            <Functions signature="func greatestFiniteMagnitude() -> Self"/>
+            <Functions signature="func infinity() -> Self"/>
+            <Functions signature="func isCanonical() -> Bool"/>
+            <Functions signature="func isEqual(to: Self) -> Bool"/>
+            <Functions signature="func isFinite() -> Bool"/>
+            <Functions signature="func isInfinite() -> Bool"/>
+            <Functions signature="func isLess(than: Self) -> Bool"/>
+            <Functions signature="func isLessThanOrEqualToSelf -> Bool"/>
+            <Functions signature="func isNaN() -> Bool"/>
+            <Functions signature="func isNormal() -> Bool"/>
+            <Functions signature="func isSignalingNaN() -> Bool"/>
+            <Functions signature="func isSubnormal() -> Bool"/>
+            <Functions signature="func isTotallyOrdered(belowOrEqualTo: Self) -> Bool"/>
+            <Functions signature="func isZero() -> Bool"/>
+            <Functions signature="func leastNonzeroMagnitude() -> Self"/>
+            <Functions signature="func leastNormalMagnitude() -> Self"/>
+            <Functions signature="func maximum(Self, Self) -> Self"/>
+            <Functions signature="func maximumMagnitude(Self, Self) -> Self"/>
+            <Functions signature="func minimum(Self, Self) -> Self"/>
+            <Functions signature="func minimumMagnitude(Self, Self) -> Self"/>
+            <Functions signature="func nan() -> Self"/>
+            <Functions signature="func nextDown() -> Self"/>
+            <Functions signature="func nextUp() -> Self"/>
+            <Functions signature="func pi() -> Self"/>
+            <Functions signature="func radix() -> Int"/>
+            <Functions signature="func remainder(dividingBy: Self) -> Self"/>
+            <Functions signature="func roundSwift.FloatingPointRoundingRule"/>
+            <Functions signature="func roundedSwift.FloatingPointRoundingRule -> Self"/>
+            <Functions signature="func sign() -> Swift.FloatingPointSign"/>
+            <Functions signature="func signalingNaN() -> Self"/>
+            <Functions signature="func significand() -> Self"/>
+            <Functions signature="func squareRoot() -> Self"/>
+            <Functions signature="func truncatingRemainder(dividingBy: Self) -> Self"/>
+            <Functions signature="func ulp() -> Self"/>
+            <Functions signature="func ulpOfOne() -> Self"/>
+        </Protocol>
+        <Protocol name="Swift.Hashable">
+            <Functions signature="func _rawHashValue(seed: Int) -> Int"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Functions signature="func hashValue() -> Int"/>
+        </Protocol>
+        <Protocol name="Swift.Identifiable">
+            <Functions signature="func id() -> Self.ID"/>
+        </Protocol>
+        <Protocol name="Swift.IteratorProtocol">
+            <Functions signature="func next() -> Swift.Optional<Self.Element>"/>
+        </Protocol>
+        <Protocol name="Swift.KeyedDecodingContainerProtocol">
+            <Functions signature="func allKeys() -> Swift.Array<Self.Key>"/>
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func containsSelf.Key -> Bool"/>
+            <Functions signature="func decode(: Meta , forKey: Self.Key) -> (1,0)"/>
+            <Functions signature="func decode(: Meta Swift.Int16, forKey: Self.Key) -> Swift.Int16"/>
+            <Functions signature="func decode(: Meta Swift.Int32, forKey: Self.Key) -> Swift.Int32"/>
+            <Functions signature="func decode(: Meta Swift.Int64, forKey: Self.Key) -> Swift.Int64"/>
+            <Functions signature="func decode(: Meta Swift.Int8, forKey: Self.Key) -> Swift.Int8"/>
+            <Functions signature="func decode(: Meta Swift.String, forKey: Self.Key) -> Swift.String"/>
+            <Functions signature="func decode(: Meta Swift.UInt16, forKey: Self.Key) -> Swift.UInt16"/>
+            <Functions signature="func decode(: Meta Swift.UInt32, forKey: Self.Key) -> Swift.UInt32"/>
+            <Functions signature="func decode(: Meta Swift.UInt64, forKey: Self.Key) -> Swift.UInt64"/>
+            <Functions signature="func decode(: Meta Swift.UInt8, forKey: Self.Key) -> Swift.UInt8"/>
+            <Functions signature="func decodeIfPresent(: Meta , forKey: Self.Key) -> Swift.Optional<(1,0)>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.Int16, forKey: Self.Key) -> Swift.Optional<Swift.Int16>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.Int32, forKey: Self.Key) -> Swift.Optional<Swift.Int32>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.Int64, forKey: Self.Key) -> Swift.Optional<Swift.Int64>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.Int8, forKey: Self.Key) -> Swift.Optional<Swift.Int8>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.String, forKey: Self.Key) -> Swift.Optional<Swift.String>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.UInt16, forKey: Self.Key) -> Swift.Optional<Swift.UInt16>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.UInt32, forKey: Self.Key) -> Swift.Optional<Swift.UInt32>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.UInt64, forKey: Self.Key) -> Swift.Optional<Swift.UInt64>"/>
+            <Functions signature="func decodeIfPresent(: Meta Swift.UInt8, forKey: Self.Key) -> Swift.Optional<Swift.UInt8>"/>
+            <Functions signature="func decodeNil(forKey: Self.Key) -> Bool"/>
+            <Functions signature="func nestedContainer(keyedBy: Meta , forKey: Self.Key) -> Swift.KeyedDecodingContainer<(1,0)>"/>
+            <Functions signature="func nestedUnkeyedContainer(forKey: Self.Key) -> Swift.UnkeyedDecodingContainer"/>
+            <Functions signature="func superDecoder() -> Swift.Decoder"/>
+            <Functions signature="func superDecoder(forKey: Self.Key) -> Swift.Decoder"/>
+        </Protocol>
+        <Protocol name="Swift.KeyedEncodingContainerProtocol">
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func encode(: (1,0), forKey: Self.Key)"/>
+            <Functions signature="func encode(: Bool, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Double, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Float, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Int, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.Int16, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.Int32, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.Int64, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.Int8, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.String, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.UInt16, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.UInt32, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.UInt64, forKey: Self.Key)"/>
+            <Functions signature="func encode(: Swift.UInt8, forKey: Self.Key)"/>
+            <Functions signature="func encode(: UInt, forKey: Self.Key)"/>
+            <Functions signature="func encodeConditional(: (1,0), forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<(1,0)>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Bool>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Double>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Float>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Int>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.Int16>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.Int32>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.Int64>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.Int8>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.String>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.UInt16>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.UInt32>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.UInt64>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<Swift.UInt8>, forKey: Self.Key)"/>
+            <Functions signature="func encodeIfPresent(: Swift.Optional<UInt>, forKey: Self.Key)"/>
+            <Functions signature="func encodeNil(forKey: Self.Key)"/>
+            <Functions signature="func nestedContainer(keyedBy: Meta , forKey: Self.Key) -> Swift.KeyedEncodingContainer<(1,0)>"/>
+            <Functions signature="func nestedUnkeyedContainer(forKey: Self.Key) -> Swift.UnkeyedEncodingContainer"/>
+            <Functions signature="func superEncoder() -> Swift.Encoder"/>
+            <Functions signature="func superEncoder(forKey: Self.Key) -> Swift.Encoder"/>
+        </Protocol>
+        <Protocol name="Swift.LazyCollectionProtocol">
+        </Protocol>
+        <Protocol name="Swift.LazySequenceProtocol">
+            <Functions signature="func elements() -> Self.Elements"/>
+        </Protocol>
+        <Protocol name="Swift.LosslessStringConvertible">
+        </Protocol>
+        <Protocol name="Swift.MirrorPath">
+        </Protocol>
+        <Protocol name="Swift.MutableCollection">
+            <Functions signature="func _withUnsafeMutableBufferPointerIfSupportedSwift.UnsafeMutableBufferPointer<Self.Element> -> (1,0) -> Swift.Optional<(1,0)>"/>
+            <Functions signature="func partition(by: Self.Element -> Bool) -> Self.Index"/>
+            <Functions signature="func subscript(Self.Element, a: Self.Index)"/>
+            <Functions signature="func subscript(Self.SubSequence, a: Swift.Range<Self.Index>)"/>
+            <Functions signature="func subscriptSelf.Index -> Self.Element"/>
+            <Functions signature="func subscriptSwift.Range<Self.Index> -> Self.SubSequence"/>
+            <Functions signature="func swapAt(Self.Index, Self.Index)"/>
+            <Functions signature="func withContiguousMutableStorageIfAvailableSwift.UnsafeMutableBufferPointer<Self.Element> -> (1,0) -> Swift.Optional<(1,0)>"/>
+        </Protocol>
+        <Protocol name="Swift.Numeric">
+            <Functions signature="func *(Self, Self) -> Self"/>
+            <Functions signature="func *=(Self, Self)"/>
+            <Functions signature="func magnitude() -> Self.Magnitude"/>
+        </Protocol>
+        <Protocol name="Swift.OptionSet">
+        </Protocol>
+        <Protocol name="Swift.RandomAccessCollection">
+            <Functions signature="func distance(from: Self.Index, to: Self.Index) -> Int"/>
+            <Functions signature="func index(: Self.Index, offsetBy: Int) -> Self.Index"/>
+            <Functions signature="func index(: Self.Index, offsetBy: Int, limitedBy: Self.Index) -> Swift.Optional<Self.Index>"/>
+        </Protocol>
+        <Protocol name="Swift.RandomNumberGenerator">
+            <Functions signature="func next() -> Swift.UInt64"/>
+        </Protocol>
+        <Protocol name="Swift.RangeExpression">
+            <Functions signature="func containsSelf.Bound -> Bool"/>
+            <Functions signature="func relative(to: (1,0)) -> Swift.Range<Self.Bound>"/>
+        </Protocol>
+        <Protocol name="Swift.RangeReplaceableCollection">
+            <Functions signature="func _customRemoveLast() -> Swift.Optional<Self.Element>"/>
+            <Functions signature="func _customRemoveLastInt -> Bool"/>
+            <Functions signature="func remove(at: Self.Index) -> Self.Element"/>
+            <Functions signature="func removeAll(keepingCapacity: Bool)"/>
+            <Functions signature="func removeAll(where: Self.Element -> Bool)"/>
+            <Functions signature="func removeFirst() -> Self.Element"/>
+            <Functions signature="func removeFirstInt"/>
+            <Functions signature="func removeSubrangeSwift.Range<Self.Index>"/>
+            <Functions signature="func reserveCapacityInt"/>
+        </Protocol>
+        <Protocol name="Swift.RawRepresentable">
+            <Functions signature="func rawValue() -> Self.RawValue"/>
+        </Protocol>
+        <Protocol name="Swift.SIMD">
+        </Protocol>
+        <Protocol name="Swift.SIMDScalar">
+        </Protocol>
+        <Protocol name="Swift.SIMDStorage">
+            <Functions signature="func scalarCount() -> Int"/>
+            <Functions signature="func subscript(Self.Scalar, a: Int)"/>
+            <Functions signature="func subscriptInt -> Self.Scalar"/>
+        </Protocol>
+        <Protocol name="Swift.Sequence">
+            <Functions signature="func _copyContents(initializing: Swift.UnsafeMutableBufferPointer<Self.Element>) -> (Self.Iterator, Int)"/>
+            <Functions signature="func _copyToContiguousArray() -> Swift.ContiguousArray<Self.Element>"/>
+            <Functions signature="func _customContainsEquatableElementSelf.Element -> Swift.Optional<Bool>"/>
+            <Functions signature="func makeIterator() -> Self.Iterator"/>
+            <Functions signature="func underestimatedCount() -> Int"/>
+            <Functions signature="func withContiguousStorageIfAvailableSwift.UnsafeBufferPointer<Self.Element> -> (1,0) -> Swift.Optional<(1,0)>"/>
+        </Protocol>
+        <Protocol name="Swift.SetAlgebra">
+            <Functions signature="func containsSelf.Element -> Bool"/>
+            <Functions signature="func formIntersectionSelf"/>
+            <Functions signature="func intersectionSelf -> Self"/>
+            <Functions signature="func isDisjoint(with: Self) -> Bool"/>
+            <Functions signature="func isEmpty() -> Bool"/>
+            <Functions signature="func isSubset(of: Self) -> Bool"/>
+            <Functions signature="func isSuperset(of: Self) -> Bool"/>
+            <Functions signature="func removeSelf.Element -> Swift.Optional<Self.Element>"/>
+            <Functions signature="func subtractSelf"/>
+            <Functions signature="func subtractingSelf -> Self"/>
+        </Protocol>
+        <Protocol name="Swift.SignedInteger">
+            <Functions signature="func _maskingAdd(Self, Self) -> Self"/>
+            <Functions signature="func _maskingSubtract(Self, Self) -> Self"/>
+        </Protocol>
+        <Protocol name="Swift.SignedNumeric">
+            <Functions signature="func -Self -> Self"/>
+            <Functions signature="func negate()"/>
+        </Protocol>
+        <Protocol name="Swift.SingleValueDecodingContainer">
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func decodeMeta  -> (1,0)"/>
+            <Functions signature="func decodeMeta Swift.Int16 -> Swift.Int16"/>
+            <Functions signature="func decodeMeta Swift.Int32 -> Swift.Int32"/>
+            <Functions signature="func decodeMeta Swift.Int64 -> Swift.Int64"/>
+            <Functions signature="func decodeMeta Swift.Int8 -> Swift.Int8"/>
+            <Functions signature="func decodeMeta Swift.String -> Swift.String"/>
+            <Functions signature="func decodeMeta Swift.UInt16 -> Swift.UInt16"/>
+            <Functions signature="func decodeMeta Swift.UInt32 -> Swift.UInt32"/>
+            <Functions signature="func decodeMeta Swift.UInt64 -> Swift.UInt64"/>
+            <Functions signature="func decodeMeta Swift.UInt8 -> Swift.UInt8"/>
+            <Functions signature="func decodeNil() -> Bool"/>
+        </Protocol>
+        <Protocol name="Swift.SingleValueEncodingContainer">
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func encode(1,0)"/>
+            <Functions signature="func encodeBool"/>
+            <Functions signature="func encodeDouble"/>
+            <Functions signature="func encodeFloat"/>
+            <Functions signature="func encodeInt"/>
+            <Functions signature="func encodeNil()"/>
+            <Functions signature="func encodeSwift.Int16"/>
+            <Functions signature="func encodeSwift.Int32"/>
+            <Functions signature="func encodeSwift.Int64"/>
+            <Functions signature="func encodeSwift.Int8"/>
+            <Functions signature="func encodeSwift.String"/>
+            <Functions signature="func encodeSwift.UInt16"/>
+            <Functions signature="func encodeSwift.UInt32"/>
+            <Functions signature="func encodeSwift.UInt64"/>
+            <Functions signature="func encodeSwift.UInt8"/>
+            <Functions signature="func encodeUInt"/>
+        </Protocol>
+        <Protocol name="Swift.Strideable">
+            <Functions signature="func _step(after: (index: Swift.Optional<Int>, value: Self), from: Self, by: Self.Stride) -> (index: Swift.Optional<Int>, value: Self)"/>
+            <Functions signature="func advanced(by: Self.Stride) -> Self"/>
+            <Functions signature="func distance(to: Self) -> Self.Stride"/>
+        </Protocol>
+        <Protocol name="Swift.StringInterpolationProtocol">
+            <Functions signature="func appendLiteralSelf.StringLiteralType"/>
+        </Protocol>
+        <Protocol name="Swift.StringProtocol">
+            <Functions signature="func hasPrefixSwift.String -> Bool"/>
+            <Functions signature="func hasSuffixSwift.String -> Bool"/>
+            <Functions signature="func lowercased() -> Swift.String"/>
+            <Functions signature="func unicodeScalars() -> Self.UnicodeScalarView"/>
+            <Functions signature="func uppercased() -> Swift.String"/>
+            <Functions signature="func utf16() -> Self.UTF16View"/>
+            <Functions signature="func utf8() -> Self.UTF8View"/>
+            <Functions signature="func withCString(encodedAs: Meta , : Swift.UnsafePointer<(1,1)B1.CodeUnit> -> (1,0)) -> (1,0)"/>
+            <Functions signature="func withCStringSwift.UnsafePointer<Swift.Int8> -> (1,0) -> (1,0)"/>
+        </Protocol>
+        <Protocol name="Swift.TextOutputStream">
+            <Functions signature="func _lock()"/>
+            <Functions signature="func _unlock()"/>
+            <Functions signature="func _writeASCIISwift.UnsafeBufferPointer<Swift.UInt8>"/>
+            <Functions signature="func writeSwift.String"/>
+        </Protocol>
+        <Protocol name="Swift.TextOutputStreamable">
+            <Functions signature="func write(to: (1,0))"/>
+        </Protocol>
+        <Protocol name="Swift.UnicodeCodec">
+            <Functions signature="func _nullCodeUnitOffset(in: Swift.UnsafePointer<Self.CodeUnit>) -> Int"/>
+            <Functions signature="func decode(1,0) -> Swift.UnicodeDecodingResult"/>
+            <Functions signature="func encode(: Swift.Unicode.Scalar, into: Self.CodeUnit)"/>
+        </Protocol>
+        <Protocol name="Swift.UnkeyedDecodingContainer">
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func count() -> Swift.Optional<Int>"/>
+            <Functions signature="func currentIndex() -> Int"/>
+            <Functions signature="func decodeIfPresentMeta  -> Swift.Optional<(1,0)>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.Int16 -> Swift.Optional<Swift.Int16>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.Int32 -> Swift.Optional<Swift.Int32>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.Int64 -> Swift.Optional<Swift.Int64>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.Int8 -> Swift.Optional<Swift.Int8>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.String -> Swift.Optional<Swift.String>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.UInt16 -> Swift.Optional<Swift.UInt16>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.UInt32 -> Swift.Optional<Swift.UInt32>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.UInt64 -> Swift.Optional<Swift.UInt64>"/>
+            <Functions signature="func decodeIfPresentMeta Swift.UInt8 -> Swift.Optional<Swift.UInt8>"/>
+            <Functions signature="func decodeMeta  -> (1,0)"/>
+            <Functions signature="func decodeMeta Swift.Int16 -> Swift.Int16"/>
+            <Functions signature="func decodeMeta Swift.Int32 -> Swift.Int32"/>
+            <Functions signature="func decodeMeta Swift.Int64 -> Swift.Int64"/>
+            <Functions signature="func decodeMeta Swift.Int8 -> Swift.Int8"/>
+            <Functions signature="func decodeMeta Swift.String -> Swift.String"/>
+            <Functions signature="func decodeMeta Swift.UInt16 -> Swift.UInt16"/>
+            <Functions signature="func decodeMeta Swift.UInt32 -> Swift.UInt32"/>
+            <Functions signature="func decodeMeta Swift.UInt64 -> Swift.UInt64"/>
+            <Functions signature="func decodeMeta Swift.UInt8 -> Swift.UInt8"/>
+            <Functions signature="func decodeNil() -> Bool"/>
+            <Functions signature="func isAtEnd() -> Bool"/>
+            <Functions signature="func nestedContainer(keyedBy: Meta ) -> Swift.KeyedDecodingContainer<(1,0)>"/>
+            <Functions signature="func nestedUnkeyedContainer() -> Swift.UnkeyedDecodingContainer"/>
+            <Functions signature="func superDecoder() -> Swift.Decoder"/>
+        </Protocol>
+        <Protocol name="Swift.UnkeyedEncodingContainer">
+            <Functions signature="func codingPath() -> Swift.Array<Swift.CodingKey>"/>
+            <Functions signature="func count() -> Int"/>
+            <Functions signature="func encode(1,0)"/>
+            <Functions signature="func encode(contentsOf: (1,0))"/>
+            <Functions signature="func encodeBool"/>
+            <Functions signature="func encodeConditional(1,0)"/>
+            <Functions signature="func encodeDouble"/>
+            <Functions signature="func encodeFloat"/>
+            <Functions signature="func encodeInt"/>
+            <Functions signature="func encodeNil()"/>
+            <Functions signature="func encodeSwift.Int16"/>
+            <Functions signature="func encodeSwift.Int32"/>
+            <Functions signature="func encodeSwift.Int64"/>
+            <Functions signature="func encodeSwift.Int8"/>
+            <Functions signature="func encodeSwift.String"/>
+            <Functions signature="func encodeSwift.UInt16"/>
+            <Functions signature="func encodeSwift.UInt32"/>
+            <Functions signature="func encodeSwift.UInt64"/>
+            <Functions signature="func encodeSwift.UInt8"/>
+            <Functions signature="func encodeUInt"/>
+            <Functions signature="func nestedContainer(keyedBy: Meta ) -> Swift.KeyedEncodingContainer<(1,0)>"/>
+            <Functions signature="func nestedUnkeyedContainer() -> Swift.UnkeyedEncodingContainer"/>
+            <Functions signature="func superEncoder() -> Swift.Encoder"/>
+        </Protocol>
+        <Protocol name="Swift.UnsignedInteger">
+        </Protocol>
+        <Protocol name="Swift._AnyCollectionProtocol">
+            <Functions signature="func _boxID() -> Swift.ObjectIdentifier"/>
+        </Protocol>
+        <Protocol name="Swift._AnyHashableBox">
+            <Functions signature="func _base() -> Swift.Any"/>
+            <Functions signature="func _canonicalBox() -> Swift._AnyHashableBox"/>
+            <Functions signature="func _downCastConditional(into: Swift.UnsafeMutablePointer<(1,0)>) -> Bool"/>
+            <Functions signature="func _hash(into: Swift.Hasher)"/>
+            <Functions signature="func _hashValue() -> Int"/>
+            <Functions signature="func _isEqual(to: Swift._AnyHashableBox) -> Swift.Optional<Bool>"/>
+            <Functions signature="func _rawHashValue(_seed: Int) -> Int"/>
+            <Functions signature="func _unbox() -> Swift.Optional<(1,0)>"/>
+        </Protocol>
+        <Protocol name="Swift._AnyIndexBox">
+            <Functions signature="func _isEqual(to: Swift._AnyIndexBox) -> Bool"/>
+            <Functions signature="func _isLess(than: Swift._AnyIndexBox) -> Bool"/>
+            <Functions signature="func _typeID() -> Swift.ObjectIdentifier"/>
+            <Functions signature="func _unbox() -> Swift.Optional<(1,0)>"/>
+        </Protocol>
+        <Protocol name="Swift._AppendKeyPath">
+        </Protocol>
+        <Protocol name="Swift._ArrayBufferProtocol">
+            <Functions signature="func _copyContents(subRange: Swift.Range<Int>, initializing: Swift.UnsafeMutablePointer<Self.Element>) -> Swift.UnsafeMutablePointer<Self.Element>"/>
+            <Functions signature="func capacity() -> Int"/>
+            <Functions signature="func count()"/>
+            <Functions signature="func countnewValue: Int"/>
+            <Functions signature="func firstElementAddress() -> Swift.UnsafeMutablePointer<Self.Element>"/>
+            <Functions signature="func firstElementAddressIfContiguous() -> Swift.Optional<Swift.UnsafeMutablePointer<Self.Element>>"/>
+            <Functions signature="func identity() -> Swift.UnsafeRawPointer"/>
+            <Functions signature="func isMutableAndUniquelyReferenced() -> Bool"/>
+            <Functions signature="func owner() -> Swift.AnyObject"/>
+            <Functions signature="func requestNativeBuffer() -> Swift.Optional<Swift._ContiguousArrayBuffer<Self.Element>>"/>
+            <Functions signature="func requestUniqueMutableBackingBuffer(minimumCapacity: Int) -> Swift.Optional<Swift._ContiguousArrayBuffer<Self.Element>>"/>
+            <Functions signature="func subscriptBaseAddress() -> Swift.UnsafeMutablePointer<Self.Element>"/>
+            <Functions signature="func subscriptSwift.Range<Int> -> Swift._SliceBuffer<Self.Element>"/>
+            <Functions signature="func withUnsafeBufferPointerSwift.UnsafeBufferPointer<Self.Element> -> (1,0) -> (1,0)"/>
+            <Functions signature="func withUnsafeMutableBufferPointerSwift.UnsafeMutableBufferPointer<Self.Element> -> (1,0) -> (1,0)"/>
+        </Protocol>
+        <Protocol name="Swift._ArrayProtocol">
+            <Functions signature="func _baseAddressIfContiguous() -> Swift.Optional<Swift.UnsafeMutablePointer<Self.Element>>"/>
+            <Functions signature="func _buffer() -> Self._Buffer"/>
+            <Functions signature="func _owner() -> Swift.Optional<Swift.AnyObject>"/>
+            <Functions signature="func capacity() -> Int"/>
+        </Protocol>
+        <Protocol name="Swift._CVarArgAligned">
+            <Functions signature="func _cVarArgAlignment() -> Int"/>
+        </Protocol>
+        <Protocol name="Swift._CVarArgPassedAsDouble">
+        </Protocol>
+        <Protocol name="Swift._CustomPlaygroundQuickLookable">
+            <Functions signature="func customPlaygroundQuickLook() -> Swift._PlaygroundQuickLook"/>
+        </Protocol>
+        <Protocol name="Swift._DestructorSafeContainer">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByBuiltinBooleanLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByBuiltinExtendedGraphemeClusterLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByBuiltinFloatLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByBuiltinIntegerLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByBuiltinStringLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByBuiltinUnicodeScalarLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByColorLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByFileReferenceLiteral">
+        </Protocol>
+        <Protocol name="Swift._ExpressibleByImageLiteral">
+        </Protocol>
+        <Protocol name="Swift._HasContiguousBytes">
+            <Functions signature="func _providesContiguousBytesNoCopy() -> Bool"/>
+            <Functions signature="func withUnsafeBytesSwift.UnsafeRawBufferPointer -> (1,0) -> (1,0)"/>
+        </Protocol>
+        <Protocol name="Swift._HasCustomAnyHashableRepresentation">
+            <Functions signature="func _toCustomAnyHashable() -> Swift.Optional<Swift.AnyHashable>"/>
+        </Protocol>
+        <Protocol name="Swift._HashTableDelegate">
+            <Functions signature="func hashValue(at: Swift._HashTable.Bucket) -> Int"/>
+            <Functions signature="func moveEntry(from: Swift._HashTable.Bucket, to: Swift._HashTable.Bucket)"/>
+        </Protocol>
+        <Protocol name="Swift._ObjectiveCBridgeable">
+            <Functions signature="func _bridgeToObjectiveC() -> Self._ObjectiveCType"/>
+            <Functions signature="func _conditionallyBridgeFromObjectiveC(: Self._ObjectiveCType, result: Swift.Optional<Self>) -> Bool"/>
+            <Functions signature="func _forceBridgeFromObjectiveC(: Self._ObjectiveCType, result: Swift.Optional<Self>)"/>
+            <Functions signature="func _unconditionallyBridgeFromObjectiveCSwift.Optional<Self._ObjectiveCType> -> Self"/>
+        </Protocol>
+        <Protocol name="Swift._Pointer">
+        </Protocol>
+        <Protocol name="Swift._RuntimeFunctionCountersStats">
+            <Functions signature="func diffSelf -> Self"/>
+            <Functions signature="func dump(skipUnchanged: Bool, to: (1,0))"/>
+            <Functions signature="func dumpDiff(: Self, skipUnchanged: Bool, to: (1,0))"/>
+            <Functions signature="func subscript(Swift.UInt32, a: Int)"/>
+            <Functions signature="func subscript(Swift.UInt32, a: Swift.String)"/>
+            <Functions signature="func subscriptInt -> Swift.UInt32"/>
+            <Functions signature="func subscriptSwift.String -> Swift.UInt32"/>
+        </Protocol>
+        <Protocol name="Swift._StringElement">
+            <Functions signature="func _fromUTF16CodeUnitSwift.UInt16 -> Self"/>
+            <Functions signature="func _toUTF16CodeUnitSelf -> Swift.UInt16"/>
+        </Protocol>
+        <Protocol name="Swift._SwiftNewtypeWrapper">
+        </Protocol>
+        <Protocol name="Swift._UTFParser">
+            <Functions signature="func _buffer()"/>
+            <Functions signature="func _buffer() -> Swift._UIntBuffer<Self.Encoding.CodeUnit>"/>
+            <Functions signature="func _bufferedScalar(bitCount: Swift.UInt8) -> Self.Encoding.EncodedScalar"/>
+            <Functions signature="func _buffernewValue: Swift._UIntBuffer<Self.Encoding.CodeUnit>"/>
+            <Functions signature="func _parseMultipleCodeUnits() -> (isValid: Bool, bitCount: Swift.UInt8)"/>
+        </Protocol>
+        <Protocol name="Swift._UnicodeEncoding">
+            <Functions signature="func _isScalarSelf.CodeUnit -> Bool"/>
+            <Functions signature="func decodeSelf.EncodedScalar -> Swift.Unicode.Scalar"/>
+            <Functions signature="func encodeSwift.Unicode.Scalar -> Swift.Optional<Self.EncodedScalar>"/>
+            <Functions signature="func encodedReplacementCharacter() -> Self.EncodedScalar"/>
+            <Functions signature="func transcode(: (1,0)B0.EncodedScalar, from: Meta ) -> Swift.Optional<Self.EncodedScalar>"/>
+        </Protocol>
+        <Protocol name="Swift._UnicodeParser">
+            <Functions signature="func parseScalar(from: (1,0)) -> Swift.Unicode.ParseResult<Self.Encoding.EncodedScalar>"/>
+        </Protocol>
+        <Protocol name="Swift.__DefaultCustomPlaygroundQuickLookable">
+            <Functions signature="func _defaultCustomPlaygroundQuickLook() -> Swift._PlaygroundQuickLook"/>
+        </Protocol>
     </Protocols>
 </Module>
