@@ -1,169 +1,581 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftFoundation">
     <Classes>
-        <Class name="Foundation.Data.RangeReference"/>
-        <Class name="Foundation.JSONDecoder"/>
-        <Class name="Foundation.JSONEncoder"/>
-        <Class name="Foundation.NSKeyValueObservation"/>
-        <Class name="Foundation.NSURL"/>
-        <Class name="Foundation.PropertyListDecoder"/>
-        <Class name="Foundation.PropertyListEncoder"/>
-        <Class name="Foundation.__DataStorage"/>
-        <Class name="__C.NSArray"/>
-        <Class name="__C.NSCalendar"/>
-        <Class name="__C.NSCharacterSet"/>
-        <Class name="__C.NSData"/>
-        <Class name="__C.NSDate"/>
-        <Class name="__C.NSDateComponents"/>
-        <Class name="__C.NSDateInterval"/>
-        <Class name="__C.NSDictionary"/>
-        <Class name="__C.NSDictionary"/>
-        <Class name="__C.NSEnumerator"/>
-        <Class name="__C.NSError"/>
-        <Class name="__C.NSIndexPath"/>
-        <Class name="__C.NSIndexSet"/>
-        <Class name="__C.NSLocale"/>
-        <Class name="__C.NSMeasurement"/>
-        <Class name="__C.NSNotification"/>
-        <Class name="__C.NSNotificationCenter"/>
-        <Class name="__C.NSNotificationCenter"/>
-        <Class name="__C.NSNumber"/>
-        <Class name="__C.NSObject"/>
-        <Class name="__C.NSObject"/>
-        <Class name="__C.NSOperationQueue"/>
-        <Class name="__C.NSOperationQueue"/>
-        <Class name="__C.NSOrderedSet"/>
-        <Class name="__C.NSPersonNameComponents"/>
-        <Class name="__C.NSRunLoop"/>
-        <Class name="__C.NSRunLoop"/>
-        <Class name="__C.NSScanner"/>
-        <Class name="__C.NSScanner"/>
-        <Class name="__C.NSSet"/>
-        <Class name="__C.NSString"/>
-        <Class name="__C.NSTimeZone"/>
-        <Class name="__C.NSTimer"/>
-        <Class name="__C.NSTimer"/>
-        <Class name="__C.NSURLComponents"/>
-        <Class name="__C.NSURLQueryItem"/>
-        <Class name="__C.NSURLRequest"/>
-        <Class name="__C.NSURLSession"/>
-        <Class name="__C.NSURLSession"/>
-        <Class name="__C.NSURLSessionWebSocketTask"/>
-        <Class name="__C.NSUUID"/>
+        <Class name="Foundation.Data.RangeReference">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="lowerBound"/>
+            <Properties name="upperBound"/>
+            <Properties name="count"/>
+            <Properties name="range"/>
+        </Class>
+        <Class name="Foundation.JSONDecoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func decode(: Meta , from: Foundation.Data) -> Self"/>
+            <Properties name="keyDecodingStrategy"/>
+            <Properties name="dataDecodingStrategy"/>
+            <Properties name="dateDecodingStrategy"/>
+            <Properties name="nonConformingFloatDecodingStrategy"/>
+            <Properties name="userInfo"/>
+        </Class>
+        <Class name="Foundation.JSONEncoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func encodeSelf -> Foundation.Data"/>
+            <Properties name="outputFormatting"/>
+            <Properties name="keyEncodingStrategy"/>
+            <Properties name="dataEncodingStrategy"/>
+            <Properties name="dateEncodingStrategy"/>
+            <Properties name="nonConformingFloatEncodingStrategy"/>
+            <Properties name="userInfo"/>
+        </Class>
+        <Class name="Foundation.NSKeyValueObservation">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Functions signature="func invalidate()"/>
+        </Class>
+        <Class name="Foundation.NSURL">
+        </Class>
+        <Class name="Foundation.PropertyListDecoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func decode(: Meta , from: Foundation.Data, format: __C.NSPropertyListFormat) -> Self"/>
+            <Properties name="userInfo"/>
+        </Class>
+        <Class name="Foundation.PropertyListEncoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func encodeSelf -> Foundation.Data"/>
+            <Properties name="outputFormat"/>
+            <Properties name="userInfo"/>
+        </Class>
+        <Class name="Foundation.__DataStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _freeBytes()"/>
+            <Functions signature="func append(: Swift.UnsafeRawPointer, length: Int)"/>
+            <Functions signature="func bridgedReferenceSwift.Range<Int> -> __C.NSData"/>
+            <Functions signature="func copyBytes(to: Swift.UnsafeMutableRawPointer, from: Swift.Range<Int>)"/>
+            <Functions signature="func ensureUniqueBufferReference(growingTo: Int, clear: Bool)"/>
+            <Functions signature="func enumerateBytes(in: Swift.Range<Int>, : (Swift.UnsafeBufferPointer<Swift.UInt8>, Int, Bool))"/>
+            <Functions signature="func getInt -> Swift.UInt8"/>
+            <Functions signature="func mutableCopySwift.Range<Int> -> Foundation.__DataStorage"/>
+            <Functions signature="func replaceBytes(in: __C._NSRange, with: Swift.Optional<Swift.UnsafeRawPointer>, length: Int)"/>
+            <Functions signature="func resetBytes(in: Swift.Range<Int>)"/>
+            <Functions signature="func set(: Int, to: Swift.UInt8)"/>
+            <Functions signature="func setLengthInt"/>
+            <Functions signature="func withInteriorPointerReference(Swift.Range<Int>, __C.NSData -> Self) -> Self"/>
+            <Functions signature="func withUnsafeBytes(in: Swift.Range<Int>, apply: Swift.UnsafeRawBufferPointer -> Self) -> Self"/>
+            <Functions signature="func withUnsafeMutableBytes(in: Swift.Range<Int>, apply: Swift.UnsafeMutableRawBufferPointer -> Self) -> Self"/>
+            <Properties name="_needToZero"/>
+            <Properties name="_deallocator"/>
+            <Properties name="mutableBytes"/>
+            <Properties name="isExternallyOwned"/>
+            <Properties name="bytes"/>
+            <Properties name="_bytes"/>
+            <Properties name="length"/>
+            <Properties name="_length"/>
+            <Properties name="_offset"/>
+            <Properties name="capacity"/>
+            <Properties name="_capacity"/>
+        </Class>
+        <Class name="__C.NSArray">
+        </Class>
+        <Class name="__C.NSCalendar">
+        </Class>
+        <Class name="__C.NSCharacterSet">
+        </Class>
+        <Class name="__C.NSData">
+        </Class>
+        <Class name="__C.NSDate">
+        </Class>
+        <Class name="__C.NSDateComponents">
+        </Class>
+        <Class name="__C.NSDateInterval">
+        </Class>
+        <Class name="__C.NSDictionary">
+        </Class>
+        <Class name="__C.NSDictionary">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<(key: Swift.Any, value: Swift.Any)>"/>
+        </Class>
+        <Class name="__C.NSEnumerator">
+        </Class>
+        <Class name="__C.NSError">
+        </Class>
+        <Class name="__C.NSIndexPath">
+        </Class>
+        <Class name="__C.NSIndexSet">
+        </Class>
+        <Class name="__C.NSLocale">
+        </Class>
+        <Class name="__C.NSMeasurement">
+        </Class>
+        <Class name="__C.NSNotification">
+        </Class>
+        <Class name="__C.NSNotificationCenter">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func receive(subscriber: Self)"/>
+            <Properties name="name"/>
+            <Properties name="center"/>
+            <Properties name="object"/>
+        </Class>
+        <Class name="__C.NSNotificationCenter">
+        </Class>
+        <Class name="__C.NSNumber">
+        </Class>
+        <Class name="__C.NSObject">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func didChange() -> Combine.Publishers.Map<__C.NSObject<Self, (0,1)>, ()>"/>
+            <Functions signature="func receive(subscriber: (1,0))"/>
+            <Properties name="object"/>
+            <Properties name="keyPath"/>
+            <Properties name="options"/>
+        </Class>
+        <Class name="__C.NSObject">
+        </Class>
+        <Class name="__C.NSOperationQueue">
+        </Class>
+        <Class name="__C.NSOperationQueue">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func advanced(by: __C.NSOperationQueue.Stride) -> __C.NSOperationQueue"/>
+            <Functions signature="func distance(to: __C.NSOperationQueue) -> __C.NSOperationQueue.Stride"/>
+            <Functions signature="func encode(to: Swift.Encoder)"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="date"/>
+            <Properties name="hashValue"/>
+        </Class>
+        <Class name="__C.NSOrderedSet">
+        </Class>
+        <Class name="__C.NSPersonNameComponents">
+        </Class>
+        <Class name="__C.NSRunLoop">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func advanced(by: __C.NSRunLoop.Stride) -> __C.NSRunLoop"/>
+            <Functions signature="func distance(to: __C.NSRunLoop) -> __C.NSRunLoop.Stride"/>
+            <Functions signature="func encode(to: Swift.Encoder)"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="date"/>
+            <Properties name="hashValue"/>
+        </Class>
+        <Class name="__C.NSRunLoop">
+        </Class>
+        <Class name="__C.NSScanner">
+            <ClassConstructor name=".cctor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="hashValue"/>
+        </Class>
+        <Class name="__C.NSScanner">
+        </Class>
+        <Class name="__C.NSSet">
+        </Class>
+        <Class name="__C.NSString">
+        </Class>
+        <Class name="__C.NSTimeZone">
+        </Class>
+        <Class name="__C.NSTimer">
+        </Class>
+        <Class name="__C.NSTimer">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func connect() -> Combine.Cancellable"/>
+            <Functions signature="func receive(subscriber: Self)"/>
+            <Properties name="mode"/>
+            <Properties name="options"/>
+            <Properties name="runLoop"/>
+            <Properties name="interval"/>
+            <Properties name="tolerance"/>
+        </Class>
+        <Class name="__C.NSURLComponents">
+        </Class>
+        <Class name="__C.NSURLQueryItem">
+        </Class>
+        <Class name="__C.NSURLRequest">
+        </Class>
+        <Class name="__C.NSURLSession">
+        </Class>
+        <Class name="__C.NSURLSession">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func receive(subscriber: Self)"/>
+            <Properties name="request"/>
+            <Properties name="session"/>
+        </Class>
+        <Class name="__C.NSURLSessionWebSocketTask">
+            <ClassConstructor name=".cctor"/>
+        </Class>
+        <Class name="__C.NSUUID">
+        </Class>
     </Classes>
     <Structs>
-        <Struct name="CoreGraphics.CGAffineTransform"/>
-        <Struct name="CoreGraphics.CGFloat"/>
-        <Struct name="CoreGraphics.CGPoint"/>
-        <Struct name="CoreGraphics.CGRect"/>
-        <Struct name="CoreGraphics.CGSize"/>
-        <Struct name="CoreGraphics.CGVector"/>
-        <Struct name="Dispatch.DispatchData"/>
-        <Struct name="Dispatch.DispatchData"/>
-        <Struct name="Foundation.Calendar"/>
-        <Struct name="Foundation.CharacterSet"/>
-        <Struct name="Foundation.CocoaError"/>
-        <Struct name="Foundation.CocoaError.Code"/>
-        <Struct name="Foundation.Data"/>
-        <Struct name="Foundation.Data.InlineData"/>
-        <Struct name="Foundation.Data.InlineSlice"/>
-        <Struct name="Foundation.Data.Iterator"/>
-        <Struct name="Foundation.Data.LargeSlice"/>
-        <Struct name="Foundation.Date"/>
-        <Struct name="Foundation.DateComponents"/>
-        <Struct name="Foundation.DateInterval"/>
-        <Struct name="Foundation.ErrorUserInfoKey"/>
-        <Struct name="Foundation.IndexPath"/>
-        <Struct name="Foundation.IndexSet"/>
-        <Struct name="Foundation.IndexSet.Index"/>
-        <Struct name="Foundation.IndexSet.RangeView"/>
-        <Struct name="Foundation.JSONEncoder.OutputFormatting"/>
-        <Struct name="Foundation.Locale"/>
-        <Struct name="Foundation.MachError"/>
-        <Struct name="Foundation.Measurement"/>
-        <Struct name="Foundation.NSDecimal"/>
-        <Struct name="Foundation.NSFastEnumerationIterator"/>
-        <Struct name="Foundation.NSIndexSetIterator"/>
-        <Struct name="Foundation.NSKeyValueObservedChange"/>
-        <Struct name="Foundation.Notification"/>
-        <Struct name="Foundation.POSIXError"/>
-        <Struct name="Foundation.PersonNameComponents"/>
-        <Struct name="Foundation.TimeZone"/>
-        <Struct name="Foundation.URL"/>
-        <Struct name="Foundation.URLComponents"/>
-        <Struct name="Foundation.URLError"/>
-        <Struct name="Foundation.URLError.Code"/>
-        <Struct name="Foundation.URLQueryItem"/>
-        <Struct name="Foundation.URLRequest"/>
-        <Struct name="Foundation.URLResourceValues"/>
-        <Struct name="Foundation.UUID"/>
-        <Struct name="Swift.AnyHashable"/>
-        <Struct name="Swift.Array"/>
-        <Struct name="Swift.Bool"/>
-        <Struct name="Swift.CollectionDifference"/>
-        <Struct name="Swift.Dictionary"/>
-        <Struct name="Swift.Double"/>
-        <Struct name="Swift.Float"/>
-        <Struct name="Swift.Int"/>
-        <Struct name="Swift.Int16"/>
-        <Struct name="Swift.Int32"/>
-        <Struct name="Swift.Int64"/>
-        <Struct name="Swift.Int8"/>
-        <Struct name="Swift.Set"/>
-        <Struct name="Swift.String"/>
-        <Struct name="Swift.String"/>
-        <Struct name="Swift.Substring"/>
-        <Struct name="Swift.UInt"/>
-        <Struct name="Swift.UInt16"/>
-        <Struct name="Swift.UInt32"/>
-        <Struct name="Swift.UInt64"/>
-        <Struct name="Swift.UInt8"/>
-        <Struct name="Swift.UnsafeMutableRawBufferPointer"/>
-        <Struct name="Swift.UnsafeRawBufferPointer"/>
-        <Struct name="__C.CFErrorRef"/>
-        <Struct name="__C.NSOperationQueue.Stride"/>
-        <Struct name="__C.NSOperationQueue.Stride"/>
-        <Struct name="__C.NSRunLoop.Stride"/>
-        <Struct name="__C.NSRunLoop.Stride"/>
-        <Struct name="__C._NSRange"/>
+        <Struct name="Foundation.Data.RangeReference">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Properties name="lowerBound"/>
+            <Properties name="upperBound"/>
+            <Properties name="count"/>
+            <Properties name="range"/>
+        </Struct>
+        <Struct name="Foundation.JSONDecoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func decode(: Meta , from: Foundation.Data) -> Self"/>
+            <Properties name="keyDecodingStrategy"/>
+            <Properties name="dataDecodingStrategy"/>
+            <Properties name="dateDecodingStrategy"/>
+            <Properties name="nonConformingFloatDecodingStrategy"/>
+            <Properties name="userInfo"/>
+        </Struct>
+        <Struct name="Foundation.JSONEncoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func encodeSelf -> Foundation.Data"/>
+            <Properties name="outputFormatting"/>
+            <Properties name="keyEncodingStrategy"/>
+            <Properties name="dataEncodingStrategy"/>
+            <Properties name="dateEncodingStrategy"/>
+            <Properties name="nonConformingFloatEncodingStrategy"/>
+            <Properties name="userInfo"/>
+        </Struct>
+        <Struct name="Foundation.NSKeyValueObservation">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Functions signature="func invalidate()"/>
+        </Struct>
+        <Struct name="Foundation.NSURL">
+        </Struct>
+        <Struct name="Foundation.PropertyListDecoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func decode(: Meta , from: Foundation.Data, format: __C.NSPropertyListFormat) -> Self"/>
+            <Properties name="userInfo"/>
+        </Struct>
+        <Struct name="Foundation.PropertyListEncoder">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func encodeSelf -> Foundation.Data"/>
+            <Properties name="outputFormat"/>
+            <Properties name="userInfo"/>
+        </Struct>
+        <Struct name="Foundation.__DataStorage">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func _freeBytes()"/>
+            <Functions signature="func append(: Swift.UnsafeRawPointer, length: Int)"/>
+            <Functions signature="func bridgedReferenceSwift.Range<Int> -> __C.NSData"/>
+            <Functions signature="func copyBytes(to: Swift.UnsafeMutableRawPointer, from: Swift.Range<Int>)"/>
+            <Functions signature="func ensureUniqueBufferReference(growingTo: Int, clear: Bool)"/>
+            <Functions signature="func enumerateBytes(in: Swift.Range<Int>, : (Swift.UnsafeBufferPointer<Swift.UInt8>, Int, Bool))"/>
+            <Functions signature="func getInt -> Swift.UInt8"/>
+            <Functions signature="func mutableCopySwift.Range<Int> -> Foundation.__DataStorage"/>
+            <Functions signature="func replaceBytes(in: __C._NSRange, with: Swift.Optional<Swift.UnsafeRawPointer>, length: Int)"/>
+            <Functions signature="func resetBytes(in: Swift.Range<Int>)"/>
+            <Functions signature="func set(: Int, to: Swift.UInt8)"/>
+            <Functions signature="func setLengthInt"/>
+            <Functions signature="func withInteriorPointerReference(Swift.Range<Int>, __C.NSData -> Self) -> Self"/>
+            <Functions signature="func withUnsafeBytes(in: Swift.Range<Int>, apply: Swift.UnsafeRawBufferPointer -> Self) -> Self"/>
+            <Functions signature="func withUnsafeMutableBytes(in: Swift.Range<Int>, apply: Swift.UnsafeMutableRawBufferPointer -> Self) -> Self"/>
+            <Properties name="_needToZero"/>
+            <Properties name="_deallocator"/>
+            <Properties name="mutableBytes"/>
+            <Properties name="isExternallyOwned"/>
+            <Properties name="bytes"/>
+            <Properties name="_bytes"/>
+            <Properties name="length"/>
+            <Properties name="_length"/>
+            <Properties name="_offset"/>
+            <Properties name="capacity"/>
+            <Properties name="_capacity"/>
+        </Struct>
+        <Struct name="__C.NSArray">
+        </Struct>
+        <Struct name="__C.NSCalendar">
+        </Struct>
+        <Struct name="__C.NSCharacterSet">
+        </Struct>
+        <Struct name="__C.NSData">
+        </Struct>
+        <Struct name="__C.NSDate">
+        </Struct>
+        <Struct name="__C.NSDateComponents">
+        </Struct>
+        <Struct name="__C.NSDateInterval">
+        </Struct>
+        <Struct name="__C.NSDictionary">
+        </Struct>
+        <Struct name="__C.NSDictionary">
+            <ClassConstructor name=".cctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func next() -> Swift.Optional<(key: Swift.Any, value: Swift.Any)>"/>
+        </Struct>
+        <Struct name="__C.NSEnumerator">
+        </Struct>
+        <Struct name="__C.NSError">
+        </Struct>
+        <Struct name="__C.NSIndexPath">
+        </Struct>
+        <Struct name="__C.NSIndexSet">
+        </Struct>
+        <Struct name="__C.NSLocale">
+        </Struct>
+        <Struct name="__C.NSMeasurement">
+        </Struct>
+        <Struct name="__C.NSNotification">
+        </Struct>
+        <Struct name="__C.NSNotificationCenter">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func receive(subscriber: Self)"/>
+            <Properties name="name"/>
+            <Properties name="center"/>
+            <Properties name="object"/>
+        </Struct>
+        <Struct name="__C.NSNotificationCenter">
+        </Struct>
+        <Struct name="__C.NSNumber">
+        </Struct>
+        <Struct name="__C.NSObject">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func didChange() -> Combine.Publishers.Map<__C.NSObject<Self, (0,1)>, ()>"/>
+            <Functions signature="func receive(subscriber: (1,0))"/>
+            <Properties name="object"/>
+            <Properties name="keyPath"/>
+            <Properties name="options"/>
+        </Struct>
+        <Struct name="__C.NSObject">
+        </Struct>
+        <Struct name="__C.NSOperationQueue">
+        </Struct>
+        <Struct name="__C.NSOperationQueue">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func advanced(by: __C.NSOperationQueue.Stride) -> __C.NSOperationQueue"/>
+            <Functions signature="func distance(to: __C.NSOperationQueue) -> __C.NSOperationQueue.Stride"/>
+            <Functions signature="func encode(to: Swift.Encoder)"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="date"/>
+            <Properties name="hashValue"/>
+        </Struct>
+        <Struct name="__C.NSOrderedSet">
+        </Struct>
+        <Struct name="__C.NSPersonNameComponents">
+        </Struct>
+        <Struct name="__C.NSRunLoop">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func advanced(by: __C.NSRunLoop.Stride) -> __C.NSRunLoop"/>
+            <Functions signature="func distance(to: __C.NSRunLoop) -> __C.NSRunLoop.Stride"/>
+            <Functions signature="func encode(to: Swift.Encoder)"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="date"/>
+            <Properties name="hashValue"/>
+        </Struct>
+        <Struct name="__C.NSRunLoop">
+        </Struct>
+        <Struct name="__C.NSScanner">
+            <ClassConstructor name=".cctor"/>
+            <Functions signature="func hash(into: Swift.Hasher)"/>
+            <Properties name="hashValue"/>
+        </Struct>
+        <Struct name="__C.NSScanner">
+        </Struct>
+        <Struct name="__C.NSSet">
+        </Struct>
+        <Struct name="__C.NSString">
+        </Struct>
+        <Struct name="__C.NSTimeZone">
+        </Struct>
+        <Struct name="__C.NSTimer">
+        </Struct>
+        <Struct name="__C.NSTimer">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Constructors name=".nctor"/>
+            <Destructors name=".dtor"/>
+            <Destructors name=".ndtor"/>
+            <Functions signature="func connect() -> Combine.Cancellable"/>
+            <Functions signature="func receive(subscriber: Self)"/>
+            <Properties name="mode"/>
+            <Properties name="options"/>
+            <Properties name="runLoop"/>
+            <Properties name="interval"/>
+            <Properties name="tolerance"/>
+        </Struct>
+        <Struct name="__C.NSURLComponents">
+        </Struct>
+        <Struct name="__C.NSURLQueryItem">
+        </Struct>
+        <Struct name="__C.NSURLRequest">
+        </Struct>
+        <Struct name="__C.NSURLSession">
+        </Struct>
+        <Struct name="__C.NSURLSession">
+            <ClassConstructor name=".cctor"/>
+            <Constructors name=".ctor"/>
+            <Functions signature="func receive(subscriber: Self)"/>
+            <Properties name="request"/>
+            <Properties name="session"/>
+        </Struct>
+        <Struct name="__C.NSURLSessionWebSocketTask">
+            <ClassConstructor name=".cctor"/>
+        </Struct>
+        <Struct name="__C.NSUUID">
+        </Struct>
     </Structs>
     <Enums>
-        <Enum name="Darwin.MachErrorCode"/>
-        <Enum name="Darwin.POSIXErrorCode"/>
-        <Enum name="Foundation.Calendar.Component"/>
-        <Enum name="Foundation.Calendar.Identifier"/>
-        <Enum name="Foundation.Calendar.MatchingPolicy"/>
-        <Enum name="Foundation.Calendar.RepeatedTimePolicy"/>
-        <Enum name="Foundation.Calendar.SearchDirection"/>
-        <Enum name="Foundation.Data.Deallocator"/>
-        <Enum name="Foundation.Data._Representation"/>
-        <Enum name="Foundation.JSONDecoder.DataDecodingStrategy"/>
-        <Enum name="Foundation.JSONDecoder.DateDecodingStrategy"/>
-        <Enum name="Foundation.JSONDecoder.KeyDecodingStrategy"/>
-        <Enum name="Foundation.JSONDecoder.NonConformingFloatDecodingStrategy"/>
-        <Enum name="Foundation.JSONEncoder.DataEncodingStrategy"/>
-        <Enum name="Foundation.JSONEncoder.DateEncodingStrategy"/>
-        <Enum name="Foundation.JSONEncoder.KeyEncodingStrategy"/>
-        <Enum name="Foundation.JSONEncoder.NonConformingFloatEncodingStrategy"/>
-        <Enum name="Foundation.URLError.BackgroundTaskCancelledReason"/>
-        <Enum name="Foundation.URLError.NetworkUnavailableReason"/>
-        <Enum name="Swift.DecodingError"/>
-        <Enum name="Swift.EncodingError"/>
+        <Enum name="Foundation.Data.RangeReference"/>
+        <Enum name="Foundation.JSONDecoder"/>
+        <Enum name="Foundation.JSONEncoder"/>
+        <Enum name="Foundation.NSKeyValueObservation"/>
+        <Enum name="Foundation.NSURL"/>
+        <Enum name="Foundation.PropertyListDecoder"/>
+        <Enum name="Foundation.PropertyListEncoder"/>
+        <Enum name="Foundation.__DataStorage"/>
+        <Enum name="__C.NSArray"/>
+        <Enum name="__C.NSCalendar"/>
+        <Enum name="__C.NSCharacterSet"/>
+        <Enum name="__C.NSData"/>
+        <Enum name="__C.NSDate"/>
+        <Enum name="__C.NSDateComponents"/>
+        <Enum name="__C.NSDateInterval"/>
+        <Enum name="__C.NSDictionary"/>
+        <Enum name="__C.NSDictionary"/>
+        <Enum name="__C.NSEnumerator"/>
+        <Enum name="__C.NSError"/>
+        <Enum name="__C.NSIndexPath"/>
+        <Enum name="__C.NSIndexSet"/>
+        <Enum name="__C.NSLocale"/>
+        <Enum name="__C.NSMeasurement"/>
+        <Enum name="__C.NSNotification"/>
+        <Enum name="__C.NSNotificationCenter"/>
+        <Enum name="__C.NSNotificationCenter"/>
+        <Enum name="__C.NSNumber"/>
+        <Enum name="__C.NSObject"/>
+        <Enum name="__C.NSObject"/>
+        <Enum name="__C.NSOperationQueue"/>
+        <Enum name="__C.NSOperationQueue"/>
+        <Enum name="__C.NSOrderedSet"/>
+        <Enum name="__C.NSPersonNameComponents"/>
+        <Enum name="__C.NSRunLoop"/>
+        <Enum name="__C.NSRunLoop"/>
+        <Enum name="__C.NSScanner"/>
+        <Enum name="__C.NSScanner"/>
+        <Enum name="__C.NSSet"/>
+        <Enum name="__C.NSString"/>
+        <Enum name="__C.NSTimeZone"/>
+        <Enum name="__C.NSTimer"/>
+        <Enum name="__C.NSTimer"/>
+        <Enum name="__C.NSURLComponents"/>
+        <Enum name="__C.NSURLQueryItem"/>
+        <Enum name="__C.NSURLRequest"/>
+        <Enum name="__C.NSURLSession"/>
+        <Enum name="__C.NSURLSession"/>
+        <Enum name="__C.NSURLSessionWebSocketTask"/>
+        <Enum name="__C.NSUUID"/>
     </Enums>
     <Protocols>
-        <Protocol name="Foundation.ContiguousBytes"/>
-        <Protocol name="Foundation.CustomNSError"/>
-        <Protocol name="Foundation.DataProtocol"/>
-        <Protocol name="Foundation.LocalizedError"/>
-        <Protocol name="Foundation.MutableDataProtocol"/>
-        <Protocol name="Foundation.NSKeyValueObservingCustomization"/>
-        <Protocol name="Foundation.RecoverableError"/>
-        <Protocol name="Foundation.ReferenceConvertible"/>
-        <Protocol name="Foundation._BridgedNSError"/>
-        <Protocol name="Foundation._BridgedStoredNSError"/>
-        <Protocol name="Foundation._ErrorCodeProtocol"/>
-        <Protocol name="Foundation._KeyValueCodingAndObserving"/>
-        <Protocol name="Foundation._KeyValueCodingAndObservingPublishing"/>
-        <Protocol name="Foundation._ObjectiveCBridgeableError"/>
+        <Protocol name="Foundation.ContiguousBytes">
+            <Functions signature="func withUnsafeBytesSwift.UnsafeRawBufferPointer -> (1,0) -> (1,0)"/>
+        </Protocol>
+        <Protocol name="Foundation.CustomNSError">
+            <Functions signature="func errorCode() -> Int"/>
+            <Functions signature="func errorDomain() -> Swift.String"/>
+            <Functions signature="func errorUserInfo() -> Swift.Dictionary<Swift.String, Swift.Any>"/>
+        </Protocol>
+        <Protocol name="Foundation.DataProtocol">
+            <Functions signature="func copyBytes(to: Swift.UnsafeMutableBufferPointer<(1,0)>, count: Int) -> Int"/>
+            <Functions signature="func copyBytes(to: Swift.UnsafeMutableBufferPointer<(1,0)>, from: (1,1)) -> Int"/>
+            <Functions signature="func copyBytes(to: Swift.UnsafeMutableRawBufferPointer, count: Int) -> Int"/>
+            <Functions signature="func copyBytes(to: Swift.UnsafeMutableRawBufferPointer, from: (1,0)) -> Int"/>
+            <Functions signature="func firstRange(of: (1,0), in: (1,1)) -> Swift.Optional<Swift.Range<Self.Index>>"/>
+            <Functions signature="func lastRange(of: (1,0), in: (1,1)) -> Swift.Optional<Swift.Range<Self.Index>>"/>
+            <Functions signature="func regions() -> Self.Regions"/>
+        </Protocol>
+        <Protocol name="Foundation.LocalizedError">
+            <Functions signature="func errorDescription() -> Swift.Optional<Swift.String>"/>
+            <Functions signature="func failureReason() -> Swift.Optional<Swift.String>"/>
+            <Functions signature="func helpAnchor() -> Swift.Optional<Swift.String>"/>
+            <Functions signature="func recoverySuggestion() -> Swift.Optional<Swift.String>"/>
+        </Protocol>
+        <Protocol name="Foundation.MutableDataProtocol">
+            <Functions signature="func resetBytes(in: (1,0))"/>
+        </Protocol>
+        <Protocol name="Foundation.NSKeyValueObservingCustomization">
+            <Functions signature="func automaticallyNotifiesObservers(for: Swift.AnyKeyPath) -> Bool"/>
+            <Functions signature="func keyPathsAffectingValue(for: Swift.AnyKeyPath) -> Swift.Set<Swift.AnyKeyPath>"/>
+        </Protocol>
+        <Protocol name="Foundation.RecoverableError">
+            <Functions signature="func attemptRecovery(optionIndex: Int) -> Bool"/>
+            <Functions signature="func attemptRecovery(optionIndex: Int, resultHandler: Bool)"/>
+            <Functions signature="func recoveryOptions() -> Swift.Array<Swift.String>"/>
+        </Protocol>
+        <Protocol name="Foundation.ReferenceConvertible">
+        </Protocol>
+        <Protocol name="Foundation._BridgedNSError">
+            <Functions signature="func _nsErrorDomain() -> Swift.String"/>
+        </Protocol>
+        <Protocol name="Foundation._BridgedStoredNSError">
+            <Functions signature="func _nsError() -> __C.NSError"/>
+        </Protocol>
+        <Protocol name="Foundation._ErrorCodeProtocol">
+        </Protocol>
+        <Protocol name="Foundation._KeyValueCodingAndObserving">
+        </Protocol>
+        <Protocol name="Foundation._KeyValueCodingAndObservingPublishing">
+        </Protocol>
+        <Protocol name="Foundation._ObjectiveCBridgeableError">
+        </Protocol>
     </Protocols>
 </Module>

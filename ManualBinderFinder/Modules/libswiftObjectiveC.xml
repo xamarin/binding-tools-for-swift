@@ -1,14 +1,15 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftObjectiveC">
     <Classes>
-        <Class name="__C.NSObject"/>
+        <Class name="__C.NSObject">
+        </Class>
     </Classes>
     <Structs>
-        <Struct name="ObjectiveC.NSZone"/>
-        <Struct name="ObjectiveC.ObjCBool"/>
-        <Struct name="ObjectiveC.Selector"/>
+        <Struct name="__C.NSObject">
+        </Struct>
     </Structs>
     <Enums>
+        <Enum name="__C.NSObject"/>
     </Enums>
     <Protocols>
     </Protocols>

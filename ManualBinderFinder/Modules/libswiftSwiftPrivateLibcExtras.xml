@@ -1,12 +1,10 @@
-<manualbinderfinder version="1.01" encoding="UTF - 8">
+<manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftSwiftPrivateLibcExtras">
     <Classes>
     </Classes>
     <Structs>
-        <Struct name="SwiftPrivateLibcExtras._stdlib_fd_set"/>
     </Structs>
     <Enums>
-        <Enum name="SwiftPrivateLibcExtras.ProcessTerminationStatus"/>
     </Enums>
     <Protocols>
     </Protocols>
