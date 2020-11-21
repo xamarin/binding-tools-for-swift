@@ -9,18 +9,49 @@ namespace ManualBinderFinder {
 
         public OptionSet optionsSet { get; set; }
         public List<string> dylibLibraryList { get; set; }
+        public string platform { get; set; }
+        public string architecture { get; set; }
         public bool PrintHelp { get; set; }
+
+        public string[] validPlatform = new string[9]
+        {
+            "all",
+            "clang",
+            "watchOS",
+            "iOS",
+            "iphoneSimulator",
+            "watchSimulator",
+            "appletvSimulator",
+            "tvOS",
+            "macOS",
+        };
+
+        public string[] validArchitecture = new string[6]
+        {
+            "all",
+            "arm64",
+            "arm64e",
+            "armv7",
+            "x86_64",
+            "i386",
+        };
 
         public ManualBinderFinderOptions ()
         {
 
             dylibLibraryList = new List<string>();
+
             // create an option set that will be used to parse the different
             // options of the command line.
             optionsSet = new OptionSet {
-                { "library=", "the name of the dylib to inspect", @library => {
-					//if (!string.IsNullOrEmpty (library))
+                { "library=", "the name of the dylib to inspect\n(defaults to all)\n[all, <name of dylib>]", @library => {
 					dylibLibraryList.Add (@library);
+                } },
+                { "platform=", "the name of the platform to inspect\n(defaults to all)\n[all, clang, watchOS, iOS, iphoneSimulator, watchSimulator, appletvSimulator, tvOS, macOS]", p => {
+                    platform = p;
+                } },
+                { "architecture=", "the name of the architecture to inspect\n(defaults to all)\n[all, arm64, arm64e, armv7, x86_64, i386]", a => {
+                    architecture = a;
                 } },
                 { "h|?|help", "prints this message", h => {
                     PrintHelp |=h != null;
