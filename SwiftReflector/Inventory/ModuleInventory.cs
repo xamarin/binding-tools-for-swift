@@ -27,7 +27,6 @@ namespace SwiftReflector.Inventory {
 			ModuleContents module = null;
 			if (!values.TryGetValue (tld.Module, out module)) {
 				module = new ModuleContents (tld.Module, SizeofMachinePointer);
-				//Console.WriteLine ($"Type {tld.Type} added to dictionary in Add ModuleInventory");
 				values.Add (tld.Module, module);
 			}
 			module.Add (tld, srcStm);

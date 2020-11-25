@@ -4,22 +4,47 @@ using System.Text.RegularExpressions;
 
 namespace ManualBinderFinder {
 	public class StringBuiderHelper {
-		public static string EnhanceSignature (string signature)
+		public static string EnhanceMethodSignature (string signature, bool isStatic)
 		{
-			if (string.IsNullOrEmpty (signature))
-				return string.Empty;
+			if (string.IsNullOrEmpty (signature) || signature.Contains ("_"))
+				return null;
 
 			StringBuilder sb = new StringBuilder (signature);
+			// find the first ':' and delete it
 			MatchCollection matches = Regex.Matches (sb.ToString (), ": ");
 			sb.Remove (matches [0].Index, matches [0].Length);
+			// remove "->()"
 			sb.Replace ("->()", "");
+			// space out the arguments from the parenthesis so we can find
+			// duplicate consecutive words
 			sb.Replace ("(", "( ");
 			sb.RemoveDuplicateConsecutiveWords ();
+			// fix the spacing we added
 			sb.Replace ("( ", "(");
 			sb.Replace ("->", " -> ");
-			sb.Replace ("(0,0)A0", "Self");
-			sb.Replace ("(0,0)", "Self");
+			sb.CorrectSelf ();
 			sb.Insert (0, "func ");
+			sb.CorrectOptionals ();
+			if (isStatic)
+				sb.Insert (0, "static ");
+			return sb.ToString ();
+		}
+
+		public static string EnhancePropertySignature (string signature, bool isStatic)
+		{
+			if (string.IsNullOrEmpty (signature) || signature.Contains ("_"))
+				return null;
+
+			StringBuilder sb = new StringBuilder (signature);
+			sb.Replace (": ()->", ": ");
+			sb.Insert (0, "var ");
+
+			sb.CorrectOptionals ();
+			sb.CorrectSelf ();
+
+			if (isStatic)
+				sb.Insert (0, "static ");
+
 			return sb.ToString ();
 		}
 	}
