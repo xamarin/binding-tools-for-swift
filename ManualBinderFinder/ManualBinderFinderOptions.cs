@@ -17,13 +17,13 @@ namespace ManualBinderFinder {
         {
             "all",
             "clang",
-            "watchOS",
-            "iOS",
-            "iphoneSimulator",
-            "watchSimulator",
-            "appletvSimulator",
-            "tvOS",
-            "macOS",
+            "watchos",
+            "iphoneos",
+            "iphonesimulator",
+            "watchsimulator",
+            "appletvsimulator",
+            "appletvos",
+            "macosx",
         };
 
         public string[] validArchitecture = new string[6]

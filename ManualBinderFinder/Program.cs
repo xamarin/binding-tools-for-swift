@@ -25,16 +25,19 @@ namespace ManualBinderFinder {
 			//	return;
 			//}
 
+			options.platform = "iphoneos";
+			options.architecture = "arm64";
+
 			if (string.IsNullOrEmpty (options.platform)) {
 				options.platform = "all";
-			} else if (options.validPlatform.Contains (options.platform.ToLower ())) {
+			} else if (!options.validPlatform.Contains (options.platform.ToLower ())) {
 				Console.WriteLine ("Platform was not recognized");
 				return;
 			}
 
 			if (string.IsNullOrEmpty (options.architecture)) {
 				options.architecture = "all";
-			} else if (options.validArchitecture.Contains (options.architecture.ToLower ())) {
+			} else if (!options.validArchitecture.Contains (options.architecture.ToLower ())) {
 				Console.WriteLine ("Architecture was not recognized");
 				return;
 			}
@@ -47,6 +50,8 @@ namespace ManualBinderFinder {
 			var libraries = GetLibraries (bashString);
 
 			foreach (var lib in libraries) {
+				if (string.IsNullOrEmpty (lib.Value))
+					continue;
 				try {
 					var errors = new ErrorHandling ();
 					var mi = ModuleInventory.FromFile (lib.Value, errors);
@@ -72,11 +77,11 @@ namespace ManualBinderFinder {
 				p = platform;
 
 			if (architecture == "all") {
-				return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
-				//return $"find ../../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
+				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
+				return $"find ../../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
 			} else {
-				return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
-				//return $"find ../../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
+				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
+				return $"find ../../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
 			}
 		}
 

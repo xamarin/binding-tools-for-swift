@@ -12,7 +12,8 @@ namespace ManualBinderFinder {
 			foreach (var m in modules) {
 				var moduleClass = mi.GetClassesFromName (m);
 				foreach (var c in moduleClass) {
-					classes.Add (c);
+					if (!c.Name.ToString ().Contains ("_"))
+						classes.Add (c);
 				}
 			}
 			classes.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
@@ -25,9 +26,10 @@ namespace ManualBinderFinder {
 			List<ClassContents> enums = new List<ClassContents> ();
 
 			foreach (var m in modules) {
-				var moduleEnum = mi.GetClassesFromName (m);
+				var moduleEnum = mi.GetEnumsFromName (m);
 				foreach (var e in moduleEnum) {
-					enums.Add (e);
+					if (!e.Name.ToString ().Contains ("_"))
+						enums.Add (e);
 				}
 			}
 			enums.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
@@ -40,9 +42,10 @@ namespace ManualBinderFinder {
 			List<ClassContents> structs = new List<ClassContents> ();
 
 			foreach (var m in modules) {
-				var moduleStruct = mi.GetClassesFromName (m);
+				var moduleStruct = mi.GetStructsFromName (m);
 				foreach (var s in moduleStruct) {
-					structs.Add (s);
+					if (!s.Name.ToString ().Contains ("_"))
+						structs.Add (s);
 				}
 			}
 			structs.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
@@ -57,7 +60,8 @@ namespace ManualBinderFinder {
 			foreach (var m in modules) {
 				var moduleProtocol = mi.ProtocolsForName (m);
 				foreach (var p in moduleProtocol) {
-					protocols.Add (p);
+					if (!p.Name.ToString ().Contains ("_"))
+						protocols.Add (p);
 				}
 			}
 			protocols.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
