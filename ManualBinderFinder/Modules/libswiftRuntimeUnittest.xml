@@ -1,11 +1,49 @@
 <manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftRuntimeUnittest">
-    <Classes>
-    </Classes>
-    <Structs>
-    </Structs>
-    <Enums>
-    </Enums>
-    <Protocols>
-    </Protocols>
+	<Classes>
+	</Classes>
+	<Structs>
+	</Structs>
+	<Enums>
+		<Enum name="RuntimeUnittest.SwiftRuntimeUnitTest">
+			<Method>
+				<name="testExclusivityBogusPC">
+				<signature="static func testExclusivityBogusPC()">
+				<isStatic="True">
+				<returnType="()">
+				<Parameters>
+					<Parameter="">
+				</Parameters>
+			</Method>
+			<Method>
+				<name="testExclusivityNonNestedPC">
+				<signature="static func testExclusivityNonNestedPC()">
+				<isStatic="True">
+				<returnType="()">
+				<Parameters>
+					<Parameter="">
+				</Parameters>
+			</Method>
+			<Method>
+				<name="testExclusivityNullPC">
+				<signature="static func testExclusivityNullPC()">
+				<isStatic="True">
+				<returnType="()">
+				<Parameters>
+					<Parameter="">
+				</Parameters>
+			</Method>
+			<Method>
+				<name="testExclusivityPCOne">
+				<signature="static func testExclusivityPCOne()">
+				<isStatic="True">
+				<returnType="()">
+				<Parameters>
+					<Parameter="">
+				</Parameters>
+			</Method>
+		</Enum>
+	</Enums>
+	<Protocols>
+	</Protocols>
 </Module>

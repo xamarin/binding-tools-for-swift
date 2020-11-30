@@ -57,10 +57,58 @@ namespace ManualBinderFinder {
 			}
 		}
 
+
+		// Instead of doing this, remove all "Swift."
+		// and look for every '<' and find next '>' and replace with '(' and ')'
+
+		//public static void CorrectUnsafeMutablePointer (this StringBuilder sb)
+		//{
+		//	if (sb == null)
+		//		return;
+		//	if (sb.ToString ().Contains ("UnsafeMutablePointer")) {
+		//		MatchCollection matches = Regex.Matches (sb.ToString (), "Swift.UnsafeMutablePointer<.*>");
+		//		for (int i = 0; i < matches.Count; i++) {
+		//			var optionalSize = matches [i].Length;
+		//			// remove the last '>'
+		//			sb.Remove (matches [i].Index + matches [i].Length - 1, 1);
+		//			// insert ')' at the end
+		//			sb.Insert (matches [i].Index + matches [i].Length - 1, ')');
+
+		//			sb.Remove (matches [i].Index + 27, 1);
+		//			sb.Insert (matches [i].Index + 27, '(');
+
+		//			// delete the "Swift."
+		//			sb.Remove (matches [i].Index, 6);
+		//		}
+		//	}
+		//}
+
+		public static void FixBrackets (this StringBuilder sb)
+		{
+			if (sb == null)
+				return;
+			if (sb.ToString ().Contains ('<')) {
+				var matchesLessThan = Regex.Matches (sb.ToString (), "<");
+				for (int i = 0; i < matchesLessThan.Count; i++) {
+
+					var nextGreaterThan = Regex.Match (sb.ToString () [matchesLessThan [i].Index..], ">");
+					sb.Replace ('<', '(', matchesLessThan [i].Index, 1);
+					sb.Replace ('>', ')', matchesLessThan [i].Index + nextGreaterThan.Index, 1);
+				}
+			}
+		}
+
+
+
 		public static void CorrectSelf (this StringBuilder sb)
 		{
 			sb.Replace ("(0,0)A0", "Self");
 			sb.Replace ("(0,0)", "Self");
+
+			// For now, replace "(0,1)", "(1,0)", and "(1,1)"
+			sb.Replace ("(1,0)", "???");
+			sb.Replace ("(1,1)", "???");
+			sb.Replace ("(0,1)", "???");
 		}
 	}
 }

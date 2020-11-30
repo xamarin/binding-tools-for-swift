@@ -1,25 +1,19 @@
 <manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswift_Differentiation">
-    <Classes>
-    </Classes>
-    <Structs>
-    </Structs>
-    <Enums>
-    </Enums>
-    <Protocols>
-        <Protocol name="_Differentiation.Differentiable">
-            <Functions signature="func move(along: Self.TangentVector)"/>
-            <Functions signature="func zeroTangentVectorInitializer() -> Self.TangentVector"/>
-        </Protocol>
-        <Protocol name="_Differentiation._AnyDerivativeBox">
-            <Functions signature="func _adding_Differentiation._AnyDerivativeBox -> _Differentiation._AnyDerivativeBox"/>
-            <Functions signature="func _isEqual(to: _Differentiation._AnyDerivativeBox) -> Bool"/>
-            <Functions signature="func _isNotEqual(to: _Differentiation._AnyDerivativeBox) -> Bool"/>
-            <Functions signature="func _move(along: _Differentiation._AnyDerivativeBox)"/>
-            <Functions signature="func _subtracting_Differentiation._AnyDerivativeBox -> _Differentiation._AnyDerivativeBox"/>
-            <Functions signature="func _typeErasedBase() -> Swift.Any"/>
-            <Functions signature="func _unboxed(to: Meta ) -> Swift.Optional<(1,0)>"/>
-            <Functions signature="func _zero() -> _Differentiation._AnyDerivativeBox"/>
-        </Protocol>
-    </Protocols>
+	<Classes>
+	</Classes>
+	<Structs>
+		<Struct name="Swift.Array">
+		</Struct>
+		<Struct name="Swift.Double">
+		</Struct>
+		<Struct name="Swift.Float">
+		</Struct>
+		<Struct name="Swift.Float16">
+		</Struct>
+	</Structs>
+	<Enums>
+	</Enums>
+	<Protocols>
+	</Protocols>
 </Module>
