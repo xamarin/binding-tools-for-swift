@@ -1,11 +1,62 @@
 <manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftDarwin">
-    <Classes>
-    </Classes>
-    <Structs>
-    </Structs>
-    <Enums>
-    </Enums>
-    <Protocols>
-    </Protocols>
+	<Classes>
+	</Classes>
+	<Structs>
+		<Struct name="Darwin.DarwinBoolean">
+			<Property>
+				<name="boolValue">
+				<signature="var boolValue: Bool">
+				<Static="False">
+			</Property>
+			<Property>
+				<name="customMirror">
+				<signature="var customMirror: Swift.Mirror">
+				<Static="False">
+			</Property>
+			<Property>
+				<name="description">
+				<signature="var description: Swift.String">
+				<Static="False">
+			</Property>
+			<Method>
+				<name="==">
+				<signature="static func ==(Darwin.DarwinBoolean, Darwin.DarwinBoolean) -> Bool">
+				<isStatic="True">
+				<returnType="Bool">
+				<Parameters>
+					<Parameter="Darwin.DarwinBoolean">
+					<Parameter="Darwin.DarwinBoolean">
+				</Parameters>
+			</Method>
+		</Struct>
+	</Structs>
+	<Enums>
+		<Enum name="Darwin.MachErrorCode">
+			<Property>
+				<name="rawValue">
+				<signature="var rawValue: Swift.Int32">
+				<Static="False">
+			</Property>
+		</Enum>
+		<Enum name="Darwin.POSIXErrorCode">
+			<Property>
+				<name="ELAST">
+				<signature="static var ELAST: Darwin.POSIXErrorCode">
+				<Static="False">
+			</Property>
+			<Property>
+				<name="EWOULDBLOCK">
+				<signature="static var EWOULDBLOCK: Darwin.POSIXErrorCode">
+				<Static="False">
+			</Property>
+			<Property>
+				<name="rawValue">
+				<signature="var rawValue: Swift.Int32">
+				<Static="False">
+			</Property>
+		</Enum>
+	</Enums>
+	<Protocols>
+	</Protocols>
 </Module>

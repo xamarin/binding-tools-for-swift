@@ -1,28 +1,11 @@
 <manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftSwiftPrivateThreadExtras">
-    <Classes>
-        <Class name="SwiftPrivateThreadExtras._stdlib_Barrier">
-            <ClassConstructor name=".cctor"/>
-            <Constructors name=".ctor"/>
-            <Constructors name=".nctor"/>
-            <Destructors name=".dtor"/>
-            <Destructors name=".ndtor"/>
-            <Functions signature="func wait()"/>
-        </Class>
-    </Classes>
-    <Structs>
-        <Struct name="SwiftPrivateThreadExtras._stdlib_Barrier">
-            <ClassConstructor name=".cctor"/>
-            <Constructors name=".ctor"/>
-            <Constructors name=".nctor"/>
-            <Destructors name=".dtor"/>
-            <Destructors name=".ndtor"/>
-            <Functions signature="func wait()"/>
-        </Struct>
-    </Structs>
-    <Enums>
-        <Enum name="SwiftPrivateThreadExtras._stdlib_Barrier"/>
-    </Enums>
-    <Protocols>
-    </Protocols>
+	<Classes>
+	</Classes>
+	<Structs>
+	</Structs>
+	<Enums>
+	</Enums>
+	<Protocols>
+	</Protocols>
 </Module>

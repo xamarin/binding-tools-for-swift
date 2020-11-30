@@ -1,11 +1,18 @@
 <manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftSwiftPrivateLibcExtras">
-    <Classes>
-    </Classes>
-    <Structs>
-    </Structs>
-    <Enums>
-    </Enums>
-    <Protocols>
-    </Protocols>
+	<Classes>
+	</Classes>
+	<Structs>
+	</Structs>
+	<Enums>
+		<Enum name="SwiftPrivateLibcExtras.ProcessTerminationStatus">
+			<Property>
+				<name="description">
+				<signature="var description: Swift.String">
+				<Static="False">
+			</Property>
+		</Enum>
+	</Enums>
+	<Protocols>
+	</Protocols>
 </Module>

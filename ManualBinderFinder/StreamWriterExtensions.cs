@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using ManualBinderFinder.Models;
 using SwiftReflector.Inventory;
 
@@ -17,9 +18,9 @@ namespace ManualBinderFinder {
 			sw.WriteLevelTwoOpener ("Classes");
 			foreach (var c in classesList) {
 				sw.WriteLevelThreeOpener ("Class", c.Name.ToString ());
-				sw.WriteClassBasedClassConstructor (c);
-				sw.WriteClassBasedConstructor (c);
-				sw.WriteClassBasedDestructor (c);
+				//sw.WriteClassBasedClassConstructor (c);
+				//sw.WriteClassBasedConstructor (c);
+				//sw.WriteClassBasedDestructor (c);
 				sw.WriteClassBasedProperties (c);
 				sw.WriteClassBasedMethods (c);
 				sw.WriteLevelThreeCloser ("Class");
@@ -32,9 +33,9 @@ namespace ManualBinderFinder {
 			sw.WriteLevelTwoOpener ("Structs");
 			foreach (var s in structsList) {
 				sw.WriteLevelThreeOpener ("Struct", s.Name.ToString ());
-				sw.WriteClassBasedClassConstructor (s);
-				sw.WriteClassBasedConstructor (s);
-				sw.WriteClassBasedDestructor (s);
+				//sw.WriteClassBasedClassConstructor (s);
+				//sw.WriteClassBasedConstructor (s);
+				//sw.WriteClassBasedDestructor (s);
 				sw.WriteClassBasedProperties (s);
 				sw.WriteClassBasedMethods (s);
 				sw.WriteLevelThreeCloser ("Struct");
@@ -101,11 +102,11 @@ namespace ManualBinderFinder {
 			propertiesList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name, type2.Name));
 
 			foreach (var property in propertiesList) {
-				sw.WriteLine ($"			<Property>");
-				sw.WriteLine ($"				<name=\"{property.Name}\">");
-				sw.WriteLine ($"				<signature=\"{property.Signature}\">");
-				sw.WriteLine ($"				<Static=\"{property.IsStatic.ToString ()}\">");
-				sw.WriteLine ($"			</Property>");
+				sw.WriteLine ($"{IndentLevel (3)}<Property>");
+				sw.WriteLine ($"{IndentLevel (4)}<name=\"{property.Name}\">");
+				sw.WriteLine ($"{IndentLevel (4)}<signature=\"{property.Signature}\">");
+				sw.WriteLine ($"{IndentLevel (4)}<Static=\"{property.IsStatic.ToString ()}\">");
+				sw.WriteLine ($"{IndentLevel (3)}</Property>");
 			}
 		}
 
@@ -114,22 +115,51 @@ namespace ManualBinderFinder {
 			var classFunctionSignatures = new List<ClassInfo> ();
 			foreach (var functions in c.Methods.Values) {
 				var classInfo = new ClassInfo ();
+
+				// for debugging purposes!
+				var signature = functions.Functions [0].Signature.ToString ();
+
 				var sig = StringBuiderHelper.EnhanceMethodSignature (functions.Functions [0].Signature.ToString (), false);
 				if (sig != null) {
 					classInfo.Signature = sig;
 					classInfo.Name = functions.Name.ToString ();
 					classInfo.IsStatic = false;
+
+					// not able to access Parameters.Contents
+					// we can parse the signature string to grab the parameters
+					classInfo.Parameters = StringBuiderHelper.ParseParameters (sig);
+					if (functions.Functions [0].Signature.ReturnType != null)
+						classInfo.ReturnType = functions.Functions [0].Signature.ReturnType.ToString ();
+					else
+						classInfo.ReturnType = "null";
+
 					classFunctionSignatures.Add (classInfo);
 				}
 			}
 			foreach (var functions in c.StaticFunctions.Values) {
 				var classInfo = new ClassInfo ();
+
+				// for debugging purposes!
+				var signature = functions.Functions [0].Signature.ToString ();
+
 				var sig = StringBuiderHelper.EnhanceMethodSignature (functions.Functions [0].Signature.ToString (), true);
 				if (sig != null) {
 					classInfo.Signature = sig;
 					classInfo.Name = functions.Name.ToString ();
 					classInfo.IsStatic = true;
+
+					// not able to access Parameters.Contents
+					// we can parse the signature string to grab the parameters
+					classInfo.Parameters = StringBuiderHelper.ParseParameters (sig);
+					//classInfo.ReturnType = functions.Functions [0].Signature.ReturnType.ToString ();
+
+					if (functions.Functions [0].Signature.ReturnType != null)
+						classInfo.ReturnType = functions.Functions [0].Signature.ReturnType.ToString ();
+					else
+						classInfo.ReturnType = "null";
+
 					classFunctionSignatures.Add (classInfo);
+					
 				}
 			}
 
@@ -137,11 +167,22 @@ namespace ManualBinderFinder {
 			var lastWrittenClassSignature = string.Empty;
 			foreach (var classInfo in classFunctionSignatures) {
 				if (classInfo.Signature != lastWrittenClassSignature) {
-					sw.WriteLine ($"			<Method>");
-					sw.WriteLine ($"				<name=\"{classInfo.Name}\">");
-					sw.WriteLine ($"				<signature=\"{classInfo.Signature}\">");
-					sw.WriteLine ($"				<isStatic=\"{classInfo.IsStatic.ToString ()}\">");
-					sw.WriteLine ($"			</Method>");
+					sw.WriteLine ($"{IndentLevel (3)}<Method>");
+					sw.WriteLine ($"{IndentLevel (4)}<name=\"{classInfo.Name}\">");
+					sw.WriteLine ($"{IndentLevel (4)}<signature=\"{classInfo.Signature}\">");
+					sw.WriteLine ($"{IndentLevel (4)}<isStatic=\"{classInfo.IsStatic.ToString ()}\">");
+					sw.WriteLine ($"{IndentLevel (4)}<returnType=\"{classInfo.ReturnType}\">");
+					sw.WriteLine ($"{IndentLevel (4)}<Parameters>");
+
+					if (classInfo.Parameters != null) {
+						foreach (var parameter in classInfo.Parameters) {
+							sw.WriteLine ($"{IndentLevel (5)}<Parameter=\"{parameter}\">");
+						}
+					}
+					
+					sw.WriteLine ($"{IndentLevel (4)}</Parameters>");
+
+					sw.WriteLine ($"{IndentLevel (3)}</Method>");
 				}
 				lastWrittenClassSignature = classInfo.Signature;
 			}
@@ -156,8 +197,10 @@ namespace ManualBinderFinder {
 				if (sig != null) {
 					protocolInfo.Signature = sig;
 					protocolInfo.Name = f.Signature.Name.ToString ();
-					// Need to check for static
+					// Need to check for static. IsStatic is not accessible
 					protocolInfo.IsStatic = false;
+					//var newF = (SwiftReflector.SwiftPropertyType)f.Signature;
+					//protocolInfo.IsStatic = newF.IsStatic;
 					protocolFunctionSignatures.Add (protocolInfo);
 				}
 			}
@@ -166,11 +209,11 @@ namespace ManualBinderFinder {
 			var lastWrittenProtocolSignature = string.Empty;
 			foreach (var protocolInfo in protocolFunctionSignatures) {
 				if (protocolInfo.Signature != lastWrittenProtocolSignature) {
-					sw.WriteLine ($"			<Method>");
-					sw.WriteLine ($"				<name=\"{protocolInfo.Name}\">");
-					sw.WriteLine ($"				<signature=\"{protocolInfo.Signature}\">");
-					sw.WriteLine ($"				<isStatic=\"{protocolInfo.IsStatic.ToString ()}\">");
-					sw.WriteLine ($"			</Method>");
+					sw.WriteLine ($"{IndentLevel (3)}<Method>");
+					sw.WriteLine ($"{IndentLevel (4)}<name=\"{protocolInfo.Name}\">");
+					sw.WriteLine ($"{IndentLevel (4)}<signature=\"{protocolInfo.Signature}\">");
+					sw.WriteLine ($"{IndentLevel (4)}<isStatic=\"{protocolInfo.IsStatic.ToString ()}\">");
+					sw.WriteLine ($"{IndentLevel (3)}</Method>");
 				}
 				lastWrittenProtocolSignature = protocolInfo.Signature;
 			}
@@ -179,42 +222,51 @@ namespace ManualBinderFinder {
 		public static void WriteClassBasedClassConstructor (this StreamWriter sw, ClassContents c)
 		{
 			foreach (var classConstructor in c.ClassConstructor.Names) {
-				sw.WriteLine ($"			<ClassConstructor name=\"{classConstructor}\"/>");
+				sw.WriteLine ($"{IndentLevel (3)}<ClassConstructor name=\"{classConstructor}\"/>");
 			}
 		}
 
 		public static void WriteClassBasedConstructor (this StreamWriter sw, ClassContents c)
 		{
 			foreach (var constructor in c.Constructors.Names) {
-				sw.WriteLine ($"			<Constructor name=\"{constructor}\"/>");
+				sw.WriteLine ($"{IndentLevel (3)}<Constructor name=\"{constructor}\"/>");
 			}
 		}
 
 		public static void WriteClassBasedDestructor (this StreamWriter sw, ClassContents c)
 		{
 			foreach (var destructors in c.Destructors.Names) {
-				sw.WriteLine ($"			<Destructor name=\"{destructors}\"/>");
+				sw.WriteLine ($"{IndentLevel (3)}<Destructor name=\"{destructors}\"/>");
 			}
 		}
 
 		public static void WriteLevelTwoOpener (this StreamWriter sw, string type)
 		{
-			sw.WriteLine ($"	<{type}>");
+			sw.WriteLine ($"{IndentLevel (1)}<{type}>");
 		}
 
 		public static void WriteLevelTwoCloser (this StreamWriter sw, string type)
 		{
-			sw.WriteLine ($"	</{type}>");
+			sw.WriteLine ($"{IndentLevel (1)}</{type}>");
 		}
 
 		public static void WriteLevelThreeOpener (this StreamWriter sw, string type, string name)
 		{
-			sw.WriteLine ($"		<{type} name=\"{name}\">");
+			sw.WriteLine ($"{IndentLevel (2)}<{type} name=\"{name}\">");
 		}
 
 		public static void WriteLevelThreeCloser (this StreamWriter sw, string type)
 		{
-			sw.WriteLine ($"		</{type}>");
+			sw.WriteLine ($"{IndentLevel (2)}</{type}>");
+		}
+
+		public static string IndentLevel (int level)
+		{
+			var indentsSB = new StringBuilder ();
+			for (int i = 0; i < level; i++) {
+				indentsSB.Append ("\t");
+			}
+			return indentsSB.ToString ();
 		}
 		
 	}

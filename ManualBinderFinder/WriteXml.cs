@@ -11,9 +11,7 @@ namespace ManualBinderFinder {
 			List<ClassContents> enumsList = CheckInventory.GetEnums (mi);
 			List<ClassContents> structsList = CheckInventory.GetStructs (mi);
 			List<ProtocolContents> protocolList = CheckInventory.GetProtocols (mi);
-
 			WriteXmlFile (moduleName, classesList, enumsList, structsList, protocolList);
-
 		}
 
 		static void WriteXmlFile (string moduleName, List<ClassContents> classesList, List<ClassContents> enumsList, List<ClassContents> structsList, List<ProtocolContents> protocolsList)

@@ -25,6 +25,8 @@ namespace ManualBinderFinder {
 			sb.CorrectSelf ();
 			sb.Insert (0, "func ");
 			sb.CorrectOptionals ();
+			sb.FixBrackets ();
+			//sb.Replace ("Swift.", "");
 			if (isStatic)
 				sb.Insert (0, "static ");
 			return sb.ToString ();
@@ -41,11 +43,30 @@ namespace ManualBinderFinder {
 
 			sb.CorrectOptionals ();
 			sb.CorrectSelf ();
+			sb.FixBrackets ();
+			//sb.Replace ("Swift.", "");
 
 			if (isStatic)
 				sb.Insert (0, "static ");
 
 			return sb.ToString ();
+		}
+
+		public static string [] ParseParameters (string signature)
+		{
+			if (!signature.Contains("(") || !signature.Contains (")")) {
+				return null;
+			}
+			// find the parameters between the signature's parenthesis
+			var matchOpenParenthesis = Regex.Match (signature, @"\(");
+			var matchCloseParenthesis = Regex.Match (signature, @"\)");
+			var parametersString = signature[(matchOpenParenthesis.Index + 1)..matchCloseParenthesis.Index];
+
+			// split the parameters by commas
+			// this is splitting tuples as well
+			// can I look for commas not inside brackets? <>
+			var parameters = parametersString.Split (", ");
+			return parameters;
 		}
 	}
 }

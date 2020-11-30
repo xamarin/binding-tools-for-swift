@@ -1,11 +1,23 @@
 <manualbinderfinder version="1.011" encoding="UTF - 8">
 <Module name="libswiftDifferentiationUnittest">
-    <Classes>
-    </Classes>
-    <Structs>
-    </Structs>
-    <Enums>
-    </Enums>
-    <Protocols>
-    </Protocols>
+	<Classes>
+	</Classes>
+	<Structs>
+		<Struct name="DifferentiationUnittest.Tracked">
+			<Property>
+				<name="description">
+				<signature="var description: Swift.String">
+				<Static="False">
+			</Property>
+			<Property>
+				<name="value">
+				<signature="var value: Self">
+				<Static="False">
+			</Property>
+		</Struct>
+	</Structs>
+	<Enums>
+	</Enums>
+	<Protocols>
+	</Protocols>
 </Module>
