@@ -32,73 +32,48 @@ namespace ManualBinderFinder {
 		{
 			if (sb == null)
 				return;
-			if (sb.ToString ().Contains ("Optional")) {
-				MatchCollection matches = Regex.Matches (sb.ToString (), "Swift.Optional<Swift.*>");
-				for (int i = 0; i < matches.Count; i++) {
-					var optionalSize = matches [i].Length;
-					// remove the last '>'
-					sb.Remove (matches [i].Index + matches [i].Length - 1, 1);
-					// insert '?' at the end
-					sb.Insert (matches [i].Index + matches [i].Length - 1, "?");
-					// delete the 'Swift.Optional<Swift."
-					sb.Remove (matches [i].Index, 21);
-				}
 
-				MatchCollection matches2 = Regex.Matches (sb.ToString (), "Swift.Optional<.*>");
-				for (int i = 0; i < matches2.Count; i++) {
-					var optionalSize = matches2 [i].Length;
-					// remove the last '>'
-					sb.Remove (matches2 [i].Index + matches2 [i].Length - 1, 1);
-					// insert '?' at the end
-					sb.Insert (matches2 [i].Index + matches2 [i].Length - 1, "?");
-					// delete the 'Swift.Optional<"
-					sb.Remove (matches2 [i].Index, 15);
+			while (sb.ToString ().Contains ("Optional")) {
+				var match = Regex.Match (sb.ToString (), @"Swift\.Optional<");
+				// look for the respective closing bracket
+				var openBracketCount = 0;
+				var closingBracketIndex = 0;
+				for (int i = match.Index + match.Length; i < sb.ToString ().Length; i++) {
+					if (sb.ToString ()[i] == '<') {
+						openBracketCount++;
+						continue;
+					}
+					else if (sb.ToString ()[i] == '>') {
+						if (openBracketCount == 0) {
+							closingBracketIndex = i;
+							break;
+						}
+						openBracketCount--;
+					}
 				}
+				sb.Replace ('>', '?', closingBracketIndex, 1);
+				sb.Replace ("Swift.Optional<", "", match.Index, match.Length);
 			}
 		}
-
-
-		// Instead of doing this, remove all "Swift."
-		// and look for every '<' and find next '>' and replace with '(' and ')'
-
-		//public static void CorrectUnsafeMutablePointer (this StringBuilder sb)
-		//{
-		//	if (sb == null)
-		//		return;
-		//	if (sb.ToString ().Contains ("UnsafeMutablePointer")) {
-		//		MatchCollection matches = Regex.Matches (sb.ToString (), "Swift.UnsafeMutablePointer<.*>");
-		//		for (int i = 0; i < matches.Count; i++) {
-		//			var optionalSize = matches [i].Length;
-		//			// remove the last '>'
-		//			sb.Remove (matches [i].Index + matches [i].Length - 1, 1);
-		//			// insert ')' at the end
-		//			sb.Insert (matches [i].Index + matches [i].Length - 1, ')');
-
-		//			sb.Remove (matches [i].Index + 27, 1);
-		//			sb.Insert (matches [i].Index + 27, '(');
-
-		//			// delete the "Swift."
-		//			sb.Remove (matches [i].Index, 6);
-		//		}
-		//	}
-		//}
 
 		public static void FixBrackets (this StringBuilder sb)
 		{
 			if (sb == null)
 				return;
 			if (sb.ToString ().Contains ('<')) {
+				var firstOpenParenthesis = Regex.Match (sb.ToString (), @"\(");
 				var matchesLessThan = Regex.Matches (sb.ToString (), "<");
+				
 				for (int i = 0; i < matchesLessThan.Count; i++) {
-
+					if (matchesLessThan[i].Index < firstOpenParenthesis.Index) {
+						continue;
+					}
 					var nextGreaterThan = Regex.Match (sb.ToString () [matchesLessThan [i].Index..], ">");
 					sb.Replace ('<', '(', matchesLessThan [i].Index, 1);
 					sb.Replace ('>', ')', matchesLessThan [i].Index + nextGreaterThan.Index, 1);
 				}
 			}
 		}
-
-
 
 		public static void CorrectSelf (this StringBuilder sb)
 		{

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -52,20 +54,62 @@ namespace ManualBinderFinder {
 			return sb.ToString ();
 		}
 
-		public static string [] ParseParameters (string signature)
+		public static List<string> ParseParameters (string signature)
 		{
-			if (!signature.Contains("(") || !signature.Contains (")")) {
+			if (!signature.Contains ("(") || !signature.Contains (")")) {
 				return null;
 			}
-			// find the parameters between the signature's parenthesis
-			var matchOpenParenthesis = Regex.Match (signature, @"\(");
-			var matchCloseParenthesis = Regex.Match (signature, @"\)");
-			var parametersString = signature[(matchOpenParenthesis.Index + 1)..matchCloseParenthesis.Index];
 
-			// split the parameters by commas
-			// this is splitting tuples as well
-			// can I look for commas not inside brackets? <>
-			var parameters = parametersString.Split (", ");
+			if (signature.Contains ("withUnsafeMutablePointers")) {
+				Console.Write ("hi");
+			}
+
+			// look for the closing parenthesis for the first opening parenthesis
+			var matchOpenParenthesis = Regex.Matches (signature, @"\(");
+			var matchCloseParenthesis = Regex.Matches (signature, @"\)");
+			if (matchCloseParenthesis.Count == 0)
+				return null;
+
+			var selectedClose = 0;
+			if (matchOpenParenthesis.Count > 1) {
+				for (int i = 1; i < matchOpenParenthesis.Count; i++) {
+					if (matchOpenParenthesis [i].Index < matchCloseParenthesis [selectedClose].Index) {
+						selectedClose++;
+					}
+				}
+			}
+			var parametersString = signature [(matchOpenParenthesis [0].Index + 1)..matchCloseParenthesis [selectedClose].Index];
+			if (parametersString == "") {
+				return null;
+			}
+
+			List<string> parameters = new List<string> ();
+			StringBuilder parameter = new StringBuilder ();
+			int openedCount = 0;
+			for (int i = 0; i < parametersString.Length; i++) {
+				switch (parametersString [i]) {
+				case '(':
+					parameter.Append (parametersString [i]);
+					openedCount++;
+					break;
+				case ')':
+					parameter.Append (parametersString [i]);
+					openedCount--;
+					break;
+				case ',':
+					if (openedCount == 0) {
+						parameters.Add (parameter.ToString ());
+						parameter.Clear ();
+						i++;
+					}
+					break;
+				default:
+					parameter.Append (parametersString [i]);
+					break;
+				}
+			}
+			parameters.Add (parameter.ToString ());
+
 			return parameters;
 		}
 	}

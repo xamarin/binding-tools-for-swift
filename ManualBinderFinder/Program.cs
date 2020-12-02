@@ -25,8 +25,8 @@ namespace ManualBinderFinder {
 			//	return;
 			//}
 
-			options.platform = "iphoneos";
-			options.architecture = "arm64";
+			//options.platform = "iphoneos";
+			//options.architecture = "arm64";
 
 			if (string.IsNullOrEmpty (options.platform)) {
 				options.platform = "all";
@@ -49,17 +49,19 @@ namespace ManualBinderFinder {
 			Console.WriteLine (bashString);
 			var libraries = GetLibraries (bashString);
 
-			foreach (var lib in libraries) {
-				if (string.IsNullOrEmpty (lib.Value))
-					continue;
-				try {
-					var errors = new ErrorHandling ();
-					var mi = ModuleInventory.FromFile (lib.Value, errors);
-					WriteXml.CreateXmlFile (lib.Key, mi);
-				} catch (Exception e) {
-					Console.WriteLine ($"Could not create xml for {lib.Key} - {lib.Value}. {e.Message}");
-				}
-			}
+			WriteXml.CreateXmlFile (libraries);
+
+			//foreach (var lib in libraries) {
+			//	if (string.IsNullOrEmpty (lib.Value))
+			//		continue;
+			//	try {
+			//		var errors = new ErrorHandling ();
+			//		var mi = ModuleInventory.FromFile (lib.Value, errors);
+			//		WriteXml.CreateXmlFile (lib.Key, mi);
+			//	} catch (Exception e) {
+			//		Console.WriteLine ($"Could not create xml for {lib.Key} - {lib.Value}. {e.Message}");
+			//	}
+			//}
 		}
 
 		static string BuildBashString (string name, string platform, string architecture)
