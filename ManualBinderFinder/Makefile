@@ -13,4 +13,6 @@ create-dlls:
 	@mono Program.exe $(addprefix --library=, $(MANUAL_BINDER_FINDER_LIBRARIES))
 
 compile:
-	@csc *.cs -r:Mono.Options.dll -r:SwiftRuntimeLibrary.dll -r:SwiftReflector.dll -r:Dynamo.dll
+	dotnet build
+	dotnet publish --runtime osx.10.15-x64 --self-contained true
+	
