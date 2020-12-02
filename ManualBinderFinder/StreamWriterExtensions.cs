@@ -45,6 +45,7 @@ namespace ManualBinderFinder {
 		{
 			// not sure how to find swift version
 			Indent ();
+			sw.WriteLineWithIndent ($"<!-- swiftVersion not yet found -->");
 			sw.WriteLineWithIndent ($"<Module name=\"{moduleName}\" swiftVersion=\"??\">");
 		}
 
@@ -178,7 +179,21 @@ namespace ManualBinderFinder {
 					sw.WriteLineWithIndent ($"<name=\"{property.Name.ToString ()}\">");
 					//sw.WriteLineWithIndent ($"<accessibility=\"{property.}\">");
 					//sw.WriteLineWithIndent ($"<signature=\"{sig}\">");
-					sw.WriteLineWithIndent ($"<Static=\"{getter.IsStatic.ToString ()}\">");
+					sw.WriteLineWithIndent ($"<isStatic=\"{getter.IsStatic.ToString ()}\">");
+					
+
+					// can check if property is public or private but do not see Internal or Open options
+					var isPublic = getter.IsPublic ? true : false;
+					sw.WriteLineWithIndent ($"<accessibility=\"{isPublic.ToString ()}\">");
+
+					sw.WriteLineWithIndent ($"<!-- property elements not yet found -->");
+					
+					sw.WriteLineWithIndent ($"<isDeprecated=\"False\">");
+					sw.WriteLineWithIndent ($"<isUnavailable=\"False\">");
+					sw.WriteLineWithIndent ($"<isOptional=\"False\">");
+					sw.WriteLineWithIndent ($"<type=\"Named\">");
+					sw.WriteLineWithIndent ($"<storage=\"Addressed\">");
+					
 					Exdent ();
 					sw.WriteLineWithIndent ($"</property>");
 				}
@@ -214,24 +229,33 @@ namespace ManualBinderFinder {
 							sw.WriteLineWithIndent ($"<returnType=\"{returnSB.ToString ()}\">");
 						}
 
-						
-						try {
-							var parameters = StringBuiderHelper.ParseParameters (enhancedSignature);
-							if (parameters != null) {
-								sw.WriteLineWithIndent ($"<parameterlist>");
-								Indent ();
-								foreach (var parameter in parameters) {
-									sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\">");
-								}
-								Exdent ();
-								sw.WriteLineWithIndent ($"</parameterlist>");
+						var parameters = StringBuiderHelper.ParseParameters (enhancedSignature);
+						if (parameters != null) {
+							sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
+							Indent ();
+							foreach (var parameter in parameters) {
+								sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
+								sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\" privateName=\"\" isVariadic=\"{signature.IsVariadic.ToString ()}\">");
 							}
-						}
-						catch (Exception) {
-							Console.WriteLine ("Exception");
+							Exdent ();
+							sw.WriteLineWithIndent ($"</parameterlist>");
 						}
 
-						
+						sw.WriteLineWithIndent ($"<!-- class func elements not yet found -->");
+						sw.WriteLineWithIndent ($"<accessibility=\"Public\">");
+						sw.WriteLineWithIndent ($"<isProperty=\"False\">");
+						sw.WriteLineWithIndent ($"<isFinal=\"False\">");
+						sw.WriteLineWithIndent ($"<isDeprecated=\"False\">");
+						sw.WriteLineWithIndent ($"<isUnavailable=\"False\">");
+						sw.WriteLineWithIndent ($"<isOptional=\"False\">");
+						// there is an IsOptionalConstructor in the signature?
+						sw.WriteLineWithIndent ($"<isRequired=\"False\">");
+						sw.WriteLineWithIndent ($"<isConvenienceInit=\"False\">");
+
+						sw.WriteLineWithIndent ($"<!-- class func elements still working on -->");
+						sw.WriteLineWithIndent ($"<objcSelector=\"\">");
+						//objcSelector - a string representing the ObjC selector for the function
+
 						Exdent ();
 						sw.WriteLineWithIndent ($"</func>");
 					}
@@ -257,22 +281,40 @@ namespace ManualBinderFinder {
 					sw.WriteLineWithIndent ($"<signature=\"{enhancedSignature}\">");
 					
 					sw.WriteLineWithIndent ($"<isStatic=\"{CheckStaticProtocolMethod (protocol)}\">");
-					try {
-						var parameters = StringBuiderHelper.ParseParameters (enhancedSignature);
-						if (parameters != null) {
-							sw.WriteLineWithIndent ($"<parameterlist>");
-							Indent ();
-							foreach (var parameter in parameters) {
-								sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\">");
-							}
-							Exdent ();
-							sw.WriteLineWithIndent ($"</parameterlist>");
+					var parameters = StringBuiderHelper.ParseParameters (enhancedSignature);
+					if (parameters != null) {
+						sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
+						Indent ();
+						foreach (var parameter in parameters) {
+							sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
+							sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\"> isVariadic=\"{protocol.Signature.IsVariadic.ToString ()}\"");
 						}
+						Exdent ();
+						sw.WriteLineWithIndent ($"</parameterlist>");
 					}
-					catch (Exception) {
-						Console.WriteLine ("Exception");
+					if (protocol.Signature.ReturnType != null) {
+						var returnSB = new StringBuilder (protocol.Signature.ReturnType.ToString ());
+						returnSB.CorrectSelf ();
+						sw.WriteLineWithIndent ($"<returnType=\"{returnSB.ToString ()}\">");
 					}
-					
+					sw.WriteLineWithIndent ($"<hasThrows=\"{protocol.Signature.CanThrow.ToString ()}\">");
+
+					sw.WriteLineWithIndent ($"<!-- protocol func elements not yet found -->");
+					sw.WriteLineWithIndent ($"<accessibility=\"Public\">");
+					sw.WriteLineWithIndent ($"<isProperty=\"False\">");
+					sw.WriteLineWithIndent ($"<isFinal=\"False\">");
+					sw.WriteLineWithIndent ($"<isDeprecated=\"False\">");
+					sw.WriteLineWithIndent ($"<isUnavailable=\"False\">");
+					sw.WriteLineWithIndent ($"<isOptional=\"False\">");
+						// there is an IsOptionalConstructor in the signature?
+					sw.WriteLineWithIndent ($"<isRequired=\"False\">");
+					sw.WriteLineWithIndent ($"<isConvenienceInit=\"False\">");
+
+					sw.WriteLineWithIndent ($"<!-- protocol func elements still working on -->");
+					sw.WriteLineWithIndent ($"<objcSelector=\"\">");
+						//objcSelector - a string representing the ObjC selector for the function
+
+
 					Exdent ();
 					sw.WriteLineWithIndent ($"</func>");
 				}
