@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace ManualBinderFinder {
+namespace BindingNemo {
     public static class Shell {
         public static string RunBash (string script)
         {

@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Text;
 
-namespace ManualBinderFinder {
+namespace BindingNemo {
 	class Program {
 		static void Main (string [] args)
 		{
-			ManualBinderFinderOptions options = new ManualBinderFinderOptions ();
+			BindingNemoOptions options = new BindingNemoOptions ();
 			var extra = options.optionsSet.Parse (args);
 			//options.dylibLibraryList = new List<string> () { "libswiftCore" };
 
@@ -80,10 +80,10 @@ namespace ManualBinderFinder {
 
 			if (architecture == "all") {
 				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
-				return $"find ../../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
+				return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
 			} else {
 				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
-				return $"find ../../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
+				return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace ManualBinderFinder {
 		{
 			Dictionary<string, string> libraries = new Dictionary<string, string> ();
 			var shellOutput = Shell.RunBash (bashString);
-			var libraryPaths = shellOutput.Split (Environment.NewLine);
+			var libraryPaths = shellOutput.Split ('\n');
 
 			foreach (var lib in libraryPaths) {
 				// Question for Steve, are the dylibs different for different architectures & platforms

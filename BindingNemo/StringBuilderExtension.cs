@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ManualBinderFinder {
+namespace BindingNemo {
 	public static class StringBuilderExtension {
 		public static void RemoveDuplicateConsecutiveWords (this StringBuilder sb)
 		{
@@ -60,7 +60,7 @@ namespace ManualBinderFinder {
 		{
 			if (sb == null)
 				return;
-			if (sb.ToString ().Contains ('<')) {
+			if (sb.ToString ().Contains ("<")) {
 				var firstOpenParenthesis = Regex.Match (sb.ToString (), @"\(");
 				var matchesLessThan = Regex.Matches (sb.ToString (), "<");
 				
@@ -68,7 +68,8 @@ namespace ManualBinderFinder {
 					if (matchesLessThan[i].Index < firstOpenParenthesis.Index) {
 						continue;
 					}
-					var nextGreaterThan = Regex.Match (sb.ToString () [matchesLessThan [i].Index..], ">");
+					var nextGreaterThan = Regex.Match (sb.ToString ().Substring(matchesLessThan [i].Index), ">");
+					//var nextGreaterThan = Regex.Match (sb.ToString ()., ">");
 					sb.Replace ('<', '(', matchesLessThan [i].Index, 1);
 					sb.Replace ('>', ')', matchesLessThan [i].Index + nextGreaterThan.Index, 1);
 				}
