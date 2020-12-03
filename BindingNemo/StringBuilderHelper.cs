@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ManualBinderFinder {
+namespace BindingNemo {
 	public class StringBuiderHelper {
 		public static string EnhanceMethodSignature (string signature, bool isStatic)
 		{
@@ -60,10 +60,6 @@ namespace ManualBinderFinder {
 				return null;
 			}
 
-			if (signature.Contains ("withUnsafeMutablePointers")) {
-				Console.Write ("hi");
-			}
-
 			// look for the closing parenthesis for the first opening parenthesis
 			var matchOpenParenthesis = Regex.Matches (signature, @"\(");
 			var matchCloseParenthesis = Regex.Matches (signature, @"\)");
@@ -78,7 +74,7 @@ namespace ManualBinderFinder {
 					}
 				}
 			}
-			var parametersString = signature [(matchOpenParenthesis [0].Index + 1)..matchCloseParenthesis [selectedClose].Index];
+			string parametersString = signature.Substring((matchOpenParenthesis [0].Index + 1),matchCloseParenthesis [selectedClose].Index - (matchOpenParenthesis [0].Index + 1));
 			if (parametersString == "") {
 				return null;
 			}

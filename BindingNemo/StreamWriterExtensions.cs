@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ManualBinderFinder.Models;
 using SwiftReflector.Inventory;
 
-namespace ManualBinderFinder {
+namespace BindingNemo {
 	public static class StreamWriterExtensions {
 
 		public static int IndentLevel { get; set; }
@@ -34,7 +33,7 @@ namespace ManualBinderFinder {
 
 		public static void WriteXmlIntro (this StreamWriter sw, string version)
 		{
-			sw.WriteLineWithIndent ($"<ManualBinderFinder version=\"{version}\" encoding=\"UTF-8\">");
+			sw.WriteLineWithIndent ($"<BindingNemo version=\"{version}\" encoding=\"UTF-8\">");
 			sw.WriteLineWithIndent ($"<xamreflect version=\"{version}\">");
 			Indent ();
 			sw.WriteLineWithIndent ($"<modulelist>");

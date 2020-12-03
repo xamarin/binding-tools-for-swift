@@ -1,4 +1,4 @@
-<manualbinderfinder version="1.011" encoding="UTF - 8">
+<?xml version="1.0" encoding="UTF - 8">
 <Module name="libswiftFoundation">
 	<Classes>
 		<Class name="Foundation.Data.RangeReference">

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SwiftReflector.Inventory;
 
-namespace ManualBinderFinder {
+namespace BindingNemo {
 	public class CheckInventory {
 		public static List<ClassContents> GetClasses (ModuleInventory mi)
 		{

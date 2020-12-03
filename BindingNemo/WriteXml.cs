@@ -4,15 +4,15 @@ using System.IO;
 using SwiftReflector;
 using SwiftReflector.Inventory;
 
-namespace ManualBinderFinder {
+namespace BindingNemo {
 	public class WriteXml {
 		//public static void CreateXmlFile (string moduleName, ModuleInventory mi)
 		public static void CreateXmlFile (Dictionary <string, string> libraries)
 		{
 			var version = "1.0";
 
-			using (StreamWriter sw = new StreamWriter ($"../../../Modules/modules.xml")) {
-			//using (StreamWriter sw = new StreamWriter ($"./Modules/{moduleName}.xml")) {
+			using (StreamWriter sw = new StreamWriter ($"../../Modules/modules.xml")) {
+			//using (StreamWriter sw = new StreamWriter ($"./Modules/modules.xml")) {
 				sw.WriteXmlIntro (version);
 
 				foreach (var lib in libraries) {

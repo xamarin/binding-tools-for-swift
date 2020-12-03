@@ -4,8 +4,8 @@ using System.IO;
 using System.Reflection;
 using Mono.Options;
 
-namespace ManualBinderFinder {
-    public class ManualBinderFinderOptions {
+namespace BindingNemo {
+    public class BindingNemoOptions {
 
         public OptionSet optionsSet { get; set; }
         public List<string> dylibLibraryList { get; set; }
@@ -36,7 +36,7 @@ namespace ManualBinderFinder {
             "i386",
         };
 
-        public ManualBinderFinderOptions ()
+        public BindingNemoOptions ()
         {
 
             dylibLibraryList = new List<string>();

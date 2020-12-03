@@ -1,5 +1,5 @@
 ﻿using System;
-namespace ManualBinderFinder {
+namespace BindingNemo {
 	public class enums {
 		public enum Accessibility {
 			Public,
