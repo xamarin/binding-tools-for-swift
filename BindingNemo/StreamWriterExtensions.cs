@@ -57,18 +57,18 @@ namespace BindingNemo {
 			sw.WriteTypeDeclarationOpener ("class", enums.Accessibility.Public, false, false, false, false);
 
 			Indent ();
-			sw.WriteLevelThreeOpener ("innerclasses");
+			sw.WriteBasicOpener ("innerclasses");
 			Indent ();
 			foreach (var c in classesList) {
-				sw.WriteLevelFourOpener ("Class", c.Name.ToString ());
+				sw.WriteBasicOpenerWithName ("Class", c.Name.ToString ());
 				Indent ();
 				sw.WriteClassBasedProperties (c);
 				sw.WriteClassBasedMethods (c);
 				Exdent ();
-				sw.WriteLevelFourCloser ("Class");
+				sw.WriteBasicCloser ("Class");
 			}
 			Exdent ();
-			sw.WriteLevelThreeCloser ("innerclasses");
+			sw.WriteBasicCloser ("innerclasses");
 			Exdent ();
 			sw.WriteTypeDeclarationCloser ();
 			Exdent ();
@@ -107,18 +107,18 @@ namespace BindingNemo {
 			Indent ();
 			sw.WriteTypeDeclarationOpener ("enum", enums.Accessibility.Public, false, false, false, false);
 			Indent ();
-			sw.WriteLevelThreeOpener ("innerenums");
+			sw.WriteBasicOpener ("innerenums");
 			Indent ();
 			foreach (var e in enumsList) {
-				sw.WriteLevelFourOpener ("Enum", e.Name.ToString ());
+				sw.WriteBasicOpenerWithName ("Enum", e.Name.ToString ());
 				Indent ();
 				sw.WriteClassBasedProperties (e);
 				sw.WriteClassBasedMethods (e);
 				Exdent ();
-				sw.WriteLevelFourCloser ("Enum");
+				sw.WriteBasicCloser ("Enum");
 			}
 			Exdent ();
-			sw.WriteLevelThreeCloser ("innerenums");
+			sw.WriteBasicCloser ("innerenums");
 			Exdent ();
 			sw.WriteTypeDeclarationCloser ();
 			Exdent ();
@@ -132,17 +132,17 @@ namespace BindingNemo {
 			Indent ();
 			sw.WriteTypeDeclarationOpener ("protocol", enums.Accessibility.Public, false, false, false, false);
 			Indent ();
-			sw.WriteLevelThreeOpener ("innerprotocols");
+			sw.WriteBasicOpener ("innerprotocols");
 			Indent ();
 			foreach (var p in protocolsList) {
-				sw.WriteLevelFourOpener ("Protocol", p.Name.ToString ());
+				sw.WriteBasicOpenerWithName ("Protocol", p.Name.ToString ());
 				Indent ();
 				sw.WriteProtocolBasedMethods (p);
 				Exdent ();
-				sw.WriteLevelThreeCloser ("Protocol");
+				sw.WriteBasicCloser ("Protocol");
 			}
 			Exdent ();
-			sw.WriteLevelThreeCloser ("innerprotocols");
+			sw.WriteBasicCloser ("innerprotocols");
 			Exdent ();
 			sw.WriteTypeDeclarationCloser ();
 			Exdent ();
@@ -372,24 +372,19 @@ namespace BindingNemo {
 			sw.WriteLineWithIndent ($"</typedeclaration>");
 		}
 
-		public static void WriteLevelThreeOpener (this StreamWriter sw, string type)
+		public static void WriteBasicOpener (this StreamWriter sw, string type)
 		{
 			sw.WriteLineWithIndent ($"<{type}>");
 		}
 
-		public static void WriteLevelThreeCloser (this StreamWriter sw, string type)
+		public static void WriteBasicCloser (this StreamWriter sw, string type)
 		{
 			sw.WriteLineWithIndent ($"</{type}>");
 		}
 
-		public static void WriteLevelFourOpener (this StreamWriter sw, string type, string name)
+		public static void WriteBasicOpenerWithName (this StreamWriter sw, string type, string name)
 		{
 			sw.WriteLineWithIndent ($"<{type} name=\"{name}\">");
-		}
-
-		public static void WriteLevelFourCloser (this StreamWriter sw, string type)
-		{
-			sw.WriteLineWithIndent ($"</{type}>");
 		}
 
 
