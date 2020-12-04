@@ -32,6 +32,9 @@ namespace BindingNemo {
 		{
 			if (sb == null)
 				return;
+			if (sb.ToString ().Contains ("Swift.Optional<(Self.Element")) {
+				Console.Write ("");
+			}
 
 			while (sb.ToString ().Contains ("Optional")) {
 				var match = Regex.Match (sb.ToString (), @"Swift\.Optional<");
@@ -85,6 +88,18 @@ namespace BindingNemo {
 			sb.Replace ("(1,0)", "???");
 			sb.Replace ("(1,1)", "???");
 			sb.Replace ("(0,1)", "???");
+		}
+
+		public static void EscapeCharactersName (this StringBuilder sb)
+		{
+			if (sb == null)
+				return;
+
+			sb.Replace ("&", "&amp;", 0, sb.ToString().Length);
+			sb.Replace ("<", "&lt;", 0, sb.ToString ().Length);
+			sb.Replace (">", "&gt;", 0, sb.ToString ().Length);
+			sb.Replace ("\"", "&quot;", 0, sb.ToString ().Length);
+			sb.Replace ("\'", "&apos;", 0, sb.ToString ().Length);
 		}
 	}
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BindingNemo {
-	public class StringBuiderHelper {
+	public class StringBuilderHelper {
 		public static string EnhanceMethodSignature (string signature, bool isStatic)
 		{
 			if (string.IsNullOrEmpty (signature) || signature.Contains ("_"))
@@ -50,6 +50,26 @@ namespace BindingNemo {
 
 			if (isStatic)
 				sb.Insert (0, "static ");
+
+			return sb.ToString ();
+		}
+
+		public static string EnhanceReturn (string returnSignature)
+		{
+			if (string.IsNullOrEmpty (returnSignature) || returnSignature.Contains ("_"))
+				return null;
+			else if (returnSignature == "()")
+				return "";
+			
+			StringBuilder sb = new StringBuilder (returnSignature);
+			sb.CorrectSelf ();
+			
+			sb.Replace ("(", "( ");
+			sb.RemoveDuplicateConsecutiveWords ();
+			// fix the spacing we added
+			sb.Replace ("( ", "(");
+			sb.CorrectOptionals ();
+			sb.FixBrackets ();
 
 			return sb.ToString ();
 		}

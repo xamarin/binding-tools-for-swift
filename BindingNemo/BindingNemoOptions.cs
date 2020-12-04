@@ -38,7 +38,6 @@ namespace BindingNemo {
 
         public BindingNemoOptions ()
         {
-
             dylibLibraryList = new List<string>();
 
             // create an option set that will be used to parse the different
