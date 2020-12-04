@@ -13,55 +13,39 @@ namespace BindingNemo {
 		{
 			BindingNemoOptions options = new BindingNemoOptions ();
 			var extra = options.optionsSet.Parse (args);
-			//options.dylibLibraryList = new List<string> () { "libswiftCore" };
 
 			if (options.PrintHelp) {
 				options.PrintUsage (Console.Out);
 				return;
 			}
 
-			//if (options.dylibLibraryList.Count == 0){
-			//	Console.WriteLine ("library is empty. Try --library=<dylib name>");
-			//	return;
-			//}
-
 			//options.platform = "iphoneos";
 			//options.architecture = "arm64";
+			Console.WriteLine ($"Before Option.platform = {options.platform}");
+			Console.WriteLine ($"Before Option.architecture = {options.architecture}");
 
 			if (string.IsNullOrEmpty (options.platform)) {
 				options.platform = "all";
 			} else if (!options.validPlatform.Contains (options.platform.ToLower ())) {
-				Console.WriteLine ("Platform was not recognized");
+				Console.WriteLine ("Platform was not recognized. Use {all, clang, watchos, iphoneos, iphonesimulator, watchsimulator, appletvsimulator, appletvos, macosx}");
 				return;
 			}
 
 			if (string.IsNullOrEmpty (options.architecture)) {
 				options.architecture = "all";
 			} else if (!options.validArchitecture.Contains (options.architecture.ToLower ())) {
-				Console.WriteLine ("Architecture was not recognized");
+				Console.WriteLine ("Architecture was not recognized. Use {all, arm64, arm64e, armv7, x86_64, i386}");
 				return;
 			}
 
-			Console.WriteLine ($"{options.platform}");
-			Console.WriteLine ($"{options.architecture}");
+			Console.WriteLine ($"After Option.platform = {options.platform}");
+			Console.WriteLine ($"After Option.architecture = {options.architecture}");
 
 			string bashString = BuildBashString ("all", options.platform, options.architecture);
 			Console.WriteLine (bashString);
 			var libraries = GetLibraries (bashString);
 
 			WriteXml.CreateXmlFile (libraries);
-
-			//foreach (var lib in libraries) {
-			//	if (string.IsNullOrEmpty (lib.Value))
-			//		continue;
-			//	try {
-			//		var errors = new ErrorHandling ();
-			//		var mi = ModuleInventory.FromFile (lib.Value, errors);
-			//		WriteXml.CreateXmlFile (lib.Key, mi);
-			//	} catch (Exception e) {
-			//		Console.WriteLine ($"Could not create xml for {lib.Key} - {lib.Value}. {e.Message}");
-			//	}
-			//}
 		}
 
 		static string BuildBashString (string name, string platform, string architecture)
@@ -79,11 +63,11 @@ namespace BindingNemo {
 				p = platform;
 
 			if (architecture == "all") {
-				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
-				return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
+				return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
+				//return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
 			} else {
-				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
-				return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
+				return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
+				//return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
 			}
 		}
 

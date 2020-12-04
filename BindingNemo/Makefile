@@ -1,18 +1,24 @@
 TOP=..
 include ./libraries.mk
 
-all: compile create-dlls
+all: compile execute
 
 clean-modules:
 	@echo "Cleaning xmls in Modules directory"
 	@rm -rf ./Modules/*.xml
 
 clean: clean-modules
-	
-create-dlls:
-	@mono Program.exe $(addprefix --library=, $(MANUAL_BINDER_FINDER_LIBRARIES))
+
+platform: compile
+	@echo "What platform?: "; \
+	read Platform; \
+	mono bin/Debug/BindingNemo.exe --platform="$$Platform" --architecture=$(arch)
+
+execute:
+	@mono bin/Debug/BindingNemo.exe --platform=$(plat) --architecture=$(arch)
 
 compile:
-	dotnet build -f v4.8
-	dotnet publish --runtime osx.10.15-x64 --self-contained true
-	
+	msbuild BindingNemo.csproj
+
+help:
+	@mono bin/Debug/BindingNemo.exe --help

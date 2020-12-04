@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "leaktest", "leaktest\leakte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "type-o-matic", "type-o-matic\type-o-matic.csproj", "{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingNemo", "BindingNemo\BindingNemo.csproj", "{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -73,13 +75,15 @@ Global
 		{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}.Debug|x86.Build.0 = Debug|x86
 		{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}.Release|x86.ActiveCfg = Release|x86
 		{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}.Release|x86.Build.0 = Release|x86
+		{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}.Debug|x86.ActiveCfg = Debug|x86
+		{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}.Debug|x86.Build.0 = Debug|x86
+		{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}.Release|x86.ActiveCfg = Release|x86
+		{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 80
-		$1.TabWidth = 8
-		$1.IndentWidth = 8
 		$1.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $2
 		$2.IndentSwitchSection = False

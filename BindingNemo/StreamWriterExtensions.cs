@@ -171,30 +171,36 @@ namespace BindingNemo {
 
 			foreach (var property in propertiesList) {
 				var getter = property.Getter;
-				var sig = StringBuiderHelper.EnhancePropertySignature (getter.ToString (), false);
+				var sig = StringBuilderHelper.EnhancePropertySignature (getter.ToString (), false);
 				if (sig != null) {
-					sw.WriteLineWithIndent ($"<property>");
+					sw.WriteLineWithIndent ($"<property");
 					Indent ();
-					sw.WriteLineWithIndent ($"<name=\"{property.Name.ToString ()}\">");
-					//sw.WriteLineWithIndent ($"<accessibility=\"{property.}\">");
-					//sw.WriteLineWithIndent ($"<signature=\"{sig}\">");
-					sw.WriteLineWithIndent ($"<isStatic=\"{getter.IsStatic.ToString ()}\">");
+					var nameSB = new StringBuilder (property.Name.ToString ());
+					nameSB.EscapeCharactersName ();
+					sw.WriteLineWithIndent ($"name=\"{nameSB.ToString ()}\"");
+					//sw.WriteLineWithIndent ($"signature=\"{sig}\"");
+					sw.WriteLineWithIndent ($"isStatic=\"{getter.IsStatic.ToString ()}\"");
 					
 
 					// can check if property is public or private but do not see Internal or Open options
-					var isPublic = getter.IsPublic ? true : false;
-					sw.WriteLineWithIndent ($"<accessibility=\"{isPublic.ToString ()}\">");
-
-					sw.WriteLineWithIndent ($"<!-- property elements not yet found -->");
+					try {
+						var isPublic = getter.IsPublic ? true : false;
+						sw.WriteLineWithIndent ($"accessibility=\"{isPublic.ToString ()}\"");
+					} catch {
+						sw.WriteLineWithIndent ($"accessibility=\"Something Weird Happened?\"");
+					}
 					
-					sw.WriteLineWithIndent ($"<isDeprecated=\"False\">");
-					sw.WriteLineWithIndent ($"<isUnavailable=\"False\">");
-					sw.WriteLineWithIndent ($"<isOptional=\"False\">");
-					sw.WriteLineWithIndent ($"<type=\"Named\">");
-					sw.WriteLineWithIndent ($"<storage=\"Addressed\">");
+
+					//sw.WriteLineWithIndent ($"<!-- property elements not yet found -->");
+					
+					sw.WriteLineWithIndent ($"isDeprecated=\"False\"");
+					sw.WriteLineWithIndent ($"isUnavailable=\"False\"");
+					sw.WriteLineWithIndent ($"isOptional=\"False\"");
+					sw.WriteLineWithIndent ($"type=\"Named\"");
+					sw.WriteLineWithIndent ($"storage=\"Addressed\"/>");
 					
 					Exdent ();
-					sw.WriteLineWithIndent ($"</property>");
+					//sw.WriteLineWithIndent ($"</property>");
 				}
 			}
 		}
@@ -210,50 +216,56 @@ namespace BindingNemo {
 			foreach (var functions in methodList) {
 				var signature = functions.Functions [0].Signature;
 				var isStatic = signature.GetType () == typeof(SwiftReflector.SwiftStaticFunctionType) ? true : false;
-				var enhancedSignature = StringBuiderHelper.EnhanceMethodSignature (signature.ToString (), isStatic);
+				var enhancedSignature = StringBuilderHelper.EnhanceMethodSignature (signature.ToString (), isStatic);
 				if (enhancedSignature != null) {
 
 					if (signature.ToString () != lastWrittenClassSignature) {
-						sw.WriteLineWithIndent ($"<func>");
+						sw.WriteLineWithIndent ($"<func");
 						Indent ();
-						sw.WriteLineWithIndent ($"<name=\"{functions.Name.ToString ()}\">");
-						sw.WriteLineWithIndent ($"<hasThrows=\"{signature.CanThrow.ToString ()}\">");
-						sw.WriteLineWithIndent ($"<operatorKind=\"{functions.Functions[0].Operator.ToString ()}\">");
-						sw.WriteLineWithIndent ($"<signature=\"{enhancedSignature}\">");
-						sw.WriteLineWithIndent ($"<isStatic=\"{isStatic.ToString ()}\">");
+						var nameSB = new StringBuilder (functions.Name.ToString ());
+						nameSB.EscapeCharactersName ();
+						sw.WriteLineWithIndent ($"name=\"{nameSB.ToString ()}\"");
+						sw.WriteLineWithIndent ($"hasThrows=\"{signature.CanThrow.ToString ()}\"");
+						sw.WriteLineWithIndent ($"operatorKind=\"{functions.Functions[0].Operator.ToString ()}\"");
+						//sw.WriteLineWithIndent ($"signature=\"{enhancedSignature}\"");
+						sw.WriteLineWithIndent ($"isStatic=\"{isStatic.ToString ()}\"");
 
 						if (signature.ReturnType != null) {
-							var returnSB = new StringBuilder (signature.ReturnType.ToString ());
-							returnSB.CorrectSelf ();
-							sw.WriteLineWithIndent ($"<returnType=\"{returnSB.ToString ()}\">");
+							var enhancedReturn = StringBuilderHelper.EnhanceReturn (signature.ReturnType.ToString ());
+							if (enhancedReturn != null)
+								sw.WriteLineWithIndent ($"returnType=\"{enhancedReturn}\"");
 						}
 
-						var parameters = StringBuiderHelper.ParseParameters (enhancedSignature);
+						//sw.WriteLineWithIndent ($"<!-- class func elements not yet found -->");
+						sw.WriteLineWithIndent ($"accessibility=\"Public\"");
+						sw.WriteLineWithIndent ($"isProperty=\"False\"");
+						sw.WriteLineWithIndent ($"isFinal=\"False\"");
+						sw.WriteLineWithIndent ($"isDeprecated=\"False\"");
+						sw.WriteLineWithIndent ($"isUnavailable=\"False\"");
+						sw.WriteLineWithIndent ($"isOptional=\"False\"");
+						// there is an IsOptionalConstructor in the signature?
+						sw.WriteLineWithIndent ($"isRequired=\"False\"");
+						sw.WriteLineWithIndent ($"isConvenienceInit=\"False\"");
+
+						//sw.WriteLineWithIndent ($"<!-- class func elements still working on -->");
+						sw.WriteLineWithIndent ($"objcSelector=\"\">");
+						//objcSelector - a string representing the ObjC selector for the function
+
+						var parameters = StringBuilderHelper.ParseParameters (enhancedSignature);
 						if (parameters != null) {
+							sw.WriteLineWithIndent ($"<parameterlists>");
+							Indent ();
 							sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
 							Indent ();
 							foreach (var parameter in parameters) {
-								sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
-								sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\" privateName=\"\" isVariadic=\"{signature.IsVariadic.ToString ()}\">");
+								//sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
+								sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\" privateName=\"\" isVariadic=\"{signature.IsVariadic.ToString ()}\"/>");
 							}
 							Exdent ();
 							sw.WriteLineWithIndent ($"</parameterlist>");
+							Exdent ();
+							sw.WriteLineWithIndent ($"</parameterlists>");
 						}
-
-						sw.WriteLineWithIndent ($"<!-- class func elements not yet found -->");
-						sw.WriteLineWithIndent ($"<accessibility=\"Public\">");
-						sw.WriteLineWithIndent ($"<isProperty=\"False\">");
-						sw.WriteLineWithIndent ($"<isFinal=\"False\">");
-						sw.WriteLineWithIndent ($"<isDeprecated=\"False\">");
-						sw.WriteLineWithIndent ($"<isUnavailable=\"False\">");
-						sw.WriteLineWithIndent ($"<isOptional=\"False\">");
-						// there is an IsOptionalConstructor in the signature?
-						sw.WriteLineWithIndent ($"<isRequired=\"False\">");
-						sw.WriteLineWithIndent ($"<isConvenienceInit=\"False\">");
-
-						sw.WriteLineWithIndent ($"<!-- class func elements still working on -->");
-						sw.WriteLineWithIndent ($"<objcSelector=\"\">");
-						//objcSelector - a string representing the ObjC selector for the function
 
 						Exdent ();
 						sw.WriteLineWithIndent ($"</func>");
@@ -271,49 +283,55 @@ namespace BindingNemo {
 
 			var lastWrittenProtocolSignature = string.Empty;
 			foreach (var protocol in protocols) {
-				var enhancedSignature = StringBuiderHelper.EnhanceMethodSignature (protocol.Signature.ToString (), false);
+				var enhancedSignature = StringBuilderHelper.EnhanceMethodSignature (protocol.Signature.ToString (), false);
 				if (enhancedSignature != null && enhancedSignature != lastWrittenProtocolSignature) {
-					sw.WriteLineWithIndent ($"<func>");
+					sw.WriteLineWithIndent ($"<func");
 					Indent ();
-					sw.WriteLineWithIndent ($"<name=\"{protocol.Signature.Name.ToString ()}\">");
-					sw.WriteLineWithIndent ($"<operatorKind=\"{protocol.Operator.ToString ()}\">");
-					sw.WriteLineWithIndent ($"<signature=\"{enhancedSignature}\">");
-					
-					sw.WriteLineWithIndent ($"<isStatic=\"{CheckStaticProtocolMethod (protocol)}\">");
-					var parameters = StringBuiderHelper.ParseParameters (enhancedSignature);
+					var nameSB = new StringBuilder (protocol.Signature.Name.ToString ());
+					nameSB.EscapeCharactersName ();
+					sw.WriteLineWithIndent ($"name=\"{nameSB.ToString ()}\"");
+					sw.WriteLineWithIndent ($"operatorKind=\"{protocol.Operator.ToString ()}\"");
+					//sw.WriteLineWithIndent ($"signature=\"{enhancedSignature}\"");
+
+					sw.WriteLineWithIndent ($"isStatic=\"{CheckStaticProtocolMethod (protocol)}\"");
+
+					if (protocol.Signature.ReturnType != null) {
+						var enhancedReturn = StringBuilderHelper.EnhanceReturn (protocol.Signature.ReturnType.ToString ());
+						if (enhancedReturn != null)
+							sw.WriteLineWithIndent ($"returnType=\"{enhancedReturn}\"");
+					}
+					sw.WriteLineWithIndent ($"hasThrows=\"{protocol.Signature.CanThrow.ToString ()}\"");
+
+					//sw.WriteLineWithIndent ($"<!-- protocol func elements not yet found -->");
+					sw.WriteLineWithIndent ($"accessibility=\"Public\"");
+					sw.WriteLineWithIndent ($"isProperty=\"False\"");
+					sw.WriteLineWithIndent ($"isFinal=\"False\"");
+					sw.WriteLineWithIndent ($"isDeprecated=\"False\"");
+					sw.WriteLineWithIndent ($"isUnavailable=\"False\"");
+					sw.WriteLineWithIndent ($"isOptional=\"False\"");
+						// there is an IsOptionalConstructor in the signature?
+					sw.WriteLineWithIndent ($"isRequired=\"False\"");
+					sw.WriteLineWithIndent ($"isConvenienceInit=\"False\"");
+
+					//sw.WriteLineWithIndent ($"<!-- protocol func elements still working on -->");
+					sw.WriteLineWithIndent ($"objcSelector=\"\">");
+					//objcSelector - a string representing the ObjC selector for the function
+
+					var parameters = StringBuilderHelper.ParseParameters (enhancedSignature);
 					if (parameters != null) {
+						sw.WriteLineWithIndent ($"<parameterlists>");
+						Indent ();
 						sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
 						Indent ();
 						foreach (var parameter in parameters) {
-							sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
-							sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\"> isVariadic=\"{protocol.Signature.IsVariadic.ToString ()}\"");
+							//sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
+							sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\" isVariadic=\"{protocol.Signature.IsVariadic.ToString ()}\"/>");
 						}
 						Exdent ();
 						sw.WriteLineWithIndent ($"</parameterlist>");
+						Exdent ();
+						sw.WriteLineWithIndent ($"</parameterlists>");
 					}
-					if (protocol.Signature.ReturnType != null) {
-						var returnSB = new StringBuilder (protocol.Signature.ReturnType.ToString ());
-						returnSB.CorrectSelf ();
-						sw.WriteLineWithIndent ($"<returnType=\"{returnSB.ToString ()}\">");
-					}
-					sw.WriteLineWithIndent ($"<hasThrows=\"{protocol.Signature.CanThrow.ToString ()}\">");
-
-					sw.WriteLineWithIndent ($"<!-- protocol func elements not yet found -->");
-					sw.WriteLineWithIndent ($"<accessibility=\"Public\">");
-					sw.WriteLineWithIndent ($"<isProperty=\"False\">");
-					sw.WriteLineWithIndent ($"<isFinal=\"False\">");
-					sw.WriteLineWithIndent ($"<isDeprecated=\"False\">");
-					sw.WriteLineWithIndent ($"<isUnavailable=\"False\">");
-					sw.WriteLineWithIndent ($"<isOptional=\"False\">");
-						// there is an IsOptionalConstructor in the signature?
-					sw.WriteLineWithIndent ($"<isRequired=\"False\">");
-					sw.WriteLineWithIndent ($"<isConvenienceInit=\"False\">");
-
-					sw.WriteLineWithIndent ($"<!-- protocol func elements still working on -->");
-					sw.WriteLineWithIndent ($"<objcSelector=\"\">");
-						//objcSelector - a string representing the ObjC selector for the function
-
-
 					Exdent ();
 					sw.WriteLineWithIndent ($"</func>");
 				}
@@ -327,7 +345,7 @@ namespace BindingNemo {
 				case "SwiftReflector.SwiftStaticFunctionThunkType":
 					return true;
 				case "SwiftReflector.SwiftPropertyType":
-					// .IsStatic does not exist in SwiftUncurriedFunctionThunkType
+					// .IsStatic does not exist in some types including SwiftUncurriedFunctionThunkType
 					return ((SwiftReflector.SwiftPropertyType)protocol.Signature).IsStatic;
 				case "SwiftReflector.SwiftPropertyThunkType":
 					return ((SwiftReflector.SwiftPropertyThunkType)protocol.Signature).IsStatic;

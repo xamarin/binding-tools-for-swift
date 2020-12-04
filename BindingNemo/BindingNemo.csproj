@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -42,9 +42,9 @@
     <Compile Include="StringBuilderHelper.cs" />
     <Compile Include="enums.cs" />
     <Compile Include="CheckInventory.cs" />
-    <Compile Include="BindingNemoOptions.cs" />
     <Compile Include="WriteXml.cs" />
     <Compile Include="StringBuilderExtension.cs" />
+    <Compile Include="BindingNemoOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
@@ -72,6 +72,7 @@
     <None Include="Modules\libswiftDarwin.xml" />
     <None Include="Modules\libswiftSwiftPrivate.xml" />
     <None Include="Modules\modules.xml" />
+    <None Include="IncludeList.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">
