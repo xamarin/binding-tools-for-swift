@@ -45,6 +45,7 @@
     <Compile Include="WriteXml.cs" />
     <Compile Include="StringBuilderExtension.cs" />
     <Compile Include="BindingNemoOptions.cs" />
+    <Compile Include="Include.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

@@ -173,34 +173,31 @@ namespace BindingNemo {
 				var getter = property.Getter;
 				var sig = StringBuilderHelper.EnhancePropertySignature (getter.ToString (), false);
 				if (sig != null) {
-					sw.WriteLineWithIndent ($"<property");
+					sw.WriteLineWithIndent ($"<property>");
 					Indent ();
 					var nameSB = new StringBuilder (property.Name.ToString ());
 					nameSB.EscapeCharactersName ();
-					sw.WriteLineWithIndent ($"name=\"{nameSB.ToString ()}\"");
+					sw.WriteLineWithIndent ($"<name>{nameSB.ToString ()}</name>");
 					//sw.WriteLineWithIndent ($"signature=\"{sig}\"");
-					sw.WriteLineWithIndent ($"isStatic=\"{getter.IsStatic.ToString ()}\"");
+					sw.WriteLineWithIndent ($"<isStatic>{getter.IsStatic.ToString ()}</isStatic>");
 					
 
 					// can check if property is public or private but do not see Internal or Open options
-					try {
-						var isPublic = getter.IsPublic ? true : false;
-						sw.WriteLineWithIndent ($"accessibility=\"{isPublic.ToString ()}\"");
-					} catch {
-						sw.WriteLineWithIndent ($"accessibility=\"Something Weird Happened?\"");
-					}
+					var isPublic = getter.IsPublic ? true : false;
+					sw.WriteLineWithIndent ($"<accessibility>{isPublic.ToString ()}</accessibility>");
+
 					
 
 					//sw.WriteLineWithIndent ($"<!-- property elements not yet found -->");
 					
-					sw.WriteLineWithIndent ($"isDeprecated=\"False\"");
-					sw.WriteLineWithIndent ($"isUnavailable=\"False\"");
-					sw.WriteLineWithIndent ($"isOptional=\"False\"");
-					sw.WriteLineWithIndent ($"type=\"Named\"");
-					sw.WriteLineWithIndent ($"storage=\"Addressed\"/>");
+					sw.WriteLineWithIndent ($"<isDeprecated>False</isDeprecated>");
+					sw.WriteLineWithIndent ($"<isUnavailable>False</isUnavailable>");
+					sw.WriteLineWithIndent ($"<isOptional>False</isOptional>");
+					sw.WriteLineWithIndent ($"<type>Named</type>");
+					sw.WriteLineWithIndent ($"<storage>Addressed</storage>");
 					
 					Exdent ();
-					//sw.WriteLineWithIndent ($"</property>");
+					sw.WriteLineWithIndent ($"</property>");
 				}
 			}
 		}
@@ -220,35 +217,35 @@ namespace BindingNemo {
 				if (enhancedSignature != null) {
 
 					if (signature.ToString () != lastWrittenClassSignature) {
-						sw.WriteLineWithIndent ($"<func");
+						sw.WriteLineWithIndent ($"<func>");
 						Indent ();
 						var nameSB = new StringBuilder (functions.Name.ToString ());
 						nameSB.EscapeCharactersName ();
-						sw.WriteLineWithIndent ($"name=\"{nameSB.ToString ()}\"");
-						sw.WriteLineWithIndent ($"hasThrows=\"{signature.CanThrow.ToString ()}\"");
-						sw.WriteLineWithIndent ($"operatorKind=\"{functions.Functions[0].Operator.ToString ()}\"");
+						sw.WriteElement ("name", nameSB.ToString ());
+						sw.WriteElement ("hasThrows", signature.CanThrow.ToString ());
+						sw.WriteElement ("operatorKind", functions.Functions[0].Operator.ToString ());
 						//sw.WriteLineWithIndent ($"signature=\"{enhancedSignature}\"");
-						sw.WriteLineWithIndent ($"isStatic=\"{isStatic.ToString ()}\"");
+						sw.WriteElement ("isStatic", isStatic.ToString ());
 
 						if (signature.ReturnType != null) {
 							var enhancedReturn = StringBuilderHelper.EnhanceReturn (signature.ReturnType.ToString ());
 							if (enhancedReturn != null)
-								sw.WriteLineWithIndent ($"returnType=\"{enhancedReturn}\"");
+								sw.WriteElement ("returnType", enhancedReturn);
 						}
 
 						//sw.WriteLineWithIndent ($"<!-- class func elements not yet found -->");
-						sw.WriteLineWithIndent ($"accessibility=\"Public\"");
-						sw.WriteLineWithIndent ($"isProperty=\"False\"");
-						sw.WriteLineWithIndent ($"isFinal=\"False\"");
-						sw.WriteLineWithIndent ($"isDeprecated=\"False\"");
-						sw.WriteLineWithIndent ($"isUnavailable=\"False\"");
-						sw.WriteLineWithIndent ($"isOptional=\"False\"");
+						sw.WriteElement ("accessibility", "Public");
+						sw.WriteElement ("isProperty", "False");
+						sw.WriteElement ("isFinal", "False");
+						sw.WriteElement ("isDeprecated", "False");
+						sw.WriteElement ("isUnavailable", "False");
+						sw.WriteElement ("isOptional", "False");
 						// there is an IsOptionalConstructor in the signature?
-						sw.WriteLineWithIndent ($"isRequired=\"False\"");
-						sw.WriteLineWithIndent ($"isConvenienceInit=\"False\"");
+						sw.WriteElement ("isRequired", "False");
+						sw.WriteElement ("isConvenienceInit", "False");
 
 						//sw.WriteLineWithIndent ($"<!-- class func elements still working on -->");
-						sw.WriteLineWithIndent ($"objcSelector=\"\">");
+						sw.WriteElement ("objcSelector", "");
 						//objcSelector - a string representing the ObjC selector for the function
 
 						var parameters = StringBuilderHelper.ParseParameters (enhancedSignature);
@@ -285,36 +282,36 @@ namespace BindingNemo {
 			foreach (var protocol in protocols) {
 				var enhancedSignature = StringBuilderHelper.EnhanceMethodSignature (protocol.Signature.ToString (), false);
 				if (enhancedSignature != null && enhancedSignature != lastWrittenProtocolSignature) {
-					sw.WriteLineWithIndent ($"<func");
+					sw.WriteLineWithIndent ($"<func>");
 					Indent ();
 					var nameSB = new StringBuilder (protocol.Signature.Name.ToString ());
 					nameSB.EscapeCharactersName ();
-					sw.WriteLineWithIndent ($"name=\"{nameSB.ToString ()}\"");
-					sw.WriteLineWithIndent ($"operatorKind=\"{protocol.Operator.ToString ()}\"");
+					sw.WriteElement ("name", nameSB.ToString ());
+					sw.WriteElement ("operatorKind", protocol.Operator.ToString ());
 					//sw.WriteLineWithIndent ($"signature=\"{enhancedSignature}\"");
 
-					sw.WriteLineWithIndent ($"isStatic=\"{CheckStaticProtocolMethod (protocol)}\"");
+					sw.WriteElement ("isStatic", CheckStaticProtocolMethod (protocol).ToString ());
 
 					if (protocol.Signature.ReturnType != null) {
 						var enhancedReturn = StringBuilderHelper.EnhanceReturn (protocol.Signature.ReturnType.ToString ());
 						if (enhancedReturn != null)
-							sw.WriteLineWithIndent ($"returnType=\"{enhancedReturn}\"");
+							sw.WriteElement ("returnType", enhancedReturn);
 					}
-					sw.WriteLineWithIndent ($"hasThrows=\"{protocol.Signature.CanThrow.ToString ()}\"");
+					sw.WriteElement ("hasThrows", protocol.Signature.CanThrow.ToString ());
 
 					//sw.WriteLineWithIndent ($"<!-- protocol func elements not yet found -->");
-					sw.WriteLineWithIndent ($"accessibility=\"Public\"");
-					sw.WriteLineWithIndent ($"isProperty=\"False\"");
-					sw.WriteLineWithIndent ($"isFinal=\"False\"");
-					sw.WriteLineWithIndent ($"isDeprecated=\"False\"");
-					sw.WriteLineWithIndent ($"isUnavailable=\"False\"");
-					sw.WriteLineWithIndent ($"isOptional=\"False\"");
+					sw.WriteElement ("accessibility", "Public");
+					sw.WriteElement ("isProperty", "False");
+					sw.WriteElement ("isFinal", "False");
+					sw.WriteElement ("isDeprecated", "False");
+					sw.WriteElement ("isUnavailable", "False");
+					sw.WriteElement ("isOptional", "False");
 						// there is an IsOptionalConstructor in the signature?
-					sw.WriteLineWithIndent ($"isRequired=\"False\"");
-					sw.WriteLineWithIndent ($"isConvenienceInit=\"False\"");
+					sw.WriteElement ("isRequired", "False");
+					sw.WriteElement ("isConvenienceInit", "False");
 
 					//sw.WriteLineWithIndent ($"<!-- protocol func elements still working on -->");
-					sw.WriteLineWithIndent ($"objcSelector=\"\">");
+					sw.WriteElement ("objcSelector", "");
 					//objcSelector - a string representing the ObjC selector for the function
 
 					var parameters = StringBuilderHelper.ParseParameters (enhancedSignature);
@@ -420,6 +417,11 @@ namespace BindingNemo {
 		public static void WriteLineWithIndent (this StreamWriter sw, string content)
 		{
 			sw.WriteLine ($"{WriteIndents ()}{content}");
+		}
+
+		public static void WriteElement (this StreamWriter sw, string id, string value)
+		{
+			sw.WriteLine ($"{WriteIndents ()}<{id}>{value}</{id}>");
 		}
 
 		public static void WriteWithIndent (this StreamWriter sw, string content)
