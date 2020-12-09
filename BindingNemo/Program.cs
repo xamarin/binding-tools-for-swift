@@ -41,11 +41,14 @@ namespace BindingNemo {
 			Console.WriteLine ($"After Option.platform = {options.platform}");
 			Console.WriteLine ($"After Option.architecture = {options.architecture}");
 
-			string bashString = BuildBashString ("all", options.platform, options.architecture);
+			// we want to focus on libswiftcore.dylib for now
+			string bashString = BuildBashString ("libswiftcore.dylib", options.platform, options.architecture);
 			Console.WriteLine (bashString);
 			var libraries = GetLibraries (bashString);
 
 			WriteXml.CreateXmlFile (libraries);
+
+			//IncludeExclude.MarkAsUsing ();
 		}
 
 		static string BuildBashString (string name, string platform, string architecture)
@@ -63,11 +66,11 @@ namespace BindingNemo {
 				p = platform;
 
 			if (architecture == "all") {
-				return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
-				//return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
+				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
+				return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/ -type f -iname \"{n}\"";
 			} else {
-				return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
-				//return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
+				//return $"find ../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
+				return $"find ../../../SwiftToolchain*/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/{p}/{architecture}/ -type f -iname \"{n}\"";
 			}
 		}
 

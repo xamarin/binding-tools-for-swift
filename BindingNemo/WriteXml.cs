@@ -10,8 +10,8 @@ namespace BindingNemo {
 		{
 			var version = "1.0";
 
-			//using (StreamWriter sw = new StreamWriter ($"../../Modules/modules.xml")) {
-			using (StreamWriter sw = new StreamWriter ($"Modules/modules.xml")) {
+			using (StreamWriter sw = new StreamWriter ($"../../Modules/modules.xml")) {
+			//using (StreamWriter sw = new StreamWriter ($"Modules/modules.xml")) {
 				sw.WriteXmlIntro (version);
 
 				foreach (var lib in libraries) {
