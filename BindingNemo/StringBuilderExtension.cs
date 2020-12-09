@@ -85,9 +85,12 @@ namespace BindingNemo {
 			sb.Replace ("(0,0)", "Self");
 
 			// For now, replace "(0,1)", "(1,0)", and "(1,1)"
-			sb.Replace ("(1,0)", "???");
-			sb.Replace ("(1,1)", "???");
-			sb.Replace ("(0,1)", "???");
+			//sb.Replace ("(1,0)", "???");
+			//sb.Replace ("(1,1)", "???");
+			//sb.Replace ("(0,1)", "???");
+			sb.Replace ("(1,0)", "Swift.OneZero");
+			sb.Replace ("(1,1)", "Swift.OneOne");
+			sb.Replace ("(0,1)", "Swift.ZeroOne");
 		}
 
 		public static void EscapeCharactersName (this StringBuilder sb)

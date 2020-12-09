@@ -25,6 +25,9 @@ namespace BindingNemo {
 			sb.Replace ("( ", "(");
 			sb.Replace ("->", " -> ");
 			sb.CorrectSelf ();
+			sb.Replace ("Int", "Swift.Int");
+			sb.Replace ("Self", "Swift.Self");
+			sb.Replace ("Bool", "Swift.Bool");
 			sb.Insert (0, "func ");
 			sb.CorrectOptionals ();
 			sb.FixBrackets ();
@@ -47,6 +50,9 @@ namespace BindingNemo {
 			sb.CorrectSelf ();
 			sb.FixBrackets ();
 			//sb.Replace ("Swift.", "");
+			sb.Replace ("Int", "Swift.Int");
+			sb.Replace ("Self", "Swift.Self");
+			sb.Replace ("Bool", "Swift.Bool");
 
 			if (isStatic)
 				sb.Insert (0, "static ");
@@ -70,11 +76,14 @@ namespace BindingNemo {
 			sb.Replace ("( ", "(");
 			sb.CorrectOptionals ();
 			sb.FixBrackets ();
+			sb.Replace ("Int", "Swift.Int");
+			sb.Replace ("Self", "Swift.Self");
+			sb.Replace ("Bool", "Swift.Bool");
 
 			return sb.ToString ();
 		}
 
-		public static List<string> ParseParameters (string signature)
+		public static List<Tuple<string, string>> ParseParameters (string signature)
 		{
 			if (!signature.Contains ("(") || !signature.Contains (")")) {
 				return null;
@@ -126,7 +135,18 @@ namespace BindingNemo {
 			}
 			parameters.Add (parameter.ToString ());
 
-			return parameters;
+			var nameTypeTupleList = new List<Tuple<string, string>> ();
+			foreach (var p in parameters){
+				if (!p.Contains (":")){
+					nameTypeTupleList.Add (Tuple.Create ("_", p));
+				} else {
+					var splitP = p.Split (':');
+					nameTypeTupleList.Add (Tuple.Create (splitP [0], splitP [1].Substring (1)));
+
+				}
+			}
+
+			return nameTypeTupleList;
 		}
 	}
 }

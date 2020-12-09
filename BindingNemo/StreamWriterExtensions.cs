@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using SwiftReflector.Inventory;
+using SwiftReflector.SwiftXmlReflection;
 
 namespace BindingNemo {
 	public static class StreamWriterExtensions {
@@ -33,7 +34,9 @@ namespace BindingNemo {
 
 		public static void WriteXmlIntro (this StreamWriter sw, string version)
 		{
-			sw.WriteLineWithIndent ($"<BindingNemo version=\"{version}\" encoding=\"UTF-8\">");
+			// sw.WriteLineWithIndent ($"<BindingNemo version=\"{version}\" encoding=\"UTF-8\">");
+			// Indent ();
+			sw.WriteLineWithIndent ($"<?xml version=\"{version}\" encoding=\"utf-8\"?>");
 			sw.WriteLineWithIndent ($"<xamreflect version=\"{version}\">");
 			Indent ();
 			sw.WriteLineWithIndent ($"<modulelist>");
@@ -53,24 +56,32 @@ namespace BindingNemo {
 			if (classesList.Count == 0) {
 				return;
 			}
-			Indent ();
-			sw.WriteTypeDeclarationOpener ("class", enums.Accessibility.Public, false, false, false, false);
-
-			Indent ();
-			sw.WriteBasicOpener ("innerclasses");
+			
+			//Indent ();
+			//sw.WriteLineWithIndent ("<innerclasses>");
 			Indent ();
 			foreach (var c in classesList) {
-				sw.WriteBasicOpenerWithName ("Class", c.Name.ToString ());
-				Indent ();
-				sw.WriteClassBasedProperties (c);
-				sw.WriteClassBasedMethods (c);
-				Exdent ();
-				sw.WriteBasicCloser ("Class");
+				sw.WriteTypeDeclarationOpener ("class", c.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
+
+				//sw.WriteTypeOpener ("Class", c.Name.ToString ());
+				if (IsValidClassBasedMembers (c)) {
+					Indent ();
+					sw.WriteBasicOpener ("members");
+					Indent ();
+					sw.WriteClassBasedProperties (c);
+					sw.WriteClassBasedMethods (c);
+					//Exdent ();
+					//sw.WriteBasicCloser ("Class");
+					Exdent ();
+					sw.WriteBasicCloser ("members");
+					Exdent ();
+				}
+				sw.WriteTypeDeclarationCloser ();
 			}
-			Exdent ();
-			sw.WriteBasicCloser ("innerclasses");
-			Exdent ();
-			sw.WriteTypeDeclarationCloser ();
+			//Exdent ();
+			//sw.WriteBasicCloser ("innerclasses");
+			
+			
 			Exdent ();
 		}
 
@@ -80,22 +91,30 @@ namespace BindingNemo {
 				return;
 			}
 			Indent ();
-			sw.WriteTypeDeclarationOpener ("struct", enums.Accessibility.Public, false, false, false, false);
-			Indent ();
-			sw.WriteLineWithIndent ($"<innerstructs>");
-			Indent ();
+			
+			//sw.WriteLineWithIndent ($"<innerstructs>");
+			//Indent ();
 			foreach (var s in structsList) {
-				sw.WriteLineWithIndent ($"<Struct name=\"{s.Name.ToString ()}\">");
-				Indent ();
-				sw.WriteClassBasedProperties (s);
-				sw.WriteClassBasedMethods (s);
-				Exdent ();
-				sw.WriteLineWithIndent ($"</Struct>");
+				sw.WriteTypeDeclarationOpener ("struct", s.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
+				if (IsValidClassBasedMembers (s)) {
+					Indent ();
+					sw.WriteBasicOpener ("members");
+					Indent ();
+					//sw.WriteTypeOpener ("Struct", s.Name.ToString ());
+					//Indent ();
+					sw.WriteClassBasedProperties (s);
+					sw.WriteClassBasedMethods (s);
+					//Exdent ();
+					//sw.WriteLineWithIndent ($"</Struct>");
+					Exdent ();
+					sw.WriteBasicCloser ("members");
+					Exdent ();
+				}
+				sw.WriteTypeDeclarationCloser ();
 			}
-			Exdent ();
-			sw.WriteLineWithIndent ($"</innerstructs>");
-			Exdent ();
-			sw.WriteTypeDeclarationCloser ();
+			//Exdent ();
+			//sw.WriteLineWithIndent ($"</innerstructs>");
+			
 			Exdent ();
 		}
 
@@ -105,22 +124,30 @@ namespace BindingNemo {
 				return;
 			}
 			Indent ();
-			sw.WriteTypeDeclarationOpener ("enum", enums.Accessibility.Public, false, false, false, false);
-			Indent ();
-			sw.WriteBasicOpener ("innerenums");
-			Indent ();
+			
+			//sw.WriteLineWithIndent ("<innerenums>");
+			//Indent ();
 			foreach (var e in enumsList) {
-				sw.WriteBasicOpenerWithName ("Enum", e.Name.ToString ());
-				Indent ();
-				sw.WriteClassBasedProperties (e);
-				sw.WriteClassBasedMethods (e);
-				Exdent ();
-				sw.WriteBasicCloser ("Enum");
+				sw.WriteTypeDeclarationOpener ("enum", e.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
+				if (IsValidClassBasedMembers (e)) {
+					Indent ();
+					sw.WriteBasicOpener ("members");
+					Indent ();
+					//sw.WriteTypeOpener ("Enum", e.Name.ToString ());
+					//Indent ();
+					sw.WriteClassBasedProperties (e);
+					sw.WriteClassBasedMethods (e);
+					//Exdent ();
+					//sw.WriteBasicCloser ("Enum");
+					Exdent ();
+					sw.WriteBasicCloser ("members");
+					Exdent ();
+				}
+				sw.WriteTypeDeclarationCloser ();
 			}
-			Exdent ();
-			sw.WriteBasicCloser ("innerenums");
-			Exdent ();
-			sw.WriteTypeDeclarationCloser ();
+			//Exdent ();
+			//sw.WriteBasicCloser ("innerenums");
+			
 			Exdent ();
 		}
 
@@ -129,23 +156,32 @@ namespace BindingNemo {
 			if (protocolsList.Count == 0) {
 				return;
 			}
-			Indent ();
-			sw.WriteTypeDeclarationOpener ("protocol", enums.Accessibility.Public, false, false, false, false);
-			Indent ();
-			sw.WriteBasicOpener ("innerprotocols");
+			
+			//Indent ();
+			//sw.WriteLineWithIndent ("<innerprotocols>");
 			Indent ();
 			foreach (var p in protocolsList) {
-				sw.WriteBasicOpenerWithName ("Protocol", p.Name.ToString ());
-				Indent ();
-				sw.WriteProtocolBasedMethods (p);
-				Exdent ();
-				sw.WriteBasicCloser ("Protocol");
+				sw.WriteTypeDeclarationOpener ("protocol", p.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
+				if (IsValidProtocolBasedMembers (p)) {
+					Indent ();
+					sw.WriteBasicOpener ("members");
+					Indent ();
+
+					//sw.WriteTypeOpener ("Protocol", p.Name.ToString ());
+					//Indent ();
+					sw.WriteProtocolBasedMethods (p);
+					//Exdent ();
+					//sw.WriteBasicCloser ("Protocol");
+					Exdent ();
+					sw.WriteBasicCloser ("members");
+					Exdent ();
+				}
+				sw.WriteTypeDeclarationCloser ();
 			}
+			//Exdent ();
+			//sw.WriteBasicCloser ("innerprotocols");
 			Exdent ();
-			sw.WriteBasicCloser ("innerprotocols");
-			Exdent ();
-			sw.WriteTypeDeclarationCloser ();
-			Exdent ();
+			
 		}
 
 		public static void WriteModuleOutro (this StreamWriter sw)
@@ -160,6 +196,8 @@ namespace BindingNemo {
 			sw.WriteLineWithIndent ("</modulelist>");
 			Exdent ();
 			sw.WriteLineWithIndent ("</xamreflect>");
+			// Exdent ();
+			// sw.WriteLineWithIndent ("</BindingNemo>");
 		}
 
 		public static void WriteClassBasedProperties (this StreamWriter sw, ClassContents c)
@@ -173,31 +211,28 @@ namespace BindingNemo {
 				var getter = property.Getter;
 				var sig = StringBuilderHelper.EnhancePropertySignature (getter.ToString (), false);
 				if (sig != null) {
-					sw.WriteLineWithIndent ($"<property>");
-					Indent ();
+					sw.WriteWithIndent ($"<property");
 					var nameSB = new StringBuilder (property.Name.ToString ());
 					nameSB.EscapeCharactersName ();
-					sw.WriteLineWithIndent ($"<name>{nameSB.ToString ()}</name>");
+					sw.WriteTypeValue ("name", nameSB.ToString ());
+					sw.WriteTypeValue ("isPossiblyIncomplete", "False");					
 					//sw.WriteLineWithIndent ($"signature=\"{sig}\"");
-					sw.WriteLineWithIndent ($"<isStatic>{getter.IsStatic.ToString ()}</isStatic>");
+					sw.WriteTypeValue ("isStatic", getter.IsStatic.ToString ());
 					
 
 					// can check if property is public or private but do not see Internal or Open options
 					var isPublic = getter.IsPublic ? true : false;
-					sw.WriteLineWithIndent ($"<accessibility>{isPublic.ToString ()}</accessibility>");
-
-					
+					sw.WriteTypeValue ("accessibility", isPublic.ToString ());
 
 					//sw.WriteLineWithIndent ($"<!-- property elements not yet found -->");
+
+					sw.WriteTypeValue ("isDeprecated", "False");
+					sw.WriteTypeValue ("isUnavailable", "False");
+					sw.WriteTypeValue ("isOptional", "False");
+					sw.WriteTypeValue ("type", "Named");
+					sw.WriteLine (" storage=\"Addressed\"/>");
 					
-					sw.WriteLineWithIndent ($"<isDeprecated>False</isDeprecated>");
-					sw.WriteLineWithIndent ($"<isUnavailable>False</isUnavailable>");
-					sw.WriteLineWithIndent ($"<isOptional>False</isOptional>");
-					sw.WriteLineWithIndent ($"<type>Named</type>");
-					sw.WriteLineWithIndent ($"<storage>Addressed</storage>");
-					
-					Exdent ();
-					sw.WriteLineWithIndent ($"</property>");
+					//sw.WriteLineWithIndent ($"</property>");
 				}
 			}
 		}
@@ -217,35 +252,36 @@ namespace BindingNemo {
 				if (enhancedSignature != null) {
 
 					if (signature.ToString () != lastWrittenClassSignature) {
-						sw.WriteLineWithIndent ($"<func>");
+						sw.WriteWithIndent ($"<func");
 						Indent ();
 						var nameSB = new StringBuilder (functions.Name.ToString ());
 						nameSB.EscapeCharactersName ();
-						sw.WriteElement ("name", nameSB.ToString ());
-						sw.WriteElement ("hasThrows", signature.CanThrow.ToString ());
-						sw.WriteElement ("operatorKind", functions.Functions[0].Operator.ToString ());
+						sw.WriteTypeValue ("name", nameSB.ToString ());
+						sw.WriteTypeValue ("isPossiblyIncomplete", "False");
+						sw.WriteTypeValue ("hasThrows", signature.CanThrow.ToString ());
+						sw.WriteTypeValue ("operatorKind", functions.Functions[0].Operator.ToString ());
 						//sw.WriteLineWithIndent ($"signature=\"{enhancedSignature}\"");
-						sw.WriteElement ("isStatic", isStatic.ToString ());
+						sw.WriteTypeValue ("isStatic", isStatic.ToString ());
 
 						if (signature.ReturnType != null) {
 							var enhancedReturn = StringBuilderHelper.EnhanceReturn (signature.ReturnType.ToString ());
 							if (enhancedReturn != null)
-								sw.WriteElement ("returnType", enhancedReturn);
+								sw.WriteTypeValue ("returnType", enhancedReturn);
 						}
 
 						//sw.WriteLineWithIndent ($"<!-- class func elements not yet found -->");
-						sw.WriteElement ("accessibility", "Public");
-						sw.WriteElement ("isProperty", "False");
-						sw.WriteElement ("isFinal", "False");
-						sw.WriteElement ("isDeprecated", "False");
-						sw.WriteElement ("isUnavailable", "False");
-						sw.WriteElement ("isOptional", "False");
+						sw.WriteTypeValue ("accessibility", "Public");
+						sw.WriteTypeValue ("isProperty", "False");
+						sw.WriteTypeValue ("isFinal", "False");
+						sw.WriteTypeValue ("isDeprecated", "False");
+						sw.WriteTypeValue ("isUnavailable", "False");
+						sw.WriteTypeValue ("isOptional", "False");
 						// there is an IsOptionalConstructor in the signature?
-						sw.WriteElement ("isRequired", "False");
-						sw.WriteElement ("isConvenienceInit", "False");
+						sw.WriteTypeValue ("isRequired", "False");
+						sw.WriteTypeValue ("isConvenienceInit", "False");
 
 						//sw.WriteLineWithIndent ($"<!-- class func elements still working on -->");
-						sw.WriteElement ("objcSelector", "");
+						sw.WriteLine (" objcSelector = \"\">");
 						//objcSelector - a string representing the ObjC selector for the function
 
 						var parameters = StringBuilderHelper.ParseParameters (enhancedSignature);
@@ -256,7 +292,7 @@ namespace BindingNemo {
 							Indent ();
 							foreach (var parameter in parameters) {
 								//sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
-								sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\" privateName=\"\" isVariadic=\"{signature.IsVariadic.ToString ()}\"/>");
+								sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter.Item1}\" privateName=\"{parameter.Item1}\" type=\"{TypeSpecParser.Parse (parameter.Item2)}\" isVariadic=\"{signature.IsVariadic.ToString ()}\"/>");
 							}
 							Exdent ();
 							sw.WriteLineWithIndent ($"</parameterlist>");
@@ -282,36 +318,37 @@ namespace BindingNemo {
 			foreach (var protocol in protocols) {
 				var enhancedSignature = StringBuilderHelper.EnhanceMethodSignature (protocol.Signature.ToString (), false);
 				if (enhancedSignature != null && enhancedSignature != lastWrittenProtocolSignature) {
-					sw.WriteLineWithIndent ($"<func>");
+					sw.WriteWithIndent ($"<func");
 					Indent ();
 					var nameSB = new StringBuilder (protocol.Signature.Name.ToString ());
 					nameSB.EscapeCharactersName ();
-					sw.WriteElement ("name", nameSB.ToString ());
-					sw.WriteElement ("operatorKind", protocol.Operator.ToString ());
+					sw.WriteTypeValue ("name", nameSB.ToString ());
+					sw.WriteTypeValue ("isPossiblyIncomplete", "True");
+					sw.WriteTypeValue ("operatorKind", protocol.Operator.ToString ());
 					//sw.WriteLineWithIndent ($"signature=\"{enhancedSignature}\"");
 
-					sw.WriteElement ("isStatic", CheckStaticProtocolMethod (protocol).ToString ());
+					sw.WriteTypeValue ("isStatic", CheckStaticProtocolMethod (protocol).ToString ());
 
 					if (protocol.Signature.ReturnType != null) {
 						var enhancedReturn = StringBuilderHelper.EnhanceReturn (protocol.Signature.ReturnType.ToString ());
 						if (enhancedReturn != null)
-							sw.WriteElement ("returnType", enhancedReturn);
+							sw.WriteTypeValue ("returnType", enhancedReturn);
 					}
-					sw.WriteElement ("hasThrows", protocol.Signature.CanThrow.ToString ());
+					sw.WriteTypeValue ("hasThrows", protocol.Signature.CanThrow.ToString ());
 
 					//sw.WriteLineWithIndent ($"<!-- protocol func elements not yet found -->");
-					sw.WriteElement ("accessibility", "Public");
-					sw.WriteElement ("isProperty", "False");
-					sw.WriteElement ("isFinal", "False");
-					sw.WriteElement ("isDeprecated", "False");
-					sw.WriteElement ("isUnavailable", "False");
-					sw.WriteElement ("isOptional", "False");
+					sw.WriteTypeValue ("accessibility", "Public");
+					sw.WriteTypeValue ("isProperty", "False");
+					sw.WriteTypeValue ("isFinal", "False");
+					sw.WriteTypeValue ("isDeprecated", "False");
+					sw.WriteTypeValue ("isUnavailable", "False");
+					sw.WriteTypeValue ("isOptional", "False");
 						// there is an IsOptionalConstructor in the signature?
-					sw.WriteElement ("isRequired", "False");
-					sw.WriteElement ("isConvenienceInit", "False");
+					sw.WriteTypeValue ("isRequired", "False");
+					sw.WriteTypeValue ("isConvenienceInit", "False");
 
 					//sw.WriteLineWithIndent ($"<!-- protocol func elements still working on -->");
-					sw.WriteElement ("objcSelector", "");
+					sw.WriteLine (" objcSelector = \"\">");
 					//objcSelector - a string representing the ObjC selector for the function
 
 					var parameters = StringBuilderHelper.ParseParameters (enhancedSignature);
@@ -322,7 +359,7 @@ namespace BindingNemo {
 						Indent ();
 						foreach (var parameter in parameters) {
 							//sw.WriteLineWithIndent ($"<!-- parameter type & private name are not found -->");
-							sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter}\" type=\"Named\" isVariadic=\"{protocol.Signature.IsVariadic.ToString ()}\"/>");
+							sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter.Item1}\" privateName=\"{parameter.Item1}\" type=\"{TypeSpecParser.Parse (parameter.Item2)}\" isVariadic=\"{protocol.Signature.IsVariadic.ToString ()}\"/>");
 						}
 						Exdent ();
 						sw.WriteLineWithIndent ($"</parameterlist>");
@@ -355,9 +392,10 @@ namespace BindingNemo {
 			}
 		}
 
-		public static void WriteTypeDeclarationOpener (this StreamWriter sw, string kind, enums.Accessibility accessibility, bool isObjC, bool isFinal, bool isDeprecated, bool isUnavailable, string module = "")
+		public static void WriteTypeDeclarationOpener (this StreamWriter sw, string kind, string name, enums.Accessibility accessibility, bool isObjC, bool isFinal, bool isDeprecated, bool isUnavailable, string module = "")
 		{
 			sw.WriteWithIndent ($"<typedeclaration kind=\"{kind}\"");
+			sw.Write ($" name=\"{name}\"");
 			if (module != "")
 				sw.Write ($" module=\"{module}\"");
 			sw.Write ($" accessibility=\"{accessibility.ToString ()}\"");
@@ -365,6 +403,7 @@ namespace BindingNemo {
 			sw.Write ($" isFinal=\"{isFinal.ToString ()}\"");
 			sw.Write ($" isDeprecated=\"{isDeprecated.ToString ()}\"");
 			sw.WriteLine ($" isUnavailable=\"{isUnavailable.ToString ()}\">");
+			// sw.WriteLine ($" included=\"null\">");
 		}
 
 		public static void WriteTypeDeclarationCloser (this StreamWriter sw)
@@ -382,9 +421,14 @@ namespace BindingNemo {
 			sw.WriteLineWithIndent ($"</{type}>");
 		}
 
-		public static void WriteBasicOpenerWithName (this StreamWriter sw, string type, string name)
+		public static void WriteTypeOpener (this StreamWriter sw, string type, string name)
 		{
 			sw.WriteLineWithIndent ($"<{type} name=\"{name}\">");
+		}
+
+		public static void WriteTypeValue (this StreamWriter sw, string type, string value)
+		{
+			sw.Write ($" {type}=\"{value}\"");
 		}
 
 
@@ -424,5 +468,33 @@ namespace BindingNemo {
 			sw.Write ($"{WriteIndents ()}{content}");
 		}
 
+		static bool IsValidClassBasedMembers (ClassContents contents)
+		{
+			foreach (var prop in contents.Properties.Names) {
+				if (!prop.Name.Contains ('_'))
+					return true;
+			}
+			foreach (var staticProp in contents.StaticProperties.Names) {
+				if (!staticProp.Name.Contains ('_'))
+					return true;
+			}
+			foreach (var method in contents.Methods.Names) {
+				if (!method.Name.Contains ('_'))
+					return true;
+			}
+			foreach (var staticMethod in contents.StaticFunctions.Names) {
+				if (!staticMethod.Name.Contains ('_'))
+					return true;
+			}
+			return false;
+		}
+		static bool IsValidProtocolBasedMembers (ProtocolContents contents)
+		{
+			foreach (var prop in contents.FunctionsOfUnknownDestination.ToList ()) {
+				if (!prop.Name.ToString ().Contains ('_'))
+					return true;
+			}
+			return false;
+		}
 	}
 }
