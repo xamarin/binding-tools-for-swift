@@ -19,6 +19,7 @@
     <WarningLevel>4</WarningLevel>
     <ExternalConsole>true</ExternalConsole>
     <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <Optimize>true</Optimize>
@@ -27,12 +28,15 @@
     <WarningLevel>4</WarningLevel>
     <ExternalConsole>true</ExternalConsole>
     <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Mono.Options">
       <HintPath>Mono.Options.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -45,7 +49,7 @@
     <Compile Include="WriteXml.cs" />
     <Compile Include="StringBuilderExtension.cs" />
     <Compile Include="BindingNemoOptions.cs" />
-    <Compile Include="Include.cs" />
+    <Compile Include="IncludeExclude.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
@@ -73,7 +77,8 @@
     <None Include="Modules\libswiftDarwin.xml" />
     <None Include="Modules\libswiftSwiftPrivate.xml" />
     <None Include="Modules\modules.xml" />
-    <None Include="IncludeList.xml" />
+    <None Include="IncludeExcludeList.xml" />
+    <None Include="Modules\filteredModules.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">
