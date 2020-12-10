@@ -299,7 +299,7 @@ namespace BindingNemo {
 						sw.WriteTypeValue ("isRequired", "False");
 						sw.WriteTypeValue ("isConvenienceInit", "False");
 
-						sw.WriteLine (" objcSelector = \"\">");
+						sw.WriteLine (" objcSelector=\"\">");
 
 						if (functions.Name.ToString () == "forEach") {
 
@@ -378,7 +378,7 @@ namespace BindingNemo {
 					sw.WriteTypeValue ("isConvenienceInit", "False");
 
 					//sw.WriteLineWithIndent ($"<!-- protocol func elements still working on -->");
-					sw.WriteLine (" objcSelector = \"\">");
+					sw.WriteLine (" objcSelector=\"\">");
 					//objcSelector - a string representing the ObjC selector for the function
 
 					List<Tuple<string, string>> parameters = StringBuilderHelper.SeperateParameters (protocol.Signature.Parameters.ToString ());
