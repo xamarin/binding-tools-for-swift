@@ -12,6 +12,13 @@ namespace BindingNemo {
 				return null;
 
 			StringBuilder sb = new StringBuilder (signature);
+
+			var matchesTest1 = Regex.Match (sb.ToString (), @": \(");
+			if (!matchesTest1.Success) {
+
+			}
+
+
 			// find the first ':' and delete it
 			MatchCollection matches = Regex.Matches (sb.ToString (), ": ");
 			sb.Remove (matches [0].Index, matches [0].Length);
@@ -25,9 +32,7 @@ namespace BindingNemo {
 			sb.Replace ("( ", "(");
 			sb.Replace ("->", " -> ");
 			sb.CorrectSelf ();
-			sb.Replace ("Int", "Swift.Int");
-			sb.Replace ("Self", "Swift.Self");
-			sb.Replace ("Bool", "Swift.Bool");
+			sb.AddModule ();
 			sb.Insert (0, "func ");
 			sb.CorrectOptionals ();
 			sb.FixBrackets ();
@@ -50,9 +55,7 @@ namespace BindingNemo {
 			sb.CorrectSelf ();
 			sb.FixBrackets ();
 			//sb.Replace ("Swift.", "");
-			sb.Replace ("Int", "Swift.Int");
-			sb.Replace ("Self", "Swift.Self");
-			sb.Replace ("Bool", "Swift.Bool");
+			sb.AddModule ();
 
 			if (isStatic)
 				sb.Insert (0, "static ");
@@ -76,14 +79,31 @@ namespace BindingNemo {
 			sb.Replace ("( ", "(");
 			sb.CorrectOptionals ();
 			sb.FixBrackets ();
-			sb.Replace ("Int", "Swift.Int");
-			sb.Replace ("Self", "Swift.Self");
-			sb.Replace ("Bool", "Swift.Bool");
+			sb.AddModule ();
 
 			return sb.ToString ();
 		}
 
-		public static List<Tuple<string, string>> ParseParameters (string signature)
+		public static string EnhancePropertyType (string type)
+		{
+			StringBuilder sb = new StringBuilder (type);
+			sb.AddModule ();
+			return sb.ToString ();
+		}
+
+		public static string ParsePropertyType (string signature)
+		{
+			StringBuilder sb = new StringBuilder (signature);
+			sb.RemoveDuplicateConsecutiveWords ();
+			if (!sb.ToString ().Contains (":")) {
+				return null;
+			}
+			var colonMatch = Regex.Match (sb.ToString (), ": ");
+			// we add 2 to the index due to the colon and the space after
+			return sb.ToString ().Substring (colonMatch.Index + 2);
+		}
+
+		public static string ParseParametersFromSignature (string signature)
 		{
 			if (!signature.Contains ("(") || !signature.Contains (")")) {
 				return null;
@@ -108,17 +128,38 @@ namespace BindingNemo {
 				return null;
 			}
 
+			return parametersString;
+			
+		}
+
+		public static List<Tuple<string, string>> SeperateParameters (string parametersString) {
+			if (parametersString == "()") {
+				return null;
+			}
+			if (parametersString.Contains ("Meta")) {
+
+			}
+			var startingSB = new StringBuilder (parametersString);
+			startingSB.RemoveDuplicateConsecutiveWords ();
+			startingSB.CorrectSelf ();
+			startingSB.FixBrackets ();
+			startingSB.AddModule ();
+			
+			var correctedParameterString = startingSB.ToString ();
+
 			List<string> parameters = new List<string> ();
 			StringBuilder parameter = new StringBuilder ();
 			int openedCount = 0;
-			for (int i = 0; i < parametersString.Length; i++) {
-				switch (parametersString [i]) {
+			for (int i = 0; i < correctedParameterString.Length; i++) {
+				if (i == 0 && correctedParameterString [i] == '(')
+					continue;
+				switch (correctedParameterString [i]) {
 				case '(':
-					parameter.Append (parametersString [i]);
+					parameter.Append (correctedParameterString [i]);
 					openedCount++;
 					break;
 				case ')':
-					parameter.Append (parametersString [i]);
+					parameter.Append (correctedParameterString [i]);
 					openedCount--;
 					break;
 				case ',':
@@ -126,18 +167,21 @@ namespace BindingNemo {
 						parameters.Add (parameter.ToString ());
 						parameter.Clear ();
 						i++;
+					} else {
+						parameter.Append (correctedParameterString [i]);
 					}
+
 					break;
 				default:
-					parameter.Append (parametersString [i]);
+					parameter.Append (correctedParameterString [i]);
 					break;
 				}
 			}
 			parameters.Add (parameter.ToString ());
 
 			var nameTypeTupleList = new List<Tuple<string, string>> ();
-			foreach (var p in parameters){
-				if (!p.Contains (":")){
+			foreach (var p in parameters) {
+				if (!p.Contains (":")) {
 					nameTypeTupleList.Add (Tuple.Create ("_", p));
 				} else {
 					var splitP = p.Split (':');
@@ -146,7 +190,24 @@ namespace BindingNemo {
 				}
 			}
 
+			// check for 'Meta'. If the type is "Meta"+something else, change it to be just the something else
+			//foreach (var type in nameTypeTupleList) {
+			for (int i = 0; i < nameTypeTupleList.Count; i++) {
+				if (nameTypeTupleList[i].Item2.Contains ("Meta")) {
+					var typeSplit = nameTypeTupleList [i].Item2.Split (' ');
+					if (typeSplit.Length > 2) {
+
+					}
+					if (typeSplit.Length > 1 && typeSplit[1] != "" && typeSplit[1] != ")") {
+						var replacement = new Tuple <string, string> (nameTypeTupleList [i].Item1, typeSplit [1]);
+						nameTypeTupleList.RemoveAt (i);
+						nameTypeTupleList.Insert (i, replacement);
+					}
+				}
+			}
+
 			return nameTypeTupleList;
 		}
+		
 	}
 }

@@ -81,8 +81,8 @@ namespace BindingNemo {
 
 		public static void CorrectSelf (this StringBuilder sb)
 		{
-			sb.Replace ("(0,0)A0", "Self");
-			sb.Replace ("(0,0)", "Self");
+			sb.Replace ("(0,0)A0", "Swift.Self");
+			sb.Replace ("(0,0)", "Swift.Self");
 
 			// For now, replace "(0,1)", "(1,0)", and "(1,1)"
 			//sb.Replace ("(1,0)", "???");
@@ -91,6 +91,25 @@ namespace BindingNemo {
 			sb.Replace ("(1,0)", "Swift.OneZero");
 			sb.Replace ("(1,1)", "Swift.OneOne");
 			sb.Replace ("(0,1)", "Swift.ZeroOne");
+		}
+
+		public static void AddModule (this StringBuilder sb)
+		{
+			// Just realized that 'Int' 'Uint' 'Bool' are acceptable
+			//// replace "Int" with Swift.Int without replacing "UInt" or "Swift.Int"
+			//Match IntMatch = Regex.Match (sb.ToString (), @"(^|\s|\()Int");
+			//while (IntMatch.Success) {
+			//	sb.Replace ("Int", "Swift.Int", IntMatch.Index, IntMatch.Length);
+			//	IntMatch = Regex.Match (sb.ToString (), @"(^|\s\|\()Int");
+			//}
+
+			//// replace "UInt" with Swift.UInt without replacing "Swift.UInt"
+			//Match UIntMatch = Regex.Match (sb.ToString (), @"(^|\s|\()UInt");
+			//while (UIntMatch.Success) {
+			//	sb.Replace ("UInt", "Swift.UInt", UIntMatch.Index, UIntMatch.Length);
+			//	UIntMatch = Regex.Match (sb.ToString (), @"(^|\s\|\()UInt");
+			//}
+			//sb.Replace (" Bool", " Swift.Bool");
 		}
 
 		public static void EscapeCharactersName (this StringBuilder sb)
