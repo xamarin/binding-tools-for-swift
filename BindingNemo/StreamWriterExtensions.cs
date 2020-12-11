@@ -11,7 +11,6 @@ namespace BindingNemo {
 
 		public static int IndentLevel { get; set; }
 
-		//static void WriteXmlFile (string moduleName, List<ClassContents> classesList, List<ClassContents> enumsList, List<ClassContents> structsList, List<ProtocolContents> protocolsList)
 		public static void WriteXmlFile (this StreamWriter sw, string moduleName, ModuleInventory mi)
 		{
 			List<ClassContents> classesList = CheckInventory.GetClasses (mi);
@@ -29,18 +28,14 @@ namespace BindingNemo {
 			sw.WriteEnums (moduleName, enumsList);
 			sw.WriteProtocols (moduleName, protocolsList);
 			sw.WriteModuleOutro ();
-
 		}
 
 		public static void WriteXmlIntro (this StreamWriter sw, string version)
 		{
-			// sw.WriteLineWithIndent ($"<BindingNemo version=\"{version}\" encoding=\"UTF-8\">");
-			// Indent ();
 			sw.WriteLineWithIndent ($"<?xml version=\"{version}\" encoding=\"utf-8\"?>");
 			sw.WriteLineWithIndent ($"<xamreflect version=\"{version}\">");
 			Indent ();
 			sw.WriteLineWithIndent ($"<modulelist>");
-			
 		}
 
 		public static void WriteModuleIntro (this StreamWriter sw, string moduleName)
@@ -48,7 +43,7 @@ namespace BindingNemo {
 			// not sure how to find swift version
 			Indent ();
 			sw.WriteLineWithIndent ($"<!-- swiftVersion not yet found -->");
-			sw.WriteLineWithIndent ($"<Module name=\"{moduleName}\" swiftVersion=\"??\">");
+			sw.WriteLineWithIndent ($"<Module name=\"{moduleName}\" swiftVersion=\"5.0\">");
 		}
 
 		public static void WriteClasses (this StreamWriter sw, string moduleName, List<ClassContents> classesList)
@@ -56,32 +51,23 @@ namespace BindingNemo {
 			if (classesList.Count == 0) {
 				return;
 			}
-			
-			//Indent ();
-			//sw.WriteLineWithIndent ("<innerclasses>");
+
 			Indent ();
 			foreach (var c in classesList) {
 				sw.WriteTypeDeclarationOpener ("class", c.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
 
-				//sw.WriteTypeOpener ("Class", c.Name.ToString ());
 				if (ContainsValidClassBasedMembers (c)) {
 					Indent ();
 					sw.WriteBasicOpener ("members");
 					Indent ();
 					sw.WriteClassBasedProperties (c);
 					sw.WriteClassBasedMethods (c);
-					//Exdent ();
-					//sw.WriteBasicCloser ("Class");
 					Exdent ();
 					sw.WriteBasicCloser ("members");
 					Exdent ();
 				}
 				sw.WriteTypeDeclarationCloser ();
 			}
-			//Exdent ();
-			//sw.WriteBasicCloser ("innerclasses");
-			
-			
 			Exdent ();
 		}
 
@@ -90,31 +76,22 @@ namespace BindingNemo {
 			if (structsList.Count == 0) {
 				return;
 			}
+
 			Indent ();
-			
-			//sw.WriteLineWithIndent ($"<innerstructs>");
-			//Indent ();
 			foreach (var s in structsList) {
 				sw.WriteTypeDeclarationOpener ("struct", s.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
 				if (ContainsValidClassBasedMembers (s)) {
 					Indent ();
 					sw.WriteBasicOpener ("members");
 					Indent ();
-					//sw.WriteTypeOpener ("Struct", s.Name.ToString ());
-					//Indent ();
 					sw.WriteClassBasedProperties (s);
 					sw.WriteClassBasedMethods (s);
-					//Exdent ();
-					//sw.WriteLineWithIndent ($"</Struct>");
 					Exdent ();
 					sw.WriteBasicCloser ("members");
 					Exdent ();
 				}
 				sw.WriteTypeDeclarationCloser ();
 			}
-			//Exdent ();
-			//sw.WriteLineWithIndent ($"</innerstructs>");
-			
 			Exdent ();
 		}
 
@@ -124,30 +101,20 @@ namespace BindingNemo {
 				return;
 			}
 			Indent ();
-			
-			//sw.WriteLineWithIndent ("<innerenums>");
-			//Indent ();
 			foreach (var e in enumsList) {
 				sw.WriteTypeDeclarationOpener ("enum", e.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
 				if (ContainsValidClassBasedMembers (e)) {
 					Indent ();
 					sw.WriteBasicOpener ("members");
 					Indent ();
-					//sw.WriteTypeOpener ("Enum", e.Name.ToString ());
-					//Indent ();
 					sw.WriteClassBasedProperties (e);
 					sw.WriteClassBasedMethods (e);
-					//Exdent ();
-					//sw.WriteBasicCloser ("Enum");
 					Exdent ();
 					sw.WriteBasicCloser ("members");
 					Exdent ();
 				}
 				sw.WriteTypeDeclarationCloser ();
 			}
-			//Exdent ();
-			//sw.WriteBasicCloser ("innerenums");
-			
 			Exdent ();
 		}
 
@@ -156,9 +123,7 @@ namespace BindingNemo {
 			if (protocolsList.Count == 0) {
 				return;
 			}
-			
-			//Indent ();
-			//sw.WriteLineWithIndent ("<innerprotocols>");
+
 			Indent ();
 			foreach (var p in protocolsList) {
 				sw.WriteTypeDeclarationOpener ("protocol", p.Name.ToString (), enums.Accessibility.Public, false, false, false, false);
@@ -169,27 +134,18 @@ namespace BindingNemo {
 					Indent ();
 					sw.WriteBasicOpener ("members");
 					Indent ();
-
-					//sw.WriteTypeOpener ("Protocol", p.Name.ToString ());
-					//Indent ();
 					sw.WriteProtocolBasedMethods (p);
-					//Exdent ();
-					//sw.WriteBasicCloser ("Protocol");
 					Exdent ();
 					sw.WriteBasicCloser ("members");
 					Exdent ();
 				}
 				sw.WriteTypeDeclarationCloser ();
 			}
-			//Exdent ();
-			//sw.WriteBasicCloser ("innerprotocols");
 			Exdent ();
-			
 		}
 
 		public static void WriteModuleOutro (this StreamWriter sw)
 		{
-			//Exdent ();
 			sw.WriteLineWithIndent ("</Module>");
 		}
 
@@ -199,8 +155,6 @@ namespace BindingNemo {
 			sw.WriteLineWithIndent ("</modulelist>");
 			Exdent ();
 			sw.WriteLineWithIndent ("</xamreflect>");
-			// Exdent ();
-			// sw.WriteLineWithIndent ("</BindingNemo>");
 		}
 
 		public static void WriteClassBasedProperties (this StreamWriter sw, ClassContents c)
@@ -218,10 +172,9 @@ namespace BindingNemo {
 					var nameSB = new StringBuilder (property.Name.ToString ());
 					nameSB.EscapeCharactersName ();
 					sw.WriteTypeValue ("name", nameSB.ToString ());
-					sw.WriteTypeValue ("isPossiblyIncomplete", "False");
 					//sw.WriteTypeValue ("signature=", sig);
+					sw.WriteTypeValue ("isPossiblyIncomplete", "False");
 					sw.WriteTypeValue ("isStatic", getter.IsStatic.ToString ());
-					
 
 					// can check if property is public or private but do not see Internal or Open options
 					var isPublic = getter.IsPublic ? true : false;
@@ -237,19 +190,12 @@ namespace BindingNemo {
 					}
 					else
 						sw.WriteTypeValue ("type", "Named");
-					
 
-
-					
-					
-					//sw.WriteLineWithIndent ($"<!-- property elements not yet found -->");
+					//elements not yet found
 					sw.WriteTypeValue ("isDeprecated", "False");
 					sw.WriteTypeValue ("isUnavailable", "False");
 					sw.WriteTypeValue ("isOptional", "False");
-					
 					sw.WriteLine (" storage=\"Addressed\"/>");
-					
-					//sw.WriteLineWithIndent ($"</property>");
 				}
 			}
 		}
@@ -264,72 +210,30 @@ namespace BindingNemo {
 			var lastWrittenClassSignature = string.Empty;
 			foreach (var functions in methodList) {
 				var signature = functions.Functions [0].Signature;
+				if (StringBuilderHelper.CheckForPrivateSignature (signature.ToString ()) || signature.ToString () == lastWrittenClassSignature)
+					continue;
+
 				var isStatic = signature.GetType () == typeof(SwiftReflector.SwiftStaticFunctionType) ? true : false;
-				var enhancedSignature = StringBuilderHelper.EnhanceMethodSignature (signature.ToString (), isStatic);
-				if (enhancedSignature != null) {
 
-					if (signature.ToString () != lastWrittenClassSignature) {
-						sw.WriteWithIndent ($"<func");
-						Indent ();
-						var nameSB = new StringBuilder (functions.Name.ToString ());
-						nameSB.EscapeCharactersName ();
-						sw.WriteTypeValue ("name", nameSB.ToString ());
-						//sw.WriteTypeValue ("signature=", enhancedSignature);
-						//sw.WriteTypeValue ("signatureOG=", signature.ToString ());
-						sw.WriteTypeValue ("isPossiblyIncomplete", "False");
-						sw.WriteTypeValue ("hasThrows", signature.CanThrow.ToString ());
-						sw.WriteTypeValue ("operatorKind", functions.Functions[0].Operator.ToString ());
-						
-						sw.WriteTypeValue ("isStatic", isStatic.ToString ());
+				sw.WriteWithIndent ($"<func");
+				Indent ();
+				var nameSB = new StringBuilder (functions.Name.ToString ());
+				nameSB.EscapeCharactersName ();
+				sw.WriteTypeValue ("name", nameSB.ToString ());
 
-						if (signature.ReturnType != null) {
-							var enhancedReturn = StringBuilderHelper.EnhanceReturn (signature.ReturnType.ToString ());
-							if (enhancedReturn != null)
-								sw.WriteTypeValue ("returnType", enhancedReturn);
-						}
+				//sw.WriteTypeValue ("signature=", enhancedSignature);
+				//sw.WriteTypeValue ("signatureOG=", signature.ToString ());
+				sw.WriteTypeValue ("hasThrows", signature.CanThrow.ToString ());
+				sw.WriteTypeValue ("operatorKind", functions.Functions [0].Operator.ToString ());
+				sw.WriteTypeValue ("isStatic", isStatic.ToString ());
 
-						//sw.WriteLineWithIndent ($"<!-- class func elements not yet found -->");
-						sw.WriteTypeValue ("accessibility", "Public");
-						sw.WriteTypeValue ("isProperty", "False");
-						sw.WriteTypeValue ("isFinal", "False");
-						sw.WriteTypeValue ("isDeprecated", "False");
-						sw.WriteTypeValue ("isUnavailable", "False");
-						sw.WriteTypeValue ("isOptional", "False");
-						// there is an IsOptionalConstructor in the signature?
-						sw.WriteTypeValue ("isRequired", "False");
-						sw.WriteTypeValue ("isConvenienceInit", "False");
+				sw.WriteReturnType (signature.ReturnType);
+				sw.WriteConstantAttributes ();
+				sw.WriteParameters (signature.Parameters.ToString (), signature.IsVariadic.ToString ());
+				Exdent ();
+				sw.WriteLineWithIndent ($"</func>");
 
-						sw.WriteLine (" objcSelector=\"\">");
-
-						if (functions.Name.ToString () == "forEach") {
-
-						}
-						
-						List<Tuple<string, string>> parameters = StringBuilderHelper.SeperateParameters (signature.Parameters.ToString ());
-
-						if (parameters != null) {
-							sw.WriteLineWithIndent ($"<parameterlists>");
-							Indent ();
-							sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
-							Indent ();
-							foreach (var parameter in parameters) {
-								try {
-									sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter.Item1}\" privateName=\"{parameter.Item1}\" type=\"{TypeSpecParser.Parse (parameter.Item2)}\" isVariadic=\"{signature.IsVariadic.ToString ()}\"/>");
-								} catch (Exception) {
-
-								}
-							}
-							Exdent ();
-							sw.WriteLineWithIndent ($"</parameterlist>");
-							Exdent ();
-							sw.WriteLineWithIndent ($"</parameterlists>");
-						}
-
-						Exdent ();
-						sw.WriteLineWithIndent ($"</func>");
-					}
-					lastWrittenClassSignature = signature.ToString ();
-				}
+				lastWrittenClassSignature = signature.ToString ();
 			}
 		}
 
@@ -341,72 +245,81 @@ namespace BindingNemo {
 
 			var lastWrittenProtocolSignature = string.Empty;
 			foreach (var protocol in protocols) {
-				var enhancedSignature = StringBuilderHelper.EnhanceMethodSignature (protocol.Signature.ToString (), false);
-				if (enhancedSignature != null && enhancedSignature != lastWrittenProtocolSignature) {
-					sw.WriteWithIndent ($"<func");
-					Indent ();
-					var nameSB = new StringBuilder (protocol.Signature.Name.ToString ());
-					nameSB.EscapeCharactersName ();
-					sw.WriteTypeValue ("name", nameSB.ToString ());
-					//sw.WriteTypeValue ("signature", enhancedSignature);
-					//sw.WriteTypeValue ("signatureOG=", protocol.Signature.ToString ());
+				if (StringBuilderHelper.CheckForPrivateSignature (protocol.Signature.ToString ()) || protocol.Signature.ToString () == lastWrittenProtocolSignature)
+					continue;
 
-					if (nameSB.ToString () == "encode"){
-						
-					}
-					sw.WriteTypeValue ("isPossiblyIncomplete", "True");
-					sw.WriteTypeValue ("operatorKind", protocol.Operator.ToString ());
-					
-					sw.WriteTypeValue ("isStatic", CheckStaticProtocolMethod (protocol).ToString ());
+				sw.WriteWithIndent ($"<func");
+				Indent ();
+				var nameSB = new StringBuilder (protocol.Signature.Name.ToString ());
+				nameSB.EscapeCharactersName ();
+				sw.WriteTypeValue ("name", nameSB.ToString ());
+				//sw.WriteTypeValue ("signature", enhancedSignature);
+				//sw.WriteTypeValue ("signatureOG=", protocol.Signature.ToString ());
+				sw.WriteTypeValue ("operatorKind", protocol.Operator.ToString ());
+				sw.WriteTypeValue ("isStatic", CheckStaticProtocolMethod (protocol).ToString ());
 
-					if (protocol.Signature.ReturnType != null) {
-						var enhancedReturn = StringBuilderHelper.EnhanceReturn (protocol.Signature.ReturnType.ToString ());
-						if (enhancedReturn != null)
-							sw.WriteTypeValue ("returnType", enhancedReturn);
-					}
-					sw.WriteTypeValue ("hasThrows", protocol.Signature.CanThrow.ToString ());
+				sw.WriteReturnType (protocol.Signature.ReturnType); 
+				sw.WriteTypeValue ("hasThrows", protocol.Signature.CanThrow.ToString ());
 
-					//sw.WriteLineWithIndent ($"<!-- protocol func elements not yet found -->");
-					sw.WriteTypeValue ("accessibility", "Public");
-					sw.WriteTypeValue ("isProperty", "False");
-					sw.WriteTypeValue ("isFinal", "False");
-					sw.WriteTypeValue ("isDeprecated", "False");
-					sw.WriteTypeValue ("isUnavailable", "False");
-					sw.WriteTypeValue ("isOptional", "False");
-						// there is an IsOptionalConstructor in the signature?
-					sw.WriteTypeValue ("isRequired", "False");
-					sw.WriteTypeValue ("isConvenienceInit", "False");
+				sw.WriteConstantAttributes ();
+				sw.WriteParameters (protocol.Signature.Parameters.ToString (), protocol.Signature.IsVariadic.ToString ());
+				Exdent ();
+				sw.WriteLineWithIndent ($"</func>");
 
-					//sw.WriteLineWithIndent ($"<!-- protocol func elements still working on -->");
-					sw.WriteLine (" objcSelector=\"\">");
-					//objcSelector - a string representing the ObjC selector for the function
-
-					List<Tuple<string, string>> parameters = StringBuilderHelper.SeperateParameters (protocol.Signature.Parameters.ToString ());
-					if (parameters != null) {
-						sw.WriteLineWithIndent ($"<parameterlists>");
-						Indent ();
-						sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
-						Indent ();
-						foreach (var parameter in parameters) {
-							try {
-								sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter.Item1}\" privateName=\"{parameter.Item1}\" type=\"{TypeSpecParser.Parse (parameter.Item2)}\" isVariadic=\"{protocol.Signature.IsVariadic.ToString ()}\"/>");
-							} catch (Exception) {
-
-							}
-						}
-						Exdent ();
-						sw.WriteLineWithIndent ($"</parameterlist>");
-						Exdent ();
-						sw.WriteLineWithIndent ($"</parameterlists>");
-					}
-					Exdent ();
-					sw.WriteLineWithIndent ($"</func>");
-				}
-				lastWrittenProtocolSignature = enhancedSignature;
+				lastWrittenProtocolSignature = protocol.Signature.ToString ();
 			}
 		}
 
-		public static bool CheckStaticProtocolMethod (SwiftReflector.Demangling.TLFunction protocol)
+		static void WriteReturnType (this StreamWriter sw, SwiftReflector.SwiftType returnType)
+		{
+			if (returnType != null) {
+				var enhancedReturn = StringBuilderHelper.EnhanceReturn (returnType.ToString ());
+				if (enhancedReturn != null)
+					sw.WriteTypeValue ("returnType", enhancedReturn);
+			} else {
+				sw.WriteTypeValue ("returnType", "");
+			}
+		}
+
+		static void WriteConstantAttributes (this StreamWriter sw)
+		{
+			sw.WriteTypeValue ("isPossiblyIncomplete", "True");
+			//elements not yet found
+			sw.WriteTypeValue ("accessibility", "Public");
+			sw.WriteTypeValue ("isProperty", "False");
+			sw.WriteTypeValue ("isFinal", "False");
+			sw.WriteTypeValue ("isDeprecated", "False");
+			sw.WriteTypeValue ("isUnavailable", "False");
+			sw.WriteTypeValue ("isOptional", "False");
+			sw.WriteTypeValue ("isRequired", "False");
+			sw.WriteTypeValue ("isConvenienceInit", "False");
+			sw.WriteLine (" objcSelector=\"\">");
+		}
+
+		static void WriteParameters (this StreamWriter sw, string parameterString, string isVariadic)
+		{
+			List<Tuple<string, string>> parameters = StringBuilderHelper.SeperateParameters (parameterString);
+			if (parameters != null) {
+				sw.WriteLineWithIndent ($"<parameterlists>");
+				Indent ();
+				sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
+				Indent ();
+				foreach (var parameter in parameters) {
+					try {
+						var privateName = parameter.Item1 != "_" ? parameter.Item1 : "";
+						sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter.Item1}\" privateName=\"{privateName}\" type=\"{TypeSpecParser.Parse (parameter.Item2)}\" isVariadic=\"{isVariadic}\"/>");
+					} catch (Exception e) {
+						Console.WriteLine ($"Problem Parsing the type: {parameter.Item2} with exception {e.Message}");
+					}
+				}
+				Exdent ();
+				sw.WriteLineWithIndent ($"</parameterlist>");
+				Exdent ();
+				sw.WriteLineWithIndent ($"</parameterlists>");
+			}
+		}
+
+		static bool CheckStaticProtocolMethod (SwiftReflector.Demangling.TLFunction protocol)
 		{
 			switch (protocol.Signature.GetType ().ToString ()) {
 				case "SwiftReflector.SwiftStaticFunctionThunkType":
@@ -436,7 +349,6 @@ namespace BindingNemo {
 			sw.Write ($" isFinal=\"{isFinal.ToString ()}\"");
 			sw.Write ($" isDeprecated=\"{isDeprecated.ToString ()}\"");
 			sw.WriteLine ($" isUnavailable=\"{isUnavailable.ToString ()}\">");
-			// sw.WriteLine ($" included=\"null\">");
 		}
 
 		public static void WriteTypeDeclarationCloser (this StreamWriter sw)
@@ -521,6 +433,7 @@ namespace BindingNemo {
 			}
 			return false;
 		}
+
 		static bool IsValidProtocolBasedMembers (ProtocolContents contents)
 		{
 			foreach (var prop in contents.FunctionsOfUnknownDestination.ToList ()) {

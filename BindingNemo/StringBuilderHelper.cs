@@ -6,40 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace BindingNemo {
 	public class StringBuilderHelper {
-		public static string EnhanceMethodSignature (string signature, bool isStatic)
+
+		public static bool CheckForPrivateSignature (string signature)
 		{
 			if (string.IsNullOrEmpty (signature) || signature.Contains ("_"))
-				return null;
-
-			StringBuilder sb = new StringBuilder (signature);
-
-			var matchesTest1 = Regex.Match (sb.ToString (), @": \(");
-			if (!matchesTest1.Success) {
-
-			}
-
-
-			// find the first ':' and delete it
-			MatchCollection matches = Regex.Matches (sb.ToString (), ": ");
-			sb.Remove (matches [0].Index, matches [0].Length);
-			// remove "->()"
-			sb.Replace ("->()", "");
-			// space out the arguments from the parenthesis so we can find
-			// duplicate consecutive words
-			sb.Replace ("(", "( ");
-			sb.RemoveDuplicateConsecutiveWords ();
-			// fix the spacing we added
-			sb.Replace ("( ", "(");
-			sb.Replace ("->", " -> ");
-			sb.CorrectSelf ();
-			sb.AddModule ();
-			sb.Insert (0, "func ");
-			sb.CorrectOptionals ();
-			sb.FixBrackets ();
-			//sb.Replace ("Swift.", "");
-			if (isStatic)
-				sb.Insert (0, "static ");
-			return sb.ToString ();
+				return true;
+			return false;
 		}
 
 		public static string EnhancePropertySignature (string signature, bool isStatic)
@@ -52,9 +24,7 @@ namespace BindingNemo {
 			sb.Insert (0, "var ");
 
 			sb.CorrectOptionals ();
-			sb.CorrectSelf ();
-			sb.FixBrackets ();
-			//sb.Replace ("Swift.", "");
+			sb.TransformGenerics ();
 			sb.AddModule ();
 
 			if (isStatic)
@@ -71,14 +41,9 @@ namespace BindingNemo {
 				return "";
 			
 			StringBuilder sb = new StringBuilder (returnSignature);
-			sb.CorrectSelf ();
-			
-			sb.Replace ("(", "( ");
+			sb.TransformGenerics ();
 			sb.RemoveDuplicateConsecutiveWords ();
-			// fix the spacing we added
-			sb.Replace ("( ", "(");
 			sb.CorrectOptionals ();
-			sb.FixBrackets ();
 			sb.AddModule ();
 
 			return sb.ToString ();
@@ -95,119 +60,121 @@ namespace BindingNemo {
 		{
 			StringBuilder sb = new StringBuilder (signature);
 			sb.RemoveDuplicateConsecutiveWords ();
+			sb.AddModule ();
 			if (!sb.ToString ().Contains (":")) {
 				return null;
 			}
 			var colonMatch = Regex.Match (sb.ToString (), ": ");
 			// we add 2 to the index due to the colon and the space after
-			return sb.ToString ().Substring (colonMatch.Index + 2);
+			var type = sb.ToString ().Substring (colonMatch.Index + 2);
+			return RemoveMetaProperty (type);
 		}
-
-		public static string ParseParametersFromSignature (string signature)
+		
+		static string RemoveMetaProperty (string propertyType)
 		{
-			if (!signature.Contains ("(") || !signature.Contains (")")) {
-				return null;
+			if (!propertyType.Contains ("Meta") && !propertyType.Contains ("Existential Metatype")) {
+				return propertyType;
 			}
-
-			// look for the closing parenthesis for the first opening parenthesis
-			var matchOpenParenthesis = Regex.Matches (signature, @"\(");
-			var matchCloseParenthesis = Regex.Matches (signature, @"\)");
-			if (matchCloseParenthesis.Count == 0)
-				return null;
-
-			var selectedClose = 0;
-			if (matchOpenParenthesis.Count > 1) {
-				for (int i = 1; i < matchOpenParenthesis.Count; i++) {
-					if (matchOpenParenthesis [i].Index < matchCloseParenthesis [selectedClose].Index) {
-						selectedClose++;
-					}
-				}
+			var typeSplit = propertyType.Split (' ');
+			if (typeSplit.Length > 1 && typeSplit [1] != "" && typeSplit [1] != ")") {
+				return typeSplit [typeSplit.Length - 1];
 			}
-			string parametersString = signature.Substring((matchOpenParenthesis [0].Index + 1),matchCloseParenthesis [selectedClose].Index - (matchOpenParenthesis [0].Index + 1));
-			if (parametersString == "") {
-				return null;
-			}
-
-			return parametersString;
-			
+			return propertyType;
 		}
 
 		public static List<Tuple<string, string>> SeperateParameters (string parametersString) {
 			if (parametersString == "()") {
 				return null;
 			}
-			if (parametersString.Contains ("Meta")) {
 
-			}
 			var startingSB = new StringBuilder (parametersString);
 			startingSB.RemoveDuplicateConsecutiveWords ();
-			startingSB.CorrectSelf ();
-			startingSB.FixBrackets ();
+			startingSB.TransformGenerics ();
 			startingSB.AddModule ();
-			
-			var correctedParameterString = startingSB.ToString ();
 
+			List<string> parameters = BreakParameterStringToList (startingSB.ToString ());
+			return CreateParameterTuple (parameters);
+		}
+
+		static List<string> BreakParameterStringToList (string parameterString)
+		{
 			List<string> parameters = new List<string> ();
 			StringBuilder parameter = new StringBuilder ();
-			int openedCount = 0;
-			for (int i = 0; i < correctedParameterString.Length; i++) {
-				if (i == 0 && correctedParameterString [i] == '(')
+			int openedParenthesisCount = 0;
+			int openedBracketCount = 0;
+			for (int i = 0; i < parameterString.Length; i++) {
+				if (i == 0 && parameterString [i] == '(')
 					continue;
-				switch (correctedParameterString [i]) {
+				switch (parameterString [i]) {
 				case '(':
-					parameter.Append (correctedParameterString [i]);
-					openedCount++;
+					parameter.Append (parameterString [i]);
+					openedParenthesisCount++;
 					break;
 				case ')':
-					parameter.Append (correctedParameterString [i]);
-					openedCount--;
+					parameter.Append (parameterString [i]);
+					openedParenthesisCount--;
+					break;
+				case '<':
+					parameter.Append (parameterString [i]);
+					openedBracketCount++;
+					break;
+				case '>':
+					// see if this is a part of '->'
+					if (i > 0 && parameterString [i - 1] == '-') {
+						parameter.Append (parameterString [i]);
+					} else {
+						parameter.Append (parameterString [i]);
+						openedBracketCount--;
+					}
 					break;
 				case ',':
-					if (openedCount == 0) {
+					if (openedParenthesisCount == 0 && openedBracketCount == 0) {
 						parameters.Add (parameter.ToString ());
 						parameter.Clear ();
 						i++;
 					} else {
-						parameter.Append (correctedParameterString [i]);
+						parameter.Append (parameterString [i]);
 					}
-
 					break;
 				default:
-					parameter.Append (correctedParameterString [i]);
+					parameter.Append (parameterString [i]);
 					break;
 				}
 			}
 			parameters.Add (parameter.ToString ());
+			return parameters;
+		}
 
+		static List<Tuple<string, string>> CreateParameterTuple (List<string> parameters)
+		{
 			var nameTypeTupleList = new List<Tuple<string, string>> ();
+
+			// split the parameters into their name and their type
 			foreach (var p in parameters) {
 				if (!p.Contains (":")) {
 					nameTypeTupleList.Add (Tuple.Create ("_", p));
 				} else {
 					var splitP = p.Split (':');
-					nameTypeTupleList.Add (Tuple.Create (splitP [0], splitP [1].Substring (1)));
-
+					if (splitP [0] == "") {
+						nameTypeTupleList.Add (Tuple.Create ("_", splitP [1].Substring (1)));
+					} else {
+						nameTypeTupleList.Add (Tuple.Create (splitP [0], splitP [1].Substring (1)));
+					}
 				}
 			}
 
 			// check for 'Meta'. If the type is "Meta"+something else, change it to be just the something else
-			//foreach (var type in nameTypeTupleList) {
 			for (int i = 0; i < nameTypeTupleList.Count; i++) {
-				if (nameTypeTupleList[i].Item2.Contains ("Meta")) {
+				if (nameTypeTupleList [i].Item2.Contains ("Meta")) {
 					var typeSplit = nameTypeTupleList [i].Item2.Split (' ');
-					if (typeSplit.Length > 2) {
-
-					}
-					if (typeSplit.Length > 1 && typeSplit[1] != "" && typeSplit[1] != ")") {
-						var replacement = new Tuple <string, string> (nameTypeTupleList [i].Item1, typeSplit [1]);
+					if (typeSplit.Length > 1 && typeSplit [1] != "" && typeSplit [1] != ")") {
+						var replacement = new Tuple<string, string> (nameTypeTupleList [i].Item1, typeSplit [1]);
 						nameTypeTupleList.RemoveAt (i);
 						nameTypeTupleList.Insert (i, replacement);
 					}
 				}
 			}
-
 			return nameTypeTupleList;
 		}
-		
 	}
 }

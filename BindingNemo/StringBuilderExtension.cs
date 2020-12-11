@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using Dynamo.SwiftLang;
 
 namespace BindingNemo {
 	public static class StringBuilderExtension {
 		public static void RemoveDuplicateConsecutiveWords (this StringBuilder sb)
 		{
+			// space out the words at the beginning of the parameters
+			sb.Replace ("(", "( ");
 			string pattern = @"\w*:";
 			bool isFinished = false;
 			while (!isFinished) {
@@ -26,15 +29,14 @@ namespace BindingNemo {
 					}
 				}
 			}
+			// return that added space
+			sb.Replace ("( ", "(");
 		}
 
 		public static void CorrectOptionals (this StringBuilder sb)
 		{
 			if (sb == null)
 				return;
-			if (sb.ToString ().Contains ("Swift.Optional<(Self.Element")) {
-				Console.Write ("");
-			}
 
 			while (sb.ToString ().Contains ("Optional")) {
 				var match = Regex.Match (sb.ToString (), @"Swift\.Optional<");
@@ -72,44 +74,28 @@ namespace BindingNemo {
 						continue;
 					}
 					var nextGreaterThan = Regex.Match (sb.ToString ().Substring(matchesLessThan [i].Index), ">");
-					//var nextGreaterThan = Regex.Match (sb.ToString ()., ">");
 					sb.Replace ('<', '(', matchesLessThan [i].Index, 1);
 					sb.Replace ('>', ')', matchesLessThan [i].Index + nextGreaterThan.Index, 1);
 				}
 			}
 		}
 
-		public static void CorrectSelf (this StringBuilder sb)
-		{
-			sb.Replace ("(0,0)A0", "Swift.Self");
-			sb.Replace ("(0,0)", "Swift.Self");
-
-			// For now, replace "(0,1)", "(1,0)", and "(1,1)"
-			//sb.Replace ("(1,0)", "???");
-			//sb.Replace ("(1,1)", "???");
-			//sb.Replace ("(0,1)", "???");
-			sb.Replace ("(1,0)", "Swift.OneZero");
-			sb.Replace ("(1,1)", "Swift.OneOne");
-			sb.Replace ("(0,1)", "Swift.ZeroOne");
-		}
-
 		public static void AddModule (this StringBuilder sb)
 		{
-			// Just realized that 'Int' 'Uint' 'Bool' are acceptable
-			//// replace "Int" with Swift.Int without replacing "UInt" or "Swift.Int"
-			//Match IntMatch = Regex.Match (sb.ToString (), @"(^|\s|\()Int");
-			//while (IntMatch.Success) {
-			//	sb.Replace ("Int", "Swift.Int", IntMatch.Index, IntMatch.Length);
-			//	IntMatch = Regex.Match (sb.ToString (), @"(^|\s\|\()Int");
-			//}
+			sb.AddModuleNameIfNotPresent ("Int");
+			sb.AddModuleNameIfNotPresent ("UInt");
+			sb.AddModuleNameIfNotPresent ("Bool");
+			sb.AddModuleNameIfNotPresent ("Float");
+			sb.AddModuleNameIfNotPresent ("Double");
+		}
 
-			//// replace "UInt" with Swift.UInt without replacing "Swift.UInt"
-			//Match UIntMatch = Regex.Match (sb.ToString (), @"(^|\s|\()UInt");
-			//while (UIntMatch.Success) {
-			//	sb.Replace ("UInt", "Swift.UInt", UIntMatch.Index, UIntMatch.Length);
-			//	UIntMatch = Regex.Match (sb.ToString (), @"(^|\s\|\()UInt");
-			//}
-			//sb.Replace (" Bool", " Swift.Bool");
+		static void AddModuleNameIfNotPresent (this StringBuilder sb, string type)
+		{
+			Match match = Regex.Match (sb.ToString (), @$"(^|\s|\(|\>){type}");
+			while (match.Success) {
+				sb.Replace (type, $"Swift.{type}", match.Index, match.Length);
+				match = Regex.Match (sb.ToString (), @$"(^|\s\|\(|\>){type}");
+			}
 		}
 
 		public static void EscapeCharactersName (this StringBuilder sb)
@@ -122,6 +108,14 @@ namespace BindingNemo {
 			sb.Replace (">", "&gt;", 0, sb.ToString ().Length);
 			sb.Replace ("\"", "&quot;", 0, sb.ToString ().Length);
 			sb.Replace ("\'", "&apos;", 0, sb.ToString ().Length);
+		}
+
+		public static void TransformGenerics (this StringBuilder sb)
+		{
+			sb.Replace ("(0,0)", Dynamo.SwiftLang.SLGenericReferenceType.DefaultNamer (0, 0));
+			sb.Replace ("(0,1)", Dynamo.SwiftLang.SLGenericReferenceType.DefaultNamer (0, 1));
+			sb.Replace ("(1,0)", Dynamo.SwiftLang.SLGenericReferenceType.DefaultNamer (1, 0));
+			sb.Replace ("(1,1)", Dynamo.SwiftLang.SLGenericReferenceType.DefaultNamer (1, 1));
 		}
 	}
 }
