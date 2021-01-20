@@ -1,5 +1,11 @@
 grammar SwiftInterface ;
 
+// This is an antlr grammar describing the Swift .swiftinterface format
+// This is a subset of the Swift grammar itself.
+// This grammar was based on https://github.com/antlr/grammars-v4/blob/master/swift/swift3/Swift3.g4
+// which is for Swift 3, but I've updated it to match changes in Swift 5
+// and fixed the identifier grammar to properly support nosebleed unicode
+
 swiftinterface: statement* ;
 
 statement: 
