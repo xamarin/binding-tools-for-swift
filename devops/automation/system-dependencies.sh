@@ -49,6 +49,11 @@ while ! test -z "$1"; do
 			unset IGNORE_CMAKE
 			shift
 			;;
+		--provision-openjdk)
+			PROVISION_OPENJDK=1
+			unset IGNORE_OPENJDK
+			shift
+			;;
 		--provision-all)
 			PROVISION_MONO=1
 			unset IGNORE_MONO
@@ -60,6 +65,8 @@ while ! test -z "$1"; do
 			unset IGNORE_XM
 			PROVISION_CMAKE=1
 			unset IGNORE_CMAKE
+			PROVISION_OPENJDK=1
+			unset IGNORE_OPENJDK
 			shift
 			;;
 		--ignore-all)
@@ -582,6 +589,81 @@ function check_xm () {
 	check_versioned_product /Library/Frameworks/Xamarin.Mac.framework/Versions/Current/Version XM Xamarin.Mac
 }
 
+function has_java ()
+{
+	if ! JAVA_VERSION_CHECK=$(java -version 2>/dev/null); then
+		return 0
+	fi
+	return 1
+}
+
+function install_java ()
+{
+	log "Installing Java..."
+	brew install java || RC=$?
+	if [ $RC -ne 0 ]; then
+		warn "Failed to install java via 'brew install java'"
+	fi
+	return $RC
+}
+
+function install_openjdk ()
+{
+	log "Installing OpenJDK..."
+	brew install openjdk@15 || RC=$?
+	if [ $RC -ne 0 ]; then
+		warn "Failed to install openjdk via 'brew install openjdk@15'"
+	fi
+	return $RC
+}
+
+function get_openjdk_version ()
+{
+	if [ ! -d "/usr/local/Cellar/openjdk" ]; then
+		return 1
+	fi
+	return $(ls /usr/local/Cellar/openjdk | sort -V | tail -n 1)
+}
+
+function check_openjdk () {
+	if test -n "$IGNORE_OPENJDK"; then
+		warn "Ignoring the Java/OpenJDK dependency because the ${COLOR_BLUE}IGNORE_IGNORE_OPENJDK${COLOR_RESET} variable is set."
+		return;
+	fi
+	if [[ ! -d /usr/local/Cellar/openjdk || ! has_java ]] ; then
+		if test -z "$PROVISION_OPENJDK" ; then
+			fail "You must have Java and OpenJDK installed."
+			return
+		fi
+		
+		if [[ ! has_java ]]; then
+			install_java
+		fi
+		install_openjdk
+		return
+	fi
+
+	local OPENJDK_VERSION=$(ls /usr/local/Cellar/openjdk | sort -V | tail -n 1)
+	local MIN_PRODUCT_VERSION
+	MIN_PRODUCT_VERSION=$(grep "^MIN_OPENJDK_VERSION=" Make.config | sed 's/.*=//')
+
+	if ! ACTUAL_PRODUCT_VERSION="$OPENJDK_VERSION"; then
+		if test -z "$PROVISION_OPENJDK"; then
+			fail "You must have at least OpenJDK $MIN_PRODUCT_VERSION."
+			return
+		fi
+		install_openjdk
+	elif ! is_at_least_version "$ACTUAL_PRODUCT_VERSION" "$MIN_PRODUCT_VERSION"; then
+		if test -z "$PROVISION_OPENJDK"; then
+			fail "You must have at least $PRODUCT_NAME $MIN_PRODUCT_VERSION, found $ACTUAL_PRODUCT_VERSION. Download URL: $MIN_PRODUCT_URL"
+			return
+		fi
+		install_openjdk
+	fi
+
+	ok "Found OpenJDK "$OPENJDK_VERSION" (at least $MIN_PRODUCT_VERSION is required)"
+}
+
 function get_cmake_version () {
 	if ! CMAKE_VERSION_OUTPUT=$(cmake --version 2>/dev/null); then
 		return 1
@@ -640,6 +722,7 @@ check_mono
 check_xi
 check_xm
 check_cmake
+check_openjdk
 
 if test -z $FAIL; then
 	echo "System check succeeded"
