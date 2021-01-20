@@ -600,7 +600,11 @@ function has_java ()
 function install_java ()
 {
 	log "Installing Java..."
-	brew install java
+	brew install java || RC=$?
+	if [ $RC -ne 0 ]; then
+		warn "Failed to install java via 'brew install java'"
+	fi
+	return $RC
 }
 
 function install_openjdk ()
