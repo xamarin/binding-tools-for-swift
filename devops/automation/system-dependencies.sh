@@ -606,7 +606,11 @@ function install_java ()
 function install_openjdk ()
 {
 	log "Installing OpenJDK..."
-	brew install openjdk@15
+	brew install openjdk@15 || RC=$?
+	if [ $RC -ne 0 ]; then
+		warn "Failed to install openjdk via 'brew install openjdk@15'"
+	fi
+	return $RC
 }
 
 function get_openjdk_version ()
