@@ -38,7 +38,7 @@ $(CSOUTDIR):
 	mkdir $@
 
 $(CSFINALOUTPUT):
-	mkdir $@
+	mkdir -p $@
 
 clean:
 	rm -rf *.tokens *.interp $(JAVAOUTDIR) $(CSOUTDIR) $(CSFINALOUTPUT)/*.cs
