@@ -46,6 +46,9 @@
     <Reference Include="Mono.Cecil.Rocks">
       <HintPath>..\packages\Mono.Cecil.0.10.3\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
+    <Reference Include="Antlr4.Runtime.Standard">
+      <HintPath>..\packages\Antlr4.Runtime.Standard.4.9.1\lib\netstandard2.0\Antlr4.Runtime.Standard.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="..\..\common\MachO.cs" />
@@ -182,6 +185,17 @@
     <Folder Include="TypeMapping\" />
     <Folder Include="Demangling\" />
     <Folder Include="Importing\" />
+    <Folder Include="SwiftInterfaceReflector\" />
+  </ItemGroup>
+  <Target Name="GeneratedCSParser" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="SwiftInterfaceReflector\GeneratedParser\SwuftUnterfaceBaseListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceLexer.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceParser.cs">
+    <Exec Command="make" WorkingDirectory="../swiftinterfaceparser" />
+  </Target>
+
+  <ItemGroup>
+	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceBaseListener.cs" />
+	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceListener.cs" />
+	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceLexer.cs" />
+	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">

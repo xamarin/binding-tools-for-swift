@@ -7,13 +7,13 @@ GRAMMAR=SwiftInterface.g4
 
 CSOUTDIR=CSParser
 JAVAOUTDIR=JavaParser
+CSFINALOUTPUT=../SwiftReflector/SwiftInterfaceReflector/GeneratedParser
 
 JDK_VERSION=$(shell ls /usr/local/Cellar/openjdk | sort -V | tail -n 1)
 JDK_PATH="/usr/local/Cellar/openjdk/$(JDK_VERSION)"
 JAVA_HOME=$(JDK_PATH)
 
-all: $(ANTLRJAR) grammar
-
+all: $(ANTLRJAR) cs
 
 # download antlr on demand
 $(ANTLRJAR):
@@ -27,11 +27,21 @@ grammar: $(GRAMMAR) $(JAVAOUTDIR)
 	$(ANTLR) -o $(JAVAOUTDIR) $(GRAMMAR)
 	javac -classpath $(CLASSPATH) $(JAVAOUTDIR)/*.java
 
+cs: grammar $(CSOUTDIR) $(CSFINALOUTPUT)
+	$(ANTLR) -Dlanguage=CSharp -o $(CSOUTDIR) $(GRAMMAR)
+	cp $(CSOUTDIR)/*.cs $(CSFINALOUTPUT)
+
 $(JAVAOUTDIR):
 	mkdir $@
 
+$(CSOUTDIR):
+	mkdir $@
+
+$(CSFINALOUTPUT):
+	mkdir -p $@
+
 clean:
-	rm -rf *.tokens *.interp $(JAVAOUTDIR)
+	rm -rf *.tokens *.interp $(JAVAOUTDIR) $(CSOUTDIR) $(CSFINALOUTPUT)/*.cs
 
 squeakyclean: clean
 	rm -rf antlr
