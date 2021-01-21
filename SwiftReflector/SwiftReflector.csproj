@@ -188,7 +188,7 @@
     <Folder Include="SwiftInterfaceReflector\" />
   </ItemGroup>
   <Target Name="GeneratedCSParser" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="SwiftInterfaceReflector\GeneratedParser\SwuftUnterfaceBaseListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceLexer.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceParser.cs">
-    <Exec Command="make --directory=../swiftinterfaceparser" />
+    <Exec Command="make" WorkingDirectory="../swiftinterfaceparser" />
   </Target>
 
   <ItemGroup>
