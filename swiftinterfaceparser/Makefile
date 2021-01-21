@@ -17,7 +17,7 @@ all: $(ANTLRJAR) grammar
 
 # download antlr on demand
 $(ANTLRJAR):
-	curl --create-dirs --output $(ANTLRJAR) https://www.antlr.org/download/antlr-4.9.1-complete.jar
+	curl --location --create-dirs --output $(ANTLRJAR) https://www.antlr.org/download/antlr-4.9.1-complete.jar
 
 # this just builds the grammar to verify that it's correct
 # The output java files can be user with antlr's built-in tools for
