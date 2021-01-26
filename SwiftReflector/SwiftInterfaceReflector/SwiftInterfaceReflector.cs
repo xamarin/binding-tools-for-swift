@@ -602,7 +602,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		bool ShouldIgnore ()
 		{
-			return currentElement.Peek ().Name == "IGNORE";
+			return currentElement.Peek ().Name == kIgnore;
 		}
 
 		public override void EnterParameter_clause ([NotNull] Parameter_clauseContext context)
