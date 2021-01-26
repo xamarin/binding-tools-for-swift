@@ -8,6 +8,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using static SwiftInterfaceParser;
 using System.Text;
+using Dynamo;
 
 namespace SwiftReflector.SwiftInterfaceReflector {
 	public class SwiftInterfaceReflector : SwiftInterfaceBaseListener {
@@ -37,10 +38,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public void Reflect (string inFile, Stream outStm)
 		{
-			if (inFile == null)
-				throw new ArgumentNullException (nameof (inFile));
-			if (outStm == null)
-				throw new ArgumentNullException (nameof (outStm));
+			Exceptions.ThrowOnNull (inFile, nameof (inFile));
+			Exceptions.ThrowOnNull (outStm, nameof (outStm));
 
 			var xDocument = Reflect (inFile);
 
@@ -50,39 +49,44 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public XDocument Reflect (string inFile)
 		{
-			if (inFile == null)
-				throw new ArgumentNullException (nameof (inFile));
+			try {
+				Exceptions.ThrowOnNull (inFile, nameof (inFile));
 
-			if (!File.Exists (inFile))
-				throw new FileNotFoundException ("Input file not found", inFile);
+				if (!File.Exists (inFile))
+					throw new ParseException ($"Input file {inFile} not found");
 
 
-			var fileName = Path.GetFileName (inFile);
-			moduleName = fileName.Split ('.') [0];
+				var fileName = Path.GetFileName (inFile);
+				moduleName = fileName.Split ('.') [0];
 
-			var module = new XElement ("module");
-			currentElement.Push (module);
+				var module = new XElement ("module");
+				currentElement.Push (module);
 
-			var charStream = CharStreams.fromPath (inFile);
-			var lexer = new SwiftInterfaceLexer (charStream);
-			var tokenStream = new CommonTokenStream (lexer);
-			var parser = new SwiftInterfaceParser (tokenStream);
-			var walker = new ParseTreeWalker ();
-			walker.Walk (this, parser.swiftinterface ());
+				var charStream = CharStreams.fromPath (inFile);
+				var lexer = new SwiftInterfaceLexer (charStream);
+				var tokenStream = new CommonTokenStream (lexer);
+				var parser = new SwiftInterfaceParser (tokenStream);
+				var walker = new ParseTreeWalker ();
+				walker.Walk (this, parser.swiftinterface ());
 
-			if (currentElement.Count != 1)
-				throw new NotSupportedException ("At end of parse, stack should contain precisely one element");
+				if (currentElement.Count != 1)
+					throw new ParseException ("At end of parse, stack should contain precisely one element");
 
-			if (module != currentElement.Peek ())
-				throw new ArgumentException ("Expected the final element to be the initial module");
+				if (module != currentElement.Peek ())
+					throw new ParseException ("Expected the final element to be the initial module");
 
-			module.Add (new XAttribute ("name", moduleName));
-			SetLanguageVersion (module);
+				module.Add (new XAttribute ("name", moduleName));
+				SetLanguageVersion (module);
 
-			var tlElement = new XElement ("xamreflect", new XAttribute ("version", "1.0"),
-				new XElement ("modulelist", module));
-			var xDocument = new XDocument (new XDeclaration ("1.0", "utf-8", "yes"), tlElement);
-			return xDocument;
+				var tlElement = new XElement ("xamreflect", new XAttribute ("version", "1.0"),
+					new XElement ("modulelist", module));
+				var xDocument = new XDocument (new XDeclaration ("1.0", "utf-8", "yes"), tlElement);
+				return xDocument;
+			} catch (ParseException) {
+				throw;
+			} catch (Exception e) {
+				throw new ParseException ($"Unknown error parsing {inFile}: {e.Message}", e.InnerException);
+			}
 		}
 
 		public override void EnterComment ([NotNull] CommentContext context)
@@ -113,7 +117,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var givenClassName = classElem.Attribute ("name").Value;
 			var actualClassName = context.class_name ().GetText ();
 			if (givenClassName != actualClassName)
-				throw new Exception ($"class name mismatch on exit declaration: expected {actualClassName} but got {givenClassName}");
+				throw new ParseException ($"class name mismatch on exit declaration: expected {actualClassName} but got {givenClassName}");
 			AddClassToCurrentElement (classElem);
 		}
 
@@ -138,7 +142,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var givenStructName = structElem.Attribute ("name").Value;
 			var actualStructName = context.struct_name ().GetText ();
 			if (givenStructName != actualStructName)
-				throw new Exception ($"struct name mismatch on exit declaration: expected {actualStructName} but got {givenStructName}");
+				throw new ParseException ($"struct name mismatch on exit declaration: expected {actualStructName} but got {givenStructName}");
 			AddStructToCurrentElement (structElem);
 		}
 
@@ -164,7 +168,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var givenEnumName = enumElem.Attribute ("name").Value;
 			var actualEnumName = EnumName (context);
 			if (givenEnumName != actualEnumName)
-				throw new Exception ($"enum name mismatch on exit declaration: expected {actualEnumName} but got {givenEnumName}");
+				throw new ParseException ($"enum name mismatch on exit declaration: expected {actualEnumName} but got {givenEnumName}");
 			AddEnumToCurrentElement (enumElem);
 		}
 
@@ -194,9 +198,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var givenProtocolName = protocolElem.Attribute ("name").Value;
 			var actualProtocolName = context.protocol_name ().GetText ();
 			if (givenProtocolName != actualProtocolName)
-				throw new Exception ($"protocol name mismatch on exit declaration: expected {actualProtocolName} but got {givenProtocolName}");
+				throw new ParseException ($"protocol name mismatch on exit declaration: expected {actualProtocolName} but got {givenProtocolName}");
 			if (currentElement.Peek ().Name != "module")
-				throw new Exception ($"Expected a module on the element stack but found {currentElement.Peek ()}");
+				throw new ParseException ($"Expected a module on the element stack but found {currentElement.Peek ()}");
 			currentElement.Peek ().Add (protocolElem);
 		}
 
@@ -284,12 +288,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var functionDecl = currentElement.Pop ();
 			if (functionDecl.Name != "func")
-				throw new Exception ($"Expected a func node but got a {functionDecl.Name}");
+				throw new ParseException ($"Expected a func node but got a {functionDecl.Name}");
 			var givenName = functionDecl.Attribute ("name");
 			if (givenName == null)
-				throw new Exception ("func node doesn't have a name element");
+				throw new ParseException ("func node doesn't have a name element");
 			if (givenName.Value != expectedName)
-				throw new Exception ($"Expected a func node with name {expectedName} but got {givenName.Value}");
+				throw new ParseException ($"Expected a func node with name {expectedName} but got {givenName.Value}");
 
 			AddElementToParentMembers (functionDecl);
 		}
@@ -597,7 +601,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var elem = currentElement.Pop ();
 			if (elem.Name != kIgnore)
-				throw new ArgumentOutOfRangeException (nameof (currentElement), $"Expected an {kIgnore} element, but got {elem}");
+				throw new ParseException ($"Expected an {kIgnore} element, but got {elem}");
 		}
 
 		bool ShouldIgnore ()
@@ -645,7 +649,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (topElem.Name == "module")
 				return null;
 			if (topElem.Name != "func")
-				throw new ArgumentOutOfRangeException (nameof (currentElement), $"Expecting a func node but got {topElem.Name}");
+				throw new ParseException ($"Expecting a func node but got {topElem.Name}");
 			if (NominalParentAfter (0) == null)
 				return null;
 			var funcName = topElem.Attribute ("name").Value;

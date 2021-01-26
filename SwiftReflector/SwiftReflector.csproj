@@ -176,6 +176,7 @@
     <Compile Include="SwiftXmlReflection\GenericReferenceAssociatedTypeProtocol.cs" />
     <Compile Include="FunctionDeclarationWrapperFinder.cs" />
     <Compile Include="SwiftInterfaceReflector\SwiftInterfaceReflector.cs" />
+    <Compile Include="SwiftInterfaceReflector\ParseException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
