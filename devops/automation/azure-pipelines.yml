@@ -35,8 +35,10 @@ jobs:
 
   steps:
   - checkout: maccore
+    clean: true
     persistCredentials: true
   - checkout: self
+    clean: true
 
   - bash: |
       if [ -L /Applications/Xcode_12.0.1.app ]
@@ -163,6 +165,12 @@ jobs:
     vmImage: windows-latest
 
   steps:
+  - checkout: maccore
+    clean: true
+    persistCredentials: true
+  - checkout: self
+    clean: true
+
   - task: DownloadPipelineArtifact@2
     inputs:
       source: current
