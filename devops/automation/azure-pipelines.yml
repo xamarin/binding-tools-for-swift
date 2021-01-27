@@ -19,6 +19,8 @@ resources:
 variables:
   - group: xamops-azdev-secrets
   - group: Xamarin-Secrets
+  - name: GitHub.Token                                          # Override the GitHub.Token setting defined in the Xamarin Release group
+    value: $(github--pat--vs-mobiletools-engineering-service2)  # Use a token dedicated to critical production workflows and help avoid GitHub throttling
 
 parameters:
 - name: RunningTests
@@ -196,7 +198,7 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
     workingDirectory: $(System.DefaultWorkingDirectory)
 
@@ -241,5 +243,5 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
