@@ -12,6 +12,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		{
 			Declarations = new List<BaseDeclaration> ();
 			Extensions = new List<ExtensionDeclaration> ();
+			Operators = new List<OperatorDeclaration> ();
 		}
 
 		public ModuleDeclaration (string name)
@@ -46,6 +47,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 			foreach (var child in elem.Elements()) {
 				if (child.Name == "extension") {
 					decl.Extensions.Add (ExtensionDeclaration.FromXElement (child, decl));
+				} else if (child.Name == "operator") {
+					decl.Operators.Add (OperatorDeclaration.FromXElement (child, child.Attribute ("moduleName")?.Value));
 				} else {
 					decl.Declarations.Add (BaseDeclaration.FromXElement (child, decl, null));
 				}
@@ -68,6 +71,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public IEnumerable<FunctionDeclaration> TopLevelFunctions { get { return Functions.Where (f => f.Parent == null && f.Access == Accessibility.Public || f.Access == Accessibility.Open); } }
 		public IEnumerable<PropertyDeclaration> TopLevelProperties { get { return Properties.Where (p => p.Parent == null && p.Access == Accessibility.Public || p.Access == Accessibility.Open); } }
 		public List<ExtensionDeclaration> Extensions { get; private set; }
+		public List<OperatorDeclaration> Operators { get; private set; }
 
 
 		public bool IsCompilerCompatibleWith(Version targetCompilerVersion)

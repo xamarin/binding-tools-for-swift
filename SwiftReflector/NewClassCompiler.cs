@@ -200,6 +200,9 @@ namespace SwiftReflector {
 				var allTypesAndTopLevel = moduleDeclaration.AllTypesAndTopLevelDeclarations;
 				TypeMapper.RegisterClasses (allTypesAndTopLevel.OfType<TypeDeclaration> ());
 				declsPerModule.Add (allTypesAndTopLevel);
+				foreach (var op in moduleDeclaration.Operators) {
+					TypeMapper.TypeDatabase.AddOperator (op, moduleDeclaration.Name);
+				}
 			}
 
 			if (errors.AnyErrors)

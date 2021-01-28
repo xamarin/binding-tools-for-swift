@@ -177,6 +177,8 @@
     <Compile Include="FunctionDeclarationWrapperFinder.cs" />
     <Compile Include="SwiftInterfaceReflector\SwiftInterfaceReflector.cs" />
     <Compile Include="SwiftInterfaceReflector\ParseException.cs" />
+    <Compile Include="SwiftXmlReflection\OperatorDeclaration.cs" />
+    <Compile Include="TypeMapping\ModuleDatabase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
