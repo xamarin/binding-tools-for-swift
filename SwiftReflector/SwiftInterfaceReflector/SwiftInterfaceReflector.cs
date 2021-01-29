@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -536,6 +539,15 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			currentElement.Peek ().Add (extensionElem);
 		}
 
+		public override void ExitImport_statement ([NotNull] Import_statementContext context)
+		{
+			// this is something like: import class Foo.Bar
+			// and we're not handling that yet
+			if (context.import_kind () != null)
+				return;
+			importModules.Add (context.import_path ().GetText ());
+		}
+
 		XElement HandleGenerics (Generic_parameter_clauseContext genericContext, Generic_where_clauseContext whereContext)
 		{
 			if (genericContext == null)
@@ -800,7 +812,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				new XAttribute (nameof (isOptional), XmlBool (isOptional)),
 				new XAttribute (nameof (isConvenienceInit), XmlBool (isConvenienceInit)),
 				new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)),
-				new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)), new XAttribute (nameof (isMutating), XmlBool (isMutating)),
+				new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)),
 				new XAttribute (nameof (isRequired), XmlBool (isRequired)),
 				new XAttribute (nameof (isProperty), XmlBool (isProperty)),
 				new XAttribute (nameof (isMutating), XmlBool (isMutating)));
@@ -973,16 +985,23 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		void AssignSwiftCompilerVersion (string compilerVersion)
 		{
 			// when we get here, we should see something like:
-			// [white-space]*Apple Swift version VERSION (swiftlang-VERSION clang-VERSION)
+			// [white-space]*Apple? Swift version VERSION (swiftlang-VERSION clang-VERSION)
 			var parts = compilerVersion.Trim ().Split (' ', '\t'); // don't know if tab is a thing
 									       // expect in the array:
 									       // 0: Apple
 									       // 1: Swift
 									       // 2: verion
 									       // 3: VERSION
-			if (parts [0] != "Apple" || parts [1] != "Swift" || parts [2] != "version")
+
+			var swiftIndex = Array.IndexOf (parts, "Swift");
+			if (swiftIndex < 0)
+				throw new ArgumentOutOfRangeException (nameof (compilerVersion), $"Expected 'Swift' in the version string, but got {compilerVersion}");
+			if (parts [swiftIndex + 1] != "version")
 				throw new ArgumentOutOfRangeException (nameof (compilerVersion), $"Expected a compiler version string but got {compilerVersion}");
-			if (!Version.TryParse (parts [3], out this.compilerVersion))
+			var version = parts [swiftIndex + 2];
+			if (version.EndsWith ("-dev"))
+				version = version.Substring (0, version.Length - "-dev".Length);
+			if (!Version.TryParse (version, out this.compilerVersion))
 				throw new ArgumentOutOfRangeException (nameof (compilerVersion), $"Expected a compiler version number but got {compilerVersion}");
 		}
 
@@ -1069,5 +1088,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				return "Swift." + type;
 			return type;
 		}
+
+
+		public List<String> ImportModules { get { return importModules; } }
 	}
 }
