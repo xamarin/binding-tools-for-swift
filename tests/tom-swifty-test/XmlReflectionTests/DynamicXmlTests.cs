@@ -1425,5 +1425,59 @@ public protocol Simple {
 			Assert.IsTrue (prop.IsLet, "not a let");
 			Assert.IsNull (prop.GetSetter (), "why is there a setter");
 		}
+
+		[Test]
+		public void InfixOperatorDecl ()
+		{
+			var code = @"infix operator *^* : AdditionPrecedence
+extension Int {
+	public static func *^* (lhs: Int, rhs: Int) -> Int {
+		return 2 * lhs + 2 * rhs
+	}
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var opDecl = module.Operators.Where (op => op.Name == "*^*").FirstOrDefault ();
+			Assert.AreEqual ("*^*", opDecl.Name, "name mismatch");
+			Assert.AreEqual ("AdditionPrecedence", opDecl.PrecedenceGroup, "predence group mismatch");
+			Assert.AreEqual (OperatorType.Infix, opDecl.OperatorType, "operator type mismatch");
+		}
+
+		[Test]
+		public void PrefixOperatorDecl ()
+		{
+			var code = @"prefix operator *^^*
+extension Int {
+	public static prefix func *^^* (lhs: Int) -> Int {
+		return 2 * lhs
+	}
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var opDecl = module.Operators.Where (op => op.Name == "*^^*").FirstOrDefault ();
+			Assert.AreEqual ("*^^*", opDecl.Name, "name mismatch");
+			Assert.IsNull (opDecl.PrecedenceGroup, "predence group mismatch");
+			Assert.AreEqual (OperatorType.Prefix, opDecl.OperatorType, "operator type mismatch");
+		}
+
+		[Test]
+		public void PostfixOperatorDecl ()
+		{
+			var code = @"postfix operator *^&^*
+extension Int {
+	public static postfix func *^&^* (lhs: Int) -> Int {
+		return 2 * lhs
+	}
+}
+";
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var opDecl = module.Operators.Where (op => op.Name == "*^&^*").FirstOrDefault ();
+			Assert.AreEqual ("*^&^*", opDecl.Name, "name mismatch");
+			Assert.IsNull (opDecl.PrecedenceGroup, "predence group mismatch");
+			Assert.AreEqual (OperatorType.Postfix, opDecl.OperatorType, "operator type mismatch");
+		}
 	}
 }

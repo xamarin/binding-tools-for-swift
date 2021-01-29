@@ -323,7 +323,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return dst;
 		}
 
-		static OperatorType OperatorTypeFromElement (string type)
+		public static OperatorType OperatorTypeFromElement (string type)
 		{
 			var enumType = OperatorType.None;
 			if (Enum.TryParse (type, out enumType))
