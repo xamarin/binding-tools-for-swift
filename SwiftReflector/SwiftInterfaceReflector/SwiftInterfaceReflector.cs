@@ -999,7 +999,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (parts [swiftIndex + 1] != "version")
 				throw new ArgumentOutOfRangeException (nameof (compilerVersion), $"Expected a compiler version string but got {compilerVersion}");
 			var version = parts [swiftIndex + 2];
-			if (version.EndsWith ("-dev"))
+			if (version.EndsWith ("-dev", StringComparison.Ordinal))
 				version = version.Substring (0, version.Length - "-dev".Length);
 			if (!Version.TryParse (version, out this.compilerVersion))
 				throw new ArgumentOutOfRangeException (nameof (compilerVersion), $"Expected a compiler version number but got {compilerVersion}");

@@ -23,7 +23,7 @@ namespace XmlReflectionTests {
 		{
 			var compiler = Utils.CompileSwift (code, moduleName: moduleName);
 			var files = Directory.GetFiles (compiler.DirectoryPath);
-			var file = files.FirstOrDefault (name => name.EndsWith (".swiftinterface"));
+			var file = files.FirstOrDefault (name => name.EndsWith (".swiftinterface", StringComparison.Ordinal));
 			if (file == null)
 				Assert.Fail ("no swiftinterface file");
 			reflector = new SwiftInterfaceReflector ();
