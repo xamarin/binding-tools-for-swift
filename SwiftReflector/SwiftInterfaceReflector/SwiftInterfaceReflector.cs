@@ -12,6 +12,7 @@ using Antlr4.Runtime.Tree;
 using static SwiftInterfaceParser;
 using System.Text;
 using Dynamo;
+using SwiftReflector.TypeMapping;
 
 namespace SwiftReflector.SwiftInterfaceReflector {
 	public class SwiftInterfaceReflector : SwiftInterfaceBaseListener {
@@ -32,11 +33,15 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		Version compilerVersion;
 
 		List<string> importModules = new List<string> ();
+		List<XElement> operators = new List<XElement> ();
+		List<Tuple<Function_declarationContext, XElement>> functions = new List<Tuple<Function_declarationContext, XElement>> ();
 		Dictionary<string, string> moduleFlags = new Dictionary<string, string> ();
 		string moduleName;
+		TypeDatabase typeDatabase;
 
-		public SwiftInterfaceReflector ()
+		public SwiftInterfaceReflector (TypeDatabase typeDatabase)
 		{
+			this.typeDatabase = Exceptions.ThrowOnNull (typeDatabase, nameof (typeDatabase));
 		}
 
 		public void Reflect (string inFile, Stream outStm)
@@ -77,6 +82,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				if (module != currentElement.Peek ())
 					throw new ParseException ("Expected the final element to be the initial module");
+
+				PatchPossibleOperators ();
 
 				module.Add (new XAttribute ("name", moduleName));
 				SetLanguageVersion (module);
@@ -280,6 +287,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				functionDecl.Add (generics);
 
 			currentElement.Push (functionDecl);
+
+			if (isStatic || !IsInInstance ())
+				functions.Add (new Tuple<Function_declarationContext, XElement> (context, functionDecl));
 		}
 
 		public override void ExitFunction_declaration ([NotNull] Function_declarationContext context)
@@ -301,11 +311,25 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			AddElementToParentMembers (functionDecl);
 		}
 
+		XElement PeekAsFunction ()
+		{
+			var functionDecl = currentElement.Peek ();
+			if (functionDecl.Name != "func")
+				throw new ParseException ($"Expected a func node but got a {functionDecl.Name}");
+			return functionDecl;
+		}
+
 		void AddElementToParentMembers (XElement elem)
 		{
 			var parent = currentElement.Peek ();
 			var memberElem = GetOrCreate (parent, "members");
 			memberElem.Add (elem);
+		}
+
+		bool IsInInstance ()
+		{
+			var parent = currentElement.Peek ();
+			return parent.Name != "module";
 		}
 
 		public override void EnterInitializer_declaration ([NotNull] Initializer_declarationContext context)
@@ -345,7 +369,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var returnType = "()";
 			// this might have to be forced to public, otherwise deinit is always internal, which it
 			// decidedly is NOT.
-			var accessibility = AccessibilityFromModifiers (context.declaration_modifiers ());
+			var accessibility = "Public";
 			var isStatic = false;
 			var hasThrows = false;
 			var isFinal = ModifiersContains (context.declaration_modifiers (), "final");
@@ -450,7 +474,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void EnterVariable_declaration ([NotNull] Variable_declarationContext context)
 		{
 			var head = context.variable_declaration_head ();
-			var resultType = context.type_annotation ().GetText ();
+			var resultType = TrimColon (context.type_annotation ().GetText ());
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var isDeprecated = false;
 			var isUnavailable = false;
@@ -472,6 +496,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			currentElement.Push (getFunc);
 			var getParamLists = new XElement ("parameterlists", MakeInstanceParameterList (), getParamList);
 			currentElement.Pop ();
+			getFunc.Add (getParamLists);
 			AddElementToParentMembers (getFunc);
 
 			var setParamList = context.getter_setter_keyword_block ()?.setter_keyword_clause () != null ?
@@ -498,9 +523,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			}
 
 			var prop = new XElement ("property", new XAttribute ("name", context.variable_name ().GetText ()),
-				new XAttribute ("storage", "Computed"), new XAttribute (nameof (accessibility), accessibility),
-				new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)), new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)),
-				new XAttribute (nameof (isStatic), XmlBool (isStatic)), new XAttribute (nameof (isLet), XmlBool (isLet)),
+				new XAttribute (nameof (accessibility), accessibility),
+				new XAttribute ("type", resultType),
+				new XAttribute ("storage", "Computed"),
+				new XAttribute (nameof (isStatic), XmlBool (isStatic)),
+				new XAttribute (nameof (isLet), XmlBool (isLet)),
+				new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)),
+				new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)),				
 				new XAttribute (nameof (isOptional), XmlBool (isOptional)));
 			AddElementToParentMembers (prop);
 
@@ -546,6 +575,45 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (context.import_kind () != null)
 				return;
 			importModules.Add (context.import_path ().GetText ());
+		}
+
+		public override void EnterOperator_declaration ([NotNull] Operator_declarationContext context)
+		{
+			var operatorElement = InfixOperator (context.infix_operator_declaration ())
+				?? PostfixOperator (context.postfix_operator_declaration ())
+				?? PrefixOperator (context.prefix_operator_declaration ());
+			operators.Add (operatorElement);
+
+			currentElement.Peek ().Add (operatorElement);
+		}
+
+		XElement InfixOperator (Infix_operator_declarationContext context)
+		{
+			if (context == null)
+				return null;
+			return GeneralOperator ("Infix", context.@operator (), context.infix_operator_group ()?.GetText () ?? "");
+		}
+
+		XElement PostfixOperator (Postfix_operator_declarationContext context)
+		{
+			if (context == null)
+				return null;
+			return GeneralOperator ("Postfix", context.@operator (), "");
+		}
+
+		XElement PrefixOperator (Prefix_operator_declarationContext context)
+		{
+			if (context == null)
+				return null;
+			return GeneralOperator ("Prefix", context.@operator (), "");
+		}
+
+		XElement GeneralOperator (string operatorKind, OperatorContext context, string precedenceGroup)
+		{
+			return new XElement ("operator",
+				new XAttribute ("name", context.Operator ().GetText ()),
+				new XAttribute (nameof (operatorKind), operatorKind),
+				new XAttribute (nameof (precedenceGroup), precedenceGroup));
 		}
 
 		XElement HandleGenerics (Generic_parameter_clauseContext genericContext, Generic_where_clauseContext whereContext)
@@ -826,6 +894,17 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return decl;
 		}
 
+		void PatchPossibleOperators ()
+		{
+			foreach (var func in functions) {
+				var operatorKind = GetOperatorType (func.Item1);
+				if (operatorKind != OperatorType.None) {
+					func.Item2.Attribute (nameof (operatorKind))?.Remove ();
+					func.Item2.SetAttributeValue (nameof (operatorKind), operatorKind.ToString ());
+				}
+			}
+		}
+
 		static bool AttributesContains (AttributesContext context, string key)
 		{
 			if (context == null)
@@ -961,6 +1040,47 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return container;
 		}
 
+		OperatorType GetOperatorType (Function_declarationContext context)
+		{
+			var localOp = LocalOperatorType (context);
+			return localOp == OperatorType.None ? GlobalOperatorType (context.function_name ().GetText ())
+				: localOp;
+		}
+
+		OperatorType LocalOperatorType (Function_declarationContext context)
+		{
+			var head = context.function_head ();
+			if (!ModifiersContains (head.declaration_modifiers (), "static"))
+				return OperatorType.None;
+
+
+			// if the function declaration contains prefix 
+			if (ModifiersContains (head.declaration_modifiers (), "prefix")) {
+				return OperatorType.Prefix;
+			} else if (ModifiersContains (head.declaration_modifiers (), "postfix")) {
+				return OperatorType.Postfix;
+			}
+
+			var opName = context.function_name ().GetText ();
+
+			foreach (var op in operators) {
+				var targetName = op.Attribute ("name").Value;
+				var targetKind = op.Attribute ("operatorKind").Value;
+				if (opName == targetName && targetKind == "Infix")
+					return OperatorType.Infix;
+			}
+			return OperatorType.None;
+		}
+
+		OperatorType GlobalOperatorType (string name)
+		{
+			foreach (var op in typeDatabase.FindOperators (importModules)) {
+				if (op.Name == name)
+					return op.OperatorType;
+			}
+			return OperatorType.None;
+		}
+
 		void InterpretCommentText (string commentText)
 		{
 			if (commentText.StartsWith (kSwiftInterfaceFormatVersion)) {
@@ -1087,6 +1207,15 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (commonSwiftTypes.Contains (type))
 				return "Swift." + type;
 			return type;
+		}
+
+		static string TrimColon (string input)
+		{
+			if (!input.Contains (":"))
+				return input;
+			input = input.Trim ();
+			return input.StartsWith (":", StringComparison.Ordinal) ?
+				input.Substring (1) : input;
 		}
 
 
