@@ -319,6 +319,18 @@ namespace SwiftReflector.TypeMapping {
 			db.Operators.Add (op);
 		}
 
+		public IEnumerable <OperatorDeclaration> FindOperators (IEnumerable <string> moduleNames)
+		{
+			foreach (var moduleName in moduleNames) {
+				ModuleDatabase db = null;
+				if (!modules.TryGetValue (moduleName, out db))
+					continue;
+				foreach (var op in db.Operators)
+					yield return op;
+			}
+			yield break;
+		}
+
 		void AddEntity (Entity e, ErrorHandling errors)
 		{
 			var swiftName = e.Type.ToFullyQualifiedName (true);
