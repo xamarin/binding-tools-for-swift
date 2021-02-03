@@ -13,6 +13,7 @@ using static SwiftInterfaceParser;
 using System.Text;
 using Dynamo;
 using SwiftReflector.TypeMapping;
+using SwiftReflector.SwiftXmlReflection;
 
 namespace SwiftReflector.SwiftInterfaceReflector {
 	public class SwiftInterfaceReflector : SwiftInterfaceBaseListener {
@@ -35,7 +36,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		List<string> importModules = new List<string> ();
 		List<XElement> operators = new List<XElement> ();
 		List<Tuple<Function_declarationContext, XElement>> functions = new List<Tuple<Function_declarationContext, XElement>> ();
+		List<XElement> extensions = new List<XElement> ();
 		Dictionary<string, string> moduleFlags = new Dictionary<string, string> ();
+		List<string> nominalTypes = new List<string> ();
 		string moduleName;
 		TypeDatabase typeDatabase;
 
@@ -84,6 +87,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					throw new ParseException ("Expected the final element to be the initial module");
 
 				PatchPossibleOperators ();
+				PatchExtensionShortNames ();
 
 				module.Add (new XAttribute ("name", moduleName));
 				SetLanguageVersion (module);
@@ -539,7 +543,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void EnterExtension_declaration ([NotNull] Extension_declarationContext context)
 		{
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var onType = PromoteTypeToFullyQualifiedName (context.type_identifier ().GetText ());
+			var onType = context.type_identifier ().GetText ();
 			var inherits = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: true);
 			// why, you say, why put a "kind" tag into an extension?
 			// The reason is simple: this is a hack. Most of the contents
@@ -552,6 +556,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (inherits?.Count > 0)
 				extensionElem.Add (new XElement (nameof (inherits), inherits.ToArray ()));
 			currentElement.Push (extensionElem);
+			extensions.Add (extensionElem);
 		}
 
 		public override void ExitExtension_declaration ([NotNull] Extension_declarationContext context)
@@ -559,7 +564,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var extensionElem = currentElement.Pop ();
 			var onType = extensionElem.Attribute ("onType");
 			var givenOnType = onType.Value;
-			var actualOnType = PromoteTypeToFullyQualifiedName (context.type_identifier ().GetText ());
+			var actualOnType = context.type_identifier ().GetText ();
 			if (givenOnType != actualOnType)
 				throw new Exception ($"extension type mismatch on exit declaration: expected {actualOnType} but got {givenOnType}");
 			// remove the "kind" attribute - you've done your job.
@@ -905,6 +910,161 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			}
 		}
 
+		void PatchExtensionShortNames ()
+		{
+			foreach (var ext in extensions) {
+				var onType = TypeSpecParser.Parse (ext.Attribute ("onType").Value);
+				var replacementType = FullyQualify (onType);
+				ext.Attribute ("onType").Value = replacementType.ToString ();
+			}
+		}
+
+		TypeSpec FullyQualify (TypeSpec spec)
+		{
+			switch (spec.Kind) {
+			case TypeSpecKind.Named:
+				return FullyQualify (spec as NamedTypeSpec);
+			case TypeSpecKind.Closure:
+				return FullyQualify (spec as ClosureTypeSpec);
+			case TypeSpecKind.ProtocolList:
+				return FullyQualify (spec as ProtocolListTypeSpec);
+			case TypeSpecKind.Tuple:
+				return FullyQualify (spec as TupleTypeSpec);
+			default:
+				throw new NotImplementedException ($"unknown TypeSpec kind {spec.Kind}");
+			}
+		}
+
+		TypeSpec FullyQualify (NamedTypeSpec named)
+		{
+			var dirty = false;
+			var newName = named.Name;
+
+			if (!named.Name.Contains (".")) {
+				newName = ReplaceName (named.Name);
+				dirty = true;
+			}
+
+			var genParts = new TypeSpec [named.GenericParameters.Count];
+			var index = 0;
+			foreach (var gen in named.GenericParameters) {
+				var newGen = FullyQualify (gen);
+				genParts[index++] = newGen;
+				if (newGen != gen)
+					dirty = true;
+			}
+
+			if (dirty) {
+				var newNamed = new NamedTypeSpec (newName, genParts);
+				newNamed.Attributes.AddRange (named.Attributes);
+				return newNamed;
+			}
+
+			return named;
+		}
+
+		TypeSpec FullyQualify (TupleTypeSpec tuple)
+		{
+			var dirty = false;
+			var parts = new TypeSpec [tuple.Elements.Count];
+			var index = 0;
+			foreach (var spec in tuple.Elements) {
+				var newSpec = FullyQualify (spec);
+				if (newSpec != spec)
+					dirty = true;
+				parts [index++] = newSpec;
+			}
+
+			if (dirty) {
+				var newTup = new TupleTypeSpec (parts);
+				newTup.Attributes.AddRange (tuple.Attributes);
+				return newTup;
+			}
+
+			return tuple;
+		}
+
+		TypeSpec FullyQualify (ProtocolListTypeSpec protolist)
+		{
+			var dirty = false;
+			var parts = new List<NamedTypeSpec> ();
+			foreach (var named in protolist.Protocols.Keys) {
+				var newNamed = FullyQualify (named);
+				parts.Add (newNamed as NamedTypeSpec);
+				if (newNamed != named)
+					dirty = true;
+			}
+
+			if (dirty) {
+				var newProto = new ProtocolListTypeSpec (parts);
+				newProto.Attributes.AddRange (protolist.Attributes);
+				return newProto;
+			}
+
+			return protolist;
+		}
+
+		TypeSpec FullyQualify (ClosureTypeSpec clos)
+		{
+			var dirty = false;
+			var args = FullyQualify (clos.Arguments);
+			if (args != clos.Arguments)
+				dirty = true;
+			var returnType = FullyQualify (clos.ReturnType);
+			if (returnType != clos.ReturnType)
+				dirty = true;
+
+			if (dirty) {
+				var newClosure = new ClosureTypeSpec (args, returnType);
+				newClosure.Attributes.AddRange (clos.Attributes);
+				return newClosure;
+			}
+
+			return clos;
+		}
+
+		string ReplaceName (string nonQualified)
+		{
+			Exceptions.ThrowOnNull (nonQualified, nameof (nonQualified));
+
+			var localName = ReplaceLocalName (nonQualified);
+			if (localName != null)
+				return localName;
+			var globalName = ReplaceGlobalName (nonQualified);
+			if (globalName == null)
+				throw new ParseException ($"Unable to find fully qualified name for non qualified type {nonQualified}");
+			return globalName;
+		}
+
+		string ReplaceLocalName (string nonQualified)
+		{
+			foreach (var candidate in nominalTypes) {
+				var candidateWithoutModule = StripModule (candidate);
+				if (nonQualified == candidateWithoutModule)
+					return candidate;
+			}
+			return null;
+		}
+
+		string ReplaceGlobalName (string nonQualified)
+		{
+			foreach (var module in importModules) {
+				var candidateName = $"{module}.{nonQualified}";
+				var entity = typeDatabase.TryGetEntityForSwiftName (candidateName);
+				if (entity != null)
+					return candidateName;
+			}
+			return null;
+		}
+
+		string StripModule (string fullyQualifiedName)
+		{
+			if (fullyQualifiedName.StartsWith (moduleName, StringComparison.Ordinal))
+				// don't forget the '.'
+				return fullyQualifiedName.Substring (moduleName.Length + 1);
+			return fullyQualifiedName; 
+		}
+
 		static bool AttributesContains (AttributesContext context, string key)
 		{
 			if (context == null)
@@ -1010,18 +1170,34 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var parentElement = GetOrCreateParentElement ("innerstructs");
 			parentElement.Add (elem);
+			RegisterNominal (elem);
 		}
 
 		void AddEnumToCurrentElement (XElement elem)
 		{
 			var parentElement = GetOrCreateParentElement ("innerenums");
 			parentElement.Add (elem);
+			RegisterNominal (elem);
 		}
 
 		void AddClassToCurrentElement (XElement elem)
 		{
 			var parentElement = GetOrCreateParentElement ("innerclasses");
 			parentElement.Add (elem);
+			RegisterNominal (elem);
+		}
+
+		void RegisterNominal (XElement elem)
+		{
+			var builder = new StringBuilder ();
+			while (elem != null) {
+				if (builder.Length > 0)
+					builder.Insert (0, '.');
+				var namePart = elem.Attribute ("name")?.Value ?? moduleName;
+				builder.Insert (0, namePart);
+				elem = elem.Parent;
+			}
+			nominalTypes.Add (builder.ToString ());
 		}
 
 		void AddAssociatedTypeToCurrentElement (XElement elem)
@@ -1190,23 +1366,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		static bool IsCtorDtor (string name)
 		{
 			return ctorDtorNames.Contains (name);
-		}
-
-		string [] commonSwiftTypes = {
-			"Double", "Float", "Int", "String", "Bool",
-			"Int64", "Int32", "Int16", "Int8",
-			"UInt64", "Uint32", "UInt16", "UInt8",
-			"Char", "UnsafeMutablePointer", "UnsafePointer",
-			"OpaquePointer", "Dictionary", "Array"
-		};
-
-		string PromoteTypeToFullyQualifiedName (string type)
-		{
-			if (type.Contains ('.'))
-				return type;
-			if (commonSwiftTypes.Contains (type))
-				return "Swift." + type;
-			return type;
 		}
 
 		static string TrimColon (string input)
