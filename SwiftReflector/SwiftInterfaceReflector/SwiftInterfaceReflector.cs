@@ -931,7 +931,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		bool IsGlobalClass (string typeName)
 		{
-			return typeDatabase.EntityForSwiftName (typeName) != null;
+			return typeDatabase.EntityForSwiftName (typeName)?.EntityType == EntityType.Class;
 		}
 
 		void PatchExtensionShortNames ()
