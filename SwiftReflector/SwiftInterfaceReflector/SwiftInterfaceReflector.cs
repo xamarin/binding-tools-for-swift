@@ -1193,7 +1193,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		}
 
 		string [] commonSwiftTypes = {
-			"Double", "Float", "Integer", "String", "Bool",
+			"Double", "Float", "Int", "String", "Bool",
 			"Int64", "Int32", "Int16", "Int8",
 			"UInt64", "Uint32", "UInt16", "UInt8",
 			"Char", "UnsafeMutablePointer", "UnsafePointer",
