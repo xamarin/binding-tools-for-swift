@@ -155,5 +155,61 @@ public class Imag {
 			Assert.IsTrue (fn.IsOperator, "not an operator");
 			Assert.AreEqual (OperatorType.Postfix, fn.OperatorType, "wrong operator type");
 		}
+
+		[Test]
+		public void HasExtensionPostfixOperator ()
+		{
+			var swiftCode = @"
+postfix operator *^*
+public extension Int {
+	static postfix func *^* (a: Int) -> Int {
+		return a * 2
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
+
+			Assert.IsNotNull (module, "no module");
+
+			var ext = module.Extensions.FirstOrDefault ();
+			Assert.IsNotNull (ext, "no extensions");
+			var extType = ext.ExtensionOnTypeName;
+			Assert.AreEqual ("Swift.Int", extType, "wrong type");
+			var extFunc = ext.Members [0] as FunctionDeclaration;
+			Assert.IsNotNull (extFunc, "no func");
+			Assert.AreEqual ("*^*", extFunc.Name, "wrong func name");
+			Assert.IsTrue (extFunc.IsOperator, "not an operator");
+			Assert.AreEqual (OperatorType.Postfix, extFunc.OperatorType, "wrong operator type");
+		}
+
+
+		[Test]
+		public void HasExtensionInfixOperator ()
+		{
+			var swiftCode = @"
+infix operator *^*
+public extension Int {
+	static func *^* (lhs: Int, rhs: Int) -> Int {
+		return lhs * 2 + rhs * 2
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
+
+			Assert.IsNotNull (module, "no module");
+
+			var ext = module.Extensions.FirstOrDefault ();
+			Assert.IsNotNull (ext, "no extensions");
+			var extType = ext.ExtensionOnTypeName;
+			Assert.AreEqual ("Swift.Int", extType, "wrong type");
+			var extFunc = ext.Members [0] as FunctionDeclaration;
+			Assert.IsNotNull (extFunc, "no func");
+			Assert.AreEqual ("*^*", extFunc.Name, "wrong func name");
+			Assert.IsTrue (extFunc.IsOperator, "not an operator");
+			Assert.AreEqual (OperatorType.Infix, extFunc.OperatorType, "wrong operator type");
+		}
+
 	}
 }
