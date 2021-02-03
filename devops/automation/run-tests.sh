@@ -1,6 +1,10 @@
 #!/bin/bash -e
+if test -z "$BTFS_TOP"; then
+    echo "Variable BTFS_TOP is missing."
+    exit 1
+fi
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.."
+cd $BTFS_TOP
 #WORKSPACE=$(pwd)
 
 make -C tests/tom-swifty-test

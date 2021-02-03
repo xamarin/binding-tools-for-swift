@@ -3,10 +3,15 @@
 # yaml help: https://aka.ms/yaml
 
 trigger:
-- '*'
+  branches:
+    include:
+    - '*'
 
 pr:
-- '*'
+  autoCancel: true
+  branches:
+    include:
+    - '*'
 
 resources:
   repositories:
@@ -41,6 +46,16 @@ jobs:
     clean: true
 
   - bash: |
+      # set env vars used by bash scripts so that we do not need to worry about locations after the checkout
+      maccoreTop="$(Build.SourcesDirectory)/maccore"
+      btfsTop="$(Build.SourcesDirectory)/binding-tools-for-swift"
+      echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
+      echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
+      echo "$(Build.SourceVersion)"
+      echo "$(System.PullRequest.SourceCommitId))"
+    displayName: 'Configure build'
+
+  - bash: |
       if [ -L /Applications/Xcode_12.0.1.app ]
       then
         unlink /Applications/Xcode_12.0.1.app
@@ -64,7 +79,7 @@ jobs:
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
       cd $(System.DefaultWorkingDirectory)
-      ./maccore/tools/install-qa-provisioning-profiles.sh -v
+      $(Build.SourcesDirectory)/maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
     env:
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
@@ -84,13 +99,13 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/devops/automation/provision-deps.sh
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/provision-deps.sh
     displayName: 'Provision dependencies'
 
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/devops/automation/build-swift.sh --publish
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/build-swift.sh --publish
       mkdir -p $(System.DefaultWorkingDirectory)/toolchain
       if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
         cp -c $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
@@ -114,13 +129,13 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/devops/automation/build.sh
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/build.sh
     displayName: 'Build'
 
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/devops/automation/build-package.sh
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/build-package.sh
       ls -la ./package || true
     displayName: 'Package'
 
@@ -137,7 +152,7 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/devops/automation/run-tests.sh
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/run-tests.sh
     displayName: 'Run tests'
     condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
@@ -206,9 +221,9 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
-    workingDirectory: $(System.DefaultWorkingDirectory)
+    workingDirectory: $(Build.SourcesDirectory)/binding-tools-for-swift
 
 - job: UploadPackages
   dependsOn: ContinuousIntegration
@@ -216,6 +231,21 @@ jobs:
     vmImage: windows-latest
 
   steps:
+  - checkout: maccore
+    clean: true
+    persistCredentials: true
+  - checkout: self
+    clean: true
+
+  - bash: |
+      # set env vars used by bash scripts so that we do not need to worry about locations after the checkout
+      maccoreTop="$(System.DefaultWorkingDirectory)/maccore"
+      btfsTop="$(System.DefaultWorkingDirectory)/binding-tools-for-swift"
+      echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
+      echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
+      echo "$(Build.SourceVersion)"
+    displayName: 'Configure build'
+
   - task: DownloadPipelineArtifact@2
     inputs:
       source: current
@@ -250,6 +280,11 @@ jobs:
         exit 1
       fi
       FILENAME="$(basename "$FILE")"
+      echo "$BUILD_SOURCEBRANCHNAME"
+      echo "$BUILD_SOURCEVERSION"
+      echo "$BUILD_BUILDID" 
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_REVISION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
+    env:
+      BUILD_REVISION: $(System.PullRequest.SourceCommitId)
