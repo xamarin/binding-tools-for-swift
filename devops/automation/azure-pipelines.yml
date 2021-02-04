@@ -51,8 +51,6 @@ jobs:
       btfsTop="$(Build.SourcesDirectory)/binding-tools-for-swift"
       echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
       echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
-      echo "$(Build.SourceVersion)"
-      echo "$(System.PullRequest.SourceCommitId))"
     displayName: 'Configure build'
 
   - bash: |
@@ -243,7 +241,6 @@ jobs:
       btfsTop="$(System.DefaultWorkingDirectory)/binding-tools-for-swift"
       echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
       echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
-      echo "$(Build.SourceVersion)"
     displayName: 'Configure build'
 
   - task: DownloadPipelineArtifact@2
@@ -280,9 +277,6 @@ jobs:
         exit 1
       fi
       FILENAME="$(basename "$FILE")"
-      echo "$BUILD_SOURCEBRANCHNAME"
-      echo "$BUILD_SOURCEVERSION"
-      echo "$BUILD_BUILDID" 
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
       ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_REVISION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
