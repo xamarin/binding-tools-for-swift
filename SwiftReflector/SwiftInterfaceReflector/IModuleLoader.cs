@@ -14,7 +14,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 	public class NoLoadLoader : IModuleLoader {
 		public NoLoadLoader ()
 		{
-
 		}
 
 		public bool Load (string moduleName, TypeDatabase into)
