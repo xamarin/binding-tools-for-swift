@@ -211,5 +211,56 @@ public extension Int {
 			Assert.AreEqual (OperatorType.Infix, extFunc.OperatorType, "wrong operator type");
 		}
 
+		[Test]
+		public void InheritanceKindIsClass ()
+		{
+			var swiftCode = @"
+public class Foo {
+	public init () { }
+}
+
+public class Bar : Foo {
+	public override init () { }
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
+
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.Where (c => c.Name == "Bar").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			Assert.AreEqual (1, cl.Inheritance.Count, "wrong amount of inheritance");
+			var inh = cl.Inheritance [0];
+			Assert.AreEqual (InheritanceKind.Class, inh.InheritanceKind, "wrong inheritance kind");
+		}
+
+		[Test]
+		public void CompoundInheritanceKindIsClass ()
+		{
+			var swiftCode = @"
+public protocol Nifty { }
+
+public class Foo {
+	public init () { }
+}
+
+public class Bar : Foo, Nifty {
+	public override init () { }
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
+
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.Where (c => c.Name == "Bar").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			Assert.AreEqual (2, cl.Inheritance.Count, "wrong amount of inheritance");
+			var inh = cl.Inheritance [0];
+			Assert.AreEqual (InheritanceKind.Class, inh.InheritanceKind, "wrong inheritance kind from class");
+			inh = cl.Inheritance [1];
+			Assert.AreEqual (InheritanceKind.Protocol, inh.InheritanceKind, "wrong inheritance kind from protocol");
+		}
 	}
 }

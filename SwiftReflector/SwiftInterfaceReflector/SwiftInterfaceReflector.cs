@@ -39,6 +39,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		List<XElement> extensions = new List<XElement> ();
 		Dictionary<string, string> moduleFlags = new Dictionary<string, string> ();
 		List<string> nominalTypes = new List<string> ();
+		List<string> classes = new List<string> ();
+		List<XElement> unknownInheritance = new List<XElement> ();
 		string moduleName;
 		TypeDatabase typeDatabase;
 
@@ -88,6 +90,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				PatchPossibleOperators ();
 				PatchExtensionShortNames ();
+				PatchPossibleBadInheritance ();
 
 				module.Add (new XAttribute ("name", moduleName));
 				SetLanguageVersion (module);
@@ -847,6 +850,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var elem = new XElement ("inherit", new XAttribute ("type", list.type_identifier ().GetText ()),
 					new XAttribute (nameof (inheritanceKind), inheritanceKind));
 				inheritance.Add (elem);
+				if (inheritanceKind == "unknown")
+					unknownInheritance.Add (elem);
 				list = list.type_inheritance_list ();
 			}
 
@@ -908,6 +913,25 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					func.Item2.SetAttributeValue (nameof (operatorKind), operatorKind.ToString ());
 				}
 			}
+		}
+
+		void PatchPossibleBadInheritance ()
+		{
+			foreach (var inh in unknownInheritance) {
+				var type = inh.Attribute ("type").Value;
+				if (IsLocalClass (type) || IsGlobalClass (type))
+					inh.Attribute ("inheritanceKind").Value = "class";
+			}
+		}
+
+		bool IsLocalClass (string typeName)
+		{
+			return classes.Contains (typeName);
+		}
+
+		bool IsGlobalClass (string typeName)
+		{
+			return typeDatabase.EntityForSwiftName (typeName)?.EntityType == EntityType.Class;
 		}
 
 		void PatchExtensionShortNames ()
@@ -1189,6 +1213,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		void RegisterNominal (XElement elem)
 		{
+			var isClass = elem.Attribute ("kind").Value == "class";
 			var builder = new StringBuilder ();
 			while (elem != null) {
 				if (builder.Length > 0)
@@ -1197,7 +1222,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				builder.Insert (0, namePart);
 				elem = elem.Parent;
 			}
-			nominalTypes.Add (builder.ToString ());
+			var typeName = builder.ToString ();
+			nominalTypes.Add (typeName);
+			if (isClass)
+				classes.Add (typeName);
 		}
 
 		void AddAssociatedTypeToCurrentElement (XElement elem)
