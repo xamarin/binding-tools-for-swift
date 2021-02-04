@@ -179,6 +179,7 @@
     <Compile Include="SwiftInterfaceReflector\ParseException.cs" />
     <Compile Include="SwiftXmlReflection\OperatorDeclaration.cs" />
     <Compile Include="TypeMapping\ModuleDatabase.cs" />
+    <Compile Include="SwiftInterfaceReflector\IModuleLoader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
