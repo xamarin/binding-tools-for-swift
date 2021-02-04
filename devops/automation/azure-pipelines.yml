@@ -51,6 +51,7 @@ jobs:
       btfsTop="$(Build.SourcesDirectory)/binding-tools-for-swift"
       echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
       echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
+      echo "$(System.PullRequest.SourceBranch)"
     displayName: 'Configure build'
 
   - bash: |
@@ -241,6 +242,7 @@ jobs:
       btfsTop="$(System.DefaultWorkingDirectory)/binding-tools-for-swift"
       echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
       echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
+      echo "$(System.PullRequest.SourceBranch)"
     displayName: 'Configure build'
 
   - task: DownloadPipelineArtifact@2
