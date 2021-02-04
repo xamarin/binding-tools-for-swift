@@ -26,8 +26,77 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		const string kModuleName = "module-name";
 		const string kTarget = "target";
-
 		const string kIgnore = "IGNORE";
+		const string kInheritanceKind = "inheritanceKind";
+		const string kModule = "module";
+		const string kFunc = "func";
+		const string kType = "type";
+		const string kName = "name";
+		const string kFinal = "final";
+		const string kPublic = "public";
+		const string kPrivate = "private";
+		const string kInternal = "internal";
+		const string kOpen = "open";
+		const string kFilePrivate = "fileprivate";
+		const string kStatic = "static";
+		const string kIsStatic = "isStatic";
+		const string kOptional = "optional";
+		const string kObjC = "objc";
+		const string kExtension = "extension";
+		const string kProtocol = "protocol";
+		const string kClass = "class";
+		const string kInnerClasses = "innerclasses";
+		const string kStruct = "struct";
+		const string kInnerStructs = "innerstructs";
+		const string kEnum = "enum";
+		const string kInnerEnums = "innerenums";
+		const string kMutating = "mutating";
+		const string kRequired = "required";
+		const string kAssociatedTypes = "associatedtypes";
+		const string kAssociatedType = "associatedtype";
+		const string kDefaultType = "defaulttype";
+		const string kConformingProtocols = "conformingprotocols";
+		const string kConformingProtocol = "conformingprotocol";
+		const string kMembers = "members";
+		const string kConvenience = "convenience";
+		const string kParameterLists = "parameterlists";
+		const string kParameterList = "parameterlist";
+		const string kParameter = "parameter";
+		const string kParam = "param";
+		const string kGenericParameters = "genericparameters";
+		const string kWhere = "where";
+		const string kRelationship = "relationship";
+		const string kEquals = "equals";
+		const string kInherits = "inherits";
+		const string kInherit = "inherit";
+		const string kIndex = "index";
+		const string kGetSubscript = "get_subscript";
+		const string kSetSubscript = "set_subscript";
+		const string kOperator = "operator";
+		const string kLittlePrefix = "prefix";
+		const string kLittlePostfix = "postfix";
+		const string kPrefix = "Prefix";
+		const string kPostfix = "Postfix";
+		const string kInfix = "Infix";
+		const string kDotCtor = ".ctor";
+		const string kDotDtor = ".dotr";
+		const string kNewValue = "newValue";
+		const string kOperatorKind = "operatorKind";
+		const string kPublicName = "publicName";
+		const string kPrivateName = "privateName";
+		const string kKind = "kind";
+		const string kNone = "None";
+		const string kLittleUnknown = "unknown";
+		const string kUnknown = "Unknown";
+		const string kOnType = "onType";
+		const string kAccessibility = "accessibility";
+		const string kIsVariadic = "isVariadic";
+		const string kTypeDeclaration = "typedeclaration";
+		const string kProperty = "property";
+		const string kStorage = "storage";
+		const string kComputed = "Computed";
+		const string kEscaping = "escaping";
+		const string kAutoClosure = "autoclosure";
 
 		Stack<XElement> currentElement = new Stack<XElement> ();
 		Version interfaceVersion;
@@ -72,7 +141,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var fileName = Path.GetFileName (inFile);
 				moduleName = fileName.Split ('.') [0];
 
-				var module = new XElement ("module");
+				var module = new XElement (kModule);
 				currentElement.Push (module);
 
 				var charStream = CharStreams.fromPath (inFile);
@@ -92,7 +161,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				PatchExtensionShortNames ();
 				PatchPossibleBadInheritance ();
 
-				module.Add (new XAttribute ("name", moduleName));
+				module.Add (new XAttribute (kName, moduleName));
 				SetLanguageVersion (module);
 
 				var tlElement = new XElement ("xamreflect", new XAttribute ("version", "1.0"),
@@ -118,9 +187,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isDeprecated = false;
 			var isUnavailable = false;
 			var isFinal = context.final_clause () != null;
-			var isObjC = AttributesContains (context.attributes (), "objc");
+			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var typeDecl = ToTypeDeclaration ("class", context.class_name ().GetText (),
+			var typeDecl = ToTypeDeclaration (kClass, context.class_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
 			if (generics != null)
@@ -131,7 +200,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void ExitClass_declaration ([NotNull] Class_declarationContext context)
 		{
 			var classElem = currentElement.Pop ();
-			var givenClassName = classElem.Attribute ("name").Value;
+			var givenClassName = classElem.Attribute (kName).Value;
 			var actualClassName = context.class_name ().GetText ();
 			if (givenClassName != actualClassName)
 				throw new ParseException ($"class name mismatch on exit declaration: expected {actualClassName} but got {givenClassName}");
@@ -143,9 +212,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isDeprecated = false;
 			var isUnavailable = false;
 			var isFinal = true; // structs are always final
-			var isObjC = AttributesContains (context.attributes (), "objc");
+			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var typeDecl = ToTypeDeclaration ("struct", context.struct_name ().GetText (),
+			var typeDecl = ToTypeDeclaration (kStruct, context.struct_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
 			if (generics != null)
@@ -156,7 +225,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void ExitStruct_declaration ([NotNull] Struct_declarationContext context)
 		{
 			var structElem = currentElement.Pop ();
-			var givenStructName = structElem.Attribute ("name").Value;
+			var givenStructName = structElem.Attribute (kName).Value;
 			var actualStructName = context.struct_name ().GetText ();
 			if (givenStructName != actualStructName)
 				throw new ParseException ($"struct name mismatch on exit declaration: expected {actualStructName} but got {givenStructName}");
@@ -168,10 +237,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isDeprecated = false;
 			var isUnavailable = false;
 			var isFinal = true; // enums are always final
-			var isObjC = AttributesContains (context.attributes (), "objc");
+			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
 
-			var typeDecl = ToTypeDeclaration ("enum", EnumName (context),
+			var typeDecl = ToTypeDeclaration (kEnum, EnumName (context),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null);
 			var generics = HandleGenerics (EnumGenericParameters (context), EnumGenericWhere (context));
 			if (generics != null)
@@ -182,7 +251,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void ExitEnum_declaration ([NotNull] Enum_declarationContext context)
 		{
 			var enumElem = currentElement.Pop ();
-			var givenEnumName = enumElem.Attribute ("name").Value;
+			var givenEnumName = enumElem.Attribute (kName).Value;
 			var actualEnumName = EnumName (context);
 			if (givenEnumName != actualEnumName)
 				throw new ParseException ($"enum name mismatch on exit declaration: expected {actualEnumName} but got {givenEnumName}");
@@ -202,9 +271,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isDeprecated = false;
 			var isUnavailable = false;
 			var isFinal = true; // protocols don't have final
-			var isObjC = AttributesContains (context.attributes (), "objc");
+			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var typeDecl = ToTypeDeclaration ("protocol", context.protocol_name ().GetText (),
+			var typeDecl = ToTypeDeclaration (kProtocol, context.protocol_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null);
 			currentElement.Push (typeDecl);
 		}
@@ -212,11 +281,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void ExitProtocol_declaration ([NotNull] Protocol_declarationContext context)
 		{
 			var protocolElem = currentElement.Pop ();
-			var givenProtocolName = protocolElem.Attribute ("name").Value;
+			var givenProtocolName = protocolElem.Attribute (kName).Value;
 			var actualProtocolName = context.protocol_name ().GetText ();
 			if (givenProtocolName != actualProtocolName)
 				throw new ParseException ($"protocol name mismatch on exit declaration: expected {actualProtocolName} but got {givenProtocolName}");
-			if (currentElement.Peek ().Name != "module")
+			if (currentElement.Peek ().Name != kModule)
 				throw new ParseException ($"Expected a module on the element stack but found {currentElement.Peek ()}");
 			currentElement.Peek ().Add (protocolElem);
 		}
@@ -225,12 +294,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var conformingProtocols = GatherConformingProtocols (context.type_inheritance_clause ());
 			var defaultDefn = context.typealias_assignment ()?.type ().GetText ();
-			var assocType = new XElement ("associatedtype",
-				new XAttribute ("name", context.typealias_name ().GetText ()));
+			var assocType = new XElement (kAssociatedType,
+				new XAttribute (kName, context.typealias_name ().GetText ()));
 			if (defaultDefn != null)
-				assocType.Add (new XAttribute ("defaulttype", defaultDefn));
+				assocType.Add (new XAttribute (kDefaultType, defaultDefn));
 			if (conformingProtocols != null && conformingProtocols.Count > 0) {
-				var confomingElem = new XElement ("conformingprotocols", conformingProtocols.ToArray ());
+				var confomingElem = new XElement (kConformingProtocols, conformingProtocols.ToArray ());
 				assocType.Add (confomingElem);
 			}
 			AddAssociatedTypeToCurrentElement (assocType);
@@ -249,7 +318,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			while (inheritance != null) {
 				var name = inheritance.type_identifier ()?.GetText ();
 				if (name != null)
-					elems.Add (new XElement ("conformingprotocol", new XAttribute ("name", name)));
+					elems.Add (new XElement (kConformingProtocol, new XAttribute (kName, name)));
 				inheritance = context.type_inheritance_list ();
 			}
 			return elems;
@@ -277,14 +346,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var isStatic = IsStaticOrClass (head.declaration_modifiers ());
 			var hasThrows = signature.throws_clause () != null || signature.rethrows_clause () != null;
-			var isFinal = ModifiersContains (head.declaration_modifiers (), "final");
-			var isOptional = ModifiersContains (head.declaration_modifiers (), "optional");
+			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
+			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
 			var isConvenienceInit = false;
-			var operatorKind = "None";
+			var operatorKind = kNone;
 			var isDeprecated = false;
 			var isUnavailable = false;
-			var isMutating = ModifiersContains (head.declaration_modifiers (), "mutating");
-			var isRequired = ModifiersContains (head.declaration_modifiers (), "required");
+			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
+			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = false;
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
@@ -307,9 +376,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		void ExitFunctionWithName (string expectedName)
 		{
 			var functionDecl = currentElement.Pop ();
-			if (functionDecl.Name != "func")
+			if (functionDecl.Name != kFunc)
 				throw new ParseException ($"Expected a func node but got a {functionDecl.Name}");
-			var givenName = functionDecl.Attribute ("name");
+			var givenName = functionDecl.Attribute (kName);
 			if (givenName == null)
 				throw new ParseException ("func node doesn't have a name element");
 			if (givenName.Value != expectedName)
@@ -321,7 +390,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		XElement PeekAsFunction ()
 		{
 			var functionDecl = currentElement.Peek ();
-			if (functionDecl.Name != "func")
+			if (functionDecl.Name != kFunc)
 				throw new ParseException ($"Expected a func node but got a {functionDecl.Name}");
 			return functionDecl;
 		}
@@ -329,35 +398,35 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		void AddElementToParentMembers (XElement elem)
 		{
 			var parent = currentElement.Peek ();
-			var memberElem = GetOrCreate (parent, "members");
+			var memberElem = GetOrCreate (parent, kMembers);
 			memberElem.Add (elem);
 		}
 
 		bool IsInInstance ()
 		{
 			var parent = currentElement.Peek ();
-			return parent.Name != "module";
+			return parent.Name != kModule;
 		}
 
 		public override void EnterInitializer_declaration ([NotNull] Initializer_declarationContext context)
 		{
 			var head = context.initializer_head ();
 
-			var name = ".ctor";
+			var name = kDotCtor;
 
 			// may be optional, otherwise return type is the instance type
 			var returnType = GetInstanceName () + (head.OpQuestion () != null ? "?" : "");
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var isStatic = true;
 			var hasThrows = context.throws_clause () != null || context.rethrows_clause () != null;
-			var isFinal = ModifiersContains (head.declaration_modifiers (), "final");
-			var isOptional = ModifiersContains (head.declaration_modifiers (), "optional");
-			var isConvenienceInit = ModifiersContains (head.declaration_modifiers (), "convenience");
-			var operatorKind = "None";
+			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
+			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
+			var isConvenienceInit = ModifiersContains (head.declaration_modifiers (), kConvenience);
+			var operatorKind = kNone;
 			var isDeprecated = false;
 			var isUnavailable = false;
-			var isMutating = ModifiersContains (head.declaration_modifiers (), "mutating");
-			var isRequired = ModifiersContains (head.declaration_modifiers (), "required");
+			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
+			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = false;
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
@@ -367,26 +436,26 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void ExitInitializer_declaration ([NotNull] Initializer_declarationContext context)
 		{
-			ExitFunctionWithName (".ctor");
+			ExitFunctionWithName (kDotCtor);
 		}
 
 		public override void EnterDeinitializer_declaration ([NotNull] Deinitializer_declarationContext context)
 		{
-			var name = ".dtor";
+			var name = kDotDtor;
 			var returnType = "()";
 			// this might have to be forced to public, otherwise deinit is always internal, which it
 			// decidedly is NOT.
-			var accessibility = "Public";
+			var accessibility = kPublic;
 			var isStatic = false;
 			var hasThrows = false;
-			var isFinal = ModifiersContains (context.declaration_modifiers (), "final");
-			var isOptional = ModifiersContains (context.declaration_modifiers (), "optional");
+			var isFinal = ModifiersContains (context.declaration_modifiers (), kFinal);
+			var isOptional = ModifiersContains (context.declaration_modifiers (), kOptional);
 			var isConvenienceInit = false;
-			var operatorKind = "None";
+			var operatorKind = kNone;
 			var isDeprecated = false;
 			var isUnavailable = false;
-			var isMutating = ModifiersContains (context.declaration_modifiers (), "mutating");
-			var isRequired = ModifiersContains (context.declaration_modifiers (), "required");
+			var isMutating = ModifiersContains (context.declaration_modifiers (), kMutating);
+			var isRequired = ModifiersContains (context.declaration_modifiers (), kRequired);
 			var isProperty = false;
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
@@ -394,10 +463,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 			// always has two parameter lists: (instance)()
 			currentElement.Push (functionDecl);
-			var parameterLists = new XElement ("parameterlists", MakeInstanceParameterList ());
+			var parameterLists = new XElement (kParameterLists, MakeInstanceParameterList ());
 			currentElement.Pop ();
 
-			parameterLists.Add (new XElement ("parameterlist", new XAttribute ("index", "1")));
+			parameterLists.Add (new XElement (kParameterList, new XAttribute (kIndex, "1")));
 			functionDecl.Add (parameterLists);
 
 			currentElement.Push (functionDecl);
@@ -405,7 +474,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void ExitDeinitializer_declaration ([NotNull] Deinitializer_declarationContext context)
 		{
-			ExitFunctionWithName (".dtor");
+			ExitFunctionWithName (kDotDtor);
 		}
 
 		public override void EnterSubscript_declaration ([NotNull] Subscript_declarationContext context)
@@ -425,19 +494,19 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isUnavailable = false;
 			var isStatic = false;
 			var hasThrows = false;
-			var isFinal = ModifiersContains (head.declaration_modifiers (), "final");
-			var isOptional = ModifiersContains (head.declaration_modifiers (), "optional");
-			var isMutating = ModifiersContains (head.declaration_modifiers (), "mutating");
-			var isRequired = ModifiersContains (head.declaration_modifiers (), "required");
+			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
+			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
+			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
+			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
 
 			var getParamList = MakeParamterList (head.parameter_clause ().parameter_list (), 1);
-			var getFunc = ToFunctionDeclaration ("get_subscript", resultType, accessibility, isStatic, hasThrows,
-				isFinal, isOptional, isConvenienceInit: false, objCSelector: null, "None",
+			var getFunc = ToFunctionDeclaration (kGetSubscript, resultType, accessibility, isStatic, hasThrows,
+				isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty);
 
 			currentElement.Push (getFunc);
-			var getParamLists = new XElement ("parameterlists", MakeInstanceParameterList (), getParamList);
+			var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
 			currentElement.Pop ();
 
 			getFunc.Add (getParamLists);
@@ -451,18 +520,18 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (setParamList != null) {
 				var index = setParamList.Elements ().Count ();
 				var parmName = context.getter_setter_keyword_block ().setter_keyword_clause ().new_value_name ()?.GetText ()
-					?? "newValue";
-				var newValueParam = new XElement ("parameter", new XAttribute (nameof (index), index.ToString ()),
-					new XAttribute ("type", resultType), new XAttribute ("publicName", parmName),
-					new XAttribute ("privateName", parmName), new XAttribute ("isVariadic", false));
+					?? kNewValue;
+				var newValueParam = new XElement (kParameter, new XAttribute (nameof (index), index.ToString ()),
+					new XAttribute (kType, resultType), new XAttribute (kPublicName, parmName),
+					new XAttribute (kPrivateName, parmName), new XAttribute (kIsVariadic, false));
 				setParamList.Add (newValueParam);
 
-				var setFunc = ToFunctionDeclaration ("set_subscript", "()", accessibility, isStatic, hasThrows,
-					isFinal, isOptional, isConvenienceInit: false, objCSelector: null, "None",
+				var setFunc = ToFunctionDeclaration (kSetSubscript, "()", accessibility, isStatic, hasThrows,
+					isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
 					isDeprecated, isUnavailable, isMutating, isRequired, isProperty);
 
 				currentElement.Push (setFunc);
-				var setParamLists = new XElement ("parameterlists", MakeInstanceParameterList (), setParamList);
+				var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
 				currentElement.Pop ();
 
 				setFunc.Add (setParamLists);
@@ -485,54 +554,54 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var isDeprecated = false;
 			var isUnavailable = false;
-			var isStatic = ModifiersContains (head.declaration_modifiers (), "static");
+			var isStatic = ModifiersContains (head.declaration_modifiers (), kStatic);
 			var hasThrows = false;
-			var isFinal = ModifiersContains (head.declaration_modifiers (), "final");
+			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
 			var isLet = head.let_clause () != null;
-			var isOptional = ModifiersContains (head.declaration_modifiers (), "optional");
-			var isMutating = ModifiersContains (head.declaration_modifiers (), "mutating");
-			var isRequired = ModifiersContains (head.declaration_modifiers (), "required");
+			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
+			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
+			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
 
-			var getParamList = new XElement ("parameterlist", new XAttribute ("index", "1"));
+			var getParamList = new XElement (kParameterList, new XAttribute (kIndex, "1"));
 			var getFunc = ToFunctionDeclaration ("get_" + context.variable_name ().GetText (),
 				resultType, accessibility, isStatic, hasThrows, isFinal, isOptional,
-				isConvenienceInit: false, objCSelector: null, operatorKind: "None", isDeprecated,
+				isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
 				isUnavailable, isMutating, isRequired, isProperty);
 
 			currentElement.Push (getFunc);
-			var getParamLists = new XElement ("parameterlists", MakeInstanceParameterList (), getParamList);
+			var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
 			currentElement.Pop ();
 			getFunc.Add (getParamLists);
 			AddElementToParentMembers (getFunc);
 
 			var setParamList = context.getter_setter_keyword_block ()?.setter_keyword_clause () != null ?
-				new XElement ("parameterlist", new XAttribute ("index", "1")) : null;
+				new XElement (kParameterList, new XAttribute (kIndex, "1")) : null;
 
 			if (setParamList != null) {
 				var parmName = context.getter_setter_keyword_block ().setter_keyword_clause ().new_value_name ()?.GetText ()
-					?? "newValue";
-				var newValueParam = new XElement ("parameter", new XAttribute ("index", "0"),
-					new XAttribute ("type", resultType), new XAttribute ("publicName", parmName),
-					new XAttribute ("privateName", parmName), new XAttribute ("isVariadic", false));
+					?? kNewValue;
+				var newValueParam = new XElement (kParameter, new XAttribute (kIndex, "0"),
+					new XAttribute (kType, resultType), new XAttribute (kPublicName, parmName),
+					new XAttribute (kPrivateName, parmName), new XAttribute (kIsVariadic, false));
 				setParamList.Add (newValueParam);
 				var setFunc = ToFunctionDeclaration ("set_" + context.variable_name ().GetText (),
 					"()", accessibility, isStatic, hasThrows, isFinal, isOptional,
-					isConvenienceInit: false, objCSelector: null, operatorKind: "None", isDeprecated,
+					isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
 					isUnavailable, isMutating, isRequired, isProperty);
 
 				currentElement.Push (setFunc);
-				var setParamLists = new XElement ("parameterlists", MakeInstanceParameterList (), setParamList);
+				var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
 				currentElement.Pop ();
 
 				setFunc.Add (setParamLists);
 				AddElementToParentMembers (setFunc);
 			}
 
-			var prop = new XElement ("property", new XAttribute ("name", context.variable_name ().GetText ()),
+			var prop = new XElement (kProperty, new XAttribute (kName, context.variable_name ().GetText ()),
 				new XAttribute (nameof (accessibility), accessibility),
-				new XAttribute ("type", resultType),
-				new XAttribute ("storage", "Computed"),
+				new XAttribute (kType, resultType),
+				new XAttribute (kStorage, kComputed),
 				new XAttribute (nameof (isStatic), XmlBool (isStatic)),
 				new XAttribute (nameof (isLet), XmlBool (isLet)),
 				new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)),
@@ -548,14 +617,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var accessibility = ToAccess (context.access_level_modifier ());
 			var onType = context.type_identifier ().GetText ();
 			var inherits = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: true);
-			// why, you say, why put a "kind" tag into an extension?
+			// why, you say, why put a kKind tag into an extension?
 			// The reason is simple: this is a hack. Most of the contents
 			// of an extension are the same as a class and as a result we can
 			// pretend that it's a class and everything will work to fill it out
 			// using the class/struct/enum code for members.
-			var extensionElem = new XElement ("extension", accessibility,
+			var extensionElem = new XElement (kExtension, accessibility,
 				new XAttribute (nameof (onType), onType),
-				new XAttribute ("kind", "class"));
+				new XAttribute (kKind, kClass));
 			if (inherits?.Count > 0)
 				extensionElem.Add (new XElement (nameof (inherits), inherits.ToArray ()));
 			currentElement.Push (extensionElem);
@@ -565,13 +634,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void ExitExtension_declaration ([NotNull] Extension_declarationContext context)
 		{
 			var extensionElem = currentElement.Pop ();
-			var onType = extensionElem.Attribute ("onType");
+			var onType = extensionElem.Attribute (kOnType);
 			var givenOnType = onType.Value;
 			var actualOnType = context.type_identifier ().GetText ();
 			if (givenOnType != actualOnType)
 				throw new Exception ($"extension type mismatch on exit declaration: expected {actualOnType} but got {givenOnType}");
-			// remove the "kind" attribute - you've done your job.
-			extensionElem.Attribute ("kind")?.Remove ();
+			// remove the kKind attribute - you've done your job.
+			extensionElem.Attribute (kKind)?.Remove ();
 
 			currentElement.Peek ().Add (extensionElem);
 		}
@@ -599,27 +668,27 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			if (context == null)
 				return null;
-			return GeneralOperator ("Infix", context.@operator (), context.infix_operator_group ()?.GetText () ?? "");
+			return GeneralOperator (kInfix, context.@operator (), context.infix_operator_group ()?.GetText () ?? "");
 		}
 
 		XElement PostfixOperator (Postfix_operator_declarationContext context)
 		{
 			if (context == null)
 				return null;
-			return GeneralOperator ("Postfix", context.@operator (), "");
+			return GeneralOperator (kPostfix, context.@operator (), "");
 		}
 
 		XElement PrefixOperator (Prefix_operator_declarationContext context)
 		{
 			if (context == null)
 				return null;
-			return GeneralOperator ("Prefix", context.@operator (), "");
+			return GeneralOperator (kPrefix, context.@operator (), "");
 		}
 
 		XElement GeneralOperator (string operatorKind, OperatorContext context, string precedenceGroup)
 		{
-			return new XElement ("operator",
-				new XAttribute ("name", context.Operator ().GetText ()),
+			return new XElement (kOperator,
+				new XAttribute (kName, context.Operator ().GetText ()),
 				new XAttribute (nameof (operatorKind), operatorKind),
 				new XAttribute (nameof (precedenceGroup), precedenceGroup));
 		}
@@ -628,10 +697,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			if (genericContext == null)
 				return null;
-			var genericElem = new XElement ("genericparameters");
+			var genericElem = new XElement (kGenericParameters);
 			foreach (var generic in genericContext.generic_parameter_list ().generic_parameter ()) {
 				var name = generic.type_name ().GetText ();
-				var genParam = new XElement ("param", new XAttribute ("name", name));
+				var genParam = new XElement (kParam, new XAttribute (kName, name));
 				genericElem.Add (genParam);
 				var whereType = generic.type_identifier ()?.GetText () ??
 					generic.protocol_composition_type ()?.GetText ();
@@ -663,15 +732,15 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		XElement MakeConformanceWhere (string name, string from)
 		{
-			return new XElement ("where", new XAttribute (nameof (name), name),
-				new XAttribute ("relationship", "inherits"),
+			return new XElement (kWhere, new XAttribute (nameof (name), name),
+				new XAttribute (kRelationship, kInherits),
 				new XAttribute (nameof (from), from));
 		}
 
 		XElement MakeEqualityWhere (string firsttype, string secondtype)
 		{
-			return new XElement ("where", new XAttribute (nameof (firsttype), firsttype),
-				new XAttribute ("relationship", "equals"),
+			return new XElement (kWhere, new XAttribute (nameof (firsttype), firsttype),
+				new XAttribute (kRelationship, kEquals),
 				new XAttribute (nameof (secondtype), secondtype));
 		}
 
@@ -702,7 +771,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (ShouldIgnore ())
 				return;
 
-			var parameterLists = new XElement ("parameterlists");
+			var parameterLists = new XElement (kParameterLists);
 			XElement instanceList = MakeInstanceParameterList ();
 			var formalIndex = 0;
 			if (instanceList != null) {
@@ -718,7 +787,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		XElement MakeParamterList (Parameter_listContext parmList, int index)
 		{
-			var formalArguments = new XElement ("parameterlist", new XAttribute ("index", index.ToString ()));
+			var formalArguments = new XElement (kParameterList, new XAttribute (kIndex, index.ToString ()));
 
 			if (parmList != null) {
 				var i = 0;
@@ -734,22 +803,22 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		XElement MakeInstanceParameterList ()
 		{
 			var topElem = currentElement.Peek ();
-			if (topElem.Name == "module")
+			if (topElem.Name == kModule)
 				return null;
-			if (topElem.Name != "func")
+			if (topElem.Name != kFunc)
 				throw new ParseException ($"Expecting a func node but got {topElem.Name}");
 			if (NominalParentAfter (0) == null)
 				return null;
-			var funcName = topElem.Attribute ("name").Value;
-			var isStatic = topElem.Attribute ("isStatic").Value == "true";
+			var funcName = topElem.Attribute (kName).Value;
+			var isStatic = topElem.Attribute (kIsStatic).Value == "true";
 			var isCtorDtor = IsCtorDtor (funcName);
-			var isClass = NominalParentAfter (0).Attribute ("kind").Value == "class";
+			var isClass = NominalParentAfter (0).Attribute (kKind).Value == kClass;
 			var instanceName = GetInstanceName ();
 			var type = $"{(isClass ? "" : "inout ")}{instanceName}{(isCtorDtor ? ".Type" : "")}";
-			var parameter = new XElement ("parameter", new XAttribute ("type", type),
-				new XAttribute ("index", "0"), new XAttribute ("publicName", ""),
-				new XAttribute ("privateName", "self"), new XAttribute ("isVariadic", "false"));
-			return new XElement ("parameterlist", new XAttribute ("index", "0"), parameter);
+			var parameter = new XElement (kParameter, new XAttribute (kType, type),
+				new XAttribute (kIndex, "0"), new XAttribute (kPublicName, ""),
+				new XAttribute (kPrivateName, "self"), new XAttribute (kIsVariadic, "false"));
+			return new XElement (kParameterList, new XAttribute (kIndex, "0"), parameter);
 		}
 
 		XElement NominalParentAfter (int start)
@@ -764,8 +833,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		bool IsNominal (XElement elem)
 		{
-			var kind = elem.Attribute ("kind")?.Value;
-			return kind != null && (kind == "class" || kind == "struct" || kind == "enum" || kind == "protocol");
+			var kind = elem.Attribute (kKind)?.Value;
+			return kind != null && (kind == kClass || kind == kStruct || kind == kEnum || kind == kProtocol);
 		}
 
 		string GetInstanceName ()
@@ -774,12 +843,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			for (int i = 0; i < currentElement.Count; i++) {
 				var elem = currentElement.ElementAt (i);
 				if (IsNominal (elem)) {
-					if (elem.Name == "extension")
-						return elem.Attribute ("onType").Value;
+					if (elem.Name == kExtension)
+						return elem.Attribute (kOnType).Value;
 					if (nameBuffer.Length > 0)
 						nameBuffer.Insert (0, '.');
-					nameBuffer.Insert (0, elem.Attribute ("name").Value);
-					var generics = elem.Element ("genericparameters");
+					nameBuffer.Insert (0, elem.Attribute (kName).Value);
+					var generics = elem.Element (kGenericParameters);
 					if (generics != null) {
 						AddGenericsToName (nameBuffer, generics);
 					}
@@ -809,7 +878,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		IEnumerable<string> GenericNames (XElement generics)
 		{
-			return generics.Elements ().Where (elem => elem.Name == "param").Select (elem => elem.Attribute ("name").Value);
+			return generics.Elements ().Where (elem => elem.Name == kParam).Select (elem => elem.Attribute (kName).Value);
 		}
 
 		XElement ToParameterElement (ParameterContext context, int index)
@@ -820,8 +889,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var publicName = context.external_parameter_name ()?.GetText () ?? "";
 			var privateName = context.local_parameter_name ()?.GetText () ?? "";
 			var isVariadic = context.range_operator () != null;
-			var isEscaping = AttributesContains (typeAnnotation.attributes (), "escaping");
-			var isAutoClosure = AttributesContains (typeAnnotation.attributes (), "autoclosure");
+			var isEscaping = AttributesContains (typeAnnotation.attributes (), kEscaping);
+			var isAutoClosure = AttributesContains (typeAnnotation.attributes (), kAutoClosure);
 			var typeBuilder = new StringBuilder ();
 			if (isEscaping)
 				typeBuilder.Append ("@escaping[] ");
@@ -832,7 +901,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			typeBuilder.Append (type);
 			type = typeBuilder.ToString ();
 
-			var paramElement = new XElement ("parameter", new XAttribute (nameof (index), index.ToString ()),
+			var paramElement = new XElement (kParameter, new XAttribute (nameof (index), index.ToString ()),
 				new XAttribute (nameof (type), type), new XAttribute (nameof (publicName), publicName),
 				new XAttribute (nameof (privateName), privateName), new XAttribute (nameof (isVariadic), XmlBool (isVariadic)));
 			return paramElement;
@@ -845,12 +914,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				return inheritance;
 			var list = context.type_inheritance_list ();
 			while (list != null) {
-				var inheritanceKind = forceProtocolInheritance ? "protocol" :
-					(inheritance.Count > 0 ? "protocol" : "unknown");
-				var elem = new XElement ("inherit", new XAttribute ("type", list.type_identifier ().GetText ()),
+				var inheritanceKind = forceProtocolInheritance ? kProtocol :
+					(inheritance.Count > 0 ? kProtocol : kLittleUnknown);
+				var elem = new XElement (kInherit, new XAttribute (kType, list.type_identifier ().GetText ()),
 					new XAttribute (nameof (inheritanceKind), inheritanceKind));
 				inheritance.Add (elem);
-				if (inheritanceKind == "unknown")
+				if (inheritanceKind == kLittleUnknown)
 					unknownInheritance.Add (elem);
 				list = list.type_inheritance_list ();
 			}
@@ -872,10 +941,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			xobjects.Add (new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)));
 			xobjects.Add (new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)));
 
-			xobjects.Add (new XElement ("members"));
+			xobjects.Add (new XElement (kMembers));
 			if (inherits != null && inherits.Count > 0)
 				xobjects.Add (new XElement (nameof (inherits), inherits.ToArray ()));
-			return new XElement ("typedeclaration", xobjects.ToArray ());
+			return new XElement (kTypeDeclaration, xobjects.ToArray ());
 		}
 
 
@@ -884,7 +953,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			string objCSelector, string operatorKind, bool isDeprecated, bool isUnavailable,
 			bool isMutating, bool isRequired, bool isProperty)
 		{
-			var decl = new XElement ("func", new XAttribute (nameof (name), name), new XAttribute (nameof (returnType), returnType),
+			var decl = new XElement (kFunc, new XAttribute (nameof (name), name), new XAttribute (nameof (returnType), returnType),
 				new XAttribute (nameof (accessibility), accessibility), new XAttribute (nameof (isStatic), XmlBool (isStatic)),
 				new XAttribute (nameof (hasThrows), XmlBool (hasThrows)), new XAttribute (nameof (isFinal), XmlBool (isFinal)),
 				new XAttribute (nameof (isOptional), XmlBool (isOptional)),
@@ -918,9 +987,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		void PatchPossibleBadInheritance ()
 		{
 			foreach (var inh in unknownInheritance) {
-				var type = inh.Attribute ("type").Value;
+				var type = inh.Attribute (kType).Value;
 				if (IsLocalClass (type) || IsGlobalClass (type))
-					inh.Attribute ("inheritanceKind").Value = "class";
+					inh.Attribute (kInheritanceKind).Value = kClass;
+				else
+					inh.Attribute (kInheritanceKind).Value = kProtocol;
 			}
 		}
 
@@ -937,9 +1008,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		void PatchExtensionShortNames ()
 		{
 			foreach (var ext in extensions) {
-				var onType = TypeSpecParser.Parse (ext.Attribute ("onType").Value);
+				var onType = TypeSpecParser.Parse (ext.Attribute (kOnType).Value);
 				var replacementType = FullyQualify (onType);
-				ext.Attribute ("onType").Value = replacementType.ToString ();
+				ext.Attribute (kOnType).Value = replacementType.ToString ();
 			}
 		}
 
@@ -1113,10 +1184,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		}
 
 		static Dictionary<string, string> accessMap = new Dictionary<string, string> () {
-			{ "public", "Public" },
-			{ "private", "Private" },
-			{ "open", "Open" },
-			{ "internal", "Internal" },
+			{ kPublic, kPublic },
+			{ kPrivate, kPrivate },
+			{ kOpen, kOpen },
+			{ kInternal, kInternal },
 		};
 
 		string AccessibilityFromModifiers (Declaration_modifiersContext context)
@@ -1134,17 +1205,17 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (context == null) {
 				var parentElem = NominalParentAfter (-1);
 				if (parentElem == null)
-					return "Internal";
-				if (parentElem.Attribute ("kind").Value == "protocol")
-					return "Public";
-				switch (parentElem.Attribute ("accessibility").Value) {
-				case "public":
-				case "internal":
-				case "open":
-					return "Internal";
-				case "private":
-				case "fileprivate":
-					return "Private";
+					return kInternal;
+				if (parentElem.Attribute (kKind).Value == kProtocol)
+					return kPublic;
+				switch (parentElem.Attribute (kAccessibility).Value) {
+				case kPublic:
+				case kInternal:
+				case kOpen:
+					return kInternal;
+				case kPrivate:
+				case kFilePrivate:
+					return kPrivate;
 				}
 			}
 			foreach (var modifer in context.declaration_modifier ()) {
@@ -1152,7 +1223,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				if (accessMap.TryGetValue (modifer.GetText (), out result))
 					return result;
 			}
-			return "internal";
+			return kInternal;
 		}
 
 		static bool ModifiersContains (Declaration_modifiersContext context, string match)
@@ -1182,43 +1253,43 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		static bool IsStaticOrClass (Declaration_modifiersContext context)
 		{
-			return ModifiersContainsAny (context, new string [] { "static", "class" });
+			return ModifiersContainsAny (context, new string [] { kStatic, kClass });
 		}
 
 		static bool IsFinal (Declaration_modifiersContext context)
 		{
-			return ModifiersContains (context, "final");
+			return ModifiersContains (context, kFinal);
 		}
 
 		void AddStructToCurrentElement (XElement elem)
 		{
-			var parentElement = GetOrCreateParentElement ("innerstructs");
+			var parentElement = GetOrCreateParentElement (kInnerStructs);
 			parentElement.Add (elem);
 			RegisterNominal (elem);
 		}
 
 		void AddEnumToCurrentElement (XElement elem)
 		{
-			var parentElement = GetOrCreateParentElement ("innerenums");
+			var parentElement = GetOrCreateParentElement (kInnerEnums);
 			parentElement.Add (elem);
 			RegisterNominal (elem);
 		}
 
 		void AddClassToCurrentElement (XElement elem)
 		{
-			var parentElement = GetOrCreateParentElement ("innerclasses");
+			var parentElement = GetOrCreateParentElement (kInnerClasses);
 			parentElement.Add (elem);
 			RegisterNominal (elem);
 		}
 
 		void RegisterNominal (XElement elem)
 		{
-			var isClass = elem.Attribute ("kind").Value == "class";
+			var isClass = elem.Attribute (kKind).Value == kClass;
 			var builder = new StringBuilder ();
 			while (elem != null) {
 				if (builder.Length > 0)
 					builder.Insert (0, '.');
-				var namePart = elem.Attribute ("name")?.Value ?? moduleName;
+				var namePart = elem.Attribute (kName)?.Value ?? moduleName;
 				builder.Insert (0, namePart);
 				elem = elem.Parent;
 			}
@@ -1230,14 +1301,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		void AddAssociatedTypeToCurrentElement (XElement elem)
 		{
-			var parentElement = GetOrCreateParentElement ("associatedtypes");
+			var parentElement = GetOrCreateParentElement (kAssociatedTypes);
 			parentElement.Add (elem);
 		}
 
 		XElement GetOrCreateParentElement (string parentContainerName)
 		{
 			var current = currentElement.Peek ();
-			if (current.Name == "module") {
+			if (current.Name == kModule) {
 				return current;
 			}
 			var container = GetOrCreate (current, parentContainerName);
@@ -1254,23 +1325,23 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		OperatorType LocalOperatorType (Function_declarationContext context)
 		{
 			var head = context.function_head ();
-			if (!ModifiersContains (head.declaration_modifiers (), "static"))
+			if (!ModifiersContains (head.declaration_modifiers (), kStatic))
 				return OperatorType.None;
 
 
 			// if the function declaration contains prefix 
-			if (ModifiersContains (head.declaration_modifiers (), "prefix")) {
+			if (ModifiersContains (head.declaration_modifiers (), kLittlePrefix)) {
 				return OperatorType.Prefix;
-			} else if (ModifiersContains (head.declaration_modifiers (), "postfix")) {
+			} else if (ModifiersContains (head.declaration_modifiers (), kLittlePostfix)) {
 				return OperatorType.Postfix;
 			}
 
 			var opName = context.function_name ().GetText ();
 
 			foreach (var op in operators) {
-				var targetName = op.Attribute ("name").Value;
-				var targetKind = op.Attribute ("operatorKind").Value;
-				if (opName == targetName && targetKind == "Infix")
+				var targetName = op.Attribute (kName).Value;
+				var targetKind = op.Attribute (kOperatorKind).Value;
+				if (opName == targetName && targetKind == kInfix)
 					return OperatorType.Infix;
 			}
 			return OperatorType.None;
@@ -1361,18 +1432,18 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		static string ToAccess (Access_level_modifierContext access)
 		{
-			var accessstr = access != null ? access.GetText () : "internal";
+			var accessstr = access != null ? access.GetText () : kInternal;
 			switch (accessstr) {
-			case "public":
-				return "Public";
-			case "private":
-				return "Private";
-			case "open":
-				return "Open";
-			case "internal":
-				return "Internal";
+			case kPublic:
+				return kPublic;
+			case kPrivate:
+				return kPrivate;
+			case kOpen:
+				return kOpen;
+			case kInternal:
+				return kInternal;
 			default:
-				return "Unknown";
+				return kUnknown;
 			}
 		}
 
