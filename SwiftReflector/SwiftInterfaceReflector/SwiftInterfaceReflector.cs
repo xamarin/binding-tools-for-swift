@@ -24,79 +24,89 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		// swift-module-flags: -target x86_64-apple-macosx10.9 -enable-objc-interop -ena
 		const string kSwiftModuleFlags = "// swift-module-flags:";
 
-		const string kModuleName = "module-name";
-		const string kTarget = "target";
-		const string kIgnore = "IGNORE";
-		const string kInheritanceKind = "inheritanceKind";
-		const string kModule = "module";
-		const string kFunc = "func";
-		const string kType = "type";
-		const string kName = "name";
-		const string kFinal = "final";
-		const string kPublic = "public";
-		const string kPrivate = "private";
-		const string kInternal = "internal";
-		const string kOpen = "open";
-		const string kFilePrivate = "fileprivate";
-		const string kStatic = "static";
-		const string kIsStatic = "isStatic";
-		const string kOptional = "optional";
-		const string kObjC = "objc";
-		const string kExtension = "extension";
-		const string kProtocol = "protocol";
-		const string kClass = "class";
-		const string kInnerClasses = "innerclasses";
-		const string kStruct = "struct";
-		const string kInnerStructs = "innerstructs";
-		const string kEnum = "enum";
-		const string kInnerEnums = "innerenums";
-		const string kMutating = "mutating";
-		const string kRequired = "required";
-		const string kAssociatedTypes = "associatedtypes";
-		const string kAssociatedType = "associatedtype";
-		const string kDefaultType = "defaulttype";
-		const string kConformingProtocols = "conformingprotocols";
-		const string kConformingProtocol = "conformingprotocol";
-		const string kMembers = "members";
-		const string kConvenience = "convenience";
-		const string kParameterLists = "parameterlists";
-		const string kParameterList = "parameterlist";
-		const string kParameter = "parameter";
-		const string kParam = "param";
-		const string kGenericParameters = "genericparameters";
-		const string kWhere = "where";
-		const string kRelationship = "relationship";
-		const string kEquals = "equals";
-		const string kInherits = "inherits";
-		const string kInherit = "inherit";
-		const string kIndex = "index";
-		const string kGetSubscript = "get_subscript";
-		const string kSetSubscript = "set_subscript";
-		const string kOperator = "operator";
-		const string kLittlePrefix = "prefix";
-		const string kLittlePostfix = "postfix";
-		const string kPrefix = "Prefix";
-		const string kPostfix = "Postfix";
-		const string kInfix = "Infix";
-		const string kDotCtor = ".ctor";
-		const string kDotDtor = ".dotr";
-		const string kNewValue = "newValue";
-		const string kOperatorKind = "operatorKind";
-		const string kPublicName = "publicName";
-		const string kPrivateName = "privateName";
-		const string kKind = "kind";
-		const string kNone = "None";
-		const string kLittleUnknown = "unknown";
-		const string kUnknown = "Unknown";
-		const string kOnType = "onType";
-		const string kAccessibility = "accessibility";
-		const string kIsVariadic = "isVariadic";
-		const string kTypeDeclaration = "typedeclaration";
-		const string kProperty = "property";
-		const string kStorage = "storage";
-		const string kComputed = "Computed";
-		const string kEscaping = "escaping";
-		const string kAutoClosure = "autoclosure";
+		internal const string kModuleName = "module-name";
+		internal const string kTarget = "target";
+		internal const string kIgnore = "IGNORE";
+		internal const string kInheritanceKind = "inheritanceKind";
+		internal const string kModule = "module";
+		internal const string kFunc = "func";
+		internal const string kType = "type";
+		internal const string kName = "name";
+		internal const string kFinal = "final";
+		internal const string kPublic = "public";
+		internal const string kPrivate = "private";
+		internal const string kInternal = "internal";
+		internal const string kOpen = "open";
+		internal const string kFilePrivate = "fileprivate";
+		internal const string kStatic = "static";
+		internal const string kIsStatic = "isStatic";
+		internal const string kOptional = "optional";
+		internal const string kObjC = "objc";
+		internal const string kExtension = "extension";
+		internal const string kProtocol = "protocol";
+		internal const string kClass = "class";
+		internal const string kInnerClasses = "innerclasses";
+		internal const string kStruct = "struct";
+		internal const string kInnerStructs = "innerstructs";
+		internal const string kEnum = "enum";
+		internal const string kInnerEnums = "innerenums";
+		internal const string kMutating = "mutating";
+		internal const string kRequired = "required";
+		internal const string kAssociatedTypes = "associatedtypes";
+		internal const string kAssociatedType = "associatedtype";
+		internal const string kDefaultType = "defaulttype";
+		internal const string kConformingProtocols = "conformingprotocols";
+		internal const string kConformingProtocol = "conformingprotocol";
+		internal const string kMembers = "members";
+		internal const string kConvenience = "convenience";
+		internal const string kParameterLists = "parameterlists";
+		internal const string kParameterList = "parameterlist";
+		internal const string kParameter = "parameter";
+		internal const string kParam = "param";
+		internal const string kGenericParameters = "genericparameters";
+		internal const string kWhere = "where";
+		internal const string kRelationship = "relationship";
+		internal const string kEquals = "equals";
+		internal const string kInherits = "inherits";
+		internal const string kInherit = "inherit";
+		internal const string kIndex = "index";
+		internal const string kGetSubscript = "get_subscript";
+		internal const string kSetSubscript = "set_subscript";
+		internal const string kOperator = "operator";
+		internal const string kLittlePrefix = "prefix";
+		internal const string kLittlePostfix = "postfix";
+		internal const string kPrefix = "Prefix";
+		internal const string kPostfix = "Postfix";
+		internal const string kInfix = "Infix";
+		internal const string kDotCtor = ".ctor";
+		internal const string kDotDtor = ".dotr";
+		internal const string kNewValue = "newValue";
+		internal const string kOperatorKind = "operatorKind";
+		internal const string kPublicName = "publicName";
+		internal const string kPrivateName = "privateName";
+		internal const string kKind = "kind";
+		internal const string kNone = "None";
+		internal const string kLittleUnknown = "unknown";
+		internal const string kUnknown = "Unknown";
+		internal const string kOnType = "onType";
+		internal const string kAccessibility = "accessibility";
+		internal const string kIsVariadic = "isVariadic";
+		internal const string kTypeDeclaration = "typedeclaration";
+		internal const string kProperty = "property";
+		internal const string kStorage = "storage";
+		internal const string kComputed = "Computed";
+		internal const string kEscaping = "escaping";
+		internal const string kAutoClosure = "autoclosure";
+		internal const string kAttributes = "attributes";
+		internal const string kAttribute = "attribute";
+		internal const string kAttributeParameterList = "attributeparameterlist";
+		internal const string kAttributeParameter = "attributeparameter";
+		internal const string kLabel = "Label";
+		internal const string kLiteral = "Literal";
+		internal const string kSeparator = "Separator";
+		internal const string kVersion = "Version";
+		internal const string kSublist = "Sublist";
+		internal const string kValue = "Value";
 
 		Stack<XElement> currentElement = new Stack<XElement> ();
 		Version interfaceVersion;
@@ -193,8 +203,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isFinal = context.final_clause () != null;
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
+			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kClass, context.class_name ().GetText (),
-				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null);
+				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
+				attributes);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
 			if (generics != null)
 				typeDecl.Add (generics);
@@ -218,8 +230,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isFinal = true; // structs are always final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
+			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kStruct, context.struct_name ().GetText (),
-				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null);
+				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null,
+				attributes);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
 			if (generics != null)
 				typeDecl.Add (generics);
@@ -243,9 +257,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isFinal = true; // enums are always final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-
+			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kEnum, EnumName (context),
-				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null);
+				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null,
+				attributes);
 			var generics = HandleGenerics (EnumGenericParameters (context), EnumGenericWhere (context));
 			if (generics != null)
 				typeDecl.Add (generics);
@@ -277,8 +292,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isFinal = true; // protocols don't have final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
+			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kProtocol, context.protocol_name ().GetText (),
-				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null);
+				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
+				attributes);
 			currentElement.Push (typeDecl);
 		}
 
@@ -359,9 +376,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = false;
+			var attributes = GatherAttributes (head.attributes ());
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
 			if (generics != null)
 				functionDecl.Add (generics);
@@ -432,9 +450,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = false;
+			var attributes = GatherAttributes (head.attributes ());
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty,
+				attributes);
 			currentElement.Push (functionDecl);
 		}
 
@@ -461,9 +481,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isMutating = ModifiersContains (context.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (context.declaration_modifiers (), kRequired);
 			var isProperty = false;
+			var attributes = GatherAttributes (context.attributes ());
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
 
 			// always has two parameter lists: (instance)()
 			currentElement.Push (functionDecl);
@@ -503,11 +524,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
+			var attributes = GatherAttributes (head.attributes ());
 
 			var getParamList = MakeParamterList (head.parameter_clause ().parameter_list (), 1);
 			var getFunc = ToFunctionDeclaration (kGetSubscript, resultType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
 
 			currentElement.Push (getFunc);
 			var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
@@ -532,7 +554,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				var setFunc = ToFunctionDeclaration (kSetSubscript, "()", accessibility, isStatic, hasThrows,
 					isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
-					isDeprecated, isUnavailable, isMutating, isRequired, isProperty);
+					isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
 
 				currentElement.Push (setFunc);
 				var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
@@ -566,12 +588,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
+			var attributes = GatherAttributes (head.attributes ());
 
 			var getParamList = new XElement (kParameterList, new XAttribute (kIndex, "1"));
 			var getFunc = ToFunctionDeclaration ("get_" + context.variable_name ().GetText (),
 				resultType, accessibility, isStatic, hasThrows, isFinal, isOptional,
 				isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
-				isUnavailable, isMutating, isRequired, isProperty);
+				isUnavailable, isMutating, isRequired, isProperty, attributes);
 
 			currentElement.Push (getFunc);
 			var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
@@ -592,7 +615,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var setFunc = ToFunctionDeclaration ("set_" + context.variable_name ().GetText (),
 					"()", accessibility, isStatic, hasThrows, isFinal, isOptional,
 					isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
-					isUnavailable, isMutating, isRequired, isProperty);
+					isUnavailable, isMutating, isRequired, isProperty, attributes);
 
 				currentElement.Push (setFunc);
 				var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
@@ -911,6 +934,74 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return paramElement;
 		}
 
+		XElement GatherAttributes (AttributesContext context)
+		{
+			if (context == null)
+				return null;
+			var attributes = new XElement (kAttributes);
+			foreach (var attr in context.attribute ()) {
+				var attrElement = GatherAttribute (attr);
+				if (attrElement != null)
+					attributes.Add (attrElement);
+			}
+			return attributes.HasElements ? attributes : null;
+		}
+
+		XElement GatherAttribute (AttributeContext context)
+		{
+			var attribute = new XElement (kAttribute, new XAttribute (kName, context.attribute_name ().GetText ()));
+			if (context.attribute_argument_clause () != null) {
+				var parameters = GatherParameters (context.attribute_argument_clause ()?.balanced_tokens ());
+				if (parameters != null)
+					attribute.Add (parameters);
+			}
+			return attribute;
+		}
+
+		XElement GatherParameters (Balanced_tokensContext context)
+		{
+			if (context == null)
+				return null;
+			var parameterlist = new XElement (kAttributeParameterList);
+
+			foreach (var balancedToken in context.balanced_token ()) {
+				var parameter = ToAttributeParameter (balancedToken);
+				if (parameter != null)
+					parameterlist.Add (parameter);
+			}
+			return parameterlist.HasElements ? parameterlist : null;
+		}
+
+		XElement ToAttributeParameter (Balanced_tokenContext context)
+		{
+			if (context.balanced_tokens () != null) {
+				var sublist = new XElement (kAttributeParameter, new XAttribute (kKind, kSublist));
+				var subparams = GatherParameters (context.balanced_tokens ());
+				if (subparams != null)
+					sublist.Add (subparams);
+				return sublist;
+			}
+
+			if (context.label_identifier () != null) {
+				var label = new XElement (kAttributeParameter, new XAttribute (kKind, kLabel),
+					new XAttribute (kValue, context.label_identifier ().GetText ()));
+				return label;
+			}
+
+			if (context.literal () != null) {
+				var literal = new XElement (kAttributeParameter, new XAttribute (kKind, kLiteral),
+					new XAttribute (kValue, context.literal ().GetText ()));
+				return literal;
+			}
+
+			if (context.Platform_name_platform_version () != null) {
+				var version = new XElement (kAttribute, new XAttribute (kKind, kVersion),
+					new XAttribute (kValue, context.Platform_name_platform_version ().GetText ()));
+			}
+
+			return null;
+		}
+
 		List<XElement> GatherInheritance (Type_inheritance_clauseContext context, bool forceProtocolInheritance)
 		{
 			var inheritance = new List<XElement> ();
@@ -932,7 +1023,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		}
 
 		XElement ToTypeDeclaration (string kind, string name, string accessibility, bool isObjC,
-			bool isFinal, bool isDeprecated, bool isUnavailable, List<XElement> inherits, XElement generics)
+			bool isFinal, bool isDeprecated, bool isUnavailable, List<XElement> inherits, XElement generics,
+			XElement attributes)
 		{
 			var xobjects = new List<XObject> ();
 			if (generics != null)
@@ -948,6 +1040,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			xobjects.Add (new XElement (kMembers));
 			if (inherits != null && inherits.Count > 0)
 				xobjects.Add (new XElement (nameof (inherits), inherits.ToArray ()));
+			if (attributes != null)
+				xobjects.Add (attributes);
 			return new XElement (kTypeDeclaration, xobjects.ToArray ());
 		}
 
@@ -955,7 +1049,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		XElement ToFunctionDeclaration (string name, string returnType, string accessibility,
 			bool isStatic, bool hasThrows, bool isFinal, bool isOptional, bool isConvenienceInit,
 			string objCSelector, string operatorKind, bool isDeprecated, bool isUnavailable,
-			bool isMutating, bool isRequired, bool isProperty)
+			bool isMutating, bool isRequired, bool isProperty, XElement attributes)
 		{
 			var decl = new XElement (kFunc, new XAttribute (nameof (name), name), new XAttribute (nameof (returnType), returnType),
 				new XAttribute (nameof (accessibility), accessibility), new XAttribute (nameof (isStatic), XmlBool (isStatic)),
@@ -973,6 +1067,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			}
 			if (objCSelector != null) {
 				decl.Add (new XAttribute (nameof (objCSelector), objCSelector));
+			}
+			if (attributes != null) {
+				decl.Add (attributes);
 			}
 			return decl;
 		}
