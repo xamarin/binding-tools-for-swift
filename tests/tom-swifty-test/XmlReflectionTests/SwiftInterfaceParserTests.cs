@@ -44,7 +44,7 @@ namespace XmlReflectionTests {
 			var file = files.FirstOrDefault (name => name.EndsWith (".swiftinterface", StringComparison.Ordinal));
 			if (file == null)
 				Assert.Fail ("no swiftinterface file");
-			reflector = new SwiftInterfaceReflector (typeDatabase);
+			reflector = new SwiftInterfaceReflector (typeDatabase, new NoLoadLoader ());
 			return reflector.Reflect (file);
 		}
 
@@ -261,6 +261,19 @@ public class Bar : Foo, Nifty {
 			Assert.AreEqual (InheritanceKind.Class, inh.InheritanceKind, "wrong inheritance kind from class");
 			inh = cl.Inheritance [1];
 			Assert.AreEqual (InheritanceKind.Protocol, inh.InheritanceKind, "wrong inheritance kind from protocol");
+		}
+
+		[Test]
+		public void WontLoadThisModuleHere ()
+		{
+			var swiftCode = @"
+import AVKit
+public class Bar {
+	public init () { }
+}
+";
+			SwiftInterfaceReflector reflector;
+			Assert.Throws<ParseException> (() => ReflectToModules (swiftCode, "SomeModule", out reflector));
 		}
 	}
 }

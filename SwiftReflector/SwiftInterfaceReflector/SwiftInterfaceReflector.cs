@@ -112,10 +112,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		List<XElement> unknownInheritance = new List<XElement> ();
 		string moduleName;
 		TypeDatabase typeDatabase;
+		IModuleLoader moduleLoader;
 
-		public SwiftInterfaceReflector (TypeDatabase typeDatabase)
+		public SwiftInterfaceReflector (TypeDatabase typeDatabase, IModuleLoader moduleLoader)
 		{
 			this.typeDatabase = Exceptions.ThrowOnNull (typeDatabase, nameof (typeDatabase));
+			this.moduleLoader = Exceptions.ThrowOnNull (moduleLoader, nameof (moduleLoader));
 		}
 
 		public void Reflect (string inFile, Stream outStm)
@@ -156,6 +158,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				if (module != currentElement.Peek ())
 					throw new ParseException ("Expected the final element to be the initial module");
+
+				LoadReferencedModules ();
 
 				PatchPossibleOperators ();
 				PatchExtensionShortNames ();
@@ -971,6 +975,20 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				decl.Add (new XAttribute (nameof (objCSelector), objCSelector));
 			}
 			return decl;
+		}
+
+		void LoadReferencedModules ()
+		{
+			var failures = new StringBuilder ();
+			foreach (var module in importModules) {
+				if (!moduleLoader.Load (module, typeDatabase)) {
+					if (failures.Length > 0)
+						failures.Append (", ");
+					failures.Append (module);
+				}
+			}
+			if (failures.Length > 0)
+				throw new ParseException ($"Unable to load the following module(s): {failures.ToString ()}");
 		}
 
 		void PatchPossibleOperators ()
