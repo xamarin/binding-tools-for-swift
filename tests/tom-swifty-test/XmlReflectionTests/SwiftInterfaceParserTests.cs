@@ -275,5 +275,33 @@ public class Bar {
 			SwiftInterfaceReflector reflector;
 			Assert.Throws<ParseException> (() => ReflectToModules (swiftCode, "SomeModule", out reflector));
 		}
+
+
+		[Test]
+		public void HasObjCAttribute ()
+		{
+			var swiftCode = @"
+import Foundation
+@objc
+public class Foo : NSObject {
+	public override init () { }
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToXDocument (swiftCode, "SomeModule", out reflector);
+
+			var cl = module.Descendants ("typedeclaration").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			var clonlyattrs = cl.Element ("attributes");
+			Assert.IsNotNull (clonlyattrs, "no attributes on class");
+			var attribute = clonlyattrs.Descendants ("attribute")
+				.Where (el => el.Attribute ("name").Value == "objc").FirstOrDefault ();
+			Assert.IsNotNull (attribute, "no objc attribute");
+			var initializer = cl.Descendants ("func")
+				.Where (el => el.Attribute ("name").Value == ".ctor").FirstOrDefault ();
+			Assert.IsNotNull (initializer, "no initializer");
+			attribute = initializer.Descendants ("attribute")
+				.Where (el => el.Attribute ("name").Value == "objc").FirstOrDefault ();
+			Assert.IsNotNull (attribute, "no function attribute");
+		}
 	}
 }
