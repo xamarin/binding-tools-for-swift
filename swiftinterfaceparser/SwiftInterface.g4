@@ -291,7 +291,7 @@ balanced_token :
 	| OpLBrace balanced_tokens OpRBrace
 	| label_identifier
 	| literal
-	| Platform_name_platform_version
+	| operator
 	| any_punctuation_for_balanced_token
 	;
 
@@ -464,23 +464,6 @@ fragment Identifier_character : [0-9]
 fragment Identifier_characters : Identifier_character+ ;
 
 Implicit_parameter_name : '$' Decimal_digits ;
-
-Platform_name_platform_version : Platform_name WS Platform_version ;
-
-fragment Platform_name : 
-	'iOS'
-	| 'iOSApplicationExtension'
-	| 'macOS'
-	| 'macOSApplicationExtension'
-	| 'watchOS'
-	| 'tvOS'
-	;
-
-fragment Platform_version :
-	Pure_decimal_digits
-	| Pure_decimal_digits OpDot Pure_decimal_digits
-	| Pure_decimal_digits OpDot Pure_decimal_digits OpDot Pure_decimal_digits
-	;
 
 generic_parameter_clause : OpLess generic_parameter_list OpGreater  ;
 generic_parameter_list : generic_parameter (OpComma generic_parameter)*  ;

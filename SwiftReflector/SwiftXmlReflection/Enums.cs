@@ -70,5 +70,13 @@ namespace SwiftReflector.SwiftXmlReflection {
 		Inherits,
 		Equal
 	}
+
+	public enum AttributeParameterKind {
+		None,
+		Label,
+		Literal,
+		Sublist,
+		Unknown,
+	}
 }
 

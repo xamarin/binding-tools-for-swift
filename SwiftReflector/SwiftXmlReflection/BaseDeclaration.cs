@@ -15,6 +15,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		protected BaseDeclaration ()
 		{
 			Generics = new GenericDeclarationCollection ();
+			Attributes = new List<AttributeDeclaration> ();
 		}
 
 		protected BaseDeclaration (BaseDeclaration other)
@@ -25,6 +26,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			Parent = other.Parent;
 			ParentExtension = other.ParentExtension;
 			Generics = new GenericDeclarationCollection ();
+			Attributes = new List<AttributeDeclaration> ();
 		}
 
 		public string Name { get; set; }
@@ -39,6 +41,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return Generics.Count () > 0;
 			}
 		}
+		public List<AttributeDeclaration> Attributes { get; private set; }
 
 		public bool IsTypeSpecBoundGeneric (TypeSpec sp)
 		{
@@ -499,7 +502,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 				break;
 			}
 			decl.Generics.AddRange (generics);
+			decl.Attributes.AddRange (AttributesFromXElement (elem.Element ("attributes")));
 			return decl;
+		}
+
+		internal static IEnumerable<AttributeDeclaration> AttributesFromXElement (XElement elem)
+		{
+			if (elem == null)
+				return Enumerable.Empty<AttributeDeclaration> ();
+			return elem.Elements ("attribute").Select (attr => AttributeDeclaration.FromXElement (attr));
 		}
 
 		public virtual string ToFullyQualifiedName (bool includeModule = true)
