@@ -104,7 +104,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kLabel = "Label";
 		internal const string kLiteral = "Literal";
 		internal const string kSeparator = "Separator";
-		internal const string kVersion = "Version";
 		internal const string kSublist = "Sublist";
 		internal const string kValue = "Value";
 
@@ -994,9 +993,17 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				return literal;
 			}
 
-			if (context.Platform_name_platform_version () != null) {
-				var version = new XElement (kAttribute, new XAttribute (kKind, kVersion),
-					new XAttribute (kValue, context.Platform_name_platform_version ().GetText ()));
+			// make the operator look like a label
+			if (context.@operator () != null) {
+				var label = new XElement (kAttributeParameter, new XAttribute (kKind, kLabel),
+					new XAttribute (kValue, context.@operator ().GetText ()));
+				return label;
+			}
+
+			if (context.any_punctuation_for_balanced_token () != null) {
+				var label = new XElement (kAttributeParameter, new XAttribute (kKind, kLabel),
+					new XAttribute (kValue, context.any_punctuation_for_balanced_token ().GetText ()));
+				return label;
 			}
 
 			return null;

@@ -303,5 +303,102 @@ public class Foo : NSObject {
 				.Where (el => el.Attribute ("name").Value == "objc").FirstOrDefault ();
 			Assert.IsNotNull (attribute, "no function attribute");
 		}
+
+		[Test]
+		public void HasAttributeDeclarations ()
+		{
+			var swiftCode = @"
+import Foundation
+@objc
+public class Foo : NSObject {
+	public override init () { }
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			Assert.AreEqual (2, cl.Attributes.Count, "wrong number of attributes");
+
+			var attr = cl.Attributes.FirstOrDefault (at => at.Name == "objc");
+			Assert.IsNotNull (attr, "no objc attribute");
+		}
+
+
+		[Test]
+		public void HasAttributeObjCSelectorParameter ()
+		{
+			var swiftCode = @"
+import Foundation
+@objc
+public class Foo : NSObject {
+	public override init () { }
+	@objc(narwhal)
+	public func DoSomething () -> Int {
+		return 1
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
+			Assert.IsNotNull (method, "no method");
+
+			Assert.AreEqual (1, method.Attributes.Count, "wrong number of attributes");
+
+			var attr = method.Attributes.FirstOrDefault (at => at.Name == "objc");
+			Assert.IsNotNull (attr, "no objc attribute");
+			var attrParam = attr.Parameters [0] as AttributeParameterLabel;
+			Assert.IsNotNull (attrParam, "not a label");
+			Assert.AreEqual (attrParam.Label, "narwhal", "wrong label");
+		}
+
+		[Test]
+		public void HasAvailableAttributeAll ()
+		{
+			var swiftCode = @"
+import Foundation
+
+
+public class Foo { 
+    public init () { }
+    @available (*, unavailable)
+    public func DoSomething () -> Int {
+        return 1
+    }
+} 
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
+			Assert.IsNotNull (method, "no method");
+
+			Assert.AreEqual (1, method.Attributes.Count, "wrong number of attributes");
+			var attr = method.Attributes [0];
+			Assert.AreEqual (attr.Name, "available");
+			Assert.AreEqual (3, attr.Parameters.Count, "wrong number of parameters");
+			var label = attr.Parameters [0] as AttributeParameterLabel;
+			Assert.IsNotNull (label, "not a label at 0");
+			Assert.AreEqual ("*", label.Label, "not a star");
+			label = attr.Parameters [1] as AttributeParameterLabel;
+			Assert.IsNotNull (label, "not a label at 1");
+			Assert.AreEqual (",", label.Label, "not a comma");
+			label = attr.Parameters [2] as AttributeParameterLabel;
+			Assert.IsNotNull (label, "not a label at 2");
+			Assert.AreEqual ("unavailable", label.Label, "not unavailable");
+		}
 	}
 }

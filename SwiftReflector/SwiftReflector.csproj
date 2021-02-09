@@ -180,6 +180,7 @@
     <Compile Include="SwiftXmlReflection\OperatorDeclaration.cs" />
     <Compile Include="TypeMapping\ModuleDatabase.cs" />
     <Compile Include="SwiftInterfaceReflector\IModuleLoader.cs" />
+    <Compile Include="SwiftXmlReflection\AttributeDeclaration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
