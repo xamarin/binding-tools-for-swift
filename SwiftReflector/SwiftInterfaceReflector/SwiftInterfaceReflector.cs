@@ -1006,7 +1006,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				return label;
 			}
 
-
 			return null;
 		}
 
