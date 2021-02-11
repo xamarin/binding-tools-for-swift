@@ -79,7 +79,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kPostfix = "Postfix";
 		internal const string kInfix = "Infix";
 		internal const string kDotCtor = ".ctor";
-		internal const string kDotDtor = ".dotr";
+		internal const string kDotDtor = ".dtor";
 		internal const string kNewValue = "newValue";
 		internal const string kOperatorKind = "operatorKind";
 		internal const string kPublicName = "publicName";
@@ -93,6 +93,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kIsVariadic = "isVariadic";
 		internal const string kTypeDeclaration = "typedeclaration";
 		internal const string kProperty = "property";
+		internal const string kIsProperty = "isProperty";
 		internal const string kStorage = "storage";
 		internal const string kComputed = "Computed";
 		internal const string kEscaping = "escaping";
@@ -106,6 +107,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kSeparator = "Separator";
 		internal const string kSublist = "Sublist";
 		internal const string kValue = "Value";
+		internal const string kObjCSelector = "objcSelector";
 
 		Stack<XElement> currentElement = new Stack<XElement> ();
 		Version interfaceVersion;
@@ -405,7 +407,18 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (givenName.Value != expectedName)
 				throw new ParseException ($"Expected a func node with name {expectedName} but got {givenName.Value}");
 
+			AddObjCSelector (functionDecl);
+
 			AddElementToParentMembers (functionDecl);
+		}
+
+		void AddObjCSelector (XElement functionDecl)
+		{
+			var selectorFactory = new ObjCSelectorFactory (functionDecl);
+			var selector = selectorFactory.Generate ();
+			if (!String.IsNullOrEmpty (selector)) {
+				functionDecl.Add (new XAttribute (kObjCSelector, selector));
+			}
 		}
 
 		XElement PeekAsFunction ()
@@ -427,6 +440,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var parent = currentElement.Peek ();
 			return parent.Name != kModule;
+		}
+
+		bool HasObjCElement (XElement elem)
+		{
+			var objcAttr = elem.Descendants ()
+				.FirstOrDefault (el => el.Name == kAttribute && el.Attribute ("name")?.Value == kObjC);
+			return objcAttr != null;
 		}
 
 		public override void EnterInitializer_declaration ([NotNull] Initializer_declarationContext context)
@@ -512,7 +532,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			// On ExitSubscript_declaration, we remove the IGNORE tag
 
 			var head = context.subscript_head ();
-			var resultType = context.subscript_result ().GetText ();
+			var resultType = context.subscript_result ().type ().GetText ();
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var isDeprecated = false;
 			var isUnavailable = false;
@@ -535,6 +555,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			currentElement.Pop ();
 
 			getFunc.Add (getParamLists);
+			AddObjCSelector (getFunc);
 
 			AddElementToParentMembers (getFunc);
 
@@ -560,6 +581,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				currentElement.Pop ();
 
 				setFunc.Add (setParamLists);
+				AddObjCSelector (setFunc);
 				AddElementToParentMembers (setFunc);
 			}
 
@@ -1066,7 +1088,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)),
 				new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)),
 				new XAttribute (nameof (isRequired), XmlBool (isRequired)),
-				new XAttribute (nameof (isProperty), XmlBool (isProperty)),
+				new XAttribute (kIsProperty, XmlBool (isProperty)),
 				new XAttribute (nameof (isMutating), XmlBool (isMutating)));
 
 			if (operatorKind != null) {

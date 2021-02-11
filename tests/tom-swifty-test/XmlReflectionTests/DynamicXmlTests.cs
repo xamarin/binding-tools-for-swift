@@ -724,6 +724,32 @@ namespace XmlReflectionTests {
 		}
 
 		[Test]
+		public void ObjCPropSelectorLower ()
+		{
+			string code =
+				"import Foundation\n" +
+				"@objc\n" +
+				"public protocol Proto {\n" +
+				"    @objc var x:Int { get set }\n" +
+				"}\n";
+
+			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
+			var proto = module.Protocols.First ();
+			Assert.IsTrue (proto.IsObjC, "not objc protocol");
+			Assert.AreEqual ("SomeModule.Proto", proto.ToFullyQualifiedName (true), "Misnamed protocol");
+			Assert.AreEqual (3, proto.Members.Count (), "incorrect number of members");
+			var xProp = proto.Members.OfType<PropertyDeclaration> ().Where (f => f.Name == "x").FirstOrDefault ();
+			Assert.IsNotNull (xProp, "No prop named x");
+			var getter = xProp.GetGetter ();
+			Assert.IsNotNull (getter, "Null getter");
+			Assert.AreEqual ("x", getter.ObjCSelector, $"incorrect get X selector name {getter.ObjCSelector}");
+			var setter = xProp.GetSetter ();
+			Assert.IsNotNull (setter, "Null setter");
+			Assert.AreEqual ("setX:", setter.ObjCSelector, $"incorrect set X selector name {setter.ObjCSelector}");
+		}
+		[Test]
 		public void ObjCSubsriptSelector ()
 		{
 			string code =

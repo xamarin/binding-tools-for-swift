@@ -400,5 +400,159 @@ public class Foo {
 			Assert.IsNotNull (label, "not a label at 2");
 			Assert.AreEqual ("unavailable", label.Label, "not unavailable");
 		}
+
+		[Test]
+		public void CorrectObjCSupplied ()
+		{
+			var swiftCode = @"
+import Foundation
+
+@objc
+public class Foo : NSObject { 
+    override public init () { }
+    @objc(narwhal)
+    public func DoSomething () -> Int {
+        return 1
+    }
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
+			Assert.IsNotNull (method, "no method");
+
+			Assert.AreEqual ("narwhal", method.ObjCSelector, "wrong selector");
+		}
+
+		[Test]
+		public void CorrectObjCNotSupplied ()
+		{
+			var swiftCode = @"
+import Foundation
+
+@objc
+public class Foo : NSObject { 
+    override public init () { }
+    @objc
+    public func DoSomething () -> Int {
+        return 1
+    }
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
+			Assert.IsNotNull (method, "no method");
+
+			Assert.IsTrue (String.IsNullOrEmpty (method.ObjCSelector), "wrong selector");
+		}
+
+
+		[Test]
+		public void CorrectObjCDeInit ()
+		{
+			var swiftCode = @"
+import Foundation
+
+@objc
+public class Foo : NSObject { 
+    override public init () { }
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == ".dtor");
+			Assert.IsNotNull (method, "no method");
+
+			Assert.AreEqual ("dealloc", method.ObjCSelector, "wrong selector");
+		}
+
+		[Test]
+		public void CorrectObjCMemberSelector ()
+		{
+			string swiftCode = @"
+import Foundation
+
+@objc
+public class Foo : NSObject {
+	override public init () { }
+	public func bar(a: Int) { }
+	public func foo () { }
+	public func set(at: Int) { }
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "bar");
+			Assert.IsNotNull (method, "no method bar");
+
+			Assert.AreEqual ("barWithA:", method.ObjCSelector, "wrong bar selector");
+
+			method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "foo");
+			Assert.IsNotNull (method, "no method foo");
+
+			Assert.AreEqual ("foo", method.ObjCSelector, "wrong foo selector");
+
+			method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "set");
+			Assert.IsNotNull (method, "no method set");
+
+			Assert.AreEqual ("setAt:", method.ObjCSelector, "wrong set selector");
+
+		}
+
+		[Test]
+		public void CorrectSubsriptSelector ()
+		{
+			// @objc subscript (index:Int) ->Int { get set }
+			string swiftCode = @"
+import Foundation
+
+@objc
+public class Foo : NSObject {
+	override public init () { }
+	public subscript (index:Int) ->Int {
+		get {
+			return 3;
+		}
+		set {
+		}
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+
+			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "get_subscript");
+			Assert.IsNotNull (method, "no method subscript getter");
+
+			Assert.AreEqual ("objectAtIndexedSubscript:", method.ObjCSelector, "wrong subscript getter selector");
+
+			method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "set_subscript");
+			Assert.IsNotNull (method, "no method subscript setter");
+
+			Assert.AreEqual ("setObject:atIndexedSubscript:", method.ObjCSelector, "wrong subscript setter selector");
+
+		}
 	}
 }
