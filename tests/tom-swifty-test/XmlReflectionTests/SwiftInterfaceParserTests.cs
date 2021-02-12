@@ -452,7 +452,7 @@ public class Foo : NSObject {
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
 			Assert.IsNotNull (method, "no method");
 
-			Assert.IsTrue (String.IsNullOrEmpty (method.ObjCSelector), "wrong selector");
+			Assert.AreEqual ("DoSomething", method.ObjCSelector, "wrong selector");
 		}
 
 
@@ -553,6 +553,53 @@ public class Foo : NSObject {
 
 			Assert.AreEqual ("setObject:atIndexedSubscript:", method.ObjCSelector, "wrong subscript setter selector");
 
+		}
+
+
+		[Test]
+		public void DeprecatedFunction ()
+		{
+			string code =
+				"@available(*, deprecated, message: \"no reason\")" +
+				"public func foo() { }";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module");
+			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
+			Assert.IsNotNull (func, "func");
+			Assert.IsTrue (func.IsDeprecated, "deprecated");
+			Assert.IsFalse (func.IsUnavailable, "unavailable");
+		}
+
+		[Test]
+		public void ObsoletedFunction ()
+		{
+			string code =
+				"@available(swift, obsoleted:3.0, message: \"no reason\")" +
+				"public func foo() { }";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module");
+			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
+			Assert.IsNotNull (func, "func");
+			Assert.IsFalse (func.IsDeprecated, "deprecated");
+			Assert.IsTrue (func.IsUnavailable, "unavilable");
+		}
+
+
+		[Test]
+		public void DeprecatedClass ()
+		{
+			string code =
+				"@available(*, deprecated, message: \"no reason\")" +
+				"public class Foo { }";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+			Assert.IsTrue (cl.IsDeprecated, "not deprecated");
+			Assert.IsFalse (cl.IsUnavailable, "available");
 		}
 	}
 }

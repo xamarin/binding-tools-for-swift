@@ -37,6 +37,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kPrivate = "private";
 		internal const string kInternal = "internal";
 		internal const string kOpen = "open";
+		internal const string kPublicCap = "Public";
+		internal const string kPrivateCap = "Private";
+		internal const string kInternalCap = "Internal";
+		internal const string kOpenCap = "Open";
 		internal const string kFilePrivate = "fileprivate";
 		internal const string kStatic = "static";
 		internal const string kIsStatic = "isStatic";
@@ -108,6 +112,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kSublist = "Sublist";
 		internal const string kValue = "Value";
 		internal const string kObjCSelector = "objcSelector";
+		internal const string kDeprecated = "deprecated";
+		internal const string kUnavailable = "unavailable";
+		internal const string kAvailable = "available";
+		internal const string kIntroduced = "introduced";
+		internal const string kObsoleted = "obsoleted";
 
 		Stack<XElement> currentElement = new Stack<XElement> ();
 		Version interfaceVersion;
@@ -199,12 +208,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void EnterClass_declaration ([NotNull] Class_declarationContext context)
 		{
 			var inheritance = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: false);
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (context.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isFinal = context.final_clause () != null;
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kClass, context.class_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
@@ -226,12 +235,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterStruct_declaration ([NotNull] Struct_declarationContext context)
 		{
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (context.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isFinal = true; // structs are always final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kStruct, context.struct_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null,
 				attributes);
@@ -253,12 +262,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterEnum_declaration ([NotNull] Enum_declarationContext context)
 		{
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (context.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isFinal = true; // enums are always final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kEnum, EnumName (context),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null,
 				attributes);
@@ -288,12 +297,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void EnterProtocol_declaration ([NotNull] Protocol_declarationContext context)
 		{
 			var inheritance = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: true);
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (context.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isFinal = true; // protocols don't have final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var attributes = GatherAttributes (context.attributes ());
 			var typeDecl = ToTypeDeclaration (kProtocol, context.protocol_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
@@ -372,12 +381,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
 			var isConvenienceInit = false;
 			var operatorKind = kNone;
-			var isDeprecated = false;
-			var isUnavailable = false;
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = false;
 			var attributes = GatherAttributes (head.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
@@ -432,6 +441,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		void AddElementToParentMembers (XElement elem)
 		{
 			var parent = currentElement.Peek ();
+			if (parent.Name == kModule) {
+				parent.Add (elem);
+				return;
+			}
 			var memberElem = GetOrCreate (parent, kMembers);
 			memberElem.Add (elem);
 		}
@@ -464,12 +477,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
 			var isConvenienceInit = ModifiersContains (head.declaration_modifiers (), kConvenience);
 			var operatorKind = kNone;
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (head.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = false;
-			var attributes = GatherAttributes (head.attributes ());
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty,
@@ -495,12 +508,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isOptional = ModifiersContains (context.declaration_modifiers (), kOptional);
 			var isConvenienceInit = false;
 			var operatorKind = kNone;
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (context.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isMutating = ModifiersContains (context.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (context.declaration_modifiers (), kRequired);
 			var isProperty = false;
-			var attributes = GatherAttributes (context.attributes ());
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
@@ -534,8 +547,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var head = context.subscript_head ();
 			var resultType = context.subscript_result ().type ().GetText ();
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (head.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isStatic = false;
 			var hasThrows = false;
 			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
@@ -543,7 +557,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
-			var attributes = GatherAttributes (head.attributes ());
 
 			var getParamList = MakeParamterList (head.parameter_clause ().parameter_list (), 1);
 			var getFunc = ToFunctionDeclaration (kGetSubscript, resultType, accessibility, isStatic, hasThrows,
@@ -599,8 +612,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var head = context.variable_declaration_head ();
 			var resultType = TrimColon (context.type_annotation ().GetText ());
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
-			var isDeprecated = false;
-			var isUnavailable = false;
+			var attributes = GatherAttributes (head.attributes ());
+			var isDeprecated = CheckForDeprecated (attributes);
+			var isUnavailable = CheckForUnavailable (attributes);
 			var isStatic = ModifiersContains (head.declaration_modifiers (), kStatic);
 			var hasThrows = false;
 			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
@@ -609,7 +623,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
-			var attributes = GatherAttributes (head.attributes ());
 
 			var getParamList = new XElement (kParameterList, new XAttribute (kIndex, "1"));
 			var getFunc = ToFunctionDeclaration ("get_" + context.variable_name ().GetText (),
@@ -1103,6 +1116,259 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return decl;
 		}
 
+		bool CheckForDeprecated (XElement attributes)
+		{
+			var availableTags = AvailableAttributes (attributes);
+			foreach (var attribute in availableTags) {
+				var args = AttrbuteParameters (attribute);
+				var platform = args [0];
+				if (!PlatformMatches (platform))
+					continue;
+
+				var deprecatedIndex = args.IndexOf (kDeprecated);
+				if (deprecatedIndex < 0)
+					continue;
+				var deprecatedVersion = GetVersionAfter (args, deprecatedIndex);
+				if (TargetVersionIsLessOrEqual (deprecatedVersion))
+					return true;
+			}
+			return false;
+		}
+
+		bool CheckForUnavailable (XElement attributes)
+		{
+			var availableTags = AvailableAttributes (attributes);
+			foreach (var attribute in availableTags) {
+				var args = AttrbuteParameters (attribute);
+				// if unavailable exists, need to match platform
+				if (args.IndexOf (kUnavailable) >= 0 && PlatformMatches (args [0]))
+					return true;
+
+			}
+			return !CheckForAvailable (attributes);
+		}
+
+		bool CheckForAvailable (XElement attributes)
+		{
+			var availableTags = AvailableAttributes (attributes);
+			foreach (var attribute in availableTags) {
+				var args = AttrbuteParameters (attribute);
+				if (IsShortHand (args)) {
+					if (AvailableShorthand (args))
+						return true;
+				} else {
+					if (AvailableLonghand (args))
+						return true;
+				}
+			}
+			return false;
+		}
+
+		bool AvailableLonghand (List<string> args)
+		{
+			// args will be plat , specifiers
+			// specificers will be:
+			// introduced: version
+			// deprecated: version
+			// obsoleted: version
+			// unavailable
+			var platform = args [0];
+			if (!PlatformMatches (platform))
+				return true;
+
+			// if unavailable is present, it's not there.
+			if (args.IndexOf (kUnavailable) >= 0)
+				return false;
+
+			var introIndex = args.IndexOf (kIntroduced);
+			if (introIndex >= 0) {
+				var introVersion = GetVersionAfter (args, introIndex);
+				if (TargetVersionIsGreaterOrEqual (introVersion))
+					return false;
+			}
+
+			var obsoletedIndex = args.IndexOf (kObsoleted);
+			if (obsoletedIndex >= 0) {
+				var obsoletedVersion = GetVersionAfter (args, obsoletedIndex);
+				if (TargetVersionIsLessOrEqual (obsoletedVersion))
+					return false;
+			}
+			return true;
+		}
+
+		bool AvailableShorthand (List<string> args)
+		{
+			// args will be: plat ver . x . y , plat ver , ... *
+
+			var startIndex = 0;
+			while (startIndex < args.Count) {
+				if (args [startIndex] == "*")
+					return false;
+				var platform = args [startIndex];
+				if (PlatformMatches (platform)) {
+					var endIndex = args.IndexOf (",", startIndex + 1);
+					var versionNumber = args.GetRange (startIndex + 1, endIndex - startIndex);
+					if (TargetVersionIsGreaterOrEqual (versionNumber))
+						return true;
+				} else {
+					startIndex = args.IndexOf (",", startIndex + 1);
+				}
+			}
+			return false;
+		}
+
+		bool IsShortHand (List<string> args)
+		{
+			if (args [1] == ",")
+				return false;
+			return args.Last () == "*";
+		}
+
+		Version GetVersionAfter (List<string> pieces, int indexAfter)
+		{
+			var colonIndex = ColonAfter (pieces, indexAfter);
+			if (colonIndex < 0)
+				return new Version (0, 0);
+			var start = colonIndex + 1;
+			var end = start + 1;
+			while (end < pieces.Count && pieces [end] != ",")
+				end++;
+			var versionPieces = pieces.GetRange (start, end - start);
+			return VersionPiecesToVersion (versionPieces);
+		}
+
+		int ColonAfter (List<string> pieces, int start)
+		{
+			for (int i = start + 1; i < pieces.Count; i++) {
+				if (pieces [i] == ":")
+					return i;
+				if (pieces [i] == ",")
+					return -1;
+			}
+			return -1;
+		}
+
+		bool TargetVersionIsGreaterOrEqual (List<string> versionPieces)
+		{
+			var expectedVersion = VersionPiecesToVersion (versionPieces);
+			return TargetVersionIsGreaterOrEqual (expectedVersion);
+		}
+
+		bool TargetVersionIsGreaterOrEqual (Version expectedVersion)
+		{
+			var compiledVersionStr = PlatformVersionFromModuleFlags ();
+			if (String.IsNullOrEmpty (compiledVersionStr))
+				return true; // no version, I guess it's good?
+			var compiledVersion = new Version (compiledVersionStr);
+			return expectedVersion >= compiledVersion;
+		}
+
+		bool TargetVersionIsLessOrEqual (List<string> versionPieces)
+		{
+			var expectedVersion = VersionPiecesToVersion (versionPieces);
+			return TargetVersionIsLessOrEqual (expectedVersion);
+		}
+
+		bool TargetVersionIsLessOrEqual (Version expectedVersion)
+		{
+			var compiledVersionStr = PlatformVersionFromModuleFlags ();
+			if (String.IsNullOrEmpty (compiledVersionStr))
+				return true; // no version, I guess it's good?
+			var compiledVersion = new Version (compiledVersionStr);
+			return expectedVersion <= compiledVersion;
+		}
+
+		Version VersionPiecesToVersion (List<string> pieces)
+		{
+			var sb = new StringBuilder ();
+			for (int i = 0; i < pieces.Count; i++) {
+				if (pieces [i] == "." && i + 1 < pieces.Count && pieces [i + 1] == "*")
+					break;
+				sb.Append (pieces [i]);
+			}
+			return new Version (sb.ToString ());
+		}
+
+		IEnumerable<XElement> AvailableAttributes (XElement attributes)
+		{
+			if (attributes == null)
+				return Enumerable.Empty<XElement> ();
+			return attributes.Descendants (kAttribute).Where (el => el.Attribute (kName).Value == kAvailable);
+
+		}
+
+		List<string> AttrbuteParameters (XElement attribute)
+		{
+			return attribute.Descendants (kAttributeParameter).Select (at =>
+				at.Attribute (kValue)?.Value ?? "").ToList ();
+		}
+
+		bool PlatformMatches (string platform)
+		{
+			var currentPlatform = PlatformFromModuleFlags ();
+			switch (platform) {
+			case "*":
+			case "swift":
+				return true;
+			case "iOS":
+			case "iOSApplicationExtension":
+				return currentPlatform.StartsWith ("ios", StringComparison.Ordinal);
+			case "macOS":
+			case "macOSApplicationExtension":
+			case "macCatalyst":
+			case "macCatalystExtension":
+				return currentPlatform.StartsWith ("macos", StringComparison.Ordinal);
+			case "watchOS":
+			case "watchOSApplicationExtension":
+				return currentPlatform.StartsWith ("watch", StringComparison.Ordinal);
+			case "tvOS":
+			case "tvOSApplicationExtension":
+				return currentPlatform.StartsWith ("tv", StringComparison.Ordinal);
+			default:
+				return false;
+			}
+		}
+
+		string PlatformFromModuleFlags ()
+		{
+			var flagsValue = TargetFromModuleFlags ();
+			var os = flagsValue.ClangTargetOS ();
+			var digitIndex = FirstDigitIndex (os);
+			if (digitIndex < 0)
+				return os;
+			return os.Substring (0, digitIndex);
+		}
+
+		static int FirstDigitIndex (string s)
+		{
+			var index = 0;
+			foreach (char c in s) {
+				if (Char.IsDigit (c))
+					return index;
+				index++;
+			}
+			return -1;
+		}
+
+		string PlatformVersionFromModuleFlags ()
+		{
+			var flagsValue = TargetFromModuleFlags ();
+			var os = flagsValue.ClangTargetOS ();
+			var digitIndex = FirstDigitIndex (os);
+			if (digitIndex < 0)
+				return "";
+			return os.Substring (digitIndex);
+		}
+
+		string TargetFromModuleFlags ()
+		{
+			string flagsValue = null;
+			if (!moduleFlags.TryGetValue ("target", out flagsValue)) {
+				return "";
+			}
+			return flagsValue;
+		}
+
 		void LoadReferencedModules ()
 		{
 			var failures = new StringBuilder ();
@@ -1328,10 +1594,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		}
 
 		static Dictionary<string, string> accessMap = new Dictionary<string, string> () {
-			{ kPublic, kPublic },
-			{ kPrivate, kPrivate },
-			{ kOpen, kOpen },
-			{ kInternal, kInternal },
+			{ kPublic, kPublicCap },
+			{ kPrivate, kPrivateCap },
+			{ kOpen, kOpenCap },
+			{ kInternal, kInternalCap },
 		};
 
 		string AccessibilityFromModifiers (Declaration_modifiersContext context)
@@ -1349,17 +1615,17 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (context == null) {
 				var parentElem = NominalParentAfter (-1);
 				if (parentElem == null)
-					return kInternal;
+					return kInternalCap;
 				if (parentElem.Attribute (kKind).Value == kProtocol)
-					return kPublic;
+					return kPublicCap;
 				switch (parentElem.Attribute (kAccessibility).Value) {
 				case kPublic:
 				case kInternal:
 				case kOpen:
-					return kInternal;
+					return kInternalCap;
 				case kPrivate:
 				case kFilePrivate:
-					return kPrivate;
+					return kPrivateCap;
 				}
 			}
 			foreach (var modifer in context.declaration_modifier ()) {
@@ -1367,7 +1633,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				if (accessMap.TryGetValue (modifer.GetText (), out result))
 					return result;
 			}
-			return kInternal;
+			return kInternalCap;
 		}
 
 		static bool ModifiersContains (Declaration_modifiersContext context, string match)
@@ -1576,16 +1842,16 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		static string ToAccess (Access_level_modifierContext access)
 		{
-			var accessstr = access != null ? access.GetText () : kInternal;
+			var accessstr = access != null ? access.GetText () : kInternalCap;
 			switch (accessstr) {
 			case kPublic:
-				return kPublic;
+				return kPublicCap;
 			case kPrivate:
-				return kPrivate;
+				return kPrivateCap;
 			case kOpen:
-				return kOpen;
+				return kOpenCap;
 			case kInternal:
-				return kInternal;
+				return kInternalCap;
 			default:
 				return kUnknown;
 			}
