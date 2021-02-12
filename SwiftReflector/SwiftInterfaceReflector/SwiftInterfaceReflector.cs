@@ -1312,12 +1312,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				return true;
 			case "iOS":
 			case "iOSApplicationExtension":
-				return currentPlatform.StartsWith ("ios", StringComparison.Ordinal);
+				return currentPlatform.StartsWith ("ios", StringComparison.Ordinal) &&
+					!currentPlatform.StartsWith ("ios-macabi", StringComparison.Ordinal);
 			case "macOS":
 			case "macOSApplicationExtension":
+				return currentPlatform.StartsWith ("macos", StringComparison.Ordinal);
 			case "macCatalyst":
 			case "macCatalystExtension":
-				return currentPlatform.StartsWith ("macos", StringComparison.Ordinal);
+				return currentPlatform.StartsWith ("ios-macabi", StringComparison.Ordinal);
 			case "watchOS":
 			case "watchOSApplicationExtension":
 				return currentPlatform.StartsWith ("watch", StringComparison.Ordinal);
