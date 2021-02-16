@@ -72,9 +72,9 @@ namespace SwiftReflector {
 
 			if (parts [shortestIndex].Length == 0) {
 				var missingPart = new string [] { "cpu", "platform", "os", "os" } [shortestIndex];
-				throw new ArgumentException ($"target (cpu-platform-os) has an empty {missingPart} component.", nameof (s));
+				throw new ArgumentException ($"target (cpu-platform-os) has an empty {missingPart} component.");
 			}
-																				  new string [] { "cpu", "platform", "os" } [shortest]));
+																			
 			return parts;
 		}
 
