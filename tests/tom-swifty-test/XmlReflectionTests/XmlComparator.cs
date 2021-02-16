@@ -40,8 +40,6 @@ namespace XmlReflectionTests {
 			var firstAttributes = firstElem.Attributes ();
 			var secondAttributes = secondElem.Attributes ();
 			Compare (firstElem, firstAttributes, secondAttributes, diffs);
-			if (firstElem.Value != secondElem.Value)
-				diffs.Add ($"Contents of tag '{firstElem.Name}': \"{firstElem.Value}\" does not match \"{secondElem.Value}\" ");
 			var firstElems = firstElem.Elements ();
 			var secondElems = secondElem.Elements ();
 			Compare (firstElems, secondElems, diffs);

@@ -114,22 +114,5 @@ namespace XmlReflectionTests {
 ";
 			Compare ("TestMissingElem", 1, first, second);
 		}
-
-		[Test]
-		public void TestDifferentElemValues ()
-		{
-			var first = @"<?xml version=""1.0"" encoding=""UTF - 8""?>
-<one>
-  <two>three</two>
-</one>
-";
-			var second = @"<?xml version=""1.0"" encoding=""UTF - 8""?>
-<one>
-  <two>four</two>
-</one>
-";
-			Compare ("TestDifferentElemValues", 2, first, second);
-
-		}
 	}
 }
