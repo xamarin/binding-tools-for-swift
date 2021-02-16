@@ -62,14 +62,26 @@ namespace SwiftReflector {
 			if (String.IsNullOrEmpty (s))
 				throw new ArgumentNullException (nameof (s));
 			string [] parts = s.Split ('-');
-			if (parts.Length != 3)
+			// catalyst adds cpu-platform-ios-macabi
+			if (parts.Length != 3 && parts.Length != 4)
 				throw new ArgumentOutOfRangeException (nameof (s), s, "target should be in the form cpu-platform-os");
-			int shortest = parts [0].Length < Math.Min (parts [1].Length, parts [2].Length) ? 0
-			                        : (parts [1].Length < Math.Min (parts [0].Length, parts [1].Length) ? 1 : 2);
-			if (parts [shortest].Length == 0)
-				throw new ArgumentOutOfRangeException (nameof (s), s, String.Format ("target (cpu-platform-os) has an empty {0} component.",
-																				  new string [] { "cpu", "platform", "os" } [shortest]));
+
+			var shortestIndex = parts.Length == 3 ?
+				IndexOfMin (parts [0].Length, parts [1].Length, parts [2].Length) :
+				IndexOfMin (parts [0].Length, parts [1].Length, parts [2].Length, parts [3].Length);
+
+			if (parts [shortestIndex].Length == 0) {
+				var missingPart = new string [] { "cpu", "platform", "os", "os" } [shortestIndex];
+				throw new ArgumentException ($"target (cpu-platform-os) has an empty {missingPart} component.");
+			}
+																			
 			return parts;
+		}
+
+		static int IndexOfMin (params int [] values)
+		{
+			var min = values.Min ();
+			return Array.IndexOf (values, min);
 		}
 
 		public static string ClangTargetCpu (this string s)
@@ -84,7 +96,12 @@ namespace SwiftReflector {
 
 		public static string ClangTargetOS (this string s)
 		{
-			return s.DecomposeClangTarget () [2];
+			var clangTarget = s.DecomposeClangTarget ();
+			if (clangTarget.Length == 3)
+				return clangTarget [2];
+			if (clangTarget.Length == 4)
+				return $"{clangTarget [2]}-{clangTarget [3]}";
+			throw new ArgumentException ($"Clang target {s} should have 3 or 4 parts", nameof (s));
 		}
 
 		public static void Merge<T> (this HashSet<T> to, IEnumerable<T> from)

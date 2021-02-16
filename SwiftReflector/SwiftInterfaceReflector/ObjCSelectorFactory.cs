@@ -168,7 +168,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				return null;
 			var sb = new StringBuilder ();
 			foreach (var piece in parameters) {
-				sb.Append (piece.Attribute (SwiftInterfaceReflector.kValue));
+				sb.Append (piece.Attribute (SwiftInterfaceReflector.kValue)?.Value ?? "");
 			}
 			return sb.ToString ();
 		}
