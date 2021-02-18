@@ -167,6 +167,33 @@ namespace SwiftReflector {
 			return stm;
 		}
 
+		public XDocument ReflectToXDocument (IEnumerable<string> includeDirectories,
+								 IEnumerable<string> libraryDirectories, string extraArgs,
+		                                                 params string [] moduleNames)
+		{
+			var moduleNameAggregate = moduleNames.Aggregate ((s1, s2) => s1 + s2);
+			var pathName = tempDirectory.UniquePath (moduleNameAggregate, null, "xml");
+
+			includeDirectories = includeDirectories ?? new string [] { tempDirectory.DirectoryPath };
+			libraryDirectories = libraryDirectories ?? new string [] { tempDirectory.DirectoryPath };
+
+			var modulesInLibraries = SwiftModuleFinder.FindModuleNames (libraryDirectories, CompilerInfo.Target);
+
+			List<ISwiftModuleLocation> locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries,
+													     includeDirectories, CompilerInfo.Target);
+			string output = "";
+			try {
+				output = Reflect (locations.Select (loc => loc.DirectoryPath), libraryDirectories, pathName, extraArgs, moduleNames);
+			} finally {
+				locations.DisposeAll ();
+			}
+			ThrowOnCompilerVersionMismatch (output, moduleNames);
+			using (var stm = new FileStream (output, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+				return XDocument.Load (stm);
+			}
+		}
+
+
 		public List<ModuleDeclaration> ReflectToModules (IEnumerable<string> includeDirectories,
 		                                                 IEnumerable<string> libraryDirectories, string extraArgs,
 		                                                 params string [] moduleNames)
