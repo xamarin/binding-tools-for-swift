@@ -601,5 +601,56 @@ public class Foo : NSObject {
 			Assert.IsTrue (cl.IsDeprecated, "not deprecated");
 			Assert.IsFalse (cl.IsUnavailable, "available");
 		}
+
+		[Test]
+		public void OptionalType ()
+		{
+			string code = @"
+public func foo (a: Bool) -> Int? {
+    return a ? 42 : nil
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			var retType = fn.ReturnTypeName;
+			Assert.AreEqual ("Swift.Optional<Swift.Int>", retType, "wrong return");
+		}
+
+		[Test]
+		public void DictionaryType ()
+		{
+			string code = @"
+public func foo () -> [Int:Int] {
+    return Dictionary<Int, Int>()
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			var retType = fn.ReturnTypeName;
+			Assert.AreEqual ("Swift.Dictionary<Swift.Int,Swift.Int>", retType, "wrong return");
+		}
+
+		[Test]
+		public void ArrayType ()
+		{
+			string code = @"
+public func foo () -> [Int] {
+    return Array<Int>()
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			var retType = fn.ReturnTypeName;
+			Assert.AreEqual ("Swift.Array<Swift.Int>", retType, "wrong return");
+		}
 	}
 }

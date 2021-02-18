@@ -351,18 +351,18 @@ function_type_argument :
 argument_label : label_identifier ;
 
 type : 
-	array_type
-	| dictionary_type
-	| function_type
-	| type_identifier
-	| tuple_type
-	| type OpQuestion
-	| type OpBang
-	| protocol_composition_type
-	| type OpDot 'Type'
-	| type OpDot 'Protocol'
-	| 'Any'
-	| 'Self'
+	array_type # arr_type
+	| dictionary_type # dict_type
+	| function_type # func_type
+	| type_identifier # identifier_type
+	| tuple_type # tup_type
+	| type OpQuestion # optional_type
+	| type OpBang # unwrapped_optional_type
+	| protocol_composition_type # proto_comp_type
+	| type OpDot 'Type' # meta_type
+	| type OpDot 'Protocol' # proto_type
+	| 'Any' # any_type
+	| 'Self' # self_type
 	;
 
 type_annotation : OpColon attributes? inout_clause? type ;
@@ -487,7 +487,7 @@ arrow_operator : '->' ;
 range_operator : '...' ;
 
 
-WS : [ \n\r\t\u000B\u000C\u0000]+ -> skip ;
+WS : [ \n\r\t\u000B\u000C\u0000]+ -> channel(HIDDEN) ;
 
 OpPlus : '+' ;
 OpMinus : '-' ;
