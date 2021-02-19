@@ -260,14 +260,15 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Need to desugar dictionaries")]
+		[TestCase (ReflectorMode.Parser)]
 		public void FuncReturningDictionary (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnDict()->[Int:Float] { return [Int:Float](); }", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnDict");
-			Assert.AreEqual ("Swift.Dictionary<Swift.Int, Swift.Float>", func.ReturnTypeName, "wrong type");
+			var returnType = func.ReturnTypeName.Replace (" ", "");
+			Assert.AreEqual ("Swift.Dictionary<Swift.Int,Swift.Float>", returnType, "wrong type");
 		}
 
 
@@ -287,7 +288,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Need to desugar optionals")]
+		[TestCase (ReflectorMode.Parser)]
 		public void FuncReturningIntOption (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnIntOpt()->Int? { return 3; }", "SomeModule", mode)

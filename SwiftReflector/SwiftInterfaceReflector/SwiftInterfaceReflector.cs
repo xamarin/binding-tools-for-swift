@@ -166,7 +166,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var module = new XElement (kModule);
 				currentElement.Push (module);
 
-				var charStream = CharStreams.fromPath (inFile);
+				var desugarer = new SyntaxDesugaringParser (inFile);
+				var desugaredResult = desugarer.Desugar ();
+				var charStream = CharStreams.fromString (desugaredResult);
+
 				var lexer = new SwiftInterfaceLexer (charStream);
 				var tokenStream = new CommonTokenStream (lexer);
 				var parser = new SwiftInterfaceParser (tokenStream);
@@ -723,6 +726,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			operators.Add (operatorElement);
 
 			currentElement.Peek ().Add (operatorElement);
+		}
+
+		public override void EnterOptional_type ([NotNull] Optional_typeContext context)
+		{
+			var innerType = context.type ().GetText ();
 		}
 
 		XElement InfixOperator (Infix_operator_declarationContext context)
