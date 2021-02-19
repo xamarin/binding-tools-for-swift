@@ -188,7 +188,7 @@ namespace SwiftReflector {
 				locations.DisposeAll ();
 			}
 			ThrowOnCompilerVersionMismatch (output, moduleNames);
-			using (var stm = new FileStream (output, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+			using (var stm = new FileStream (pathName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
 				return XDocument.Load (stm);
 			}
 		}

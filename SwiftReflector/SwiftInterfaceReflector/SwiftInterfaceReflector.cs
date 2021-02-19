@@ -561,7 +561,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
 
-			var getParamList = MakeParamterList (head.parameter_clause ().parameter_list (), 1);
+			var getParamList = MakeParamterList (head.parameter_clause ().parameter_list (), 1, true);
 			var getFunc = ToFunctionDeclaration (kGetSubscript, resultType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
@@ -576,7 +576,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			AddElementToParentMembers (getFunc);
 
 			var setParamList = context.getter_setter_keyword_block ()?.setter_keyword_clause () != null
-				? MakeParamterList (head.parameter_clause ().parameter_list (), 1) : null;
+				? MakeParamterList (head.parameter_clause ().parameter_list (), 1, true) : null;
 
 
 			if (setParamList != null) {
@@ -848,20 +848,20 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				formalIndex = 1;
 			}
 
-			var formalArguments = MakeParamterList (context.parameter_list (), formalIndex);
+			var formalArguments = MakeParamterList (context.parameter_list (), formalIndex, false);
 
 			parameterLists.Add (formalArguments);
 			currentElement.Peek ().Add (parameterLists);
 		}
 
-		XElement MakeParamterList (Parameter_listContext parmList, int index)
+		XElement MakeParamterList (Parameter_listContext parmList, int index, bool isSubscript)
 		{
 			var formalArguments = new XElement (kParameterList, new XAttribute (kIndex, index.ToString ()));
 
 			if (parmList != null) {
 				var i = 0;
 				foreach (var parameter in parmList.parameter ()) {
-					var parameterElement = ToParameterElement (parameter, i);
+					var parameterElement = ToParameterElement (parameter, i, isSubscript);
 					formalArguments.Add (parameterElement);
 					i++;
 				}
@@ -885,7 +885,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var instanceName = GetInstanceName ();
 			var type = $"{(isClass ? "" : "inout ")}{instanceName}{(isCtorDtor ? ".Type" : "")}";
 			var parameter = new XElement (kParameter, new XAttribute (kType, type),
-				new XAttribute (kIndex, "0"), new XAttribute (kPublicName, ""),
+				new XAttribute (kIndex, "0"), new XAttribute (kPublicName, "self"),
 				new XAttribute (kPrivateName, "self"), new XAttribute (kIsVariadic, "false"));
 			return new XElement (kParameterList, new XAttribute (kIndex, "0"), parameter);
 		}
@@ -950,13 +950,16 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return generics.Elements ().Where (elem => elem.Name == kParam).Select (elem => elem.Attribute (kName).Value);
 		}
 
-		XElement ToParameterElement (ParameterContext context, int index)
+		XElement ToParameterElement (ParameterContext context, int index, bool isSubscript)
 		{
 			var typeAnnotation = context.type_annotation ();
 			var isInOut = typeAnnotation.inout_clause () != null;
 			var type = typeAnnotation.type ().GetText ();
-			var publicName = context.external_parameter_name ()?.GetText () ?? "";
 			var privateName = context.local_parameter_name ()?.GetText () ?? "";
+			var replacementPublicName = isSubscript ? "_" : privateName;
+			var publicName = context.external_parameter_name ()?.GetText () ?? replacementPublicName;
+			if (!isSubscript && publicName == "_")
+				publicName = "";
 			var isVariadic = context.range_operator () != null;
 			var isEscaping = AttributesContains (typeAnnotation.attributes (), kEscaping);
 			var isAutoClosure = AttributesContains (typeAnnotation.attributes (), kAutoClosure);
@@ -1656,6 +1659,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					return true;
 			}
 			return false;
+		}
+
+		public override void EnterDeclaration_modifier ([NotNull] Declaration_modifierContext context)
+		{
+			var modifier = context.GetText ();
+
 		}
 
 		static bool ModifiersContainsAny (Declaration_modifiersContext context, string [] matches)
