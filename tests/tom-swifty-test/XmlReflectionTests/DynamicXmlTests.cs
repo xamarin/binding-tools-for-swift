@@ -984,7 +984,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Parameter is coming back '_' should be blank")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestNotRequiredParamName (ReflectorMode mode)
 		{
 			string code = "public func foo(_ seen:Int) { }\n";
@@ -1084,7 +1084,7 @@ public class Container {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "not handling convenience modifier")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestConvenienceCtor (ReflectorMode mode)
 		{
 			var code = @"
@@ -1337,7 +1337,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "incorrect '-' on arg a")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncOneArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (a: Int) -> Int { return a; }";
@@ -1376,7 +1376,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "incorrect '-' on arg a and b")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncTwoArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (a: Int, b: Int) -> Int { return a + b; }";
