@@ -273,7 +273,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void FuncReturningIntThrows (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public enum MathError : Error {\ncase divZero\n}\n" +
@@ -310,7 +310,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest1 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a, b, c, d }";
@@ -326,7 +326,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest2 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(Int), b(Int), c(Int), d(Int) }";
@@ -346,7 +346,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest3 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Int), d(Int) }";
@@ -366,7 +366,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest4 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(Int), b, c, d }";
@@ -386,7 +386,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest5 (ReflectorMode mode)
 		{
 			string code = "public enum foo:Int { case a=1, b, c, d }";
@@ -404,7 +404,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest6 (ReflectorMode mode)
 		{
 			string code = "public enum foo:Int { case a, b, c, d }";
@@ -422,7 +422,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest7 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Bool), d(Float) }";
@@ -755,7 +755,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "NRE parsing XML")]
+		[TestCase (ReflectorMode.Parser, Ignore = "Unable to find setter, possible grammar error")]
 		public void PropertyVisibility (ReflectorMode mode)
 		{
 			PropertyVisibilityCore ("open", Accessibility.Open, mode);
