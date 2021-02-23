@@ -792,6 +792,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			currentElement.Pop ();
 			getFunc.Add (getParamLists);
 			AddElementToParentMembers (getFunc);
+			AddObjCSelector (getFunc);
 
 			var setParamList = context.getter_setter_keyword_block ()?.setter_keyword_clause () != null ?
 				new XElement (kParameterList, new XAttribute (kIndex, "1")) : null;
@@ -814,6 +815,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				setFunc.Add (setParamLists);
 				AddElementToParentMembers (setFunc);
+				AddObjCSelector (setFunc);
 			}
 
 			var prop = new XElement (kProperty, new XAttribute (kName, context.variable_name ().GetText ()),
