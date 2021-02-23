@@ -1605,7 +1605,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Colon coming through on precedence")]
+		[TestCase (ReflectorMode.Parser)]
 		public void InfixOperatorDecl (ReflectorMode mode)
 		{
 			var code = @"infix operator *^* : AdditionPrecedence
