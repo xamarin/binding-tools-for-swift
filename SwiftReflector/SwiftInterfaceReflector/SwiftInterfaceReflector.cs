@@ -891,7 +891,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			if (context == null)
 				return null;
-			return GeneralOperator (kInfix, context.@operator (), context.infix_operator_group ()?.GetText () ?? "");
+			return GeneralOperator (kInfix, context.@operator (),
+				context.infix_operator_group ()?.precedence_group_name ()?.GetText () ?? "");
 		}
 
 		XElement PostfixOperator (Postfix_operator_declarationContext context)
