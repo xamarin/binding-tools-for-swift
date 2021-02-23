@@ -117,6 +117,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kAvailable = "available";
 		internal const string kIntroduced = "introduced";
 		internal const string kObsoleted = "obsoleted";
+		internal const string kElements = "elements";
+		internal const string kElement = "element";
+		internal const string kIntValue = "intValue";
+		internal const string kRawType = "rawType";
+		internal const string kRawValue = "RawValue";
 
 		Stack<XElement> currentElement = new Stack<XElement> ();
 		Version interfaceVersion;
@@ -287,6 +292,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var actualEnumName = EnumName (context);
 			if (givenEnumName != actualEnumName)
 				throw new ParseException ($"enum name mismatch on exit declaration: expected {actualEnumName} but got {givenEnumName}");
+
+			var rawType = GetEnumRawType (context);
+			if (rawType != null)
+				enumElem.Add (rawType);
+
 			AddEnumToCurrentElement (enumElem);
 		}
 
@@ -295,6 +305,150 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return context.union_style_enum () != null ?
 				context.union_style_enum ().enum_name ().GetText () :
 				context.raw_value_style_enum ().enum_name ().GetText ();
+		}
+
+		XAttribute GetEnumRawType (Enum_declarationContext context)
+		{
+			var alias = EnumTypeAliases (context).FirstOrDefault (ta => ta.typealias_name ().GetText () == kRawValue);
+			if (alias == null)
+				return null;
+			var rawType = alias.typealias_assignment ().type ().GetText ();
+			return new XAttribute (kRawType, rawType);
+		}
+
+		IEnumerable<Typealias_declarationContext> EnumTypeAliases (Enum_declarationContext context)
+		{
+			if (context.union_style_enum () != null)
+				return UnionTypeAliases (context.union_style_enum ());
+			else
+				return RawTypeAliases (context.raw_value_style_enum ());
+		}
+
+		IEnumerable<Typealias_declarationContext> UnionTypeAliases (Union_style_enumContext context)
+		{
+			var members = context.union_style_enum_members ();
+			while (members != null) {
+				if (members.union_style_enum_member () != null) {
+					var member = members.union_style_enum_member ();
+					if (member.declaration ()?.typealias_declaration () != null)
+						yield return member.declaration ().typealias_declaration ();
+				}
+				members = members.union_style_enum_members ();
+			}
+			yield break;
+		}
+
+		IEnumerable<Typealias_declarationContext> RawTypeAliases (Raw_value_style_enumContext context)
+		{
+			var members = context.raw_value_style_enum_members ();
+			while (members != null) {
+				if (members.raw_value_style_enum_member () != null) {
+					var member = members.raw_value_style_enum_member ();
+					if (member.declaration ()?.typealias_declaration () != null)
+						yield return member.declaration ().typealias_declaration ();
+				}
+				members = members.raw_value_style_enum_members ();
+			}
+			yield break;
+		}
+
+		public override void EnterRaw_value_style_enum_case_clause ([NotNull] Raw_value_style_enum_case_clauseContext context)
+		{
+			var enumElements = new XElement (kElements);
+			foreach (var enumCase in RawCases (context.raw_value_style_enum_case_list ())) {
+				var enumElement = ToRawEnumElement (enumCase);
+				enumElements.Add (enumElement);
+			}
+			AddEnumNonEmptyElements (enumElements);
+		}
+
+		public override void EnterUnion_style_enum_case_clause ([NotNull] Union_style_enum_case_clauseContext context)
+		{
+			var enumElements = new XElement (kElements);
+			foreach (var enumCase in UnionCases (context.union_style_enum_case_list ())) {
+				var enumElement = ToUnionEnumElement (enumCase);
+				enumElements.Add (enumElement);
+			}
+			AddEnumNonEmptyElements (enumElements);
+		}
+
+		void AddEnumNonEmptyElements (XElement enumElements)
+		{
+			if (enumElements.HasElements) {
+				var currentEnum = currentElement.Peek ();
+				if (currentEnum.Attribute (kKind)?.Value != kEnum)
+					throw new ParseException ("Current element needs to be an enum");
+
+				var existingElements = currentEnum.Element (kElements);
+				if (existingElements != null) {
+					foreach (var elem in enumElements.Elements ()) {
+						existingElements.Add (elem);
+					}
+				} else {
+					currentEnum.Add (enumElements);
+				}
+			}
+		}
+
+		IEnumerable<Raw_value_style_enum_caseContext> RawCases (Raw_value_style_enum_case_listContext context)
+		{
+			while (context != null) {
+				if (context.raw_value_style_enum_case () != null) {
+					yield return context.raw_value_style_enum_case ();
+				}
+				context = context.raw_value_style_enum_case_list ();
+			}
+			yield break;
+		}
+
+		XElement ToRawEnumElement (Raw_value_style_enum_caseContext context)
+		{
+			var enumElem = new XElement (kElement, new XAttribute (kName, context.enum_case_name ().GetText ()));
+			var value = context.raw_value_assignment ();
+			if (value != null)
+				enumElem.Add (new XAttribute (kIntValue, value.raw_value_literal ().GetText ()));
+			return enumElem;
+		}
+
+		IEnumerable<Union_style_enum_caseContext> UnionCases (Union_style_enum_case_listContext context)
+		{
+			while (context != null) {
+				if (context.union_style_enum_case () != null) {
+					yield return context.union_style_enum_case ();
+				}
+				context = context.union_style_enum_case_list ();
+			}
+			yield break;
+		}
+
+		XElement ToUnionEnumElement (Union_style_enum_caseContext context)
+		{
+			var enumElement = new XElement (kElement, new XAttribute (kName, context.enum_case_name ().GetText ()));
+			if (context.tuple_type () != null) {
+				var tupString = context.tuple_type ().GetText ();
+
+				// special casing:
+				// the type of a union case is a tuple, but we special case
+				// unit tuples to be just the type of the unit
+				// which may be something like ((((((()))))))
+				// in which case we want to let it come through as is.
+				// a unit tuple may also have a type label which we don't care
+				// about so make that go away too.
+
+				if (tupString.IndexOf (',') < 0) {
+					var pastLastOpen = tupString.LastIndexOf ('(') + 1;
+					var firstClosed = tupString.IndexOf (')');
+					if (pastLastOpen != firstClosed) {
+						tupString = tupString.Substring (pastLastOpen, firstClosed - pastLastOpen);
+						var colonIndex = tupString.IndexOf (':');
+						if (colonIndex >= 0) {
+							tupString = tupString.Substring (colonIndex + 1);
+						}
+					}
+				}
+				enumElement.Add (new XAttribute (kType, tupString));
+			}
+			return enumElement;
 		}
 
 		public override void EnterProtocol_declaration ([NotNull] Protocol_declarationContext context)
