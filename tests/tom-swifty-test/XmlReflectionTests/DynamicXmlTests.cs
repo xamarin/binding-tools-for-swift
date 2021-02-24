@@ -1660,5 +1660,23 @@ extension Int {
 			Assert.IsNull (opDecl.PrecedenceGroup, "predence group mismatch");
 			Assert.AreEqual (OperatorType.Postfix, opDecl.OperatorType, "operator type mismatch");
 		}
+
+		[Test]
+		public void TypeAliasSmokeTest ()
+		{
+			var code = @"
+public typealias Foo = Int
+public func sum (a: Foo, b: Foo) -> Foo {
+    return a + b
+}
+";
+			var module = ReflectToModules (code, "SomeModule", ReflectorMode.Parser).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			Assert.AreEqual (1, module.TypeAliases.Count, "wrong number of typealiases");
+			var alias = module.TypeAliases [0];
+			Assert.AreEqual (Accessibility.Public, alias.Access, "wrong access");
+			Assert.AreEqual ("Foo", alias.TypeName, "wrong typealias name");
+			Assert.AreEqual ("Swift.Int", alias.TargetTypeName, "wrong typealias target");
+		}
 	}
 }
