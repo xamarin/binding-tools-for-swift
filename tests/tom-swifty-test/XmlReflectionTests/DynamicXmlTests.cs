@@ -698,7 +698,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "need to handle optional props/methods")]
+		[TestCase (ReflectorMode.Parser)]
 		public void ObjCOptionalProp (ReflectorMode mode)
 		{
 			string code =
@@ -728,7 +728,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "need to handle optional props/methods")]
+		[TestCase (ReflectorMode.Parser)]
 		public void ObjCOptionalSubsript (ReflectorMode mode)
 		{
 			string code =
@@ -807,7 +807,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "property selector incorrect")]
+		[TestCase (ReflectorMode.Parser)]
 		public void ObjCPropSelector (ReflectorMode mode)
 		{
 			string code =
@@ -835,7 +835,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "property selector incorrect")]
+		[TestCase (ReflectorMode.Parser)]
 		public void ObjCPropSelectorLower (ReflectorMode mode)
 		{
 			string code =
