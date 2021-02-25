@@ -13,6 +13,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			Declarations = new List<BaseDeclaration> ();
 			Extensions = new List<ExtensionDeclaration> ();
 			Operators = new List<OperatorDeclaration> ();
+			TypeAliases = new List<TypeAliasDeclaration> ();
 		}
 
 		public ModuleDeclaration (string name)
@@ -35,6 +36,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 		public List<BaseDeclaration> Declarations { get; private set; }
+		public List<TypeAliasDeclaration> TypeAliases { get; private set; }
 
 		public static ModuleDeclaration FromXElement (XElement elem)
 		{
@@ -42,6 +44,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 				Name = (string)elem.Attribute ("name"),
 				SwiftCompilerVersion = new Version((string)elem.Attribute("swiftVersion") ?? "3.1")
 			};
+
+			decl.TypeAliases.AddRange (elem.Descendants ("typealias").Select (al => TypeAliasDeclaration.FromXElement (al)));
 
 			// non extensions
 			foreach (var child in elem.Elements()) {

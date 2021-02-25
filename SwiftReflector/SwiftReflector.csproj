@@ -183,6 +183,7 @@
     <Compile Include="SwiftXmlReflection\AttributeDeclaration.cs" />
     <Compile Include="SwiftInterfaceReflector\ObjCSelectorFactory.cs" />
     <Compile Include="SwiftInterfaceReflector\SyntaxDesugaringParser.cs" />
+    <Compile Include="SwiftXmlReflection\TypeAliasDeclaration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

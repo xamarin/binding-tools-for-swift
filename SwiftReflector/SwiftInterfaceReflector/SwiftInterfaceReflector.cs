@@ -122,6 +122,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kIntValue = "intValue";
 		internal const string kRawType = "rawType";
 		internal const string kRawValue = "RawValue";
+		internal const string kTypeAliases = "typealiases";
+		internal const string kTypeAlias = "typealias";
 
 		Stack<XElement> currentElement = new Stack<XElement> ();
 		Version interfaceVersion;
@@ -135,6 +137,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		List<string> nominalTypes = new List<string> ();
 		List<string> classes = new List<string> ();
 		List<XElement> unknownInheritance = new List<XElement> ();
+		List<XElement> typeAliasMap = new List<XElement> ();
 		string moduleName;
 		TypeDatabase typeDatabase;
 		IModuleLoader moduleLoader;
@@ -192,6 +195,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				PatchPossibleOperators ();
 				PatchExtensionShortNames ();
 				PatchPossibleBadInheritance ();
+
+				if (typeAliasMap.Count > 0) {
+					module.Add (new XElement (kTypeAliases, typeAliasMap.ToArray ()));
+				}
 
 				module.Add (new XAttribute (kName, moduleName));
 				SetLanguageVersion (module);
@@ -954,6 +961,22 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			}
 
 			return genericElem;
+		}
+
+		public override void ExitTypealias_declaration ([NotNull] Typealias_declarationContext context)
+		{
+			// only care about top level typealiases
+			if (currentElement.Peek ().Name != kModule)
+				return;
+			var name = context.typealias_name ().GetText ();
+			var generics = context.generic_parameter_clause ()?.GetText () ?? "";
+			var targetType = context.typealias_assignment ().type ().GetText ();
+			var access = ToAccess (context.access_level_modifier ());
+			var map = new XElement (kTypeAlias, new XAttribute (kName, name + generics),
+				new XAttribute (kAccessibility, access),
+				new XAttribute (kType, targetType));
+			if (access != null)
+			typeAliasMap.Add (map);
 		}
 
 		XElement MakeConformanceWhere (string name, string from)
