@@ -98,5 +98,26 @@ namespace XmlReflectionTests {
 			FoldTest ("AssociatedTypeFold", null, "Foo<Proto>", "Dictionary<Proto.Key, Proto.Value>",
 				new TypeAliasDeclaration () { TypeName = "Foo<T>", TargetTypeName = "Dictionary<T.Key, T.Value>" });
 		}
+
+		[Test]
+		public void TupleTest ()
+		{
+			FoldTest ("TupleTest", null, "Foo<Swift.Int, Swift.Bool>", "(Swift.Int, Swift.Bool)",
+				new TypeAliasDeclaration () { TypeName = "Foo<T, U>", TargetTypeName = "(T, U)" });
+		}
+
+		[Test]
+		public void ClosureTest ()
+		{
+			FoldTest ("FoldTest", null, "Foo<(Swift.Int, Swift.Int), Swift.Bool>", "(Swift.Int, Swift.Int) -> Swift.Bool",
+				new TypeAliasDeclaration () { TypeName = "Foo<T, U>", TargetTypeName = "T->U"});
+		}
+
+		[Test]
+		public void ProtoListTest ()
+		{
+			FoldTest ("ClosureTest", null, "Foo", "Codable & Decodable",
+				new TypeAliasDeclaration () { TypeName = "Foo", TargetTypeName = "Codable & Decodable" });
+		}
 	}
 }
