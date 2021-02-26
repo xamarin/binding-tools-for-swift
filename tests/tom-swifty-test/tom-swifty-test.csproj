@@ -114,6 +114,7 @@
     <Compile Include="XmlReflectionTests\SwiftInterfaceParserTests.cs" />
     <Compile Include="XmlReflectionTests\XmlComparator.cs" />
     <Compile Include="XmlReflectionTests\ComparatorTests.cs" />
+    <Compile Include="XmlReflectionTests\TypeAliasTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
