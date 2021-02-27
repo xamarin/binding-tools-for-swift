@@ -4,7 +4,7 @@ using System.IO;
 using SwiftReflector;
 using SwiftReflector.Inventory;
 
-namespace BindingNemo {
+namespace DylibBinder {
 	public class WriteXml {
 		public static void CreateXmlFile (Dictionary <string, string> libraries)
 		{

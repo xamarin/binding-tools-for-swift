@@ -73,11 +73,32 @@ namespace SwiftReflector {
 
 		public void Compile (SwiftCompilerOptions compilerOptions, bool outputIsFramework, params string [] files)
 		{
+			// TJ - let's do something similar but run the files seperately and create a list of all error
+			// in case there are just some issues we cannot overcome solely using the Inventory
+
+			//string [] emptyArr = new string [] { };
+			//string argsWithoutFiles = BuildCompileArgs (compilerOptions, outputIsFramework, emptyArr);
+			//TJSeparateLaunches (CompilerInfo.CustomSwiftc, argsWithoutFiles, files);
+
+			StringBuilder sb = new StringBuilder ();
+			string TJPath;
+			foreach (var f in files) {
+				string [] file = new string [] { f };
+				string arg = BuildCompileArgs (compilerOptions, outputIsFramework, file);
+				if (Verbose)
+					Console.WriteLine ("Compiling swift files: " + files.InterleaveCommas ());
+				var TJOutput = TJSeparateLaunches2 (CompilerInfo.CustomSwiftc, arg);
+				sb.Append ($"\n\n\n{f}:\n" + TJOutput [0]);
+				TJPath = TJOutput [1];
+			}
+			var TJTotalErrors = sb.ToString ();
+
+			
+
 			string args = BuildCompileArgs (compilerOptions, outputIsFramework, files);
 			if (Verbose)
 				Console.WriteLine ("Compiling swift files: " + files.InterleaveCommas ());
-
-			Launch (CompilerInfo.CustomSwiftc, args);
+  			Launch (CompilerInfo.CustomSwiftc, args);
 			var outputLib = Path.Combine (DirectoryPath, $"lib{compilerOptions.ModuleName}.dylib");
 			if (outputIsFramework) {
 				string srcLib = outputLib;
@@ -133,6 +154,14 @@ namespace SwiftReflector {
 			foreach (string file in files) {
 				sb.Append (" ").Append (file);
 			}
+
+			// TJ - try to see contents of these created files
+			//sb.Append (" -save-temps");
+			//sb.Append (" -print-target-info");
+			//sb.Append (" -o .TJTempHelp");
+			sb.Append (" -v");
+
+
 			return sb.ToString ();
 		}
 
@@ -282,6 +311,9 @@ namespace SwiftReflector {
 
 			if (addReference) {
 				foreach (string lib in libs) {
+					// TJ - adding since libswiftCore cannot be found in XamGlue
+					if (lib == "libswiftCore")
+						continue;
 					sb.Append ("-l").Append (lib).Append (' ');
 				}
 				foreach (string fwk in fwks) {
@@ -300,6 +332,16 @@ namespace SwiftReflector {
 		string Launch (string executable, string args)
 		{
 			return ExecAndCollect.Run (executable, args, workingDirectory: DirectoryPath, verbose: Verbose);
+		}
+
+		string [] TJSeparateLaunches2 (string executable, string args)
+		{
+			return ExecAndCollect.TJSeparateRun2 (executable, args, workingDirectory: DirectoryPath, verbose: Verbose);
+		}
+
+		string TJSeparateLaunches (string executable, string args, string [] files)
+		{
+			return ExecAndCollect.TJSeparateRun (executable, args, files, workingDirectory: DirectoryPath, verbose: Verbose);
 		}
 
 

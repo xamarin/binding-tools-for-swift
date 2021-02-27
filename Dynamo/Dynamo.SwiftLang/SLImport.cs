@@ -11,6 +11,12 @@ namespace Dynamo.SwiftLang {
 			                       Exceptions.ThrowOnNull (module, nameof(module))),
 			        false, false, false)
 		{
+			// TJ - since we do not use libswiftCore as an import module
+			// let's ignore it here
+			if (module == "libswiftCore" || module == "XamGlue" || module == "T0A0") {
+				return;
+			}
+
 			Module = module;
 		}
 
@@ -71,6 +77,12 @@ namespace Dynamo.SwiftLang {
 			SLImport target = new SLImport (package);
 			if (package == "Self")
 				return;
+
+			// TJ - since we do not use libswiftCore as an import module
+			// let's ignore it here
+			if (package == "libswiftCore" || package == "XamGlue" || package == "T0A0") {
+				return;
+			}
 
 			if (package != OwningModule && !this.Exists (imp => imp.Contents == target.Contents))
 				Add (target);

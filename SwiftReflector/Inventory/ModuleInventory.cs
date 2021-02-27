@@ -146,21 +146,24 @@ namespace SwiftReflector.Inventory {
 			}
 		}
 
-		public static ModuleInventory FromFiles (IEnumerable<string> pathsToLibraryFiles, ErrorHandling errors)
+		// TJ adding isLibrary bool
+		public static ModuleInventory FromFiles (IEnumerable<string> pathsToLibraryFiles, ErrorHandling errors, bool isLibrary = false)
 		{
 			ModuleInventory inventory = null;
 			foreach (string path in pathsToLibraryFiles) {
 				if (inventory == null)
 					inventory = new ModuleInventory ();
+				// TJ adding isLibrary bool
 				using (FileStream stm = new FileStream (path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-					FromStreamInto (stm, inventory, errors, path);
+					FromStreamInto (stm, inventory, errors, path, isLibrary: isLibrary);
 				}
 			}
 			return inventory;
 		}
 
+		// TJ adding isLibrary bool
 		static ModuleInventory FromStreamInto (Stream stm, ModuleInventory inventory,
-		                                       ErrorHandling errors, string fileName = null)
+		                                       ErrorHandling errors, string fileName = null, bool isLibrary = false)
 		{
 			Exceptions.ThrowOnNull (errors, "errors");
 			Exceptions.ThrowOnNull (stm, "stm");
@@ -206,6 +209,9 @@ namespace SwiftReflector.Inventory {
 					try {
 						inventory.Add (def, osstm);
 					} catch (RuntimeException e) {
+						if (isLibrary && e.Message == "duplicate variable subscript.") {
+							continue;
+						}
 						e = new RuntimeException (e.Code, e.Error, $"error dispensing top level definition of type {def.GetType ().Name} decomposed from {entry.str}: {e.Message}");
 						errors.Add (e);
 					}

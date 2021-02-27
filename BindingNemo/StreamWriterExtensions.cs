@@ -43,7 +43,7 @@ namespace BindingNemo {
 			// not sure how to find swift version
 			Indent ();
 			sw.WriteLineWithIndent ($"<!-- swiftVersion not yet found -->");
-			sw.WriteLineWithIndent ($"<Module name=\"{moduleName}\" swiftVersion=\"5.0\">");
+			sw.WriteLineWithIndent ($"<module name=\"{moduleName}\" swiftVersion=\"5.0\">");
 		}
 
 		public static void WriteClasses (this StreamWriter sw, string moduleName, List<ClassContents> classesList)
@@ -146,7 +146,7 @@ namespace BindingNemo {
 
 		public static void WriteModuleOutro (this StreamWriter sw)
 		{
-			sw.WriteLineWithIndent ("</Module>");
+			sw.WriteLineWithIndent ("</module>");
 		}
 
 		public static void WriteXmlOutro (this StreamWriter sw)
@@ -169,33 +169,39 @@ namespace BindingNemo {
 				var sig = StringBuilderHelper.EnhancePropertySignature (getter.ToString (), false);
 				if (sig != null) {
 					sw.WriteWithIndent ($"<property");
-					var nameSB = new StringBuilder (property.Name.ToString ());
-					nameSB.EscapeCharactersName ();
-					sw.WriteTypeValue ("name", nameSB.ToString ());
+					var name = StringBuilderHelper.EscapeCharacters (property.Name.ToString ());
+					var isStatic = getter.IsStatic.ToString ();
+					sw.WriteTypeValue ("name", name);
 					//sw.WriteTypeValue ("signature=", sig);
 					sw.WriteTypeValue ("isPossiblyIncomplete", "False");
-					sw.WriteTypeValue ("isStatic", getter.IsStatic.ToString ());
+					sw.WriteTypeValue ("isStatic", isStatic);
 
 					// can check if property is public or private but do not see Internal or Open options
-					var isPublic = getter.IsPublic ? true : false;
+					var isPublic = getter.IsPublic ? Accessibility.Public : Accessibility.Unknown;
 					sw.WriteTypeValue ("accessibility", isPublic.ToString ());
 
 					// need to parse Sig and use the right argument in the parse
 					var type = getter.OfType.ToString ();
 					var propertyType = StringBuilderHelper.ParsePropertyType (sig);
 
-					if (propertyType != null) {
-						var parsed = TypeSpecParser.Parse (propertyType).ToString ();
-						sw.WriteTypeValue ("type", parsed);
-					}
-					else
-						sw.WriteTypeValue ("type", "Named");
+					//if (propertyType != null) {
+					var parsed = TypeSpecParser.Parse (propertyType).ToString ();
+					var filteredType = StringBuilderHelper.EscapeCharacters (parsed);
+
+					sw.WriteTypeValue ("type", filteredType);
+					//}
+					//else
+					//	sw.WriteTypeValue ("type", "Named");
 
 					//elements not yet found
 					sw.WriteTypeValue ("isDeprecated", "False");
 					sw.WriteTypeValue ("isUnavailable", "False");
 					sw.WriteTypeValue ("isOptional", "False");
 					sw.WriteLine (" storage=\"Addressed\"/>");
+					if (property.Getter != null)
+						sw.WriteGetter (name, isStatic, filteredType);
+					if (property.Setter != null)
+						sw.WriteSetter (name, isStatic, filteredType);
 				}
 			}
 		}
@@ -210,22 +216,21 @@ namespace BindingNemo {
 			var lastWrittenClassSignature = string.Empty;
 			foreach (var functions in methodList) {
 				var signature = functions.Functions [0].Signature;
-				if (StringBuilderHelper.CheckForPrivateSignature (signature.ToString ()) || signature.ToString () == lastWrittenClassSignature)
+				if (StringBuilderHelper.CheckForPrivateSignature (signature.ToString ()) ||
+					signature.ToString () == lastWrittenClassSignature)
 					continue;
-
 				var isStatic = signature.GetType () == typeof(SwiftReflector.SwiftStaticFunctionType) ? true : false;
 
 				sw.WriteWithIndent ($"<func");
 				Indent ();
-				var nameSB = new StringBuilder (functions.Name.ToString ());
-				nameSB.EscapeCharactersName ();
-				sw.WriteTypeValue ("name", nameSB.ToString ());
+				sw.WriteTypeValue ("name", StringBuilderHelper.EscapeCharacters (functions.Name.ToString ()));
 
 				//sw.WriteTypeValue ("signature=", enhancedSignature);
 				//sw.WriteTypeValue ("signatureOG=", signature.ToString ());
 				sw.WriteTypeValue ("hasThrows", signature.CanThrow.ToString ());
 				sw.WriteTypeValue ("operatorKind", functions.Functions [0].Operator.ToString ());
 				sw.WriteTypeValue ("isStatic", isStatic.ToString ());
+				sw.WriteTypeValue ("isPossiblyIncomplete", "False");
 
 				sw.WriteReturnType (signature.ReturnType);
 				sw.WriteConstantAttributes ();
@@ -245,14 +250,13 @@ namespace BindingNemo {
 
 			var lastWrittenProtocolSignature = string.Empty;
 			foreach (var protocol in protocols) {
-				if (StringBuilderHelper.CheckForPrivateSignature (protocol.Signature.ToString ()) || protocol.Signature.ToString () == lastWrittenProtocolSignature)
+				if (StringBuilderHelper.CheckForPrivateSignature (protocol.Signature.ToString ()) ||
+					protocol.Signature.ToString () == lastWrittenProtocolSignature)
 					continue;
 
 				sw.WriteWithIndent ($"<func");
 				Indent ();
-				var nameSB = new StringBuilder (protocol.Signature.Name.ToString ());
-				nameSB.EscapeCharactersName ();
-				sw.WriteTypeValue ("name", nameSB.ToString ());
+				sw.WriteTypeValue ("name", StringBuilderHelper.EscapeCharacters (protocol.Signature.Name.ToString ()));
 				//sw.WriteTypeValue ("signature", enhancedSignature);
 				//sw.WriteTypeValue ("signatureOG=", protocol.Signature.ToString ());
 				sw.WriteTypeValue ("operatorKind", protocol.Operator.ToString ());
@@ -260,6 +264,7 @@ namespace BindingNemo {
 
 				sw.WriteReturnType (protocol.Signature.ReturnType); 
 				sw.WriteTypeValue ("hasThrows", protocol.Signature.CanThrow.ToString ());
+				sw.WriteTypeValue ("isPossiblyIncomplete", "True");
 
 				sw.WriteConstantAttributes ();
 				sw.WriteParameters (protocol.Signature.Parameters.ToString (), protocol.Signature.IsVariadic.ToString ());
@@ -272,18 +277,18 @@ namespace BindingNemo {
 
 		static void WriteReturnType (this StreamWriter sw, SwiftReflector.SwiftType returnType)
 		{
-			if (returnType != null) {
+			if (returnType != null && !String.IsNullOrEmpty (returnType.ToString ()) && returnType.ToString () != "()") {
 				var enhancedReturn = StringBuilderHelper.EnhanceReturn (returnType.ToString ());
-				if (enhancedReturn != null)
-					sw.WriteTypeValue ("returnType", enhancedReturn);
+				var escapedReturn = StringBuilderHelper.EscapeCharacters (enhancedReturn);
+				if (escapedReturn != null)
+					sw.WriteTypeValue ("returnType", escapedReturn);
 			} else {
-				sw.WriteTypeValue ("returnType", "");
+				sw.WriteTypeValue ("returnType", "()");
 			}
 		}
 
 		static void WriteConstantAttributes (this StreamWriter sw)
 		{
-			sw.WriteTypeValue ("isPossiblyIncomplete", "True");
 			//elements not yet found
 			sw.WriteTypeValue ("accessibility", "Public");
 			sw.WriteTypeValue ("isProperty", "False");
@@ -298,25 +303,116 @@ namespace BindingNemo {
 
 		static void WriteParameters (this StreamWriter sw, string parameterString, string isVariadic)
 		{
-			List<Tuple<string, string>> parameters = StringBuilderHelper.SeperateParameters (parameterString);
-			if (parameters != null) {
-				sw.WriteLineWithIndent ($"<parameterlists>");
-				Indent ();
+			sw.WriteLineWithIndent ($"<parameterlists>");
+			Indent ();
+
+			List<Tuple<string, string>> parameters = new List<Tuple<string, string>> ();
+
+			if (parameterString != null) 
+				parameters = StringBuilderHelper.SeperateParameters (parameterString);
+			
+			if (parameterString != null && parameters != null) {
+				
 				sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
 				Indent ();
-				foreach (var parameter in parameters) {
+				for (var i = 0; i < parameters.Count; i++) { 
 					try {
-						var privateName = parameter.Item1 != "_" ? parameter.Item1 : "";
-						sw.WriteLineWithIndent ($"<parameter publicName=\"{parameter.Item1}\" privateName=\"{privateName}\" type=\"{TypeSpecParser.Parse (parameter.Item2)}\" isVariadic=\"{isVariadic}\"/>");
+						//var privateName = parameter.Item1 != "_" ? parameter.Item1 : "";
+						var privateName = parameters[i].Item1 != "_" ? parameters [i].Item1 : $"private{i}";
+						string type = TypeSpecParser.Parse (parameters [i].Item2).ToString ();
+						sw.WriteLineWithIndent ($"<parameter index=\"{i}\" publicName=\"{parameters [i].Item1}\" privateName=\"{privateName}\" type=\"{StringBuilderHelper.EscapeCharacters (type)}\" isVariadic=\"{isVariadic}\"/>");
+						//sw.WriteLineWithIndent ($"<parameter publicName=\"hi\" privateName=\"hi\" type=\"{StringBuilderHelper.EscapeCharacters (type)}\" isVariadic=\"{isVariadic}\"/>");
 					} catch (Exception e) {
-						Console.WriteLine ($"Problem Parsing the type: {parameter.Item2} with exception {e.Message}");
+						Console.WriteLine ($"Problem Parsing the type: {parameters [i].Item2} with exception {e.Message}");
 					}
 				}
 				Exdent ();
 				sw.WriteLineWithIndent ($"</parameterlist>");
-				Exdent ();
-				sw.WriteLineWithIndent ($"</parameterlists>");
+				
 			}
+			Exdent ();
+			sw.WriteLineWithIndent ($"</parameterlists>");
+		}
+
+		static void WriteFilteredParameters (this StreamWriter sw, string parameterType, string isVariadic, bool isGetter)
+		{
+			sw.WriteLineWithIndent ($"<parameterlists>");
+			Indent ();
+			sw.WriteLineWithIndent ($"<parameterlist index=\"0\">");
+			Indent ();
+
+			sw.WriteGetSetParameter (parameterType, isVariadic, isGetter);
+
+			Exdent ();
+			sw.WriteLineWithIndent ($"</parameterlist>");
+
+			Exdent ();
+			sw.WriteLineWithIndent ($"</parameterlists>");
+		}
+
+		static void WriteGetSetParameter (this StreamWriter sw, string parameterType, string isVariadic, bool isGetter)
+		{
+			if (isGetter)
+				sw.WriteLineWithIndent ($"<parameter index=\"0\" publicName=\"_\" privateName=\"privateName\" type=\"{parameterType}\" isVariadic=\"{isVariadic}\"/>");
+			else
+				sw.WriteLineWithIndent ($"<parameter index=\"0\" publicName=\"newValue\" privateName=\"newValue\" type=\"{parameterType}\" isVariadic=\"{isVariadic}\"/>");
+		}
+
+		static void WriteGetter (this StreamWriter sw, string name, string isStatic, string returnType)
+		{
+			sw.WriteWithIndent ($"<func");
+			Indent ();
+			sw.WriteTypeValue ("name", $"get_{name}");
+			sw.WriteTypeValue ("isStatic", isStatic);
+			sw.WriteTypeValue ("isProperty", "True");
+
+			sw.WriteTypeValue ("returnType", returnType);
+			sw.WriteTypeValue ("isPossiblyIncomplete", "False");
+			//elements not yet found
+			sw.WriteTypeValue ("operatorKind", "None");
+			sw.WriteTypeValue ("hasThrows", "False");
+
+			sw.WriteTypeValue ("accessibility", "Public");
+			sw.WriteTypeValue ("propertyType", "Getter");
+			sw.WriteTypeValue ("isFinal", "False");
+			sw.WriteTypeValue ("isDeprecated", "False");
+			sw.WriteTypeValue ("isUnavailable", "False");
+			sw.WriteTypeValue ("isOptional", "False");
+			sw.WriteTypeValue ("isRequired", "False");
+			sw.WriteTypeValue ("isConvenienceInit", "False");
+			sw.WriteLine (" objcSelector=\"\">");
+			//sw.WriteLine (">");
+			sw.WriteFilteredParameters (returnType, "false", true);
+			Exdent ();
+			sw.WriteLineWithIndent ($"</func>");
+		}
+
+		static void WriteSetter (this StreamWriter sw, string name, string isStatic, string returnType)
+		{
+			sw.WriteWithIndent ($"<func");
+			Indent ();
+			sw.WriteTypeValue ("name", $"set_{name}");
+			sw.WriteTypeValue ("isStatic", isStatic);
+			sw.WriteTypeValue ("isProperty", "True");
+			sw.WriteReturnType (null);
+			sw.WriteTypeValue ("isPossiblyIncomplete", "False");
+			sw.WriteTypeValue ("propertyType", "Setter");
+			sw.WriteTypeValue ("operatorKind", "None");
+			sw.WriteTypeValue ("hasThrows", "False");
+			//elements not yet found
+			sw.WriteTypeValue ("accessibility", "Public");
+			sw.WriteTypeValue ("isFinal", "False");
+			sw.WriteTypeValue ("isDeprecated", "False");
+			sw.WriteTypeValue ("isUnavailable", "False");
+			sw.WriteTypeValue ("isOptional", "False");
+			sw.WriteTypeValue ("isRequired", "False");
+			sw.WriteTypeValue ("isConvenienceInit", "False");
+			sw.WriteLine (" objcSelector=\"\">");
+			//sw.WriteLine (">");
+			//sw.WriteFilteredParameters ($"inout {returnType}", "false", false);
+			sw.WriteFilteredParameters (returnType, "false", false);
+			Exdent ();
+			sw.WriteLineWithIndent ($"</func>");
 		}
 
 		static bool CheckStaticProtocolMethod (SwiftReflector.Demangling.TLFunction protocol)

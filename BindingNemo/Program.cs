@@ -48,8 +48,34 @@ namespace BindingNemo {
 
 			WriteXml.CreateXmlFile (libraries);
 
-			//IncludeExclude.MarkAsUsing ();
+			//CreateBindings (libraries);
 		}
+
+		//static void CreateBindings (Dictionary<string, string> swiftLibPaths)
+		//{
+		//	//// pass in targets
+		//	//// we can call the GetModuleInventories with the swiftLibPaths dictionary values
+		//	var moduleDeclarations = SwiftReflector.SwiftXmlReflection.Reflector.FromXmlFile ("../../Modules/modules.xml");
+		//	var libraryDirectories = new List<string> ();
+		//	var moduleNames = new List<string> ();
+		//	var targets = new List<string> ();
+
+		//	foreach (var s in swiftLibPaths) {
+		//		//moduleNames.Add (s.Key);
+		//		//libraryDirectories.Add (s.Value);
+		//	}
+		//	moduleNames.Add ("swiftCore");
+		//	libraryDirectories.Add ("../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/appletvos//");
+
+		//	targets.Add ("iphoneos");
+		//	var outputDirectory = "../../Modules/";
+		//	var swiftCompilerLocation = new SwiftCompilerLocation ("/usr/bin", "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx");
+		//	var classCompilerOptions = new ClassCompilerOptions (true, true, true, true);
+		//	NewClassCompiler classCompiler = new NewClassCompiler (swiftCompilerLocation, classCompilerOptions, UnicodeMapper.Default);
+
+
+		//	//var errors = classCompiler.BindingNemoCompileToCSharp (moduleDeclarations, libraryDirectories, moduleNames, targets, outputDirectory);
+		//}
 
 		static string BuildBashString (string name, string platform, string architecture)
 		{
@@ -84,7 +110,7 @@ namespace BindingNemo {
 				// Question for Steve, are the dylibs different for different architectures & platforms
 				// I think probably, but here I am ignoring them
 				var libName = lib.Split ('/').Last ().Split ('.').First ();
-				if (!libraries.ContainsKey (libName))
+				if (libName != "" && !libraries.ContainsKey (libName))
 					libraries.Add (libName, lib);
 			}
 			return libraries;

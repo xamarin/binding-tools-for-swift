@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace BindingNemo {
+namespace DylibBinder {
 	public class StringBuilderHelper {
 
 		public static bool CheckForPrivateSignature (string signature)
@@ -33,18 +33,21 @@ namespace BindingNemo {
 			return sb.ToString ();
 		}
 
-		public static string EnhanceReturn (string returnSignature)
+		public static string EnhanceReturn (SwiftReflector.SwiftBaseFunctionType signature, int depth, int genericArguments = 0, int genericParameterCount = 0)
 		{
+			var returnSignature = signature.ReturnType.ToString ();
 			if (string.IsNullOrEmpty (returnSignature) || returnSignature.Contains ("_"))
 				return null;
 			else if (returnSignature == "()")
 				return "";
 			
 			StringBuilder sb = new StringBuilder (returnSignature);
+			sb.TransformGenericsToThisLevel (signature.Parameters.ToString (), returnSignature, depth, genericArguments, genericParameterCount);
 			sb.TransformGenerics ();
 			sb.RemoveDuplicateConsecutiveWords ();
 			sb.CorrectOptionals ();
 			sb.AddModule ();
+			sb.RemoveAssociatedTypeRemnants ();
 
 			return sb.ToString ();
 		}
@@ -61,6 +64,7 @@ namespace BindingNemo {
 			StringBuilder sb = new StringBuilder (signature);
 			sb.RemoveDuplicateConsecutiveWords ();
 			sb.AddModule ();
+			sb.RemoveAssociatedTypeRemnants ();
 			if (!sb.ToString ().Contains (":")) {
 				return null;
 			}
@@ -82,29 +86,54 @@ namespace BindingNemo {
 			return propertyType;
 		}
 
-		public static List<Tuple<string, string>> SeperateParameters (string parametersString) {
+		public static List<Tuple<string, string>> SeperateParameters (SwiftReflector.SwiftBaseFunctionType signature, int depth, int genericArguments = 0, int genericParameterCount = 0) {
+			var parametersString = signature.Parameters.ToString ();
 			if (parametersString == "()") {
 				return null;
 			}
 
 			var startingSB = new StringBuilder (parametersString);
 			startingSB.RemoveDuplicateConsecutiveWords ();
+			startingSB.TransformGenericsToThisLevel (parametersString, signature.ReturnType.ToString (), depth, genericArguments, genericParameterCount);
 			startingSB.TransformGenerics ();
 			startingSB.AddModule ();
+			startingSB.RemoveAssociatedTypeRemnants ();
+			var testBeforeClosure = startingSB.ToString ();
+			startingSB.AddParenthesisToClosure ();
 
 			List<string> parameters = BreakParameterStringToList (startingSB.ToString ());
 			return CreateParameterTuple (parameters);
+		}
+
+		public static string ReapplyClosureParenthesis (string typeString)
+		{
+			var sb = new StringBuilder (typeString);
+			sb.AddParenthesisToClosure ();
+			return sb.ToString ();
 		}
 
 		static List<string> BreakParameterStringToList (string parameterString)
 		{
 			List<string> parameters = new List<string> ();
 			StringBuilder parameter = new StringBuilder ();
+			StringBuilder updatedParameterString = new StringBuilder (parameterString);
 			int openedParenthesisCount = 0;
 			int openedBracketCount = 0;
+
+			// we want to remove the first and last parenthesis if they match eachother
+			// and are therefore useless here
+			if (parameterString[0] == '(' && parameterString[parameterString.Length - 1] == ')') {
+				var openParensMatch = Regex.Matches (parameterString, @"\(");
+				var closedParensMatch = Regex.Matches (parameterString, @"\)");
+				if (openParensMatch.Count == closedParensMatch.Count) {
+					updatedParameterString.Remove (updatedParameterString.ToString ().Length - 1, 1);
+					updatedParameterString.Remove (0, 1);
+				}
+			}
+
+			parameterString = updatedParameterString.ToString ();
+
 			for (int i = 0; i < parameterString.Length; i++) {
-				if (i == 0 && parameterString [i] == '(')
-					continue;
 				switch (parameterString [i]) {
 				case '(':
 					parameter.Append (parameterString [i]);
@@ -149,17 +178,38 @@ namespace BindingNemo {
 		{
 			var nameTypeTupleList = new List<Tuple<string, string>> ();
 
+			var openedParenthesisCount = 0;
 			// split the parameters into their name and their type
 			foreach (var p in parameters) {
+				var done = false;
 				if (!p.Contains (":")) {
 					nameTypeTupleList.Add (Tuple.Create ("_", p));
 				} else {
-					var splitP = p.Split (':');
-					if (splitP [0] == "") {
-						nameTypeTupleList.Add (Tuple.Create ("_", splitP [1].Substring (1)));
-					} else {
-						nameTypeTupleList.Add (Tuple.Create (splitP [0], splitP [1].Substring (1)));
+					for (var i = 0; i < p.Length; i++) {
+						if (done)
+							break;
+						switch (p [i]) {
+						case '(':
+							openedParenthesisCount++;
+							break;
+						case ')':
+							openedParenthesisCount--;
+							break;
+						case ':':
+							if (openedParenthesisCount == 0) {
+								if (i == 0)
+									nameTypeTupleList.Add (Tuple.Create ("_", p.Substring (i + 2)));
+								else
+									nameTypeTupleList.Add (Tuple.Create (p.Substring (0, i), p.Substring (i+2)));
+								done = true;
+							}
+							break;
+						default:
+							break;
+						}
 					}
+					if (!done)
+						nameTypeTupleList.Add (Tuple.Create ("_", p));
 				}
 			}
 
