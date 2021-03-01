@@ -62,51 +62,6 @@ namespace SwiftReflector.Inventory {
 			}
 		}
 
-		// Change introduced by TJ Lambert
-		// GetClassesFromName, GetEnumsFromName, and GetStructsFromName
-		// is similar to ClassesForName () but it takes advantage
-		// of the IsClass, IsEnum, and IsStruct bool set
-		// inside ClassContent to filter classes, enums, and structs
-
-		public IEnumerable<ClassContents> GetClassesFromName (SwiftName modName)
-		{
-			List<ClassContents> classes = new List<ClassContents> ();
-			ModuleContents modcont = null;
-			if (values.TryGetValue (modName, out modcont)) {
-				foreach (var v in modcont.Classes.Values){
-					if (v.Name.IsClass)
-						classes.Add (v);
-				}
-			} 
-			return classes;
-		}
-
-		public IEnumerable<ClassContents> GetEnumsFromName (SwiftName modName)
-		{
-			List<ClassContents> enums = new List<ClassContents> ();
-			ModuleContents modcont = null;
-			if (values.TryGetValue (modName, out modcont)) {
-				foreach (var v in modcont.Classes.Values) {
-					if (v.Name.IsEnum)
-						enums.Add (v);
-				}
-			}
-			return enums;
-		}
-
-		public IEnumerable<ClassContents> GetStructsFromName (SwiftName modName)
-		{
-			List<ClassContents> structs = new List<ClassContents> ();
-			ModuleContents modcont = null;
-			if (values.TryGetValue (modName, out modcont)) {
-				foreach (var v in modcont.Classes.Values) {
-					if (v.Name.IsStruct)
-						structs.Add (v);
-				}
-			}
-			return structs;
-		}
-
 		public ClassContents FindClass (string fullyQualifiedName)
 		{
 			string moduleName = fullyQualifiedName.Substring (0, fullyQualifiedName.IndexOf ('.'));
@@ -146,24 +101,21 @@ namespace SwiftReflector.Inventory {
 			}
 		}
 
-		// TJ adding isLibrary bool
-		public static ModuleInventory FromFiles (IEnumerable<string> pathsToLibraryFiles, ErrorHandling errors, bool isLibrary = false)
+		public static ModuleInventory FromFiles (IEnumerable<string> pathsToLibraryFiles, ErrorHandling errors)
 		{
 			ModuleInventory inventory = null;
 			foreach (string path in pathsToLibraryFiles) {
 				if (inventory == null)
 					inventory = new ModuleInventory ();
-				// TJ adding isLibrary bool
 				using (FileStream stm = new FileStream (path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-					FromStreamInto (stm, inventory, errors, path, isLibrary: isLibrary);
+					FromStreamInto (stm, inventory, errors, path);
 				}
 			}
 			return inventory;
 		}
 
-		// TJ adding isLibrary bool
 		static ModuleInventory FromStreamInto (Stream stm, ModuleInventory inventory,
-		                                       ErrorHandling errors, string fileName = null, bool isLibrary = false)
+		                                       ErrorHandling errors, string fileName = null)
 		{
 			Exceptions.ThrowOnNull (errors, "errors");
 			Exceptions.ThrowOnNull (stm, "stm");
@@ -209,9 +161,6 @@ namespace SwiftReflector.Inventory {
 					try {
 						inventory.Add (def, osstm);
 					} catch (RuntimeException e) {
-						if (isLibrary && e.Message == "duplicate variable subscript.") {
-							continue;
-						}
 						e = new RuntimeException (e.Code, e.Error, $"error dispensing top level definition of type {def.GetType ().Name} decomposed from {entry.str}: {e.Message}");
 						errors.Add (e);
 					}

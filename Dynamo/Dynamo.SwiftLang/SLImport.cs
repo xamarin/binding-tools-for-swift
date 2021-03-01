@@ -13,7 +13,7 @@ namespace Dynamo.SwiftLang {
 		{
 			// TJ - since we do not use libswiftCore as an import module
 			// let's ignore it here
-			if (module == "libswiftCore" || module == "XamGlue" || module == "T0A0") {
+			if (module == "libswiftCore" || module == "U0" || module == "T0") {
 				return;
 			}
 
@@ -80,7 +80,7 @@ namespace Dynamo.SwiftLang {
 
 			// TJ - since we do not use libswiftCore as an import module
 			// let's ignore it here
-			if (package == "libswiftCore" || package == "XamGlue" || package == "T0A0") {
+			if (package == "libswiftCore" || package == "U0" || package == "T0") {
 				return;
 			}
 

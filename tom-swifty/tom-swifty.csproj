@@ -18,7 +18,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <Commandlineparameters>--swift-bin-path /Users/steveh/xamroot/maccore/tools/apple/build/Xcode-DebugAssert/swift-macosx-x86_64/Debug/bin --swift-lib-path /Users/steveh/xamroot/maccore/tools/apple/build/Xcode-DebugAssert/swift-macosx-x86_64/Debug/lib -C /Users/steveh/hacking/unithelp -o /Users/steveh/hacking/unithelp/swiftwrapping --retain-swift-wrappers --retain-xml-reflection None1</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -49,6 +49,10 @@
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">
       <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
       <Name>Dynamo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
+      <Project>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</Project>
+      <Name>SwiftRuntimeLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

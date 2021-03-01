@@ -25,6 +25,23 @@ namespace tomswifty {
 
 			var extra = options.ParseCommandLine (args);
 
+			// TJ hardcoding options to debug
+			// library at: ../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/appletvos//libswiftCore.dylib
+			options.SwiftBinPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin";
+			options.SwiftLibPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib";
+			//options.SwiftLibPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphoneos";
+			options.ModuleName = "swiftCore";
+			options.OutputDirectory = Directory.GetCurrentDirectory () + "/../../Modules";
+			options.RetainXmlReflection = true;
+			options.RetainSwiftWrappingCode = true;
+			options.ModulePaths.Clear ();
+			options.DylibPaths.Clear ();
+			options.DylibPaths.Add (Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphoneos//");
+			options.SwiftGluePath = Directory.GetCurrentDirectory () + "/../../../swiftglue/bin/Debug";
+			options.TypeDatabasePaths.Add (Directory.GetCurrentDirectory () + "/../../../bindings");
+
+
+
 			// deal with those options that do not care about the extra params, 
 			// then check if we have some and print.
 			if (options.Demangle)
@@ -63,14 +80,19 @@ namespace tomswifty {
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
-			options.CheckForOptionErrors (errors);
+			options.CheckForOptionErrors (errors, true);
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
-			if (options.ModuleName == null) {
-				Console.WriteLine ("-module-name option is required.");
-				return 1;
+			try {
+				if (options.ModuleName == null) {
+					Console.WriteLine ("-module-name option is required.");
+					return 1;
+				}
+			} catch (Exception e) {
+
 			}
+			
 
 			var unicodeMapper = new UnicodeMapper ();
 			if (options.UnicodeMappingFile != null) {
@@ -99,7 +121,7 @@ namespace tomswifty {
 
 					ClassCompilerNames compilerNames = new ClassCompilerNames (options.ModuleName, options.WrappingModuleName);
 					ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (options.ModulePaths, options.DylibPaths, options.TypeDatabasePaths);
-					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory);
+					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory, true);
 					errors.Add (compileErrors);
 				}
 			} catch (Exception err) {

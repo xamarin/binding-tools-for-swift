@@ -15,27 +15,12 @@ namespace SwiftReflector.IOUtils {
 			var output = new StringBuilder ();
 			var exitCode = RunCommand (path, args, output: output, verbose: verbose, workingDirectory: workingDirectory);
 
-			// TJ - Read the file as one string.
-			//if (args.Contains ("libswiftCore-Swift-AnyKeyPath")) {
-			//	string currentLocation = Directory.GetCurrentDirectory ();
-			//	//string text = System.IO.File.ReadAllText ("libswiftCore-Swift-AnyKeyPath.swift");
-			//	var shellOutput = RunBash ("ls");
-			//	string text = System.IO.File.ReadAllText ("/var/folders/nj/446lm_hs4zz72gfhvwglxzvr0000gn/T/libswiftCore-Swift-AnyKeyPath-c6c644.o");
-			//	Console.WriteLine ("Contents of WriteText.txt = {0}", text);
-			//}
-
-			//DirectoryCopy (".", "../../TJTemp", true);
-
-			var pathToFile = workingDirectory + "/libswiftCore-Swift-ManagedBuffer.swift";
-			var outp = output.ToString ();
-
-			// TJ - TODO Exploring what happens if we skip over this catch
 			if (exitCode != 0)
 				throw new Exception ($"Failed to execute (exit code {exitCode}): {path} {string.Join (" ", args)}\n{output.ToString ()}");
 			return output.ToString ();
 		}
 
-		public static string [] TJSeparateRun2 (string path, string args, string workingDirectory = null, bool verbose = false)
+		public static string [] TJSeparateRun (string path, string args, string workingDirectory = null, bool verbose = false)
 		{
 			var output = new StringBuilder ();
 			var exitCode = RunCommand (path, args, output: output, verbose: verbose, workingDirectory: workingDirectory);
@@ -46,30 +31,6 @@ namespace SwiftReflector.IOUtils {
 			return outputs;
 		}
 
-		public static string TJSeparateRun (string path, string args, string [] files, string workingDirectory = null, bool verbose = false)
-		{
-			StringBuilder sb = new StringBuilder ();
-			foreach (var f in files) {
-				var output = new StringBuilder ();
-				var exitCode = RunCommand (path, args + " " + f + " -v", output: output, verbose: verbose, workingDirectory: workingDirectory);
-
-				var pathToFile = workingDirectory + "/libswiftCore-Swift-ManagedBuffer.swift";
-				var outp = output.ToString ();
-				sb.AppendLine (outp);
-			}
-			//var output = new StringBuilder ();
-			//var exitCode = RunCommand (path, args, output: output, verbose: verbose, workingDirectory: workingDirectory);
-
-			//var pathToFile = workingDirectory + "/libswiftCore-Swift-ManagedBuffer.swift";
-			//var outp = output.ToString ();
-
-			// TJ - TODO Exploring what happens if we skip over this catch
-			//if (exitCode != 0)
-			//	throw new Exception ($"Failed to execute (exit code {exitCode}): {path} {string.Join (" ", args)}\n{output.ToString ()}");
-			//return output.ToString ();
-			var totalOutput = sb.ToString ();
-			return totalOutput;
-		}
 
 		public static string RunBash (string script)
 		{
@@ -87,39 +48,6 @@ namespace SwiftReflector.IOUtils {
 			process.WaitForExit ();
 			return result;
 		}
-
-		//// TJ adding to try to view temp files
-		//static void DirectoryCopy (string sourceDirName, string destDirName, bool copySubDirs)
-		//{
-		//	// Get the subdirectories for the specified directory.
-		//	DirectoryInfo dir = new DirectoryInfo (sourceDirName);
-
-		//	if (!dir.Exists) {
-		//		throw new DirectoryNotFoundException (
-		//		    "Source directory does not exist or could not be found: "
-		//		    + sourceDirName);
-		//	}
-
-		//	DirectoryInfo [] dirs = dir.GetDirectories ();
-
-		//	// If the destination directory doesn't exist, create it.       
-		//	Directory.CreateDirectory (destDirName);
-
-		//	// Get the files in the directory and copy them to the new location.
-		//	FileInfo [] files = dir.GetFiles ();
-		//	foreach (FileInfo file in files) {
-		//		string tempPath = Path.Combine (destDirName, file.Name);
-		//		file.CopyTo (tempPath, false);
-		//	}
-
-		//	// If copying subdirectories, copy them and their contents to new location.
-		//	if (copySubDirs) {
-		//		foreach (DirectoryInfo subdir in dirs) {
-		//			string tempPath = Path.Combine (destDirName, subdir.Name);
-		//			DirectoryCopy (subdir.FullName, tempPath, copySubDirs);
-		//		}
-		//	}
-		//}
 
 		static void ReadStream (Stream stream, StringBuilder sb, ManualResetEvent completed)
 		{

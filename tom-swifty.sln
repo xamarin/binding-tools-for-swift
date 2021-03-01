@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "leaktest", "leaktest\leakte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "type-o-matic", "type-o-matic\type-o-matic.csproj", "{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BindingNemo", "BindingNemo\BindingNemo.csproj", "{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DylibBinder", "DylibBinder\DylibBinder.csproj", "{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

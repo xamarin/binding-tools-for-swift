@@ -229,7 +229,10 @@ namespace tomswifty {
 
 		#endregion
 
-		public void CheckForOptionErrors (ErrorHandling errors)
+		// TJ
+		// adding optional parameter to check if we are dealing with a library
+		// if so, we can skip swiftmodule specific things
+		public void CheckForOptionErrors (ErrorHandling errors, bool isLibrary = false)
 		{
 			CheckPath (SwiftBinPath, "path to swift binaries", errors);
 			CheckPath (SwiftLibPath, "path to swift libraries", errors);
@@ -261,38 +264,62 @@ namespace tomswifty {
 							var targetOS = targets [0].ClangTargetOS ();
 							if (SwiftGluePath != null) {
 								string path = null;
-								if (targetOS.StartsWith ("macos", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "mac/XamGlue.framework");
-								} else if (targetOS.StartsWith ("ios", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "iphone/XamGlue.framework");
-								} else if (targetOS.StartsWith ("tvos", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "appletv/XamGlue.framework");
-								} else if (targetOS.StartsWith ("watchos", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "watch/XamGlue.framework");
+								if (!isLibrary) {
+									if (targetOS.StartsWith ("macos", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "mac/XamGlue.framework");
+									} else if (targetOS.StartsWith ("ios", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "iphone/XamGlue.framework");
+									} else if (targetOS.StartsWith ("tvos", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "appletv/XamGlue.framework");
+									} else if (targetOS.StartsWith ("watchos", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "watch/XamGlue.framework");
+									}
+								} else {
+									// TJ
+									// this is where it XamGlue.framework appears for me
+									// not sure if this is library specific
+									if (targetOS.StartsWith ("macos", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "mac/FinalProduct/XamGlue.framework");
+									} else if (targetOS.StartsWith ("ios", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "iphone/FinalProduct/XamGlue.framework");
+									} else if (targetOS.StartsWith ("tvos", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "appletv/FinalProduct/XamGlue.framework");
+									} else if (targetOS.StartsWith ("watchos", StringComparison.Ordinal)) {
+										path = Path.Combine (SwiftGluePath, "watch/FinalProduct/XamGlue.framework");
+									}
 								}
 								if (path != null) {
 									ModulePaths.Add (path);
 									DylibPaths.Add (path);
 								}
 							}
-							if (targetOS.StartsWith ("macos", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "macosx");
-							} else if (targetOS.StartsWith ("ios", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "iphoneos");
-							} else if (targetOS.StartsWith ("tvos", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "appletvos");
-							} else if (targetOS.StartsWith ("watchos", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "watchos");
+							// TJ
+							// this group of conditionals look for different paths than what I see, unless the SwiftLibPath contains /lib/swift/
+							// for example:
+							// ../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphoneos
+							if (!isLibrary) {
+								if (targetOS.StartsWith ("macos", StringComparison.Ordinal)) {
+									SwiftLibPath = Path.Combine (SwiftLibPath, "macosx");
+								} else if (targetOS.StartsWith ("ios", StringComparison.Ordinal)) {
+									SwiftLibPath = Path.Combine (SwiftLibPath, "iphoneos");
+								} else if (targetOS.StartsWith ("tvos", StringComparison.Ordinal)) {
+									SwiftLibPath = Path.Combine (SwiftLibPath, "appletvos");
+								} else if (targetOS.StartsWith ("watchos", StringComparison.Ordinal)) {
+									SwiftLibPath = Path.Combine (SwiftLibPath, "watchos");
+								}
 							}
 						}
-
-
 						// filter the targets here
 						foreach (string target in Targets) {
 							StringBuilder sb = new StringBuilder ();
 							foreach (string s in ModulePaths.Interleave (", ")) {
 								sb.Append (s);
 							}
+							// Added by TJ
+							// If we are looking at a dylib file, it will not have the swiftmodule file so skip these
+							if (isLibraryInLibFile (isLibrary, libFile, ModuleName))
+								continue;
+
 							using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, ModuleName, target)) {
 								if (loc == null) {
 									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
@@ -321,6 +348,13 @@ namespace tomswifty {
 				if (!Directory.Exists (OutputDirectory))
 					Directory.CreateDirectory (OutputDirectory);
 			}
+		}
+
+		bool isLibraryInLibFile (bool isLibrary, string libFile, string moduleName)
+		{
+			if (isLibrary && libFile.Contains (moduleName))
+				return true;
+			return false;
 		}
 
 		void CheckPath (string path, string identifier, ErrorHandling errors)

@@ -50,11 +50,14 @@
     <Compile Include="StringBuilderExtension.cs" />
     <Compile Include="DylibBinderOptions.cs" />
     <Compile Include="InnerX.cs" />
+    <Compile Include="PropertyGrepper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
     <None Include="Mono.Options.dll" />
     <None Include="Modules\modules.xml" />
+    <None Include="Modules\modules_tester.xml" />
+    <None Include="Modules\modules_backup.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">
