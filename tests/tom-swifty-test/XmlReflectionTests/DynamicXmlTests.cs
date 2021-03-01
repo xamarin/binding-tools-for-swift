@@ -454,7 +454,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser/*, Ignore = "Need to desugar typealiases"*/)]
+		[TestCase (ReflectorMode.Parser)]
 		public void TypeAliasTest (ReflectorMode mode)
 		{
 			string code = "public typealias Foo = OpaquePointer\n" +
