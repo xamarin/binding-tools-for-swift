@@ -39,9 +39,10 @@ namespace SwiftReflector {
 			this.errors = errors;
 		}
 
+		// TJ - adding isLibrary bool
 		public Tuple<string, HashSet<string>> CompileWrappers (string [] inputLibraryDirectories, string [] inputModuleDirectories,
 			IEnumerable<ModuleDeclaration> modulesToCompile, ModuleInventory modInventory,
-			List<string> targets, string wrappingModuleName, bool outputIsFramework)
+			List<string> targets, string wrappingModuleName, bool outputIsFramework, bool isLibrary = false)
 		{
 			wrappingModuleName = wrappingModuleName ?? kXamWrapPrefix;
 
@@ -83,17 +84,25 @@ namespace SwiftReflector {
 					targetOutDirs.Add (targetoutdir);
 					Directory.CreateDirectory (targetoutdir);
 
-					var locations = SwiftModuleFinder.GatherAllReferencedModules (allReferencedModules,
+					// TJ - if we are using a dylib, we will not have a module location
+					List<ISwiftModuleLocation> locations = null;
+					if (!isLibrary)
+						locations = SwiftModuleFinder.GatherAllReferencedModules (allReferencedModules,
 												      inputModuleDirectories, targets [i]);
+
 					try {
-						string [] inputModDirs = locations.Select (loc => loc.DirectoryPath).ToArray ();
+						// TJ - same, we will keep inputModDirs as null if using a dylib
+						string [] inputModDirs = null;
+						if (!isLibrary)
+							inputModDirs = locations.Select (loc => loc.DirectoryPath).ToArray ();
 						CompileAllFiles (fileProvider, wrappingModuleName, outputLibraryName, outputLibraryPath,
 						                 inputModDirs, inputLibraryDirectories, inModuleNamesList.ToArray (),
 						                 targets [i], outputIsFramework);
 					} catch (Exception e) {
 						throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 66, e, $"Failed to compile the generated swift wrapper code: {e.Message}");
 					} finally {
-						locations.DisposeAll ();
+						if (!isLibrary)
+							locations.DisposeAll ();
 					}
 
 					// move to arch directory

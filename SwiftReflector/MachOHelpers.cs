@@ -52,6 +52,9 @@ namespace SwiftReflector {
 				return "i386";
 			case MachO.Architectures.x86_64:
 				return "x86_64";
+			// TJ - adding for arm64e support
+			case MachO.Architectures.ARM64e:
+				return "arm64e";
 			default:
 				throw new ArgumentOutOfRangeException (nameof (arch));
 			}

@@ -62,51 +62,6 @@ namespace SwiftReflector.Inventory {
 			}
 		}
 
-		// Change introduced by TJ Lambert
-		// GetClassesFromName, GetEnumsFromName, and GetStructsFromName
-		// is similar to ClassesForName () but it takes advantage
-		// of the IsClass, IsEnum, and IsStruct bool set
-		// inside ClassContent to filter classes, enums, and structs
-
-		public IEnumerable<ClassContents> GetClassesFromName (SwiftName modName)
-		{
-			List<ClassContents> classes = new List<ClassContents> ();
-			ModuleContents modcont = null;
-			if (values.TryGetValue (modName, out modcont)) {
-				foreach (var v in modcont.Classes.Values){
-					if (v.Name.IsClass)
-						classes.Add (v);
-				}
-			} 
-			return classes;
-		}
-
-		public IEnumerable<ClassContents> GetEnumsFromName (SwiftName modName)
-		{
-			List<ClassContents> enums = new List<ClassContents> ();
-			ModuleContents modcont = null;
-			if (values.TryGetValue (modName, out modcont)) {
-				foreach (var v in modcont.Classes.Values) {
-					if (v.Name.IsEnum)
-						enums.Add (v);
-				}
-			}
-			return enums;
-		}
-
-		public IEnumerable<ClassContents> GetStructsFromName (SwiftName modName)
-		{
-			List<ClassContents> structs = new List<ClassContents> ();
-			ModuleContents modcont = null;
-			if (values.TryGetValue (modName, out modcont)) {
-				foreach (var v in modcont.Classes.Values) {
-					if (v.Name.IsStruct)
-						structs.Add (v);
-				}
-			}
-			return structs;
-		}
-
 		public ClassContents FindClass (string fullyQualifiedName)
 		{
 			string moduleName = fullyQualifiedName.Substring (0, fullyQualifiedName.IndexOf ('.'));

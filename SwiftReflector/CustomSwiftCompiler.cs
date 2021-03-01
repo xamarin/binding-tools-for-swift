@@ -111,6 +111,10 @@ namespace SwiftReflector {
 
 		public void Compile (SwiftCompilerOptions compilerOptions, bool outputIsFramework, params string [] files)
 		{
+			// TJ - TODO This call will give us a list of all errors
+			// this helps me debug libswiftCore.dylib, but will remove before shipping
+			var debuggingErrors = ViewAllErrors (compilerOptions, outputIsFramework, files);
+
 			string args = BuildCompileArgs (compilerOptions, outputIsFramework, files);
 			if (Verbose)
 				Console.WriteLine ("Compiling swift files: " + files.InterleaveCommas ());
@@ -123,6 +127,25 @@ namespace SwiftReflector {
 					  Path.Combine (DirectoryPath, compilerOptions.ModuleName), true);
 				File.Delete (srcLib);
 			}
+		}
+
+		// TJ - let's run the files seperately and create a list of all errors
+		// coming from the Swift Compiler for easier debugging
+		(string, string) ViewAllErrors (SwiftCompilerOptions compilerOptions, bool outputIsFramework, string [] files)
+		{
+			StringBuilder sb = new StringBuilder ();
+			string pathToWrapper = null;
+			foreach (var f in files) {
+				string [] file = new string [] { f };
+				string arg = BuildCompileArgs (compilerOptions, outputIsFramework, file);
+				if (Verbose)
+					Console.WriteLine ("Compiling swift files: " + files.InterleaveCommas ());
+				var TJOutput = TJSeparateLaunches (CompilerInfo.CustomSwiftc, arg);
+				sb.Append ($"\n\n\n{f}:\n" + TJOutput [0]);
+				pathToWrapper = TJOutput [1];
+			}
+			var totalErrors = sb.ToString ();
+			return (totalErrors, pathToWrapper);
 		}
 
 
@@ -405,6 +428,9 @@ namespace SwiftReflector {
 
 			if (addReference) {
 				foreach (string lib in libs) {
+					// TJ - skipping Swift since it is implied
+					if (lib == "Swift")
+						continue;
 					sb.Append ("-l").Append (lib).Append (' ');
 				}
 				foreach (string fwk in fwks) {
@@ -425,6 +451,10 @@ namespace SwiftReflector {
 			return ExecAndCollect.Run (executable, args, workingDirectory: DirectoryPath, verbose: Verbose);
 		}
 
+		string [] TJSeparateLaunches (string executable, string args)
+		{
+			return ExecAndCollect.TJSeparateRun (executable, args, workingDirectory: DirectoryPath, verbose: Verbose);
+		}
 
 		public static void ThrowOnCompilerVersionMismatch (string output, params string[] modules)
 		{

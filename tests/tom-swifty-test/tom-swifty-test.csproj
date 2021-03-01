@@ -115,6 +115,7 @@
     <Compile Include="XmlReflectionTests\XmlComparator.cs" />
     <Compile Include="XmlReflectionTests\ComparatorTests.cs" />
     <Compile Include="XmlReflectionTests\TypeAliasTests.cs" />
+    <Compile Include="DylibBinderTests\ReferenceStructTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -123,6 +124,7 @@
     <Folder Include="XmlReflectionTests\" />
     <Folder Include="CommandLineTests\" />
     <Folder Include="SwiftRuntimeLibraryTests\" />
+    <Folder Include="DylibBinderTests\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Dynamo\Dynamo.csproj">
