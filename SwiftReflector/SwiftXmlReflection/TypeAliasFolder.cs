@@ -102,7 +102,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		TypeSpec FoldAlias (BaseDeclaration context, NamedTypeSpec spec, out bool changed)
 		{
-			if (!context.IsTypeSpecGenericReference (spec)) {
+			if (context == null || !context.IsTypeSpecGenericReference (spec)) {
 				TypeAliasDeclaration decl = null;
 				if (aliases.TryGetValue (spec.Name, out decl)) {
 					changed = true;

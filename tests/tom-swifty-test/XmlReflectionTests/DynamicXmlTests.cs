@@ -454,7 +454,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Need to desugar typealiases")]
+		[TestCase (ReflectorMode.Parser/*, Ignore = "Need to desugar typealiases"*/)]
 		public void TypeAliasTest (ReflectorMode mode)
 		{
 			string code = "public typealias Foo = OpaquePointer\n" +
@@ -1675,7 +1675,7 @@ public func sum (a: Foo, b: Foo) -> Foo {
 			Assert.AreEqual (1, module.TypeAliases.Count, "wrong number of typealiases");
 			var alias = module.TypeAliases [0];
 			Assert.AreEqual (Accessibility.Public, alias.Access, "wrong access");
-			Assert.AreEqual ("Foo", alias.TypeName, "wrong typealias name");
+			Assert.AreEqual ("SomeModule.Foo", alias.TypeName, "wrong typealias name");
 			Assert.AreEqual ("Swift.Int", alias.TargetTypeName, "wrong typealias target");
 		}
 	}

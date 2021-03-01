@@ -34,12 +34,14 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 		public TypeSpec InheritedTypeSpec { get; private set; }
 
-		public static Inheritance FromXElement (XElement elem)
+		public static Inheritance FromXElement (TypeAliasFolder folder, XElement elem)
 		{
 			string typeName = (string)elem.Attribute ("type");
 			string inheritanceKindStr = (string)elem.Attribute ("inheritanceKind");
 			InheritanceKind kind = ToInheritanceKind (inheritanceKindStr);
-			return new Inheritance (typeName, kind);
+			var inheritance = new Inheritance (typeName, kind);
+			inheritance.InheritedTypeSpec = folder.FoldAlias (null, inheritance.InheritedTypeSpec);
+			return inheritance;
 		}
 
 		public XElement ToXElement ()

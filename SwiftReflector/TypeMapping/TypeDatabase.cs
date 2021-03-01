@@ -374,7 +374,8 @@ namespace SwiftReflector.TypeMapping {
 				return null;
 			}
 			var module = MakeModuleForName (moduleName, theModules);
-			var decl = TypeDeclaration.FromXElement (typeDeclElement, module, null) as TypeDeclaration;
+			var folder = new TypeAliasFolder (module.TypeAliases);
+			var decl = TypeDeclaration.FromXElement (folder, typeDeclElement, module, null) as TypeDeclaration;
 			if (decl == null) {
 				errors.Add (new ReflectorError (ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 8, "Incorrect type declaration in entity.")));
 				return null;

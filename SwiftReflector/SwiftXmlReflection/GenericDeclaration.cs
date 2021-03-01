@@ -99,14 +99,14 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		}
 
-		public static List<GenericDeclaration> FromXElement (XElement generic)
+		public static List<GenericDeclaration> FromXElement (TypeAliasFolder folder, XElement generic)
 		{
 			List<GenericDeclaration> decls = new List<GenericDeclaration> ();
 			if (generic == null)
 				return decls;
 			decls.AddRange (from decl in generic.Descendants ("param") select new GenericDeclaration ((string)decl.Attribute ("name")));
 
-			var constraints = from constr in generic.Descendants ("where") select BaseConstraint.FromXElement (constr);
+			var constraints = from constr in generic.Descendants ("where") select BaseConstraint.FromXElement (folder, constr);
 			foreach (BaseConstraint constr in constraints) {
 				GenericDeclaration decl = FindGenericDeclFor (constr, decls);
 				if (decl != null)

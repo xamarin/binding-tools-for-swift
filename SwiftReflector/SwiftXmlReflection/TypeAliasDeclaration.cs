@@ -63,11 +63,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
-		public static TypeAliasDeclaration FromXElement (XElement element)
+		public static TypeAliasDeclaration FromXElement (string moduleName, XElement element)
 		{
+			Exceptions.ThrowOnNull (moduleName, nameof (moduleName));
+			var aliasName = element.Attribute ("name").Value;
+			if (!aliasName.Contains ("."))
+				aliasName = $"{moduleName}.{aliasName}";
 			return new TypeAliasDeclaration () {
 				Access = TypeDeclaration.AccessibilityFromString ((string)element.Attribute ("accessibility")),
-				TypeName = element.Attribute ("name").Value,
+				TypeName = aliasName,
 				TargetTypeName = element.Attribute ("type").Value
 			};
 		}

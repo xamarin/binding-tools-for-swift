@@ -221,7 +221,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 
-		public static FunctionDeclaration FuncFromXElement (XElement elem, ModuleDeclaration module, BaseDeclaration parent)
+		public static FunctionDeclaration FuncFromXElement (TypeAliasFolder folder, XElement elem, ModuleDeclaration module, BaseDeclaration parent)
 		{
 			FunctionDeclaration decl = new FunctionDeclaration {
 				Name = (string)elem.Attribute ("name"),
@@ -241,7 +241,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 				IsRequired = elem.BoolAttribute ("isRequired"),
 				IsConvenienceInit = elem.BoolAttribute ("isConvenienceInit")
 			};
-			decl.ParameterLists.AddRange (ParameterItem.ParameterListListFromXElement (elem.Element ("parameterlists")));
+			decl.ReturnTypeSpec = folder.FoldAlias (parent, decl.ReturnTypeSpec);
+			decl.ParameterLists.AddRange (ParameterItem.ParameterListListFromXElement (folder, elem.Element ("parameterlists")));
 			if (decl.IsProperty && (decl.IsSetter || decl.IsSubscriptSetter)) {
 				decl.ParameterLists [decl.ParameterLists.Count - 1] =
 						MassageLastPropertySetterParameterList (decl.ParameterLists.Last ());
