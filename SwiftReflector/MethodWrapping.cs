@@ -347,6 +347,7 @@ namespace SwiftReflector {
 			}
 		}
 
+
 		public void WrapClass (ClassDeclaration cl, ModuleInventory modInventory)
 		{
 			var sn = XmlToTLFunctionMapper.ToSwiftClassName (cl);
@@ -1305,6 +1306,7 @@ namespace SwiftReflector {
 					AddFunctionToOverallList (cl, func.Name.Name);
 				}
 			}
+
 
 			foreach (PropertyDeclaration propDecl in cl.Members.OfType<PropertyDeclaration> ()) {
 				if (!propDecl.IsPublicOrOpen)

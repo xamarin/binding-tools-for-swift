@@ -54,9 +54,7 @@ namespace SwiftReflector {
 			ModuleReferences = new HashSet<string> ();
 			Imports = new SLImportModules ();
 			Imports.OwningModule = targetModule.Name;
-			// TJ - temp fix for "no such module 'libswiftCore'"
-			if (!classToOverride.Module.Name.Contains ("libswiftCore"))
-				Imports.Add (new SLImport (classToOverride.Module.Name));
+			Imports.Add (new SLImport (classToOverride.Module.Name));
 			ModuleReferences.Add (classToOverride.Module.Name);
 			OriginalClass = classToOverride;
 			vtableTypeName = VtableTypeName (classToOverride);
