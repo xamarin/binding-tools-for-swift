@@ -14,14 +14,14 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 		public ConstraintKind Kind { get; private set; }
 
-		public static BaseConstraint FromXElement (XElement elem)
+		public static BaseConstraint FromXElement (TypeAliasFolder folder, XElement elem)
 		{
 			if (elem == null)
 				return null;
 			if ((string)elem.Attribute ("relationship") == "inherits") {
-				return new InheritanceConstraint ((string)elem.Attribute ("name"), (string)elem.Attribute ("from"));
+				return new InheritanceConstraint ((string)elem.Attribute ("name"), (string)elem.Attribute ("from"), folder);
 			} else {
-				return new EqualityConstraint ((string)elem.Attribute ("firsttype"), (string)elem.Attribute ("secondtype"));
+				return new EqualityConstraint ((string)elem.Attribute ("firsttype"), (string)elem.Attribute ("secondtype"), folder);
 			}
 		}
 
@@ -70,11 +70,13 @@ namespace SwiftReflector.SwiftXmlReflection {
 	}
 
 	public class InheritanceConstraint : BaseConstraint {
-		public InheritanceConstraint (string name, string inheritsTypeSpecString)
+		public InheritanceConstraint (string name, string inheritsTypeSpecString, TypeAliasFolder folder = null)
 			: base (ConstraintKind.Inherits)
 		{
 			Name = Exceptions.ThrowOnNull (name, nameof (name));
 			Inherits = inheritsTypeSpecString;
+			if (folder != null)
+				InheritsTypeSpec = folder.FoldAlias (null, InheritsTypeSpec);
 		}
 
 		public InheritanceConstraint (string name, TypeSpec inheritsTypeSpecString)
@@ -115,11 +117,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 	}
 
 	public class EqualityConstraint : BaseConstraint {
-		public EqualityConstraint (string type1, string type2)
+		public EqualityConstraint (string type1, string type2, TypeAliasFolder folder = null)
 			: base (ConstraintKind.Equal)
 		{
 			Type1 = type1;
 			Type2 = type2;
+			if (folder != null) {
+				Type1Spec = folder.FoldAlias (null, Type1Spec);
+				Type2Spec = folder.FoldAlias (null, Type2Spec);
+			}
 		}
 		string type1Str;
 		TypeSpec type1Spec;

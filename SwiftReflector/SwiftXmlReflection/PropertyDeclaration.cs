@@ -84,9 +84,9 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
-		public static PropertyDeclaration PropFromXElement (XElement elem, ModuleDeclaration module, BaseDeclaration parent)
+		public static PropertyDeclaration PropFromXElement (TypeAliasFolder folder, XElement elem, ModuleDeclaration module, BaseDeclaration parent)
 		{
-			return new PropertyDeclaration {
+			var property = new PropertyDeclaration {
 				Name = (string)elem.Attribute ("name"),
 				Module = module,
 				Parent = parent,
@@ -100,6 +100,10 @@ namespace SwiftReflector.SwiftXmlReflection {
 				IsOptional = elem.BoolAttribute("isOptional")
 
 			};
+
+			property.TypeSpec = folder.FoldAlias (parent, property.TypeSpec);
+
+			return property;
 		}
 
 		protected override XElement MakeXElement ()

@@ -480,19 +480,19 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 
-		public static BaseDeclaration FromXElement (XElement elem, ModuleDeclaration module, BaseDeclaration parent)
+		public static BaseDeclaration FromXElement (TypeAliasFolder folder, XElement elem, ModuleDeclaration module, BaseDeclaration parent)
 		{
-			var generics = GenericDeclaration.FromXElement (elem.Element ("genericparameters"));
+			var generics = GenericDeclaration.FromXElement (folder, elem.Element ("genericparameters"));
 			BaseDeclaration decl = null;
 			switch (elem.Name.ToString ()) {
 			case "func":
-				decl = FunctionDeclaration.FuncFromXElement (elem, module, parent);
+				decl = FunctionDeclaration.FuncFromXElement (folder, elem, module, parent);
 				break;
 			case "typedeclaration":
-				decl = TypeDeclaration.TypeFromXElement (elem, module, parent);
+				decl = TypeDeclaration.TypeFromXElement (folder, elem, module, parent);
 				break;
 			case "property":
-				decl = PropertyDeclaration.PropFromXElement (elem, module, parent);
+				decl = PropertyDeclaration.PropFromXElement (folder, elem, module, parent);
 				break;
 			default:
 				decl = new BaseDeclaration {

@@ -69,24 +69,24 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		#endregion
 
-		public static List<List<ParameterItem>> ParameterListListFromXElement (XElement elem)
+		public static List<List<ParameterItem>> ParameterListListFromXElement (TypeAliasFolder folder, XElement elem)
 		{
 			var plists = from plelem in elem.Elements ("parameterlist")
 				     orderby (int)plelem.Attribute ("index")
-				     select ParameterListFromXElement (plelem);
+				     select ParameterListFromXElement (folder, plelem);
 			return plists.ToList ();
 		}
 
-		public static List<ParameterItem> ParameterListFromXElement (XElement elem)
+		public static List<ParameterItem> ParameterListFromXElement (TypeAliasFolder folder, XElement elem)
 		{
 			var indexed = from pelem in elem.Elements ("parameter")
 				      orderby (int)pelem.Attribute ("index")
-				      select ParameterItem.FromXElement (pelem);
+				      select ParameterItem.FromXElement (folder, pelem);
 
 			return indexed.ToList ();
 		}
 
-		public static ParameterItem FromXElement (XElement elem)
+		public static ParameterItem FromXElement (TypeAliasFolder folder, XElement elem)
 		{
 			ParameterItem pi = new ParameterItem {
 				PublicName = (string)elem.Attribute ("publicName"),
@@ -95,6 +95,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				IsVariadic = elem.BoolAttribute ("isVariadic"),
 			};
 			pi.IsInOut = pi.TypeSpec.IsInOut;
+			pi.TypeSpec = folder.FoldAlias (null, pi.TypeSpec);
 			return pi;
 		}
 

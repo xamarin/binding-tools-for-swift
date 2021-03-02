@@ -45,16 +45,17 @@ namespace SwiftReflector.SwiftXmlReflection {
 				SwiftCompilerVersion = new Version((string)elem.Attribute("swiftVersion") ?? "3.1")
 			};
 
-			decl.TypeAliases.AddRange (elem.Descendants ("typealias").Select (al => TypeAliasDeclaration.FromXElement (al)));
+			decl.TypeAliases.AddRange (elem.Descendants ("typealias").Select (al => TypeAliasDeclaration.FromXElement (decl.Name, al)));
+			var folder = new TypeAliasFolder (decl.TypeAliases);
 
 			// non extensions
 			foreach (var child in elem.Elements()) {
 				if (child.Name == "extension") {
-					decl.Extensions.Add (ExtensionDeclaration.FromXElement (child, decl));
+					decl.Extensions.Add (ExtensionDeclaration.FromXElement (folder, child, decl));
 				} else if (child.Name == "operator") {
 					decl.Operators.Add (OperatorDeclaration.FromXElement (child, child.Attribute ("moduleName")?.Value));
 				} else {
-					decl.Declarations.Add (BaseDeclaration.FromXElement (child, decl, null));
+					decl.Declarations.Add (BaseDeclaration.FromXElement (folder, child, decl, null));
 				}
 			}
 			return decl;
