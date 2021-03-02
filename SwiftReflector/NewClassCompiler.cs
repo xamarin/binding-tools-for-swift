@@ -191,9 +191,8 @@ namespace SwiftReflector {
 
 			// TJ - GetModuleInventories from the dylibs create many errors and warnings in GetModuleInventories that probably
 			// can be ignored for now - Steve Approved
-			if (isLibrary) {
+			if (isLibrary)
 				errors = new ErrorHandling ();
-			}
 
 			if (errors.AnyErrors)
 				return errors;

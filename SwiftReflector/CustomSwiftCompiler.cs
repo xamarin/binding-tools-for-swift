@@ -80,6 +80,7 @@ namespace SwiftReflector {
 			string args = BuildCompileArgs (compilerOptions, outputIsFramework, files);
 			if (Verbose)
 				Console.WriteLine ("Compiling swift files: " + files.InterleaveCommas ());
+
   			Launch (CompilerInfo.CustomSwiftc, args);
 			var outputLib = Path.Combine (DirectoryPath, $"lib{compilerOptions.ModuleName}.dylib");
 			if (outputIsFramework) {
@@ -155,7 +156,6 @@ namespace SwiftReflector {
 			foreach (string file in files) {
 				sb.Append (" ").Append (file);
 			}
-			sb.Append (" -v");
 			return sb.ToString ();
 		}
 

@@ -19,7 +19,7 @@ namespace SwiftReflector.IOUtils {
 			return output.ToString ();
 		}
 
-		// TJ - TODO debugging method to help run each 
+		// TJ - TODO debugging method to help run each wrapper separately
 		public static string [] TJSeparateRun (string path, string args, string workingDirectory = null, bool verbose = false)
 		{
 			var output = new StringBuilder ();

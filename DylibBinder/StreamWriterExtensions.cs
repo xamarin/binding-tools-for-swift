@@ -185,7 +185,7 @@ namespace DylibBinder {
 
 					CheckTypeDeclarationGenerics (null, null, filteredType, ref propertyGenerics, depth);
 
-					//elements not yet found
+					//elements not present
 					sw.WriteTypeValue ("isDeprecated", "False");
 					sw.WriteTypeValue ("isUnavailable", "False");
 					sw.WriteTypeValue ("isOptional", "False");
@@ -415,7 +415,7 @@ namespace DylibBinder {
 
 		static void WriteConstantAttributes (this StreamWriter sw)
 		{
-			//elements not yet found
+			//elements not present
 			sw.WriteTypeValue ("accessibility", "Public");
 			sw.WriteTypeValue ("isProperty", "False");
 			sw.WriteTypeValue ("isFinal", "False");
@@ -716,7 +716,7 @@ namespace DylibBinder {
 
 			sw.WriteTypeValue ("returnType", returnType);
 			sw.WriteTypeValue ("isPossiblyIncomplete", "False");
-			//elements not yet found
+			//elements not present
 			sw.WriteTypeValue ("operatorKind", "None");
 			sw.WriteTypeValue ("hasThrows", "False");
 			sw.WriteTypeValue ("accessibility", "Public");
@@ -746,7 +746,7 @@ namespace DylibBinder {
 			sw.WriteTypeValue ("propertyType", "Setter");
 			sw.WriteTypeValue ("operatorKind", "None");
 			sw.WriteTypeValue ("hasThrows", "False");
-			//elements not yet found
+			//elements not present
 			sw.WriteTypeValue ("accessibility", "Public");
 			sw.WriteTypeValue ("isFinal", "False");
 			sw.WriteTypeValue ("isDeprecated", "False");

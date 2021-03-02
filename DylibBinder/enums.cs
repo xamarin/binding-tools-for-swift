@@ -1,6 +1,8 @@
 ﻿using System;
 namespace DylibBinder {
 	public class enums {
+		// TODO Currently not using these (except Accessibility), but would
+		// be good to use it when I write XML with XElements
 		public enum Accessibility {
 			Public,
 			Private,
