@@ -1178,7 +1178,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "grammar error for associated types")]
+		[TestCase (ReflectorMode.Parser/*, Ignore = "grammar error for associated types"*/)]
 		public void AssocTypeTimesTwo (ReflectorMode mode)
 		{
 			var code = @"

@@ -363,6 +363,7 @@ type :
 	| type OpDot 'Protocol' # proto_type
 	| 'Any' # any_type
 	| 'Self' # self_type
+	| 'Self' OpDot type_identifier # self_long
 	;
 
 type_annotation : OpColon attributes? inout_clause? type ;
