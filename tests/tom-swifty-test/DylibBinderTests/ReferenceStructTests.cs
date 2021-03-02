@@ -74,11 +74,8 @@ public struct Refer<T> {
 								   "referStruct", new CSFunctionCall ($"Refer<bool>", true,
 											   new CSFunctionCall ("SwiftValueTypeCtorArgument", true)));
 
-			// print obj.RefCount
 			CSLine printer = CSFunctionCall.ConsoleWriteLine ((CSIdentifier)"referStruct.SwiftData");
-			// 0
 
-			// assert that it prints 0
 			CSCodeBlock callingCode = CSCodeBlock.Create (referDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "True\n", testName: $"InitStruct<bool>");
 		}
