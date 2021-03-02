@@ -25,11 +25,10 @@ namespace tomswifty {
 
 			var extra = options.ParseCommandLine (args);
 
-			// TJ hardcoding options to debug
-			// library at: ../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/appletvos//libswiftCore.dylib
+			// TJ - TODO currently hardcoding options to debug. Eventually need to have tom-swifty call
+			// DylibBinder and pass in SwiftLibPath, ModuleName
 			options.SwiftBinPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin";
 			options.SwiftLibPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib";
-			//options.SwiftLibPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphoneos";
 			options.ModuleName = "swiftCore";
 			options.OutputDirectory = Directory.GetCurrentDirectory () + "/../../Modules";
 			options.RetainXmlReflection = true;
@@ -39,8 +38,6 @@ namespace tomswifty {
 			options.DylibPaths.Add (Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphoneos//");
 			options.SwiftGluePath = Directory.GetCurrentDirectory () + "/../../../swiftglue/bin/Debug";
 			options.TypeDatabasePaths.Add (Directory.GetCurrentDirectory () + "/../../../bindings");
-
-
 
 			// deal with those options that do not care about the extra params, 
 			// then check if we have some and print.

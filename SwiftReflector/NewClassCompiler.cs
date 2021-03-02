@@ -187,20 +187,20 @@ namespace SwiftReflector {
 
 			OutputIsFramework = ClassCompilerLocations.LibraryDirectories.Any (x => SwiftModuleFinder.IsAppleFramework (x, CompilerNames.ModuleName + ".swiftmodule"));
 
-			// TJ - adding isLibrary bool
-			var moduleDeclarations = GetModuleDeclarations (ClassCompilerLocations.ModuleDirectories, moduleNames, outputDirectory,
-									Options.RetainReflectedXmlOutput, targets, errors, isLibrary);
-			if (errors.AnyErrors)
-				return errors;
-
 			var moduleInventory = GetModuleInventories (ClassCompilerLocations.LibraryDirectories, moduleNames, errors);
 
-			// GetModuleInventories from the dylibs create many errors and warnings in GetModuleInventories that probably
+			// TJ - GetModuleInventories from the dylibs create many errors and warnings in GetModuleInventories that probably
 			// can be ignored for now - Steve Approved
 			if (isLibrary) {
 				errors = new ErrorHandling ();
 			}
 
+			if (errors.AnyErrors)
+				return errors;
+
+			// TJ - adding isLibrary bool
+			var moduleDeclarations = GetModuleDeclarations (ClassCompilerLocations.ModuleDirectories, moduleNames, outputDirectory,
+									Options.RetainReflectedXmlOutput, targets, errors, isLibrary);
 			if (errors.AnyErrors)
 				return errors;
 

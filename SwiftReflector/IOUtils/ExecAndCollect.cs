@@ -14,39 +14,21 @@ namespace SwiftReflector.IOUtils {
 		{
 			var output = new StringBuilder ();
 			var exitCode = RunCommand (path, args, output: output, verbose: verbose, workingDirectory: workingDirectory);
-
 			if (exitCode != 0)
 				throw new Exception ($"Failed to execute (exit code {exitCode}): {path} {string.Join (" ", args)}\n{output.ToString ()}");
 			return output.ToString ();
 		}
 
+		// TJ - TODO debugging method to help run each 
 		public static string [] TJSeparateRun (string path, string args, string workingDirectory = null, bool verbose = false)
 		{
 			var output = new StringBuilder ();
 			var exitCode = RunCommand (path, args, output: output, verbose: verbose, workingDirectory: workingDirectory);
 
-			var pathToFile = workingDirectory + "/libswiftCore-Swift-ManagedBuffer.swift";
+			var pathToFile = workingDirectory;
 			var outp = output.ToString ();
 			string [] outputs = new string [] { outp, pathToFile };
 			return outputs;
-		}
-
-
-		public static string RunBash (string script)
-		{
-			var process = new Process () {
-				StartInfo = new ProcessStartInfo {
-					FileName = "/bin/bash",
-					Arguments = $"-c \"{script}\"",
-					RedirectStandardOutput = true,
-					UseShellExecute = false,
-					CreateNoWindow = true,
-				}
-			};
-			process.Start ();
-			string result = process.StandardOutput.ReadToEnd ();
-			process.WaitForExit ();
-			return result;
 		}
 
 		static void ReadStream (Stream stream, StringBuilder sb, ManualResetEvent completed)

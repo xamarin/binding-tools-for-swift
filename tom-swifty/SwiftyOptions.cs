@@ -317,7 +317,7 @@ namespace tomswifty {
 							}
 							// Added by TJ
 							// If we are looking at a dylib file, it will not have the swiftmodule file so skip these
-							if (isLibraryInLibFile (isLibrary, libFile, ModuleName))
+							if (isLibrary)
 								continue;
 
 							using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, ModuleName, target)) {
@@ -348,13 +348,6 @@ namespace tomswifty {
 				if (!Directory.Exists (OutputDirectory))
 					Directory.CreateDirectory (OutputDirectory);
 			}
-		}
-
-		bool isLibraryInLibFile (bool isLibrary, string libFile, string moduleName)
-		{
-			if (isLibrary && libFile.Contains (moduleName))
-				return true;
-			return false;
 		}
 
 		void CheckPath (string path, string identifier, ErrorHandling errors)
