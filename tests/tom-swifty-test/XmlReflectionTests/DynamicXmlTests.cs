@@ -1678,5 +1678,22 @@ public func sum (a: Foo, b: Foo) -> Foo {
 			Assert.AreEqual ("SomeModule.Foo", alias.TypeName, "wrong typealias name");
 			Assert.AreEqual ("Swift.Int", alias.TargetTypeName, "wrong typealias target");
 		}
+
+		[TestCase (ReflectorMode.Compiler)]
+		[TestCase (ReflectorMode.Parser)]
+		public void UnwrappedOptionalTest (ReflectorMode mode)
+		{
+			var code = @"
+public func sum (a: Int!, b: Int!) -> Int! {
+	return a + b
+}
+
+";
+			var module = ReflectToModules (code, "SomeModule", mode).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.Functions.Where (fn => fn.Name == "sum").FirstOrDefault ();
+			Assert.IsNotNull (func, "no func");
+			Assert.AreEqual ("Swift.Optional<Swift.Int>", func.ReturnTypeName);
+		}
 	}
 }
