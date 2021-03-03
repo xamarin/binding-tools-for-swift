@@ -1409,7 +1409,7 @@ public class Foo {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Prop should be get/set not get only")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestPropGetSet (ReflectorMode mode)
 		{
 			var code = @"
@@ -1578,7 +1578,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let")]
+		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let - apple's bug, not mine: https://bugs.swift.org/browse/SR-13790")]
 		public void TopLevelLet (ReflectorMode mode)
 		{
 			var code = "public let myVar:Int = 42";
