@@ -40,6 +40,15 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			rewriter.Replace (startToken, endToken, replacementType);
 		}
 
+		public override void ExitUnwrapped_optional_type ([NotNull] Unwrapped_optional_typeContext context)
+		{
+			var innerType = context.type ().GetText ();
+			var replacementType = $"Swift.Optional<{innerType}>";
+			var startToken = context.Start;
+			var endToken = context.Stop;
+			rewriter.Replace (startToken, endToken, replacementType);
+		}
+
 		public override void ExitArray_type ([NotNull] Array_typeContext context)
 		{
 			var innerType = context.type ().GetText ();
