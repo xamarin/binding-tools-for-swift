@@ -124,6 +124,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kRawValue = "RawValue";
 		internal const string kTypeAliases = "typealiases";
 		internal const string kTypeAlias = "typealias";
+		internal const string kSuperclass = "superclass";
 
 		Stack<XElement> currentElement = new Stack<XElement> ();
 		Version interfaceVersion;
@@ -136,6 +137,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		Dictionary<string, string> moduleFlags = new Dictionary<string, string> ();
 		List<string> nominalTypes = new List<string> ();
 		List<string> classes = new List<string> ();
+		List<XElement> associatedTypesWithConformance = new List<XElement> ();
 		List<XElement> unknownInheritance = new List<XElement> ();
 		List<XElement> typeAliasMap = new List<XElement> ();
 		string moduleName;
@@ -195,6 +197,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				PatchPossibleOperators ();
 				PatchExtensionShortNames ();
 				PatchPossibleBadInheritance ();
+				PatchAssociatedTypeConformance ();
 
 				if (typeAliasMap.Count > 0) {
 					module.Add (new XElement (kTypeAliases, typeAliasMap.ToArray ()));
@@ -500,6 +503,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (conformingProtocols != null && conformingProtocols.Count > 0) {
 				var confomingElem = new XElement (kConformingProtocols, conformingProtocols.ToArray ());
 				assocType.Add (confomingElem);
+				associatedTypesWithConformance.Add (assocType);
 			}
 			AddAssociatedTypeToCurrentElement (assocType);
 		}
@@ -515,10 +519,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			}
 			var inheritance = context.type_inheritance_list ();
 			while (inheritance != null) {
+				var elem = inheritance.GetText ();
 				var name = inheritance.type_identifier ()?.GetText ();
 				if (name != null)
 					elems.Add (new XElement (kConformingProtocol, new XAttribute (kName, name)));
-				inheritance = context.type_inheritance_list ();
+				inheritance = inheritance.type_inheritance_list ();
 			}
 			return elems;
 		}
@@ -1607,6 +1612,21 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					inh.Attribute (kInheritanceKind).Value = kClass;
 				else
 					inh.Attribute (kInheritanceKind).Value = kProtocol;
+			}
+		}
+
+		void PatchAssociatedTypeConformance ()
+		{
+			foreach (var assoc in associatedTypesWithConformance) {
+				var conformances = assoc.Element (kConformingProtocols);
+				var first = conformances.Element (kConformingProtocol);
+				var className = (string)first.Attribute (kName);
+				if (IsLocalClass (className) || IsGlobalClass (className)) {
+					first.Remove ();
+					if (conformances.Nodes ().Count () == 0)
+						conformances.Remove ();
+					assoc.Add (new XElement (kSuperclass, new XAttribute (kName, className)));
+				}
 			}
 		}
 

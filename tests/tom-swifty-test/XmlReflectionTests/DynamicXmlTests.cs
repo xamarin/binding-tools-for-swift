@@ -1250,7 +1250,7 @@ public protocol HoldsThing {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Hang on parse")]
+		[TestCase (ReflectorMode.Parser)]
 		public void AssocTypeSuper (ReflectorMode mode)
 		{
 			var code = @"
