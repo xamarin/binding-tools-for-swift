@@ -250,6 +250,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterStruct_declaration ([NotNull] Struct_declarationContext context)
 		{
+			var inheritance = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: true);
 			var attributes = GatherAttributes (context.attributes ());
 			var isDeprecated = CheckForDeprecated (attributes);
 			var isUnavailable = CheckForUnavailable (attributes);
@@ -257,7 +258,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
 			var typeDecl = ToTypeDeclaration (kStruct, context.struct_name ().GetText (),
-				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null,
+				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
 			if (generics != null)
@@ -277,6 +278,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterEnum_declaration ([NotNull] Enum_declarationContext context)
 		{
+			var inheritanceClause = context.union_style_enum ()?.type_inheritance_clause () ??
+				context.raw_value_style_enum ()?.type_inheritance_clause ();
+			var inheritance = GatherInheritance (inheritanceClause, forceProtocolInheritance: true);
 			var attributes = GatherAttributes (context.attributes ());
 			var isDeprecated = CheckForDeprecated (attributes);
 			var isUnavailable = CheckForUnavailable (attributes);
@@ -284,7 +288,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
 			var typeDecl = ToTypeDeclaration (kEnum, EnumName (context),
-				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inherits: null, generics: null,
+				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
 			var generics = HandleGenerics (EnumGenericParameters (context), EnumGenericWhere (context));
 			if (generics != null)

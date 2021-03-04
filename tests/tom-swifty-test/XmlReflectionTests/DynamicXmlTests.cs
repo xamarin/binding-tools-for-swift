@@ -1695,5 +1695,23 @@ public func sum (a: Int!, b: Int!) -> Int! {
 			Assert.IsNotNull (func, "no func");
 			Assert.AreEqual ("Swift.Optional<Swift.Int>", func.ReturnTypeName);
 		}
+
+
+		[TestCase (ReflectorMode.Compiler)]
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumProtocolConformance (ReflectorMode mode)
+		{
+			var code = @"
+public enum E : Error {
+case a, b
+}
+";
+			var module = ReflectToModules (code, "SomeModule", mode).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var en = module.Enums.FirstOrDefault (e => e.Name == "E");
+			Assert.IsNotNull (en, "no enum");
+			Assert.AreEqual (1, en.Inheritance.Count, "wrong inheritance count");
+			Assert.AreEqual ("Swift.Error", en.Inheritance [0].InheritedTypeName, "wrong inherited name");
+		}
 	}
 }
