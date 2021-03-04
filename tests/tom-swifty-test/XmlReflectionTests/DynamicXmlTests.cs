@@ -571,7 +571,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "returning wrong unavailble")]
+		[TestCase (ReflectorMode.Parser)]
 		public void MethodInStruct (ReflectorMode mode)
 		{
 			string code =

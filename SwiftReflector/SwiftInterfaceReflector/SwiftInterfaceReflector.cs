@@ -1359,14 +1359,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			foreach (var attribute in availableTags) {
 				var args = AttrbuteParameters (attribute);
 				if (IsShortHand (args)) {
-					if (AvailableShorthand (args))
-						return true;
+					return AvailableShorthand (args);
 				} else {
-					if (AvailableLonghand (args))
-						return true;
+					return AvailableLonghand (args);
 				}
 			}
-			return false;
+			return true;
 		}
 
 		bool AvailableLonghand (List<string> args)
