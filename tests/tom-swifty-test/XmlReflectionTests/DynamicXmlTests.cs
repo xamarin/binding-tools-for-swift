@@ -1455,7 +1455,7 @@ public class Foo {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "missing class generic in signature")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestGenericMethodInGenericClass (ReflectorMode mode)
 		{
 			var code = @"

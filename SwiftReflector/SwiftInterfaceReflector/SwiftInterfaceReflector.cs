@@ -235,7 +235,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var typeDecl = ToTypeDeclaration (kClass, context.class_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
-			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
+			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause (), false);
 			if (generics != null)
 				typeDecl.Add (generics);
 			currentElement.Push (typeDecl);
@@ -263,7 +263,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var typeDecl = ToTypeDeclaration (kStruct, context.struct_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
-			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
+			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause (), false);
 			if (generics != null)
 				typeDecl.Add (generics);
 			currentElement.Push (typeDecl);
@@ -293,7 +293,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var typeDecl = ToTypeDeclaration (kEnum, EnumName (context),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
-			var generics = HandleGenerics (EnumGenericParameters (context), EnumGenericWhere (context));
+			var generics = HandleGenerics (EnumGenericParameters (context), EnumGenericWhere (context), false);
 			if (generics != null)
 				typeDecl.Add (generics);
 			currentElement.Push (typeDecl);
@@ -563,7 +563,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
-			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause ());
+			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause (), true);
 			if (generics != null)
 				functionDecl.Add (generics);
 
@@ -945,11 +945,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				new XAttribute (nameof (precedenceGroup), precedenceGroup));
 		}
 
-		XElement HandleGenerics (Generic_parameter_clauseContext genericContext, Generic_where_clauseContext whereContext)
+		XElement HandleGenerics (Generic_parameter_clauseContext genericContext, Generic_where_clauseContext whereContext, bool addParentGenerics)
 		{
 			if (genericContext == null)
 				return null;
 			var genericElem = new XElement (kGenericParameters);
+			if (addParentGenerics)
+				AddParentGenerics (genericElem);
 			foreach (var generic in genericContext.generic_parameter_list ().generic_parameter ()) {
 				var name = generic.type_name ().GetText ();
 				var genParam = new XElement (kParam, new XAttribute (kName, name));
@@ -1087,6 +1089,23 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				new XAttribute (kIndex, "0"), new XAttribute (kPublicName, "self"),
 				new XAttribute (kPrivateName, "self"), new XAttribute (kIsVariadic, "false"));
 			return new XElement (kParameterList, new XAttribute (kIndex, "0"), parameter);
+		}
+
+		void AddParentGenerics (XElement genericResult)
+		{
+			var parentGenerics = new List<XElement> ();
+			for (int i =0; i < currentElement.Count; i++) {
+				var elem = currentElement.ElementAt (i);
+				if (!IsNominal (elem))
+					continue;
+				var elemGenerics = elem.Element (kGenericParameters);
+				if (elemGenerics == null)
+					continue;
+				foreach (var param in elemGenerics.Descendants (kParam)) {
+					parentGenerics.Add (new XElement (param));
+				}
+			}
+			genericResult.Add (parentGenerics.ToArray ());
 		}
 
 		XElement NominalParentAfter (int start)
