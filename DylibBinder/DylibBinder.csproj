@@ -51,6 +51,18 @@
     <Compile Include="DylibBinderOptions.cs" />
     <Compile Include="InnerX.cs" />
     <Compile Include="PropertyGrepper.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="DBTopLevel.cs" />
+    <Compile Include="DBTypeDeclaration.cs" />
+    <Compile Include="DBFunc.cs" />
+    <Compile Include="DBProperty.cs" />
+    <Compile Include="DBParameter.cs" />
+    <Compile Include="DBGenericParameter.cs" />
+    <Compile Include="DBAssociatedType.cs" />
+    <Compile Include="SwiftTypeToString.cs" />
+    <Compile Include="DBInnerTypes.cs" />
+    <Compile Include="XmlGenerator.cs" />
+    <Compile Include="DBElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

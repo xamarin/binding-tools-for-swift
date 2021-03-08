@@ -8,10 +8,9 @@ namespace DylibBinder {
 	public class InnerX {
 		public InnerX ()
 		{
-			dict = new Dictionary<string, List<ClassContents>> ();
 		}
 
-		Dictionary<string, List<ClassContents>> dict { get; }
+		public Dictionary<string, List<ClassContents>> InnerXDict { get; } = new Dictionary<string, List<ClassContents>> ();
 
 		public Dictionary<string, List<ClassContents>> AddClassContentsList (params List<ClassContents>[] contents)
 		{
@@ -20,7 +19,7 @@ namespace DylibBinder {
 					AddItem (classContent);
 				}
 			}
-			return dict;
+			return InnerXDict;
 		}
 
 		void AddItem (ClassContents c)
@@ -41,18 +40,17 @@ namespace DylibBinder {
 			var ParentNestingNameString = ConvertNestingNamesToString (parentNestingNames);
 			AddKeyIfNotPresent (ParentNestingNameString);
 
-			var value = dict [ParentNestingNameString];
+			var value = InnerXDict [ParentNestingNameString];
 			value.Add (c);
-			dict [ParentNestingNameString] = value;
+			InnerXDict [ParentNestingNameString] = value;
 		}
 
 		void AddKeyIfNotPresent (string key)
 		{
-			if (dict.ContainsKey (key))
+			if (InnerXDict.ContainsKey (key))
 				return;
-			dict.Add (key, new List<ClassContents> ());
+			InnerXDict.Add (key, new List<ClassContents> ());
 		}
-
 
 		string ConvertNestingNamesToString (List<SwiftReflector.SwiftName> nestingNames)
 		{
@@ -68,7 +66,5 @@ namespace DylibBinder {
 			}
 			return sb.ToString ();
 		}
-
-
 	}
 }

@@ -5,46 +5,62 @@ using SwiftReflector.Inventory;
 namespace DylibBinder {
 	public class CheckInventory {
 
-		public static (List<ClassContents>, List<ClassContents>, List<ClassContents>) GetClassesStructsEnums (ModuleInventory mi)
+		public CheckInventory (ModuleInventory mi)
 		{
-			var modules = mi.ModuleNames;
-			List<ClassContents> classes = new List<ClassContents> ();
-			List<ClassContents> structs = new List<ClassContents> ();
-			List<ClassContents> enums = new List<ClassContents> ();
+			Classes = new List<ClassContents> ();
+			Structs = new List<ClassContents> ();
+			Enums = new List<ClassContents> ();
+			Protocols = new List<ProtocolContents> ();
 
-			foreach (var m in modules) {
-				var moduleClass = mi.ClassesForName (m);
-				foreach (var elem in moduleClass) {
-					if (elem.Name.ToString ().Contains ("_"))
-						continue;
-					if (elem.Name.IsClass)
-						classes.Add (elem);
-					else if (elem.Name.IsStruct)
-						structs.Add (elem);
-					else if (elem.Name.IsEnum)
-						enums.Add (elem);
-				}
-			}
-			classes.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
-			structs.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
-			enums.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
-			return (classes, structs, enums);
+			GetClassesStructsEnums (mi);
+			GetProtocols (mi);
 		}
 
-		public static List<ProtocolContents> GetProtocols (ModuleInventory mi)
+		public List<ClassContents> Classes { get; }
+		public List<ClassContents> Structs { get; }
+		public List<ClassContents> Enums { get; }
+		public List<ProtocolContents> Protocols { get; }
+
+		void GetClassesStructsEnums (ModuleInventory mi)
 		{
 			var modules = mi.ModuleNames;
-			List<ProtocolContents> protocols = new List<ProtocolContents> ();
 
 			foreach (var m in modules) {
-				var moduleProtocol = mi.ProtocolsForName (m);
-				foreach (var p in moduleProtocol) {
-					if (!p.Name.ToString ().Contains ("_"))
-						protocols.Add (p);
+				foreach (var elem in mi.ClassesForName (m)) {
+					if (!elem.Name.ToString ().IsPublic ())
+						continue;
+					if (elem.Name.IsClass)
+						Classes.Add (elem);
+					else if (elem.Name.IsStruct)
+						Structs.Add (elem);
+					else if (elem.Name.IsEnum)
+						Enums.Add (elem);
 				}
 			}
-			protocols.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
-			return protocols;
+			SortNominalTypeLists (null, Classes, Structs, Enums);
+		}
+
+		void GetProtocols (ModuleInventory mi)
+		{
+			var modules = mi.ModuleNames;
+
+			foreach (var m in modules) {
+				foreach (var p in mi.ProtocolsForName (m)) {
+					if (!p.Name.ToString ().Contains ("_"))
+						Protocols.Add (p);
+				}
+			}
+			SortNominalTypeLists (Protocols);
+		}
+
+		void SortNominalTypeLists (List<ProtocolContents> protocolList, params List<ClassContents> [] nominalTypeLists)
+		{
+			if (protocolList != null)
+				protocolList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
+
+			foreach (var nominalTypeList in nominalTypeLists) {
+				nominalTypeList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
+			}
 		}
 	}
 }

@@ -11,6 +11,8 @@ namespace DylibBinder {
         public bool PrintHelp { get; set; }
         public string SwiftLibPath { get; set; }
         public string ModuleName { get; set; }
+        public string DylibPath { get; set; }
+        public List<string> TypeDatabasePaths = new List<string>();
 
         public DylibBinderOptions ()
         {
@@ -20,9 +22,16 @@ namespace DylibBinder {
                 { "swiftLibPath=", "the path to the lib directory that contains the dylib", swiftLibPath => {
                     SwiftLibPath = swiftLibPath;
                 } },
+                { "dylibPath=", "the path to the dylib", dylibPath => {
+                    DylibPath = dylibPath;
+                } },
                 { "moduleName=", "the name of the module", moduleName => {
                     ModuleName = moduleName;
                 } },
+                { "type-database-path=", "searches in directory for type database files; can be used multiple times", p => {
+                    if (!string.IsNullOrEmpty (p))
+                        TypeDatabasePaths.Add (Path.GetFullPath (p));
+                }},
                 { "h|?|help", "prints this message", h => {
                     PrintHelp |=h != null;
                 }}
