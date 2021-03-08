@@ -88,9 +88,6 @@ namespace DylibBinder {
 				} else if (content is SwiftTupleType innerTupleType) {
 					HandleTupleType (innerTupleType);
 				}
-				// For debugging
-				//else if (content.ToString ().Contains (",0") || content.ToString ().Contains (",1") || content.ToString ().Contains ("1,") || content.ToString ().Contains ("0,")) {
-				//}
 			}
 		}
 

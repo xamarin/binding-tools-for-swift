@@ -77,19 +77,15 @@ namespace tomswifty {
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
+			// TJ - TODO adding this second parameter that we can set to true if we are dealing with dylib
 			options.CheckForOptionErrors (errors, true);
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
-			try {
-				if (options.ModuleName == null) {
-					Console.WriteLine ("-module-name option is required.");
-					return 1;
-				}
-			} catch (Exception e) {
-
+			if (options.ModuleName == null) {
+				Console.WriteLine ("-module-name option is required.");
+				return 1;
 			}
-			
 
 			var unicodeMapper = new UnicodeMapper ();
 			if (options.UnicodeMappingFile != null) {
@@ -118,6 +114,8 @@ namespace tomswifty {
 
 					ClassCompilerNames compilerNames = new ClassCompilerNames (options.ModuleName, options.WrappingModuleName);
 					ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (options.ModulePaths, options.DylibPaths, options.TypeDatabasePaths);
+					// TJ - TODO Adding this last argument which will tell the CompileToCSharp method
+					// we are dealing with a dylib
 					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory, true);
 					errors.Add (compileErrors);
 				}
