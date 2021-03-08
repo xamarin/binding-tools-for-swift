@@ -10,12 +10,7 @@ namespace DylibBinder {
 		{
 			var slType = MapSwiftTypeToSlType (swiftType);
 			var slTypeString = slType.ToString ();
-
 			slTypeString = slTypeString.AppendModuleToBit ();
-
-			//if (moduleName != null)
-			//	slTypeString = slTypeString.PrependModule (moduleName);
-
 			return slTypeString;
 		}
 
