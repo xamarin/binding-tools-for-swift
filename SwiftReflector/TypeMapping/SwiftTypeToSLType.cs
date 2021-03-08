@@ -12,10 +12,13 @@ using SwiftRuntimeLibrary;
 namespace SwiftReflector.TypeMapping {
 	public class SwiftTypeToSLType {
 		TypeMapper typeMapper;
-		public SwiftTypeToSLType (TypeMapper typeMapper)
+		public SwiftTypeToSLType (TypeMapper typeMapper, bool includeModule = false)
 		{
 			this.typeMapper = Exceptions.ThrowOnNull (typeMapper, "typeMapper");
+			IncludeModule = includeModule;
 		}
+
+		bool IncludeModule { get; }
 
 
 		public SLType MapType (SLImportModules modules, SwiftType st)
@@ -113,7 +116,7 @@ namespace SwiftReflector.TypeMapping {
 
 		SLSimpleType ToClass (SLImportModules modules, SwiftClassType st)
 		{
-			return ToClass (modules, st.ClassName);
+			return ToClass (modules, st.ClassName, IncludeModule);
 		}
 
 		SLType ToClass (SLImportModules modules, SwiftBoundGenericType gt)
@@ -126,10 +129,10 @@ namespace SwiftReflector.TypeMapping {
 			return new SLBoundGenericType (baseType.Name, boundTypes);
 		}
 
-		static SLSimpleType ToClass (SLImportModules modules, SwiftClassName className)
+		static SLSimpleType ToClass (SLImportModules modules, SwiftClassName className, bool includeModule = false)
 		{
 			modules.AddIfNotPresent (className.Module.Name);
-			return new SLSimpleType (className.ToFullyQualifiedName (false));
+			return new SLSimpleType (className.ToFullyQualifiedName (includeModule));
 		}
 
 		SLSimpleType ToProtocol (SLImportModules modules, SwiftProtocolListType protocol)
