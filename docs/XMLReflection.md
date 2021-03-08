@@ -74,11 +74,11 @@ A `<typealias>` tag will contain the following attributes:
 - accessibility - one of `Public`, `Private`, `Internal`, `Open`
 - type - a string that represents the target type to which name is aliased.
 For example,
-```
+```Swift
 public typealias Foo<T> = Swift.Array<T:Hashable, String>
 ```
 should produce this:
-```
+```XML
 <typealias name="Foo<T>" accessibility="Public" type="Swift.Array<T:Hashable, String>" />
 ```
 
@@ -189,7 +189,7 @@ If the kind is `Sublist`, there will be an `<attributeparameterlist>` inside the
 
 attribute parameters will contain any punctuation allowed (for example commas or quotation marks).
 Sublists are generally set off when an attribute contains what the swift grammar calls "balanced tokens". So you might have something like this:
-```
+```Swift
 @someAttribute(a, b: [a list, of things, to consider { or not }])
 ```
 Attributes are not currently supported in the reflector (and may never be). They are going to be supported in the `.swiftinterface` parser.
