@@ -218,7 +218,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "incorrect parameter name")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestClassWithConstructor (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule", mode)
@@ -754,17 +754,15 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func1.IsOptional, "func 1 should be optional");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Unable to find setter, possible grammar error")]
-		public void PropertyVisibility (ReflectorMode mode)
-		{
-			PropertyVisibilityCore ("open", Accessibility.Open, mode);
-			PropertyVisibilityCore ("public", Accessibility.Public, mode);
-			PropertyVisibilityCore ("internal", Accessibility.Internal, mode);
-			PropertyVisibilityCore ("private", Accessibility.Private, mode);
-		}
-
-		void PropertyVisibilityCore (string swiftVisibility, Accessibility accessibility, ReflectorMode mode)
+		[TestCase ("open", Accessibility.Open, ReflectorMode.Compiler)]
+		[TestCase ("open", Accessibility.Open, ReflectorMode.Parser)]
+		[TestCase ("public", Accessibility.Public, ReflectorMode.Compiler)]
+		[TestCase ("public", Accessibility.Public, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
+		[TestCase ("internal", Accessibility.Internal, ReflectorMode.Compiler)]
+		[TestCase ("internal", Accessibility.Internal, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
+		[TestCase ("private", Accessibility.Private, ReflectorMode.Compiler)]
+		[TestCase ("private", Accessibility.Private, ReflectorMode.Parser, Ignore = "This is not a public interface, parser never sees it")]
+		public void PropertyVisibilityCore (string swiftVisibility, Accessibility accessibility, ReflectorMode mode)
 		{
 			string code = $@"open class Foo {{
 			open {swiftVisibility} (set) weak var parent: Foo?
@@ -968,7 +966,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "Wrong name")]
+		[TestCase (ReflectorMode.Parser)]
 		public void TestOnlyPublicParamNames (ReflectorMode mode)
 		{
 			string code = "public func foo(seen:Int) { }\n";
