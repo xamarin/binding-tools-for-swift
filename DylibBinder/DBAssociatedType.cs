@@ -17,6 +17,5 @@ namespace DylibBinder {
 		}
 
 		public List<DBAssociatedType> AssociatedTypes { get; } = new List<DBAssociatedType> ();
-
 	}
 }

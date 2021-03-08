@@ -10,8 +10,6 @@ using System.Text.RegularExpressions;
 
 namespace DylibBinder {
 	public class DBFunc {
-		// TODO get rid of double throws/rethrows
-
 		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false)
 		{
 			Name = tlf.Name.Name;
