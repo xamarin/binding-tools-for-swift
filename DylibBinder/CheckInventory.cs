@@ -4,7 +4,6 @@ using SwiftReflector.Inventory;
 
 namespace DylibBinder {
 	public class CheckInventory {
-
 		public CheckInventory (ModuleInventory mi)
 		{
 			Classes = new List<ClassContents> ();
@@ -23,9 +22,7 @@ namespace DylibBinder {
 
 		void GetClassesStructsEnums (ModuleInventory mi)
 		{
-			var modules = mi.ModuleNames;
-
-			foreach (var m in modules) {
+			foreach (var m in mi.ModuleNames) {
 				foreach (var elem in mi.ClassesForName (m)) {
 					if (!elem.Name.ToString ().IsPublic ())
 						continue;
@@ -42,9 +39,7 @@ namespace DylibBinder {
 
 		void GetProtocols (ModuleInventory mi)
 		{
-			var modules = mi.ModuleNames;
-
-			foreach (var m in modules) {
+			foreach (var m in mi.ModuleNames) {
 				foreach (var p in mi.ProtocolsForName (m)) {
 					if (!p.Name.ToString ().Contains ("_"))
 						Protocols.Add (p);
