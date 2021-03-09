@@ -25,8 +25,6 @@ namespace DylibBinder {
 			else
 				Kind = "struct";
 
-			var typeDescriptor = classContents.TypeDescriptor;
-
 			Name = classContents.Name.ToFullyQualifiedName ();
 			Funcs = new DBFuncs (classContents);
 			Properties = new DBProperties (classContents);
@@ -55,23 +53,24 @@ namespace DylibBinder {
 		void ApplyInouts ()
 		{
 			foreach (var func in Funcs.Funcs) {
-				foreach (var parameterList in func.ParameterLists.ParameterLists) {
-					ApplyInoutsToParameterList (parameterList);
-				}
+				ApplyInoutsToParameterLists (func.ParameterLists);
 			}
 			// protocols currently only hold funcs so they should finish here
 			if (Kind == "protocol")
 				return;
 
 			foreach (var property in Properties.Properties) {
-				foreach (var getterParameterList in property.Getter.ParameterLists.ParameterLists) {
-					ApplyInoutsToParameterList (getterParameterList);
-				}
+				ApplyInoutsToParameterLists (property.Getter.ParameterLists);
 				if (property.Setter != null) {
-					foreach (var setterParameterList in property.Setter.ParameterLists.ParameterLists) {
-						ApplyInoutsToParameterList (setterParameterList);
-					}
+					ApplyInoutsToParameterLists (property.Setter.ParameterLists);
 				}
+			}
+		}
+
+		void ApplyInoutsToParameterLists (DBParameterLists parameterLists)
+		{
+			foreach (var parameterList in parameterLists.ParameterLists) {
+				ApplyInoutsToParameterList (parameterList);
 			}
 		}
 

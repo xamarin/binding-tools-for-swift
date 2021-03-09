@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace DylibBinder {
+	// TODO Add Elements to enums
 	public class DBElement {
 		public DBElement (string name, string intValue)
 		{
