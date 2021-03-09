@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 namespace DylibBinder {
+	// TODO Add AssociatedTypes
 	public class DBAssociatedType {
 		public DBAssociatedType (string name)
 		{

@@ -25,6 +25,9 @@ namespace DylibBinder {
 		void AddItem (ClassContents c)
 		{
 			var nestingNames = c.Name.NestingNames.ToList ();
+			if (nestingNames.Count == 0)
+				return;
+
 			var nestingNameString = ConvertNestingNamesToString (nestingNames);
 
 			if (nestingNameString == null)
@@ -35,14 +38,13 @@ namespace DylibBinder {
 				return;
 			}
 
-			var parentNestingNames = nestingNames;
-			parentNestingNames.RemoveAt (parentNestingNames.Count - 1);
-			var ParentNestingNameString = ConvertNestingNamesToString (parentNestingNames);
-			AddKeyIfNotPresent (ParentNestingNameString);
+			nestingNames.RemoveAt (nestingNames.Count - 1);
+			var parentNestingNameString = ConvertNestingNamesToString (nestingNames);
+			AddKeyIfNotPresent (parentNestingNameString);
 
-			var value = InnerXDict [ParentNestingNameString];
+			var value = InnerXDict [parentNestingNameString];
 			value.Add (c);
-			InnerXDict [ParentNestingNameString] = value;
+			InnerXDict [parentNestingNameString] = value;
 		}
 
 		void AddKeyIfNotPresent (string key)
@@ -54,9 +56,6 @@ namespace DylibBinder {
 
 		string ConvertNestingNamesToString (List<SwiftReflector.SwiftName> nestingNames)
 		{
-			if (nestingNames == null || nestingNames.Count == 0)
-				return null;
-
 			var sb = new StringBuilder ();
 			foreach (var name in nestingNames) {
 				if (sb.Length == 0)

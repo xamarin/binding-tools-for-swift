@@ -81,7 +81,7 @@ namespace SwiftReflector {
 			if (Verbose)
 				Console.WriteLine ("Compiling swift files: " + files.InterleaveCommas ());
 
-  			Launch (CompilerInfo.CustomSwiftc, args);
+			Launch (CompilerInfo.CustomSwiftc, args);
 			var outputLib = Path.Combine (DirectoryPath, $"lib{compilerOptions.ModuleName}.dylib");
 			if (outputIsFramework) {
 				string srcLib = outputLib;
