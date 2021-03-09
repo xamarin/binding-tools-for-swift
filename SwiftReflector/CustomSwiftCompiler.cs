@@ -14,6 +14,8 @@ using System.Linq;
 using Dynamo;
 using System.Text.RegularExpressions;
 using ObjCRuntime;
+using SwiftReflector.TypeMapping;
+using SwiftReflector.SwiftInterfaceReflector;
 
 namespace SwiftReflector {
 
@@ -33,6 +35,40 @@ namespace SwiftReflector {
 		}
 	}
 
+	public class FileSystemModuleLoader : IModuleLoader {
+		IEnumerable<string> locations;
+		public FileSystemModuleLoader (IEnumerable<string> locations)
+		{
+			this.locations = Exceptions.ThrowOnNull (locations, nameof (locations));
+		}
+
+		public bool Load (string moduleName, TypeDatabase into)
+		{
+			if (into.ModuleNames.Contains (moduleName))
+				return true;
+			foreach (var location in locations) {
+				var file = Path.Combine (location, moduleName);
+				if (TryLoadFile (file, into, "", ".xml", ".XML"))
+					return true;
+			}
+			return false;
+		}
+
+		bool TryLoadFile (string file, TypeDatabase into, params string [] extensions)
+		{
+			foreach (var ext in extensions) {
+				var candidate = file + ext;
+				if (!File.Exists (candidate))
+					continue;
+				Errors = into.Read (file);
+				return true;
+			}
+			return false;
+		}
+
+		public ErrorHandling Errors { get; private set; }
+	}
+
 	public class CustomSwiftCompiler : IDisposable {
 		readonly SwiftTargetCompilerInfo CompilerInfo;
 
@@ -46,6 +82,8 @@ namespace SwiftReflector {
 			CompilerInfo = compilerInfo;
 			tempDirectory = fileProvider ?? new DisposableTempDirectory (null, true);
 			disposeTempDirectory = fileProvider != null ? disposeSuppliedDirectory : true;
+			PrimaryReflectionStrategy = ReflectionStrategy.Compiler;
+			SecondaryReflectionStrategy = ReflectionStrategy.Parser;
 		}
 
 		public void CompileString (SwiftCompilerOptions compilerOptions, string codeString)
@@ -208,16 +246,73 @@ namespace SwiftReflector {
 
 			List<ISwiftModuleLocation> locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries,
 			                                                                                     includeDirectories, CompilerInfo.Target);
-			string output = "";
-			try {
-				output = Reflect (locations.Select (loc => loc.DirectoryPath), libraryDirectories, pathName, extraArgs, moduleNames);
-			} finally {
-				locations.DisposeAll ();
-			}
-			ThrowOnCompilerVersionMismatch (output, moduleNames);
+
+			ReflectWithStrategies (locations.Select (loc => loc.DirectoryPath), libraryDirectories, pathName, extraArgs, moduleNames);
 			return Reflector.FromXmlFile (pathName);
 		}
 
+		public void ReflectWithStrategies (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectories,
+				     string outputFile, string extraArgs, params string [] moduleNames)
+		{
+			// both set to none, you really want nothing?
+			if (PrimaryReflectionStrategy == ReflectionStrategy.None && SecondaryReflectionStrategy == ReflectionStrategy.None) {
+				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 71, "Both reflection strategies are set to 'None'.");
+			}
+			// primary set to none, just take the secondary
+			var primary = PrimaryReflectionStrategy == ReflectionStrategy.None ? SecondaryReflectionStrategy : PrimaryReflectionStrategy;
+			// if we did the previous change, set the secondary to none because it looks like you only want one.
+			var secondary = PrimaryReflectionStrategy == ReflectionStrategy.None ? ReflectionStrategy.None : SecondaryReflectionStrategy;
+			// if they're the same, don't both with a secondary
+			if (secondary == primary)
+				secondary = ReflectionStrategy.None;
+			try {
+				ReflectWithStrategy (includeDirectories, libraryDirectories, outputFile, extraArgs, primary, moduleNames);
+			} catch (Exception err) {
+				if (secondary == ReflectionStrategy.None)
+					throw err;
+				ReflectWithStrategy (includeDirectories, libraryDirectories, outputFile, extraArgs, secondary, moduleNames);
+			}
+		}
+
+		public void ReflectWithStrategy (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectories,
+				     string outputFile, string extraArgs, ReflectionStrategy strategy,
+				     params string [] moduleNames)
+		{
+			if (strategy == ReflectionStrategy.None)
+				throw new ArgumentOutOfRangeException (nameof (strategy));
+
+			if (strategy == ReflectionStrategy.Compiler) {
+				var output = Reflect (includeDirectories, libraryDirectories, outputFile, extraArgs, moduleNames);
+				ThrowOnCompilerVersionMismatch (output, moduleNames);
+			} else if (strategy == ReflectionStrategy.Parser) {
+				ReflectWithParser (includeDirectories, libraryDirectories, outputFile, moduleNames);
+			}
+		}
+
+		public void ReflectWithParser (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectory, string outputFile, string [] moduleNames)
+		{
+			if (moduleNames.Length != 1)
+				throw new ArgumentOutOfRangeException (nameof (moduleNames), "Only one module supported for parser");
+
+			if (ReflectionTypeDatabase == null)
+				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 72, "Parser reflector requires a TypeDatabase");
+
+			var fileName = $"{moduleNames [0]}.swiftinterface";
+
+			var paths = includeDirectories.Select (dir => Path.Combine (dir, fileName));
+
+			var path = paths.FirstOrDefault (p => File.Exists (p));
+
+			if (path == null) {
+				var lookedIn = includeDirectories.InterleaveStrings (", ");
+				throw new FileNotFoundException ($"Did not find {fileName} in {lookedIn}");
+			}
+
+			var moduleLoader = new FileSystemModuleLoader (libraryDirectory);
+			var reflector = new SwiftInterfaceReflector.SwiftInterfaceReflector (ReflectionTypeDatabase, moduleLoader);
+			var xdoc = reflector.Reflect (path);
+			xdoc.Save (outputFile);
+		}
 
 		public string Reflect (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectories,
 		                     string outputFile, string extraArgs, params string [] moduleNames)
@@ -355,6 +450,10 @@ namespace SwiftReflector {
 		public string DirectoryPath { get { return tempDirectory.DirectoryPath; } }
 
 		public bool Verbose { get; set; }
+
+		public ReflectionStrategy PrimaryReflectionStrategy { get; set; }
+		public ReflectionStrategy SecondaryReflectionStrategy { get; set; }
+		public TypeDatabase ReflectionTypeDatabase { get; set; }
 
 		#region IDisposable implementation
 		~CustomSwiftCompiler ()
