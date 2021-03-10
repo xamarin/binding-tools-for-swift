@@ -440,26 +440,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var enumElement = new XElement (kElement, new XAttribute (kName, context.enum_case_name ().GetText ()));
 			if (context.tuple_type () != null) {
 				var tupString = context.tuple_type ().GetText ();
-
-				// special casing:
-				// the type of a union case is a tuple, but we special case
-				// unit tuples to be just the type of the unit
-				// which may be something like ((((((()))))))
-				// in which case we want to let it come through as is.
-				// a unit tuple may also have a type label which we don't care
-				// about so make that go away too.
-
-				if (tupString.IndexOf (',') < 0) {
-					var pastLastOpen = tupString.LastIndexOf ('(') + 1;
-					var firstClosed = tupString.IndexOf (')');
-					if (pastLastOpen != firstClosed) {
-						tupString = tupString.Substring (pastLastOpen, firstClosed - pastLastOpen);
-						var colonIndex = tupString.IndexOf (':');
-						if (colonIndex >= 0) {
-							tupString = tupString.Substring (colonIndex + 1);
-						}
-					}
-				}
 				enumElement.Add (new XAttribute (kType, tupString));
 			}
 			return enumElement;
