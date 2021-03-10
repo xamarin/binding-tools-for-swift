@@ -1301,19 +1301,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		bool TypeIsNotProtocol (string type)
 		{
-			var entity = typeDatabase.TryGetEntityForSwiftName (type);
-			if (entity != null && entity.EntityType != EntityType.Protocol)
-				return true;
-			if (entity != null)
-				return false;
 			var parts = type.Split ('.');
 			if (parts.Length == 1)
 				return true; // generic
 			var module = parts [0];
-			if (typeDatabase.ModuleNames.Contains (module))
-				return false; // we don't know this, this is a guess, probably wrong
-			moduleLoader.Load (module, typeDatabase);
-			entity = typeDatabase.TryGetEntityForSwiftName (type);
+			if (!typeDatabase.ModuleNames.Contains (module)) {
+				moduleLoader.Load (module, typeDatabase);
+			}
+			var entity = typeDatabase.TryGetEntityForSwiftName (type);
 			if (entity != null && entity.EntityType != EntityType.Protocol)
 				return true;
 			return false;
