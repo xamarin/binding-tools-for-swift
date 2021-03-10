@@ -283,7 +283,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var inheritanceClause = context.union_style_enum ()?.type_inheritance_clause () ??
 				context.raw_value_style_enum ()?.type_inheritance_clause ();
-			var inheritance = GatherInheritance (inheritanceClause, forceProtocolInheritance: true);
+			var inheritance = GatherInheritance (inheritanceClause, forceProtocolInheritance: true, removeNonProtocols: true);
 			var attributes = GatherAttributes (context.attributes ());
 			var isDeprecated = CheckForDeprecated (attributes);
 			var isUnavailable = CheckForUnavailable (attributes);
@@ -1273,24 +1273,50 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return null;
 		}
 
-		List<XElement> GatherInheritance (Type_inheritance_clauseContext context, bool forceProtocolInheritance)
+		List<XElement> GatherInheritance (Type_inheritance_clauseContext context, bool forceProtocolInheritance,
+			bool removeNonProtocols = false)
 		{
 			var inheritance = new List<XElement> ();
 			if (context == null)
 				return inheritance;
 			var list = context.type_inheritance_list ();
+			bool first = true;
 			while (list != null) {
 				var inheritanceKind = forceProtocolInheritance ? kProtocol :
 					(inheritance.Count > 0 ? kProtocol : kLittleUnknown);
-				var elem = new XElement (kInherit, new XAttribute (kType, list.type_identifier ().GetText ()),
-					new XAttribute (nameof (inheritanceKind), inheritanceKind));
-				inheritance.Add (elem);
-				if (inheritanceKind == kLittleUnknown)
-					unknownInheritance.Add (elem);
+				var type = list.type_identifier ().GetText ();
+				if (!(first && removeNonProtocols && TypeIsNotProtocol (type))) {
+					var elem = new XElement (kInherit, new XAttribute (kType, type),
+						new XAttribute (nameof (inheritanceKind), inheritanceKind));
+					inheritance.Add (elem);
+					if (inheritanceKind == kLittleUnknown)
+						unknownInheritance.Add (elem);
+				}
+				first = false;
 				list = list.type_inheritance_list ();
 			}
 
 			return inheritance;
+		}
+
+		bool TypeIsNotProtocol (string type)
+		{
+			var entity = typeDatabase.TryGetEntityForSwiftName (type);
+			if (entity != null && entity.EntityType != EntityType.Protocol)
+				return true;
+			if (entity != null)
+				return false;
+			var parts = type.Split ('.');
+			if (parts.Length == 1)
+				return true; // generic
+			var module = parts [0];
+			if (typeDatabase.ModuleNames.Contains (module))
+				return false; // we don't know this, this is a guess, probably wrong
+			moduleLoader.Load (module, typeDatabase);
+			entity = typeDatabase.TryGetEntityForSwiftName (type);
+			if (entity != null && entity.EntityType != EntityType.Protocol)
+				return true;
+			return false;
 		}
 
 		XElement ToTypeDeclaration (string kind, string name, string accessibility, bool isObjC,
