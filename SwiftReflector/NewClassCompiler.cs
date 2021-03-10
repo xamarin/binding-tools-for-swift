@@ -5457,6 +5457,7 @@ namespace SwiftReflector {
 					var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget);
 					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, provider, false)) {
 						compiler.Verbose = Verbose;
+						compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
 
 						var decls = compiler.ReflectToModules (
 							moduleDirectories.ToArray (), moduleDirectories.ToArray (),
@@ -5512,6 +5513,7 @@ namespace SwiftReflector {
 				using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
 					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (ReflectorLocations.GetTargetInfo (null), provider, false)) {
 						compiler.Verbose = Verbose;
+						compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
 
 						var decls = compiler.ReflectToModules (moduleSeachPaths, null, "-f XamGlue", moduleName);
 						if (decls.Count != 1) {
