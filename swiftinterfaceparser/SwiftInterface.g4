@@ -137,7 +137,7 @@ struct_member : declaration ;
 
 class_declaration : 
 	attributes? access_level_modifier? final_clause? 'class' class_name generic_parameter_clause? type_inheritance_clause? generic_where_clause? class_body
-	| attributes? 'final' access_level_modifier? 'class' class_name generic_parameter_clause? type_inheritance_clause? generic_where_clause? class_body
+	| attributes? final_clause access_level_modifier? 'class' class_name generic_parameter_clause? type_inheritance_clause? generic_where_clause? class_body
 	;
 
 class_name : declaration_identifier ;
