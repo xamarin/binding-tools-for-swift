@@ -82,8 +82,8 @@ namespace SwiftReflector {
 			CompilerInfo = compilerInfo;
 			tempDirectory = fileProvider ?? new DisposableTempDirectory (null, true);
 			disposeTempDirectory = fileProvider != null ? disposeSuppliedDirectory : true;
-			PrimaryReflectionStrategy = ReflectionStrategy.Parser;
-			SecondaryReflectionStrategy = ReflectionStrategy.Compiler;
+			PrimaryReflectionStrategy = ReflectionStrategy.Compiler;
+			SecondaryReflectionStrategy = ReflectionStrategy.Parser;
 		}
 
 		public void CompileString (SwiftCompilerOptions compilerOptions, string codeString)
