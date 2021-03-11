@@ -229,9 +229,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var attributes = GatherAttributes (context.attributes ());
 			var isDeprecated = CheckForDeprecated (attributes);
 			var isUnavailable = CheckForUnavailable (attributes);
-			var isFinal = context.final_clause () != null;
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
+			var isFinal = context.final_clause () != null || accessibility != kOpen;
 			var typeDecl = ToTypeDeclaration (kClass, context.class_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
