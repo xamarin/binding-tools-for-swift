@@ -726,17 +726,17 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			AddElementToParentMembers (getFunc);
 
 			var setParamList = context.getter_setter_keyword_block ()?.setter_keyword_clause () != null
-				? MakeParamterList (head.parameter_clause ().parameter_list (), 1, true) : null;
+				? MakeParamterList (head.parameter_clause ().parameter_list (), 1, true, startIndex: 1) : null;
 
 
 			if (setParamList != null) {
-				var index = setParamList.Elements ().Count ();
+				var index = 0;
 				var parmName = context.getter_setter_keyword_block ().setter_keyword_clause ().new_value_name ()?.GetText ()
 					?? kNewValue;
 				var newValueParam = new XElement (kParameter, new XAttribute (nameof (index), index.ToString ()),
-					new XAttribute (kType, resultType), new XAttribute (kPublicName, parmName),
+					new XAttribute (kType, resultType), new XAttribute (kPublicName, ""),
 					new XAttribute (kPrivateName, parmName), new XAttribute (kIsVariadic, false));
-				setParamList.Add (newValueParam);
+				setParamList.AddFirst (newValueParam);
 
 				var setFunc = ToFunctionDeclaration (kSetSubscript, "()", accessibility, isStatic, hasThrows,
 					isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
@@ -1035,12 +1035,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			currentElement.Peek ().Add (parameterLists);
 		}
 
-		XElement MakeParamterList (Parameter_listContext parmList, int index, bool isSubscript)
+		XElement MakeParamterList (Parameter_listContext parmList, int index, bool isSubscript, int startIndex = 0)
 		{
 			var formalArguments = new XElement (kParameterList, new XAttribute (kIndex, index.ToString ()));
 
 			if (parmList != null) {
-				var i = 0;
+				var i = startIndex;
 				foreach (var parameter in parmList.parameter ()) {
 					var parameterElement = ToParameterElement (parameter, i, isSubscript);
 					formalArguments.Add (parameterElement);
@@ -1154,9 +1154,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isInOut = typeAnnotation.inout_clause () != null;
 			var type = typeAnnotation.type ().GetText ();
 			var privateName = context.local_parameter_name ()?.GetText () ?? "";
-			var replacementPublicName = isSubscript ? "_" : privateName;
+			var replacementPublicName = isSubscript ? "" : privateName;
 			var publicName = context.external_parameter_name ()?.GetText () ?? replacementPublicName;
-			if (!isSubscript && publicName == "_")
+			if (publicName == "_")
 				publicName = "";
 			var isVariadic = context.range_operator () != null;
 			var isEscaping = AttributesContains (typeAnnotation.attributes (), kEscaping);
