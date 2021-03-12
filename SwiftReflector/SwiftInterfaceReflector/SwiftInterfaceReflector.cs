@@ -196,6 +196,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				PatchPossibleOperators ();
 				PatchExtensionShortNames ();
+				PatchExtensionSelfArgs ();
 				PatchPossibleBadInheritance ();
 				PatchAssociatedTypeConformance ();
 
@@ -859,7 +860,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterExtension_declaration ([NotNull] Extension_declarationContext context)
 		{
-			var accessibility = ToAccess (context.access_level_modifier ());
 			var onType = context.type_identifier ().GetText ();
 			var inherits = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: true);
 			// why, you say, why put a kKind tag into an extension?
@@ -867,7 +867,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			// of an extension are the same as a class and as a result we can
 			// pretend that it's a class and everything will work to fill it out
 			// using the class/struct/enum code for members.
-			var extensionElem = new XElement (kExtension, accessibility,
+			var extensionElem = new XElement (kExtension,
 				new XAttribute (nameof (onType), onType),
 				new XAttribute (kKind, kClass));
 			if (inherits?.Count > 0)
@@ -1679,12 +1679,76 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return typeDatabase.EntityForSwiftName (typeName)?.EntityType == EntityType.Class;
 		}
 
+		void PatchExtensionSelfArgs ()
+		{
+			foreach (var ext in extensions) {
+				var onType = (string)ext.Attribute (kOnType).Value;
+				var parts = onType.Split ('.');
+				if (parts.Length > 1 && !typeDatabase.ModuleNames.Contains (parts [0])) {
+					moduleLoader.Load (parts [0], typeDatabase);
+				}
+				var entity = typeDatabase.EntityForSwiftName (onType);
+				if (entity != null) {
+					PatchExtensionSelfArgs (ext, entity);
+				}
+			}
+		}
+
+		void PatchExtensionSelfArgs (XElement ext, Entity entity)
+		{
+			var isStructOrScalar = entity.IsStructOrEnum || entity.EntityType == EntityType.Scalar;
+			foreach (var func in ext.Descendants (kFunc)) {
+				var selfArg = SelfParameter (func);
+				if (selfArg == null)
+					continue;
+				var attr = selfArg.Attribute (kType);
+				var type = (string)attr.Value;
+				if (entity.Type.ContainsGenericParameters) {
+					type = entity.Type.ToFullyQualifiedNameWithGenerics ();
+					attr.Value = type;
+					var generics = entity.Type.Generics.ToXElement ();
+					if (func.Element (kGenericParameters) != null) {
+						var funcGenerics = func.Element (kGenericParameters);
+						funcGenerics.Remove ();
+						foreach (var generic in funcGenerics.Elements ())
+							generics.Add (generic);
+					}
+					func.Add (generics);
+				}
+				if (isStructOrScalar && !type.StartsWith ("inout", StringComparison.Ordinal)) {
+					attr.Value = "inout " + type;
+				}
+			}
+		}
+
+		XElement SelfParameter (XElement func)
+		{
+			var selfList = WhereIndexZero (func.Descendants (kParameterList));
+			if (selfList == null)
+				return null;
+			var selfArg = WhereIndexZero (selfList.Descendants (kParameter));
+			return selfArg;
+		}
+
+		static XElement WhereIndexZero (IEnumerable<XElement> elems)
+		{
+			return elems.FirstOrDefault (el => (string)el.Attribute (kIndex).Value == "0");
+		}
+
 		void PatchExtensionShortNames ()
 		{
 			foreach (var ext in extensions) {
 				var onType = TypeSpecParser.Parse (ext.Attribute (kOnType).Value);
 				var replacementType = FullyQualify (onType);
 				ext.Attribute (kOnType).Value = replacementType.ToString ();
+				foreach (var func in ext.Descendants (kFunc)) {
+					var selfArg = SelfParameter (func);
+					if (selfArg == null)
+						continue;
+					onType = TypeSpecParser.Parse (selfArg.Attribute (kType).Value);
+					replacementType = FullyQualify (onType);
+					selfArg.Attribute (kType).Value = replacementType.ToString ();
+				}
 			}
 		}
 
@@ -2121,6 +2185,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			case kOpen:
 				return kOpenCap;
 			case kInternal:
+			case kInternalCap:
 				return kInternalCap;
 			default:
 				return kUnknown;
