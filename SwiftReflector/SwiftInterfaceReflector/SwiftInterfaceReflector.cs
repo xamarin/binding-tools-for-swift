@@ -232,7 +232,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isUnavailable = CheckForUnavailable (attributes);
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var isFinal = context.final_clause () != null || accessibility != kOpen;
+			var isFinal = context.final_clause () != null || accessibility != kOpenCap;
 			var typeDecl = ToTypeDeclaration (kClass, context.class_name ().GetText (),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
