@@ -30,12 +30,13 @@ namespace SwiftReflector.SwiftXmlReflection {
 			var inh = this as InheritanceConstraint;
 			if (inh != null) {
 				return new XElement ("where", new XAttribute ("relationship", "inherits"),
+									new XAttribute ("name", inh.Name),
 									new XAttribute ("from", inh.Inherits));
 			} else {
 				var eq = (EqualityConstraint)this;
 				return new XElement ("where", new XAttribute ("relationship", "equals"),
-									new XAttribute ("firstobject", eq.Type1),
-									new XAttribute ("secondobject", eq.Type2));
+									new XAttribute ("firsttype", eq.Type1),
+									new XAttribute ("secondtype", eq.Type2));
 			}
 		}
 
