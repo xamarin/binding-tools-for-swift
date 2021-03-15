@@ -810,7 +810,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			AddElementToParentMembers (getFunc);
 			AddObjCSelector (getFunc);
 
-			var setParamList = HasSetter (context) ?
+			var setParamList = HasSetter (context, isLet) ?
 				new XElement (kParameterList, new XAttribute (kIndex, "1")) : null;
 
 			if (setParamList != null) {
@@ -848,14 +848,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			PushIgnore ();
 		}
 
-		bool HasSetter (Variable_declarationContext context)
+		bool HasSetter (Variable_declarationContext context, bool isLet)
 		{
 			// conditions for having a setter:
 			// getter_setter_keyword_block is null (public var foo: Type)
 			// getter_setter_keyword_block is non-null and the getter_setter_keyword_block
 			// has a non-null setter_keyword_clause (public var foo:Type { get; set; }, public foo: Type { set }
-			return context.getter_setter_keyword_block () == null ||
-				context.getter_setter_keyword_block ().setter_keyword_clause () != null;
+			return !isLet && (context.getter_setter_keyword_block () == null ||
+				context.getter_setter_keyword_block ().setter_keyword_clause () != null);
 		}
 
 		public override void EnterExtension_declaration ([NotNull] Extension_declarationContext context)
