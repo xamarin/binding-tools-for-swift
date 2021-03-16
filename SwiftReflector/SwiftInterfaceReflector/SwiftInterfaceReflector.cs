@@ -1172,11 +1172,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var typeAnnotation = context.type_annotation ();
 			var isInOut = typeAnnotation.inout_clause () != null;
 			var type = typeAnnotation.type ().GetText ();
-			var privateName = context.local_parameter_name ()?.GetText () ?? "";
+			var privateName = NoUnderscore (context.local_parameter_name ()?.GetText () ?? "");
 			var replacementPublicName = isSubscript ? "" : privateName;
-			var publicName = context.external_parameter_name ()?.GetText () ?? replacementPublicName;
-			if (publicName == "_")
-				publicName = "";
+			var publicName = NoUnderscore (context.external_parameter_name ()?.GetText () ?? replacementPublicName);
 			var isVariadic = context.range_operator () != null;
 			var isEscaping = AttributesContains (typeAnnotation.attributes (), kEscaping);
 			var isAutoClosure = AttributesContains (typeAnnotation.attributes (), kAutoClosure);
@@ -1194,6 +1192,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				new XAttribute (nameof (type), type), new XAttribute (nameof (publicName), publicName),
 				new XAttribute (nameof (privateName), privateName), new XAttribute (nameof (isVariadic), XmlBool (isVariadic)));
 			return paramElement;
+		}
+
+		static string NoUnderscore (string s)
+		{
+			return s == "_" ? "" : s;
 		}
 
 		XElement GatherAttributes (AttributesContext context)
