@@ -5462,7 +5462,8 @@ namespace SwiftReflector {
 
 				// TJ - if we have a dylib, we will be using our already generated xml
 				if (isLibrary) {
-					var decls = Reflector.FromXmlFile ("../../../DylibBinder/Modules/modules_tester.xml");
+					// TODO this path will be decided later
+					var decls = Reflector.FromXmlFile ("../../../DylibBinder/Modules/NewXml.xml");
 					return decls;
 				} else {
 					using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {

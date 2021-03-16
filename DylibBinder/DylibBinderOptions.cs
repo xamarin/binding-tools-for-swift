@@ -33,7 +33,7 @@ namespace DylibBinder {
                         TypeDatabasePaths.Add (Path.GetFullPath (p));
                 }},
                 { "h|?|help", "prints this message", h => {
-                    PrintHelp |=h != null;
+                    PrintHelp |= h != null;
                 }}
             };
         }

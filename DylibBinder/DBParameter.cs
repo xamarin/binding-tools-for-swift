@@ -4,7 +4,7 @@ using SwiftReflector;
 
 namespace DylibBinder {
 	public class DBParameter {
-		public DBParameter (string type, string publicName, string privateName, string isVariadic, bool hasInstance, bool isConstructor, string index, bool isEmptyParameter)
+		public DBParameter (string type, string publicName, string privateName, bool isVariadic, bool hasInstance, bool isConstructor, int index, bool isEmptyParameter)
 		{
 			Type = type;
 			PublicName = publicName;
@@ -19,8 +19,8 @@ namespace DylibBinder {
 		public string Type { get; internal set; }
 		public string PublicName { get; }
 		public string PrivateName { get; }
-		public string IsVariadic { get; }
-		public string Index { get; }
+		public bool IsVariadic { get; }
+		public int Index { get; }
 
 		public bool HasInstance { get; }
 		public bool IsConstructor { get; }
@@ -29,16 +29,16 @@ namespace DylibBinder {
 
 
 	public class DBParameterList {
-		public DBParameterList (SwiftBaseFunctionType signature, bool hasInstance, bool isConstructor, string index)
+		public DBParameterList (SwiftBaseFunctionType signature, bool hasInstance, bool isConstructor, int index)
 		{
 			Index = index;
-			int counter = 0;
+			int parameterIndex = 0;
 
 			if (hasInstance) {
-				Parameters.Add (new DBParameter ("", "", "self", "false", true, false, counter.ToString (), false));
+				Parameters.Add (new DBParameter ("", "", "self", false, true, false, parameterIndex, false));
 				return;
 			} else if (isConstructor) {
-				Parameters.Add (new DBParameter (".Type", "", "self", "false", false, true, counter.ToString (), false));
+				Parameters.Add (new DBParameter (".Type", "", "self", false, false, true, parameterIndex, false));
 				return;
 			}
 
@@ -52,59 +52,58 @@ namespace DylibBinder {
 					publicName = privateName = parameter.Name.Name;
 					PrivateNameCounter--;
 				}
-				var isVaradic = parameter.IsVariadic.ToString ();
 
-				Parameters.Add (new DBParameter (type, publicName, privateName, isVaradic, false, false, counter.ToString (), false));
-				counter++;
+				Parameters.Add (new DBParameter (type, publicName, privateName, parameter.IsVariadic, false, false, parameterIndex, false));
+				parameterIndex++;
 			}
 		}
 
-		public DBParameterList (string type, string propertyType, bool hasInstance, string index)
+		public DBParameterList (string type, string propertyType, bool hasInstance, int index)
 		{
 			Index = index;
 
 			if (hasInstance) {
-				Parameters.Add (new DBParameter ("", "", "self", "false", true, false, "0", false));
+				Parameters.Add (new DBParameter ("", "", "self", false, true, false, 0, false));
 				return;
 			}
 
 			if (propertyType == "Getter") {
-				Parameters.Add (new DBParameter (null, null, null, null, false, false, null, true));
+				Parameters.Add (new DBParameter (null, null, null, false, false, false, 0, true));
 			} else {
-				Parameters.Add (new DBParameter (type, "_", $"privateName{PrivateNameCounter}", "False", false, false, "0", false));
+				Parameters.Add (new DBParameter (type, "_", $"privateName{PrivateNameCounter}", false, false, false, 0, false));
 				PrivateNameCounter++;
 			}
 		}
 
-		public string Index { get; }
+		public int Index { get; }
 		public List<DBParameter> Parameters { get; } = new List<DBParameter> ();
 		static int PrivateNameCounter { get; set; }
 	}
 
 
 	public class DBParameterLists {
-		public DBParameterLists (SwiftBaseFunctionType signature, string hasInstance)
+		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance)
 		{
-			var counter = 0;
-			if (hasInstance == "True") {
-				ParameterLists.Add (new DBParameterList (signature, true, false, counter.ToString ()));
-				counter++;
+			var parameterListIndex = 0;
+			if (hasInstance) {
+				ParameterLists.Add (new DBParameterList (signature, true, false, parameterListIndex));
+				parameterListIndex++;
 			} else if (signature.IsConstructor) {
-				ParameterLists.Add (new DBParameterList (signature, false, true, counter.ToString ()));
-				counter++;
+				ParameterLists.Add (new DBParameterList (signature, false, true, parameterListIndex));
+				parameterListIndex++;
 			}
 
-			ParameterLists.Add (new DBParameterList (signature, false, false, counter.ToString ()));
+			ParameterLists.Add (new DBParameterList (signature, false, false, parameterListIndex));
 		}
 
-		public DBParameterLists (string type, string hasInstance, string propertyType)
+		public DBParameterLists (string type, bool hasInstance, string propertyType)
 		{
-			var counter = 0;
-			if (hasInstance == "True") {
-				ParameterLists.Add (new DBParameterList (type, propertyType, true, counter.ToString ()));
-				counter++;
+			var parameterListIndex = 0;
+			if (hasInstance) {
+				ParameterLists.Add (new DBParameterList (type, propertyType, true, parameterListIndex));
+				parameterListIndex++;
 			}
-			ParameterLists.Add (new DBParameterList (type, propertyType, false, counter.ToString ()));
+			ParameterLists.Add (new DBParameterList (type, propertyType, false, parameterListIndex));
 		}
 
 		public List<DBParameterList> ParameterLists { get; } = new List<DBParameterList> ();

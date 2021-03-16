@@ -38,10 +38,10 @@ namespace DylibBinder {
 		public string Kind { get; }
 		public string Name { get; }
 		public string Accessibility { get; } = "Public";
-		public string IsObjC { get; } = "False";
-		public string IsFinal { get; } = "False";
-		public string IsDeprecated { get; } = "False";
-		public string IsUnavailable { get; } = "False";
+		public bool IsObjC { get; } = false;
+		public bool IsFinal { get; } = false;
+		public bool IsDeprecated { get; } = false;
+		public bool IsUnavailable { get; } = false;
 
 		public DBFuncs Funcs { get; }
 		public DBProperties Properties { get; }
@@ -50,6 +50,8 @@ namespace DylibBinder {
 		public DBInnerTypes InnerTypes { get; }
 		public DBElements Elements { get; }
 
+		// we want to go through all the parameters in this DBTypeDeclaration
+		// and add the appropriate type to Instances and Constructors
 		void ApplyInouts ()
 		{
 			foreach (var func in Funcs.Funcs) {

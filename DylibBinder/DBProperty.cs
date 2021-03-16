@@ -9,7 +9,7 @@ namespace DylibBinder {
 		public DBProperty (PropertyContents propertyContents)
 		{
 			Name = propertyContents.Name.Name;
-			IsStatic = propertyContents.Getter.IsStatic.ToString ();
+			IsStatic = propertyContents.Getter.IsStatic;
 			Type = SwiftTypeToString.MapSwiftTypeToString (propertyContents.Getter.ReturnType, propertyContents.Class.ClassName.Module.Name);
 			GenericParameters = new DBGenericParameters (propertyContents.Getter.ReturnType);
 
@@ -19,17 +19,17 @@ namespace DylibBinder {
 		}
 
 		public string Name { get; private set; }
-		public string IsStatic { get; }
+		public bool IsStatic { get; }
 		public string Type { get; }
 		public DBFunc Getter { get; }
 		public DBFunc Setter { get; }
 		public DBGenericParameters GenericParameters { get; }
 
 		public string Accessibility { get; } = "Public";
-		public string IsPossiblyIncomplete { get; } = "False";
-		public string IsDeprecated { get; } = "False";
-		public string IsUnavailable { get; } = "False";
-		public string IsOptional { get; } = "False";
+		public bool IsPossiblyIncomplete { get; } = false;
+		public bool IsDeprecated { get; } = false;
+		public bool IsUnavailable { get; } = false;
+		public bool IsOptional { get; } = false;
 		public string Storage { get; } = "Addressed";
 	}
 

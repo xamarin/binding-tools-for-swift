@@ -11,13 +11,6 @@ namespace DylibBinder {
 			return true;
 		}
 
-		internal static string IsNull (this string s)
-		{
-			if (s == null)
-				return "True";
-			return "False";
-		}
-
 		internal static string PrependModule (this string s, string moduleName)
 		{
 			return s.Insert (0, $"{moduleName}.");
