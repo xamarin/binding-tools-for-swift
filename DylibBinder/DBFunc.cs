@@ -14,14 +14,14 @@ namespace DylibBinder {
 		{
 			Name = tlf.Name.Name;
 			IsStatic = GetStaticStatus (tlf.Signature);
-			IsProperty = "False";
-			HasThrows = tlf.Signature.CanThrow.ToString ();
-			IsMutating = isMutating.ToString ();
+			IsProperty = false;
+			HasThrows = tlf.Signature.CanThrow;
+			IsMutating = isMutating;
 			OperatorKind = tlf.Operator.ToString ();
-			HasInstance = (!tlf.Signature.IsConstructor && IsStatic == "False").ToString ();
-			// TODO not sure how to handle instances with protocols yet
+			HasInstance = !tlf.Signature.IsConstructor && !IsStatic;
+			// TODO not sure if/how to handle instances with protocols yet
 			if (isProtocol)
-				HasInstance = "False";
+				HasInstance = false;
 
 			ReturnType = SwiftTypeToString.MapSwiftTypeToString (tlf.Signature.ReturnType, tlf.Module.Name);
 			ParameterLists = new DBParameterLists (tlf.Signature, HasInstance);
@@ -36,55 +36,53 @@ namespace DylibBinder {
 				Name = $"set_{dbProperty.Name}";
 			PropertyType = propertyType;
 			IsStatic = dbProperty.IsStatic;
-			IsProperty = "True";
-			HasThrows = "False";
-			IsMutating = isMutating.ToString ();
-			HasInstance = IsStatic == "True" ? "False" : "True";
+			IsProperty = true;
+			HasThrows = false;
+			IsMutating = isMutating;
+			HasInstance = !IsStatic;
 			ReturnType = dbProperty.Type;
 			ParameterLists = new DBParameterLists (ReturnType, HasInstance, propertyType);
 			GenericParameters = dbProperty.GenericParameters;
 		}
 
 		public string Name { get; }
-		public string IsStatic { get; }
-		public string IsProperty { get; }
+		public bool IsStatic { get; }
+		public bool IsProperty { get; }
 		public string ReturnType { get; }
-		public string HasThrows { get; }
-		public string IsMutating { get; }
-		public string HasInstance { get; }
+		public bool HasThrows { get; }
+		public bool IsMutating { get; }
+		public bool HasInstance { get; }
 
 		public string PropertyType { get; } = "";
-		public string IsPossiblyIncomplete { get; } = "False";
+		public bool IsPossiblyIncomplete { get; } = false;
 		public string OperatorKind { get; } = "None";
 		public string Accessibility { get; } = "Public";
-		public string IsFinal { get; } = "False";
-		public string IsDeprecated { get; } = "False";
-		public string IsUnavailable { get; } = "False";
-		public string IsOptional { get; } = "False";
-		public string IsRequired { get; } = "False";
-		public string IsConvenienceInit { get; } = "False";
+		public bool IsFinal { get; } = false;
+		public bool IsDeprecated { get; } = false;
+		public bool IsUnavailable { get; } = false;
+		public bool IsOptional { get; } = false;
+		public bool IsRequired { get; } = false;
+		public bool IsConvenienceInit { get; } = false;
 		public string ObjcSelector { get; } = "";
 
 		public DBParameterLists ParameterLists { get; }
 		public DBGenericParameters GenericParameters { get; }
 		public List<DBAssociatedType> AssociatedTypes { get; } = new List<DBAssociatedType> ();
 
-		string GetStaticStatus (SwiftBaseFunctionType signature)
+		bool GetStaticStatus (SwiftBaseFunctionType signature)
 		{
-			if (signature is SwiftStaticFunctionType)
-				return "True";
-			else if (signature is SwiftStaticFunctionThunkType)
-				return "True";
-			else if (signature is SwiftPropertyType propType)
-				return propType.IsStatic.ToString ();
-			else if (signature is SwiftPropertyThunkType propThunkType)
-				return propThunkType.IsStatic.ToString ();
-			else if (signature is SwiftUncurriedFunctionThunkType)
-				return "False";
-			else if (signature is SwiftUncurriedFunctionType)
-				return "False";
-
-			return "False";
+			switch (signature) {
+			case SwiftStaticFunctionType:
+				return true;
+			case SwiftPropertyType propType:
+				return propType.IsStatic;
+			case SwiftUncurriedFunctionThunkType:
+				return false;
+			case SwiftUncurriedFunctionType:
+				return false;
+			default:
+				return false;
+			}
 		}
 	}
 

@@ -38,10 +38,10 @@ namespace DylibBinder {
 			foreach (var typeDeclaration in dBTopLevel.DBTypeDeclarations.TypeDeclarations) {
 
 				writer.WriteStartElement ("typedeclaration");
-				WriteMultipleAttributeStrings (writer, ("kind", typeDeclaration.Kind),
-											   ("name", typeDeclaration.Name), ("accessibility", typeDeclaration.Accessibility),
-											   ("isDeprecated", typeDeclaration.IsDeprecated), ("isUnavailable", typeDeclaration.IsUnavailable),
-											   ("isObjC", typeDeclaration.IsObjC), ("isFinal", typeDeclaration.IsFinal));
+				WriteAttributeStrings (writer, ("kind", typeDeclaration.Kind),
+				                      ("name", typeDeclaration.Name), ("accessibility", typeDeclaration.Accessibility),
+				                      ("isDeprecated", typeDeclaration.IsDeprecated), ("isUnavailable", typeDeclaration.IsUnavailable),
+				                      ("isObjC", typeDeclaration.IsObjC), ("isFinal", typeDeclaration.IsFinal));
 
 				if (typeDeclaration.Kind == "protocol")
 					WriteProtocolTypeDeclaration (writer, typeDeclaration);
@@ -157,7 +157,7 @@ namespace DylibBinder {
 		void WriteElement (XmlWriter writer, DBElement element)
 		{
 			writer.WriteStartElement ("element");
-			WriteMultipleAttributeStrings (writer, ("name", element.Name), ("intValue", element.IntValue));
+			WriteAttributeStrings (writer, ("name", element.Name), ("intValue", element.IntValue));
 			writer.WriteEndElement ();
 		}
 
@@ -171,19 +171,19 @@ namespace DylibBinder {
 		void WriteFunc (XmlWriter writer, DBFunc func)
 		{
 			writer.WriteStartElement ("func");
-			WriteMultipleAttributeStrings (writer, ("name", func.Name),
-										   ("returnType", func.ReturnType));
+			WriteAttributeStrings (writer, ("name", func.Name),
+			                      ("returnType", func.ReturnType));
 			if (!string.IsNullOrEmpty(func.PropertyType))
 				writer.WriteAttributeString ("propertyType", func.PropertyType);
 
-			WriteMultipleAttributeStrings (writer, ("isProperty", func.IsProperty),
-										   ("hasThrows", func.HasThrows), ("isStatic", func.IsStatic),
-										   ("isMutating", func.IsMutating), ("operatorKind", func.OperatorKind),
-										   ("accessibility", func.Accessibility), ("isDeprecated", func.IsDeprecated),
-										   ("isUnavailable", func.IsUnavailable), ("isFinal", func.IsFinal),
-										   ("isOptional", func.IsOptional), ("isRequired", func.IsRequired),
-										   ("isConvenienceInit", func.IsConvenienceInit), ("objcSelector", func.ObjcSelector),
-										   ("isPossiblyIncomplete", func.IsPossiblyIncomplete));
+			WriteAttributeStrings (writer, ("isProperty", func.IsProperty),
+			                      ("hasThrows", func.HasThrows), ("isStatic", func.IsStatic),
+			                      ("isMutating", func.IsMutating), ("operatorKind", func.OperatorKind),
+			                      ("accessibility", func.Accessibility), ("isDeprecated", func.IsDeprecated),
+			                      ("isUnavailable", func.IsUnavailable), ("isFinal", func.IsFinal),
+			                      ("isOptional", func.IsOptional), ("isRequired", func.IsRequired),
+			                      ("isConvenienceInit", func.IsConvenienceInit), ("objcSelector", func.ObjcSelector),
+			                      ("isPossiblyIncomplete", func.IsPossiblyIncomplete));
 
 			WriteParameterLists (writer, func.ParameterLists);
 			WriteGenericParameters (writer, func.GenericParameters);
@@ -202,7 +202,7 @@ namespace DylibBinder {
 		void WriteParameterList (XmlWriter writer, DBParameterList parameterList)
 		{
 			writer.WriteStartElement ("parameterlist");
-			writer.WriteAttributeString ("index", parameterList.Index);
+			WriteAttributeStrings (writer, ("index", parameterList.Index));
 			foreach (var parameter in parameterList.Parameters) {
 				WriteParameter (writer, parameter);
 			}
@@ -215,9 +215,9 @@ namespace DylibBinder {
 				return;
 
 			writer.WriteStartElement ("parameter");
-			WriteMultipleAttributeStrings (writer, ("index", parameter.Index),
-										   ("type", parameter.Type), ("publicName", parameter.PublicName),
-										   ("privateName", parameter.PrivateName), ("isVariadic", parameter.IsVariadic));
+			WriteAttributeStrings (writer, ("index", parameter.Index),
+			                      ("type", parameter.Type), ("publicName", parameter.PublicName),
+			                      ("privateName", parameter.PrivateName), ("isVariadic", parameter.IsVariadic));
 			writer.WriteEndElement ();
 		}
 
@@ -234,25 +234,31 @@ namespace DylibBinder {
 		void WriteProp (XmlWriter writer, DBProperty propery)
 		{
 			writer.WriteStartElement ("property");
-			WriteMultipleAttributeStrings (writer, ("name", propery.Name),
-										   ("type", propery.Type), ("isStatic", propery.IsStatic),
-										   ("accessibility", propery.Accessibility), ("isDeprecated", propery.IsDeprecated),
-										   ("isUnavailable", propery.IsUnavailable), ("isOptional", propery.IsOptional),
-										   ("storage", propery.Storage), ("isPossiblyIncomplete", propery.IsPossiblyIncomplete));
+			WriteAttributeStrings (writer, ("name", propery.Name),
+			                      ("type", propery.Type), ("isStatic", propery.IsStatic),
+			                      ("accessibility", propery.Accessibility), ("isDeprecated", propery.IsDeprecated),
+			                      ("isUnavailable", propery.IsUnavailable), ("isOptional", propery.IsOptional),
+			                      ("storage", propery.Storage), ("isPossiblyIncomplete", propery.IsPossiblyIncomplete));
 			writer.WriteEndElement ();
 		}
 
 		void CloseWriter (XmlWriter writer) {
 			writer.WriteEndDocument ();
 			writer.Close ();
+			writer.Dispose ();
 		}
 
-		void WriteMultipleAttributeStrings (XmlWriter writer, params (string name, string value) [] attributes)
+		void WriteAttributeStrings (XmlWriter writer, params (string name, object value) [] attributes)
 		{
 			foreach (var attribute in attributes) {
-				writer.WriteAttributeString (attribute.name, attribute.value);
+				if (attribute.value is string s)
+					writer.WriteAttributeString (attribute.name, s);
+				else {
+					writer.WriteStartAttribute (attribute.name);
+					writer.WriteValue (attribute.value);
+					writer.WriteEndAttribute ();
+				}
 			}
 		}
-
 	}
 }

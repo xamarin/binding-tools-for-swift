@@ -24,7 +24,7 @@ namespace DylibBinder {
 		{
 			foreach (var m in mi.ModuleNames) {
 				foreach (var elem in mi.ClassesForName (m)) {
-					if (!elem.Name.ToString ().IsPublic ())
+					if (!elem.Name.ToFullyQualifiedName (true).IsPublic ())
 						continue;
 					if (elem.Name.IsClass)
 						Classes.Add (elem);
@@ -34,27 +34,30 @@ namespace DylibBinder {
 						Enums.Add (elem);
 				}
 			}
-			SortNominalTypeLists (null, Classes, Structs, Enums);
+			SortNominalTypeLists (Classes, Structs, Enums);
 		}
 
 		void GetProtocols (ModuleInventory mi)
 		{
 			foreach (var m in mi.ModuleNames) {
 				foreach (var p in mi.ProtocolsForName (m)) {
-					if (!p.Name.ToString ().Contains ("_"))
+					if (!p.Name.ToFullyQualifiedName (true).Contains ("_"))
 						Protocols.Add (p);
 				}
 			}
 			SortNominalTypeLists (Protocols);
 		}
 
-		void SortNominalTypeLists (List<ProtocolContents> protocolList, params List<ClassContents> [] nominalTypeLists)
+		void SortNominalTypeLists (List<ProtocolContents> protocolList)
 		{
 			if (protocolList != null)
-				protocolList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
+				protocolList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToFullyQualifiedName (true), type2.Name.ToFullyQualifiedName (true)));
+		}
 
+		void SortNominalTypeLists (params List<ClassContents> [] nominalTypeLists)
+		{
 			foreach (var nominalTypeList in nominalTypeLists) {
-				nominalTypeList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToString (), type2.Name.ToString ()));
+				nominalTypeList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToFullyQualifiedName (true), type2.Name.ToFullyQualifiedName (true)));
 			}
 		}
 	}
