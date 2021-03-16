@@ -67,6 +67,12 @@ jobs:
       ./maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
     env:
+      AUTH_TOKEN_GITHUB_COM: $(github--pat--vs-mobiletools-engineering-service2)
+      AUTH_TOKEN_LA_DEV_APPLE_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_LA_DISTR_APPLE_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_LA_MAC_INSTALLER_DISTR_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_2_P12: $(xqa--certificates--password)
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
   - script: |
