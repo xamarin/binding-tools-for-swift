@@ -1647,7 +1647,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			foreach (var inh in unknownInheritance) {
 				var type = inh.Attribute (kType).Value;
-				if (IsLocalClass (type) || IsGlobalClass (type))
+				if (IsLocalClass (type) || IsGlobalClass (type) || IsNSObject (type))
 					inh.Attribute (kInheritanceKind).Value = kClass;
 				else
 					inh.Attribute (kInheritanceKind).Value = kProtocol;
@@ -1667,6 +1667,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					assoc.Add (new XElement (kSuperclass, new XAttribute (kName, className)));
 				}
 			}
+		}
+
+		bool IsNSObject (string typeName)
+		{
+			return typeName == "ObjectiveC.NSObject";
 		}
 
 		bool IsLocalClass (string typeName)
