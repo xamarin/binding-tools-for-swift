@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
@@ -32,7 +33,7 @@ namespace DylibBinder {
 			if (nestingNames.Count == 0)
 				return;
 
-			var nestingNameString = ConvertNestingNamesToString (nestingNames);
+			var nestingNameString = c.Name.ToFullyQualifiedName (true);
 
 			if (nestingNameString == null)
 				return;
@@ -42,8 +43,10 @@ namespace DylibBinder {
 				return;
 			}
 
-			nestingNames.RemoveAt (nestingNames.Count - 1);
-			var parentNestingNameString = ConvertNestingNamesToString (nestingNames);
+			var parentNestingNameString = GetParentNameString (nestingNameString);
+			if (parentNestingNameString == null)
+				return;
+
 			AddKeyIfNotPresent (parentNestingNameString);
 
 			var value = InnerXDict [parentNestingNameString];
@@ -58,16 +61,13 @@ namespace DylibBinder {
 			InnerXDict.Add (key, new List<ClassContents> ());
 		}
 
-		string ConvertNestingNamesToString (List<SwiftReflector.SwiftName> nestingNames)
+		string GetParentNameString (string childName)
 		{
-			var sb = new StringBuilder ();
-			foreach (var name in nestingNames) {
-				if (sb.Length == 0)
-					sb.Append ($"Swift.{name.ToString ()}");
-				else
-					sb.Append ($".{name.ToString ()}");
-			}
-			return sb.ToString ();
+			MatchCollection matches = Regex.Matches (childName, @"\.");
+			if (matches.Count == 0)
+				return null;
+
+			return childName.Substring (0, matches [matches.Count - 1].Index);
 		}
 	}
 }
