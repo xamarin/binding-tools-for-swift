@@ -1268,6 +1268,7 @@ namespace SwiftReflector {
 		}
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/620")]
 		public void TestSwiftMessagesWeak ()
 		{
 			var swiftCode = @"

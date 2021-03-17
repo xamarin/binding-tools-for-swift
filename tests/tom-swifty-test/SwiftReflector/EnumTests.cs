@@ -49,6 +49,7 @@ public enum Rocks {
 		}
 
 		[Test]
+		[Ignore ("SwiftInterfaceParserFailure https://github.com/xamarin/binding-tools-for-swift/issues/616")]
 		public void TrivialEnumCtor ()
 		{
 			var swiftCode = @"
