@@ -160,7 +160,6 @@ namespace SwiftReflector {
 
 
 		[Test]
-		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void UnicodeInOperatorName ()
 		{
 			string swiftCode =

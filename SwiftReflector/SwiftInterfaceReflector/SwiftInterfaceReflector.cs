@@ -567,10 +567,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (generics != null)
 				functionDecl.Add (generics);
 
-			currentElement.Push (functionDecl);
 
-			if (isStatic || !IsInInstance ())
-				functions.Add (new Tuple<Function_declarationContext, XElement> (context, functionDecl));
+			functions.Add (new Tuple<Function_declarationContext, XElement> (context, functionDecl));
+			currentElement.Push (functionDecl);
 		}
 
 		public override void ExitFunction_declaration ([NotNull] Function_declarationContext context)
@@ -2077,8 +2076,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		OperatorType LocalOperatorType (Function_declarationContext context)
 		{
 			var head = context.function_head ();
-			if (!ModifiersContains (head.declaration_modifiers (), kStatic))
-				return OperatorType.None;
 
 
 			// if the function declaration contains prefix 
