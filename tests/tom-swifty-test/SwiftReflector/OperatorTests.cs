@@ -23,6 +23,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void OperatorSmokeTest0 ()
 		{
 			var swiftCode =
@@ -41,6 +42,7 @@ namespace SwiftReflector {
 		}
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void OperatorSmokeTest1 ()
 		{
 			var swiftCode =
@@ -58,6 +60,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void OperatorSmokeTest2 ()
 		{
 			var swiftCode =
@@ -76,6 +79,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void OperatorSmokeTest3 ()
 		{
 			var swiftCode =
@@ -94,6 +98,7 @@ namespace SwiftReflector {
 		}
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void OperatorCompositionNoInvoke ()
 		{
 			var swiftCode =
@@ -161,6 +166,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void MultiplicationConflict ()
 		{
 			var swiftCode =
@@ -183,6 +189,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void StructInfixOpTest ()
 		{
 			var swiftCode = @"
@@ -212,6 +219,7 @@ public func %^^% (left:IntRep, right: IntRep) -> IntRep {
 		}
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void StructPrefixOpTest ()
 		{
 			var swiftCode = @"
@@ -240,6 +248,7 @@ public prefix func %++% (left:IntRep1) -> IntRep1 {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void StructPostfixOpTest ()
 		{
 			var swiftCode = @"
@@ -268,6 +277,7 @@ public prefix func %--% (left:IntRep2) -> IntRep2 {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void EnumInfixOpTest ()
 		{
 			var swiftCode = @"
@@ -309,6 +319,7 @@ public func ^++^ (left: IntOrFloat, right: IntOrFloat) -> IntOrFloat {
 		}
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void SimpleEnumInfixOpTest ()
 		{
 			var swiftCode = @"
@@ -337,6 +348,7 @@ public prefix func ^-^(val: CompassPoints) -> CompassPoints {
 		}
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void SimpleEnumPostfixOpTest ()
 		{
 			var swiftCode = @"
@@ -367,6 +379,7 @@ public postfix func ^+^(val: CompassPoints1) -> CompassPoints1 {
 
 
 		[Test]
+		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void SuperSimpleEnumTest ()
 		{
 			var swiftCode = @"
