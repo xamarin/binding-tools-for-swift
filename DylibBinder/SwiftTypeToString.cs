@@ -5,7 +5,7 @@ using SwiftReflector;
 using SwiftReflector.TypeMapping;
 
 namespace DylibBinder {
-	public static class SwiftTypeToString {
+	internal static class SwiftTypeToString {
 		public static string MapSwiftTypeToString (SwiftType swiftType, string moduleName = null)
 		{
 			var slType = MapSwiftTypeToSlType (swiftType);

@@ -29,7 +29,7 @@ namespace DylibBinder {
 			var errors = new ErrorHandling ();
 			var mi = ModuleInventory.FromFile (options.DylibPath, errors);
 			var dBTopLevel = new DBTopLevel ("1.0", options.ModuleName, "5.0", mi);
-			var xmlGenerator = new XmlGenerator (dBTopLevel, "../../Modules/NewXml.xml");
+			using var xmlGenerator = new XmlGenerator (dBTopLevel, "../../Modules/NewXml.xml");
 		}
 	}
 }

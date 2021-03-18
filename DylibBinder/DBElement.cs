@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DylibBinder {
 	// TODO Add Elements to enums
-	public class DBElement {
+	internal class DBElement {
 		public DBElement (string name, string intValue)
 		{
 			Name = name;
@@ -14,7 +14,7 @@ namespace DylibBinder {
 		public string IntValue { get; }
 	}
 
-	public class DBElements {
+	internal class DBElements {
 		public DBElements ()
 		{
 		}

@@ -32,11 +32,8 @@ namespace DylibBinder {
 			var sizeOfSwiftInsert = 6;
 			MatchCollection matches = Regex.Matches (sb.ToString (), builtInType);
 			foreach (Match match in matches) {
-				// TODO issue whith sb = "high: Swift.Int, low: Swift.USwift.Int"
-
-				if (builtInType == "Int" && IsIntMatchUInt (sb, match, offset)) {
+				if (builtInType == "Int" && IsIntMatchUInt (sb, match, offset))
 					continue;
-				}
 
 				if (!IsSwiftAlreadyPresent (sb, match, sizeOfSwiftInsert)) {
 					sb.Insert (match.Index + offset, "Swift.");

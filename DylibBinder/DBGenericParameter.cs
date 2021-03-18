@@ -5,7 +5,7 @@ using SwiftReflector;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	public class DBGenericParameter : IEquatable<DBGenericParameter> {
+	internal class DBGenericParameter : IEquatable<DBGenericParameter> {
 		public DBGenericParameter (int depth, int index)
 		{
 			Depth = depth;
@@ -25,7 +25,7 @@ namespace DylibBinder {
 		}
 	}
 
-	public class DBGenericParameters {
+	internal class DBGenericParameters {
 
 		public DBGenericParameters (SwiftBaseFunctionType signature) {
 			AssignGenericParameters (signature);

@@ -7,7 +7,7 @@ using SwiftReflector;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	public class DBTypeDeclaration {
+	internal class DBTypeDeclaration {
 		public DBTypeDeclaration (ProtocolContents protoContents)
 		{
 			Kind = "protocol";
@@ -108,7 +108,7 @@ namespace DylibBinder {
 		}
 	}
 
-	public class DBTypeDeclarations {
+	internal class DBTypeDeclarations {
 		public DBTypeDeclarations (ModuleInventory mi) {
 			var checkInventory = new CheckInventory (mi);
 			var innerX = new InnerX ();

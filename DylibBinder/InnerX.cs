@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	public class InnerX {
+	internal class InnerX {
 		// This class will be responsible for creating a dictionary
 		// telling us if a TypeDeclaration is on the top level and if not,
 		// which TypeDeclaration it is an innerType for

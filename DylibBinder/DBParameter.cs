@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SwiftReflector;
 
 namespace DylibBinder {
-	public class DBParameter {
+	internal class DBParameter {
 		public DBParameter (string type, string publicName, string privateName, bool isVariadic, bool hasInstance, bool isConstructor, int index, bool isEmptyParameter)
 		{
 			Type = type;
@@ -28,7 +28,7 @@ namespace DylibBinder {
 	}
 
 
-	public class DBParameterList {
+	internal class DBParameterList {
 		public DBParameterList (SwiftBaseFunctionType signature, bool hasInstance, bool isConstructor, int index)
 		{
 			Index = index;
@@ -81,7 +81,7 @@ namespace DylibBinder {
 	}
 
 
-	public class DBParameterLists {
+	internal class DBParameterLists {
 		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance)
 		{
 			var parameterListIndex = 0;
