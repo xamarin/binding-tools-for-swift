@@ -3,14 +3,16 @@ using System.Linq;
 using System.Xml;
 
 namespace DylibBinder {
-	public class XmlGenerator {
+	sealed internal class XmlGenerator : IDisposable {
 		public XmlGenerator (DBTopLevel dBTopLevel, string outputPath)
 		{
-			XmlWriter writer = CreateWriter (outputPath);
-			WriteIntro (writer, dBTopLevel);
-			WriteTypeDeclarations (writer, dBTopLevel);
-			CloseWriter (writer);
+			writer = CreateWriter (outputPath);
+			WriteIntro (dBTopLevel);
+			WriteTypeDeclarations (dBTopLevel);
+			CloseWriter ();
 		}
+
+		XmlWriter writer;
 
 		XmlWriter CreateWriter (string outputPath)
 		{
@@ -20,7 +22,7 @@ namespace DylibBinder {
 			return XmlWriter.Create (outputPath, settings);
 		}
 
-		void WriteIntro (XmlWriter writer, DBTopLevel dBTopLevel) {
+		void WriteIntro (DBTopLevel dBTopLevel) {
 			writer.WriteStartDocument ();
 			writer.WriteStartElement ("xamreflect");
 			writer.WriteAttributeString ("version", dBTopLevel.XmlVersion);
@@ -33,74 +35,75 @@ namespace DylibBinder {
 		}
 
 
-		void WriteTypeDeclarations (XmlWriter writer, DBTopLevel dBTopLevel)
+		void WriteTypeDeclarations (DBTopLevel dBTopLevel)
 		{
 			foreach (var typeDeclaration in dBTopLevel.DBTypeDeclarations.TypeDeclarations) {
 
 				writer.WriteStartElement ("typedeclaration");
-				WriteAttributeStrings (writer, ("kind", typeDeclaration.Kind),
-				                      ("name", typeDeclaration.Name), ("accessibility", typeDeclaration.Accessibility),
-				                      ("isDeprecated", typeDeclaration.IsDeprecated), ("isUnavailable", typeDeclaration.IsUnavailable),
-				                      ("isObjC", typeDeclaration.IsObjC), ("isFinal", typeDeclaration.IsFinal));
+				WriteAttributeStrings (("kind", typeDeclaration.Kind), ("name", typeDeclaration.Name),
+				                      ("accessibility", typeDeclaration.Accessibility), ("isDeprecated", typeDeclaration.IsDeprecated),
+				                      ("isUnavailable", typeDeclaration.IsUnavailable), ("isObjC", typeDeclaration.IsObjC),
+				                      ("isFinal", typeDeclaration.IsFinal));
 
 				if (typeDeclaration.Kind == "protocol")
-					WriteProtocolTypeDeclaration (writer, typeDeclaration);
+					WriteProtocolTypeDeclaration (typeDeclaration);
 				else
-					WriteTypeDeclaration (writer, typeDeclaration);
+					WriteTypeDeclaration (typeDeclaration);
 				writer.WriteEndElement ();
 			}
 		}
 
-		void WriteTypeDeclaration (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteTypeDeclaration (DBTypeDeclaration typeDeclaration)
 		{
-			WriteMembers (writer, typeDeclaration);
-			WriteInnerTypes (writer, typeDeclaration);
-			WriteGenericParameters (writer, typeDeclaration);
-			WriteAssocTypes (writer, typeDeclaration);
-			WriteElements (writer, typeDeclaration);
+			WriteMembers (typeDeclaration);
+			WriteInnerTypes (typeDeclaration);
+			WriteGenericParameters (typeDeclaration);
+			WriteAssocTypes (typeDeclaration);
+			WriteElements (typeDeclaration);
 		}
 
-		void WriteProtocolTypeDeclaration (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteProtocolTypeDeclaration (DBTypeDeclaration typeDeclaration)
 		{
-			WriteProtocolMembers (writer, typeDeclaration);
+			WriteProtocolMembers (typeDeclaration);
 		}
-		void WriteMembers (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+
+		void WriteMembers (DBTypeDeclaration typeDeclaration)
 		{
 			writer.WriteStartElement ("members");
-			WriteFuncs (writer, typeDeclaration);
-			WriteProperties (writer, typeDeclaration);
+			WriteFuncs (typeDeclaration);
+			WriteProperties (typeDeclaration);
 			writer.WriteEndElement ();
 		}
 
-		void WriteProtocolMembers (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteProtocolMembers (DBTypeDeclaration typeDeclaration)
 		{
 			writer.WriteStartElement ("members");
-			WriteFuncs (writer, typeDeclaration);
+			WriteFuncs (typeDeclaration);
 			writer.WriteEndElement ();
 		}
 
-		void WriteInnerTypes (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteInnerTypes (DBTypeDeclaration typeDeclaration)
 		{
 			foreach (var innerType in typeDeclaration.InnerTypes.InnerTypes) {
 				writer.WriteStartElement ($"inner{innerType.Kind}");
-				WriteTypeDeclaration (writer, innerType);
+				WriteTypeDeclaration (innerType);
 				writer.WriteEndElement ();
 			}
 		}
 
-		void WriteGenericParameters (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteGenericParameters (DBTypeDeclaration typeDeclaration)
 		{
 			if (typeDeclaration.GenericParameters.GenericParameters.Count == 0)
 				return;
 
 			writer.WriteStartElement ("genericparameters");
 			foreach (var gp in typeDeclaration.GenericParameters.GenericParameters) {
-				WriteGenericParameter (writer, gp);
+				WriteGenericParameter (gp);
 			}
 			writer.WriteEndElement ();
 		}
 
-		void WriteGenericParameters (XmlWriter writer, DBGenericParameters genericParameters)
+		void WriteGenericParameters (DBGenericParameters genericParameters)
 		{
 			var validGenericParameters = from g in genericParameters.GenericParameters
 										 where g.Depth > 0
@@ -111,144 +114,142 @@ namespace DylibBinder {
 
 			writer.WriteStartElement ("genericparameters");
 			foreach (var gp in validGenericParameters) {
-				WriteGenericParameter (writer, gp);
+				WriteGenericParameter (gp);
 			}
 			writer.WriteEndElement ();
 		}
 
-		void WriteGenericParameter (XmlWriter writer, DBGenericParameter parameter)
+		void WriteGenericParameter (DBGenericParameter parameter)
 		{
 			writer.WriteStartElement ("param");
 			writer.WriteAttributeString ("name", parameter.Name);
 			writer.WriteEndElement ();
 		}
 
-		void WriteAssocTypes (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteAssocTypes (DBTypeDeclaration typeDeclaration)
 		{
 			if (typeDeclaration.AssociatedTypes.AssociatedTypes.Count == 0)
 				return;
 
 			writer.WriteStartElement ("associatedtypes");
 			foreach (var associatedType in typeDeclaration.AssociatedTypes.AssociatedTypes) {
-				WriteAssocType (writer, associatedType);
+				WriteAssocType (associatedType);
 			}
 			writer.WriteEndElement ();
 		}
 
-		void WriteAssocType (XmlWriter writer, DBAssociatedType associatedType)
+		void WriteAssocType (DBAssociatedType associatedType)
 		{
 			writer.WriteStartElement ("associatedtype");
 			writer.WriteAttributeString ("name", associatedType.Name);
 			writer.WriteEndElement ();
 		}
 
-		void WriteElements (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteElements (DBTypeDeclaration typeDeclaration)
 		{
 			if (typeDeclaration.Kind != "enum")
 				return;
 
 			writer.WriteStartElement ("elements");
 			foreach (var element in typeDeclaration.Elements.Elements) {
-				WriteElement (writer, element);
+				WriteElement (element);
 			}
 			writer.WriteEndElement ();
 		}
 
-		void WriteElement (XmlWriter writer, DBElement element)
+		void WriteElement (DBElement element)
 		{
 			writer.WriteStartElement ("element");
-			WriteAttributeStrings (writer, ("name", element.Name), ("intValue", element.IntValue));
+			WriteAttributeStrings (("name", element.Name), ("intValue", element.IntValue));
 			writer.WriteEndElement ();
 		}
 
-		void WriteFuncs (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteFuncs (DBTypeDeclaration typeDeclaration)
 		{
 			foreach (var func in typeDeclaration.Funcs.Funcs) {
-				WriteFunc (writer, func);
+				WriteFunc (func);
 			}
 		}
 
-		void WriteFunc (XmlWriter writer, DBFunc func)
+		void WriteFunc (DBFunc func)
 		{
 			writer.WriteStartElement ("func");
-			WriteAttributeStrings (writer, ("name", func.Name),
-			                      ("returnType", func.ReturnType));
+			WriteAttributeStrings (("name", func.Name), ("returnType", func.ReturnType));
+
 			if (!string.IsNullOrEmpty(func.PropertyType))
 				writer.WriteAttributeString ("propertyType", func.PropertyType);
 
-			WriteAttributeStrings (writer, ("isProperty", func.IsProperty),
-			                      ("hasThrows", func.HasThrows), ("isStatic", func.IsStatic),
-			                      ("isMutating", func.IsMutating), ("operatorKind", func.OperatorKind),
-			                      ("accessibility", func.Accessibility), ("isDeprecated", func.IsDeprecated),
-			                      ("isUnavailable", func.IsUnavailable), ("isFinal", func.IsFinal),
-			                      ("isOptional", func.IsOptional), ("isRequired", func.IsRequired),
-			                      ("isConvenienceInit", func.IsConvenienceInit), ("objcSelector", func.ObjcSelector),
-			                      ("isPossiblyIncomplete", func.IsPossiblyIncomplete));
+			WriteAttributeStrings (("isProperty", func.IsProperty), ("hasThrows", func.HasThrows),
+			                      ("isStatic", func.IsStatic), ("isMutating", func.IsMutating),
+			                      ("operatorKind", func.OperatorKind), ("accessibility", func.Accessibility),
+			                      ("isDeprecated", func.IsDeprecated), ("isUnavailable", func.IsUnavailable),
+			                      ("isFinal", func.IsFinal), ("isOptional", func.IsOptional),
+			                      ("isRequired", func.IsRequired), ("isConvenienceInit", func.IsConvenienceInit),
+			                      ("objcSelector", func.ObjcSelector), ("isPossiblyIncomplete", func.IsPossiblyIncomplete));
 
-			WriteParameterLists (writer, func.ParameterLists);
-			WriteGenericParameters (writer, func.GenericParameters);
+			WriteParameterLists (func.ParameterLists);
+			WriteGenericParameters (func.GenericParameters);
 			writer.WriteEndElement ();
 		}
 
-		void WriteParameterLists (XmlWriter writer, DBParameterLists parameterLists)
+		void WriteParameterLists (DBParameterLists parameterLists)
 		{
 			writer.WriteStartElement ("parameterlists");
 			foreach (var parameterList in parameterLists.ParameterLists) {
-				WriteParameterList (writer, parameterList);
+				WriteParameterList (parameterList);
 			}
 			writer.WriteEndElement ();
 		}
 
-		void WriteParameterList (XmlWriter writer, DBParameterList parameterList)
+		void WriteParameterList (DBParameterList parameterList)
 		{
 			writer.WriteStartElement ("parameterlist");
-			WriteAttributeStrings (writer, ("index", parameterList.Index));
+			WriteAttributeStrings (("index", parameterList.Index));
 			foreach (var parameter in parameterList.Parameters) {
-				WriteParameter (writer, parameter);
+				WriteParameter (parameter);
 			}
 			writer.WriteEndElement ();
 		}
 
-		void WriteParameter (XmlWriter writer, DBParameter parameter)
+		void WriteParameter (DBParameter parameter)
 		{
 			if (parameter.IsEmptyParameter)
 				return;
 
 			writer.WriteStartElement ("parameter");
-			WriteAttributeStrings (writer, ("index", parameter.Index),
-			                      ("type", parameter.Type), ("publicName", parameter.PublicName),
-			                      ("privateName", parameter.PrivateName), ("isVariadic", parameter.IsVariadic));
+			WriteAttributeStrings (("index", parameter.Index), ("type", parameter.Type),
+			                      ("publicName", parameter.PublicName), ("privateName", parameter.PrivateName),
+			                      ("isVariadic", parameter.IsVariadic));
 			writer.WriteEndElement ();
 		}
 
-		void WriteProperties (XmlWriter writer, DBTypeDeclaration typeDeclaration)
+		void WriteProperties (DBTypeDeclaration typeDeclaration)
 		{
 			foreach (var property in typeDeclaration.Properties.Properties) {
-				WriteProp (writer, property);
-				WriteFunc (writer, property.Getter);
+				WriteProp (property);
+				WriteFunc (property.Getter);
 				if (property.Setter != null)
-					WriteFunc (writer, property.Setter);
+					WriteFunc (property.Setter);
 			}
 		}
 
-		void WriteProp (XmlWriter writer, DBProperty propery)
+		void WriteProp (DBProperty property)
 		{
 			writer.WriteStartElement ("property");
-			WriteAttributeStrings (writer, ("name", propery.Name),
-			                      ("type", propery.Type), ("isStatic", propery.IsStatic),
-			                      ("accessibility", propery.Accessibility), ("isDeprecated", propery.IsDeprecated),
-			                      ("isUnavailable", propery.IsUnavailable), ("isOptional", propery.IsOptional),
-			                      ("storage", propery.Storage), ("isPossiblyIncomplete", propery.IsPossiblyIncomplete));
+			WriteAttributeStrings (("name", property.Name), ("type", property.Type),
+			                      ("isStatic", property.IsStatic), ("accessibility", property.Accessibility),
+			                      ("isDeprecated", property.IsDeprecated), ("isUnavailable", property.IsUnavailable),
+			                      ("isOptional", property.IsOptional), ("storage", property.Storage),
+			                      ("isPossiblyIncomplete", property.IsPossiblyIncomplete));
 			writer.WriteEndElement ();
 		}
 
-		void CloseWriter (XmlWriter writer) {
+		void CloseWriter () {
 			writer.WriteEndDocument ();
 			writer.Close ();
-			writer.Dispose ();
 		}
 
-		void WriteAttributeStrings (XmlWriter writer, params (string name, object value) [] attributes)
+		void WriteAttributeStrings (params (string name, object value) [] attributes)
 		{
 			foreach (var attribute in attributes) {
 				if (attribute.value is string s)
@@ -259,6 +260,18 @@ namespace DylibBinder {
 					writer.WriteEndAttribute ();
 				}
 			}
+		}
+
+		private bool _disposed = false;
+
+		public void Dispose ()
+		{
+			writer.Dispose ();
+
+			if (_disposed)
+				return;
+
+			_disposed = true;
 		}
 	}
 }

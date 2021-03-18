@@ -5,7 +5,7 @@ using SwiftReflector;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	public class DBProperty {
+	internal class DBProperty {
 		public DBProperty (PropertyContents propertyContents)
 		{
 			Name = propertyContents.Name.Name;
@@ -33,7 +33,7 @@ namespace DylibBinder {
 		public string Storage { get; } = "Addressed";
 	}
 
-	public class DBProperties {
+	internal class DBProperties {
 		public DBProperties (ClassContents classContents)
 		{
 			var properties = classContents.Properties.Values.ToList ();

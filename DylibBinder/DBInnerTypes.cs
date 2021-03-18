@@ -4,7 +4,7 @@ using SwiftReflector;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	public class DBInnerTypes {
+	internal class DBInnerTypes {
 		public DBInnerTypes (SwiftClassName swiftClassName)
 		{
 			var name = swiftClassName.ToString ();

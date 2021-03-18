@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DylibBinder {
-	public class DBFunc {
+	internal class DBFunc {
 		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false)
 		{
 			Name = tlf.Name.Name;
@@ -86,7 +86,7 @@ namespace DylibBinder {
 		}
 	}
 
-	public class DBFuncs {
+	internal class DBFuncs {
 		public DBFuncs (ClassContents classContents)
 		{
 			var functions = classContents.Methods.Values.ToList ();

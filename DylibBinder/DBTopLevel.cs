@@ -4,7 +4,7 @@ using Dynamo;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	public class DBTopLevel {
+	internal class DBTopLevel {
 		public DBTopLevel (string xmlVersion, string moduleName, string swiftVersion, ModuleInventory moduleInventory)
 		{
 			XmlVersion = Exceptions.ThrowOnNull (xmlVersion, "xmlVersion");

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DylibBinder {
 	// TODO Add AssociatedTypes
-	public class DBAssociatedType {
+	internal class DBAssociatedType {
 		public DBAssociatedType (string name)
 		{
 			Name = name;
@@ -12,7 +12,7 @@ namespace DylibBinder {
 		public string Name { get; }
 	}
 
-	public class DBAssociatedTypes {
+	internal class DBAssociatedTypes {
 		public DBAssociatedTypes ()
 		{
 		}

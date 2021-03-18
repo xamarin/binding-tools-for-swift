@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	public class CheckInventory {
+	internal class CheckInventory {
 		public CheckInventory (ModuleInventory mi)
 		{
 			Classes = new List<ClassContents> ();
