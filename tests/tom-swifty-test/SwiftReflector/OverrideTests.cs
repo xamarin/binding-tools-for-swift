@@ -790,7 +790,6 @@ open class SecondClass : FirstClass {
 		}
 
 		[Test]
-		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/619")]
 		public void TestClosureProp ()
 		{
 			var swiftCode = @"

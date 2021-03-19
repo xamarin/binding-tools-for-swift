@@ -67,6 +67,15 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var endToken = context.Stop;
 			rewriter.Replace (startToken, endToken, replacementType);
 		}
+
+		public override void ExitIdentifier_type ([NotNull] Identifier_typeContext context)
+		{
+			if (context.GetText () == "Swift.Void") {
+				var startToken = context.Start;
+				var endToken = context.Stop;
+				rewriter.Replace (startToken, endToken, "()");
+			}
+		}
 	}
 }
 
