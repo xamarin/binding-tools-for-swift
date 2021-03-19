@@ -268,7 +268,6 @@ public prefix func %--% (left:IntRep2) -> IntRep2 {
 
 
 		[Test]
-//		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/618")]
 		public void EnumInfixOpTest ()
 		{
 			var swiftCode = @"
