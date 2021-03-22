@@ -292,7 +292,6 @@ namespace SwiftReflector {
 
 
 		[Test]
-		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/621")]
 		public void TestVariadicParameters ()
 		{
 			string swiftCode = @"public func intsAsArray (a:Int32 ... ) -> [Int32] {
@@ -312,7 +311,6 @@ return a
 
 
 		[Test]
-		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/621")]
 		public void TestVariadiacInClass ()
 		{
 			string swiftCode = @"public class VarArr {
@@ -338,7 +336,6 @@ return a
 		}
 
 		[Test]
-		[Ignore ("SwiftInterfaceParser error https://github.com/xamarin/binding-tools-for-swift/issues/621")]
 		public void TestVariadiacInOpenClass ()
 		{
 			string swiftCode = @"open class OpenVarArr {
