@@ -1176,6 +1176,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var replacementPublicName = isSubscript ? "" : privateName;
 			var publicName = NoUnderscore (context.external_parameter_name ()?.GetText () ?? replacementPublicName);
 			var isVariadic = context.range_operator () != null;
+			if (isVariadic)
+				type = $"Swift.Array<{type}>";
 			var isEscaping = AttributesContains (typeAnnotation.attributes (), kEscaping);
 			var isAutoClosure = AttributesContains (typeAnnotation.attributes (), kAutoClosure);
 			var typeBuilder = new StringBuilder ();
