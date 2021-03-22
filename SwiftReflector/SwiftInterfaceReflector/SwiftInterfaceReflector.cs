@@ -815,8 +815,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (setParamList != null) {
 				var parmName = context.getter_setter_keyword_block ()?.setter_keyword_clause ().new_value_name ()?.GetText ()
 					?? kNewValue;
+				var setterType = EscapePossibleClosureType (resultType);
 				var newValueParam = new XElement (kParameter, new XAttribute (kIndex, "0"),
-					new XAttribute (kType, resultType), new XAttribute (kPublicName, parmName),
+					new XAttribute (kType, setterType), new XAttribute (kPublicName, parmName),
 					new XAttribute (kPrivateName, parmName), new XAttribute (kIsVariadic, false));
 				setParamList.Add (newValueParam);
 				var setFunc = ToFunctionDeclaration ("set_" + context.variable_name ().GetText (),
@@ -1926,6 +1927,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				}
 			}
 			return false;
+		}
+
+		string EscapePossibleClosureType (string type)
+		{
+			var typeSpec = TypeSpecParser.Parse (type);
+			return typeSpec is ClosureTypeSpec ? "@escaping[] " + type : type;
 		}
 
 		static Dictionary<string, string> accessMap = new Dictionary<string, string> () {
