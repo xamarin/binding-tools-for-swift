@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml;
+using SwiftReflector.SwiftXmlReflection;
 
 namespace DylibBinder {
 	sealed internal class XmlGenerator : IDisposable {
@@ -45,7 +46,7 @@ namespace DylibBinder {
 				                      ("isUnavailable", typeDeclaration.IsUnavailable), ("isObjC", typeDeclaration.IsObjC),
 				                      ("isFinal", typeDeclaration.IsFinal));
 
-				if (typeDeclaration.Kind == "protocol")
+				if (typeDeclaration.Kind == TypeKind.Protocol)
 					WriteProtocolTypeDeclaration (typeDeclaration);
 				else
 					WriteTypeDeclaration (typeDeclaration);
@@ -147,7 +148,7 @@ namespace DylibBinder {
 
 		void WriteElements (DBTypeDeclaration typeDeclaration)
 		{
-			if (typeDeclaration.Kind != "enum")
+			if (typeDeclaration.Kind != TypeKind.Enum)
 				return;
 
 			writer.WriteStartElement ("elements");
@@ -254,6 +255,8 @@ namespace DylibBinder {
 			foreach (var attribute in attributes) {
 				if (attribute.value is string s)
 					writer.WriteAttributeString (attribute.name, s);
+				else if (attribute.value is TypeKind kind)
+					writer.WriteAttributeString (attribute.name, kind.ToString ().ToLower ());
 				else {
 					writer.WriteStartAttribute (attribute.name);
 					writer.WriteValue (attribute.value);
