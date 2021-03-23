@@ -1305,6 +1305,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		bool TypeIsNotProtocol (string type)
 		{
+			// special case this - the type database as this as "other"
+			// which is technically not a protocol, but it is a protocol.
+			if (type == "Swift.Error")
+				return false;
 			var parts = type.Split ('.');
 			if (parts.Length == 1)
 				return true; // generic
