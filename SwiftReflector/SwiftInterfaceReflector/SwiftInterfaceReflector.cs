@@ -1305,6 +1305,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		bool TypeIsNotProtocol (string type)
 		{
+			if (type == "Swift.Error")
+				return false;
 			var parts = type.Split ('.');
 			if (parts.Length == 1)
 				return true; // generic
