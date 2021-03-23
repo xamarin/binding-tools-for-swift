@@ -5,13 +5,14 @@ using System.Text;
 using DylibBinder;
 using SwiftReflector;
 using SwiftReflector.Inventory;
+using SwiftReflector.SwiftXmlReflection;
 
 namespace DylibBinder {
 	internal class DBTypeDeclaration {
 		public DBTypeDeclaration (ProtocolContents protoContents)
 		{
-			Kind = "protocol";
-			Name = protoContents.Name.ToString ();
+			Kind = TypeKind.Protocol;
+			Name = protoContents.Name.ToFullyQualifiedName ();
 			Funcs = new DBFuncs (protoContents);
 			ApplyInouts ();
 		}
@@ -19,11 +20,11 @@ namespace DylibBinder {
 		public DBTypeDeclaration (ClassContents classContents)
 		{
 			if (classContents.Name.IsClass)
-				Kind = "class";
+				Kind = TypeKind.Class;
 			else if (classContents.Name.IsEnum)
-				Kind = "enum";
+				Kind = TypeKind.Enum;
 			else
-				Kind = "struct";
+				Kind = TypeKind.Struct;
 
 			Name = classContents.Name.ToFullyQualifiedName ();
 			Funcs = new DBFuncs (classContents);
@@ -35,7 +36,7 @@ namespace DylibBinder {
 			ApplyInouts ();
 		}
 
-		public string Kind { get; }
+		public TypeKind Kind { get; }
 		public string Name { get; }
 		public string Accessibility { get; } = "Public";
 		public bool IsObjC { get; } = false;
@@ -58,7 +59,7 @@ namespace DylibBinder {
 				ApplyInoutsToParameterLists (func.ParameterLists);
 			}
 			// protocols currently only hold funcs so they should finish here
-			if (Kind == "protocol")
+			if (Kind == TypeKind.Protocol)
 				return;
 
 			foreach (var property in Properties.Properties) {
