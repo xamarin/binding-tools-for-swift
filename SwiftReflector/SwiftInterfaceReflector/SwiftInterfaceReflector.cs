@@ -2222,7 +2222,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		}
 
 		static string [] ctorDtorNames = new string [] {
-			"init", "init?", "init!", "deinit"
+			kDotCtor, kDotDtor
 		};
 
 		static bool IsCtorDtor (string name)
