@@ -233,7 +233,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
 			var isFinal = context.final_clause () != null || accessibility != kOpenCap;
-			var typeDecl = ToTypeDeclaration (kClass, context.class_name ().GetText (),
+			var typeDecl = ToTypeDeclaration (kClass, UnTick (context.class_name ().GetText ()),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause (), false);
@@ -246,7 +246,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var classElem = currentElement.Pop ();
 			var givenClassName = classElem.Attribute (kName).Value;
-			var actualClassName = context.class_name ().GetText ();
+			var actualClassName = UnTick (context.class_name ().GetText ());
 			if (givenClassName != actualClassName)
 				throw new ParseException ($"class name mismatch on exit declaration: expected {actualClassName} but got {givenClassName}");
 			AddClassToCurrentElement (classElem);
@@ -261,7 +261,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isFinal = true; // structs are always final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var typeDecl = ToTypeDeclaration (kStruct, context.struct_name ().GetText (),
+			var typeDecl = ToTypeDeclaration (kStruct, UnTick (context.struct_name ().GetText ()),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause (), false);
@@ -274,7 +274,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var structElem = currentElement.Pop ();
 			var givenStructName = structElem.Attribute (kName).Value;
-			var actualStructName = context.struct_name ().GetText ();
+			var actualStructName = UnTick (context.struct_name ().GetText ());
 			if (givenStructName != actualStructName)
 				throw new ParseException ($"struct name mismatch on exit declaration: expected {actualStructName} but got {givenStructName}");
 			AddStructToCurrentElement (structElem);
@@ -317,9 +317,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		static string EnumName (Enum_declarationContext context)
 		{
-			return context.union_style_enum () != null ?
+			return UnTick (context.union_style_enum () != null ?
 				context.union_style_enum ().enum_name ().GetText () :
-				context.raw_value_style_enum ().enum_name ().GetText ();
+				context.raw_value_style_enum ().enum_name ().GetText ());
 		}
 
 		XAttribute GetEnumRawType (Enum_declarationContext context)
@@ -418,7 +418,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		XElement ToRawEnumElement (Raw_value_style_enum_caseContext context)
 		{
-			var enumElem = new XElement (kElement, new XAttribute (kName, context.enum_case_name ().GetText ()));
+			var enumElem = new XElement (kElement, new XAttribute (kName, UnTick (context.enum_case_name ().GetText ())));
 			var value = context.raw_value_assignment ();
 			if (value != null)
 				enumElem.Add (new XAttribute (kIntValue, value.raw_value_literal ().GetText ()));
@@ -438,7 +438,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		XElement ToUnionEnumElement (Union_style_enum_caseContext context)
 		{
-			var enumElement = new XElement (kElement, new XAttribute (kName, context.enum_case_name ().GetText ()));
+			var enumElement = new XElement (kElement, new XAttribute (kName, UnTick (context.enum_case_name ().GetText ())));
 			if (context.tuple_type () != null) {
 				var tupString = context.tuple_type ().GetText ();
 				// special casing:
@@ -474,7 +474,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isFinal = true; // protocols don't have final
 			var isObjC = AttributesContains (context.attributes (), kObjC);
 			var accessibility = ToAccess (context.access_level_modifier ());
-			var typeDecl = ToTypeDeclaration (kProtocol, context.protocol_name ().GetText (),
+			var typeDecl = ToTypeDeclaration (kProtocol, UnTick (context.protocol_name ().GetText ()),
 				accessibility, isObjC, isFinal, isDeprecated, isUnavailable, inheritance, generics: null,
 				attributes);
 			currentElement.Push (typeDecl);
@@ -484,7 +484,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var protocolElem = currentElement.Pop ();
 			var givenProtocolName = protocolElem.Attribute (kName).Value;
-			var actualProtocolName = context.protocol_name ().GetText ();
+			var actualProtocolName = UnTick (context.protocol_name ().GetText ());
 			if (givenProtocolName != actualProtocolName)
 				throw new ParseException ($"protocol name mismatch on exit declaration: expected {actualProtocolName} but got {givenProtocolName}");
 			if (currentElement.Peek ().Name != kModule)
@@ -497,9 +497,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var conformingProtocols = GatherConformingProtocols (context.type_inheritance_clause ());
 			var defaultDefn = context.typealias_assignment ()?.type ().GetText ();
 			var assocType = new XElement (kAssociatedType,
-				new XAttribute (kName, context.typealias_name ().GetText ()));
+				new XAttribute (kName, UnTick (context.typealias_name ().GetText ())));
 			if (defaultDefn != null)
-				assocType.Add (new XAttribute (kDefaultType, defaultDefn));
+				assocType.Add (new XAttribute (kDefaultType, UnTick (defaultDefn)));
 			if (conformingProtocols != null && conformingProtocols.Count > 0) {
 				var confomingElem = new XElement (kConformingProtocols, conformingProtocols.ToArray ());
 				assocType.Add (confomingElem);
@@ -522,7 +522,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var elem = inheritance.GetText ();
 				var name = inheritance.type_identifier ()?.GetText ();
 				if (name != null)
-					elems.Add (new XElement (kConformingProtocol, new XAttribute (kName, name)));
+					elems.Add (new XElement (kConformingProtocol, new XAttribute (kName, UnTick (name))));
 				inheritance = inheritance.type_inheritance_list ();
 			}
 			return elems;
@@ -545,7 +545,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var head = context.function_head ();
 			var signature = context.function_signature ();
 
-			var name = context.function_name ().GetText ();
+			var name = UnTick (context.function_name ().GetText ());
 			var returnType = signature.function_result () != null ? signature.function_result ().type ().GetText () : "()";
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var isStatic = IsStaticOrClass (head.declaration_modifiers ());
@@ -574,7 +574,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void ExitFunction_declaration ([NotNull] Function_declarationContext context)
 		{
-			ExitFunctionWithName (context.function_name ().GetText ());
+			ExitFunctionWithName (UnTick (context.function_name ().GetText ()));
 		}
 
 		void ExitFunctionWithName (string expectedName)
@@ -781,6 +781,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterVariable_declaration ([NotNull] Variable_declarationContext context)
 		{
+			var name = UnTick (context.variable_name ().GetText ());
 			var head = context.variable_declaration_head ();
 			var resultType = TrimColon (context.type_annotation ().GetText ());
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
@@ -797,7 +798,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isProperty = true;
 
 			var getParamList = new XElement (kParameterList, new XAttribute (kIndex, "1"));
-			var getFunc = ToFunctionDeclaration ("get_" + context.variable_name ().GetText (),
+			var getFunc = ToFunctionDeclaration ("get_" + name,
 				resultType, accessibility, isStatic, hasThrows, isFinal, isOptional,
 				isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
 				isUnavailable, isMutating, isRequired, isProperty, attributes);
@@ -820,7 +821,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					new XAttribute (kType, setterType), new XAttribute (kPublicName, parmName),
 					new XAttribute (kPrivateName, parmName), new XAttribute (kIsVariadic, false));
 				setParamList.Add (newValueParam);
-				var setFunc = ToFunctionDeclaration ("set_" + context.variable_name ().GetText (),
+				var setFunc = ToFunctionDeclaration ("set_" + name,
 					"()", accessibility, isStatic, hasThrows, isFinal, isOptional,
 					isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
 					isUnavailable, isMutating, isRequired, isProperty, attributes);
@@ -834,7 +835,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				AddObjCSelector (setFunc);
 			}
 
-			var prop = new XElement (kProperty, new XAttribute (kName, context.variable_name ().GetText ()),
+			var prop = new XElement (kProperty, new XAttribute (kName, name),
 				new XAttribute (nameof (accessibility), accessibility),
 				new XAttribute (kType, resultType),
 				new XAttribute (kStorage, kComputed),
@@ -860,7 +861,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterExtension_declaration ([NotNull] Extension_declarationContext context)
 		{
-			var onType = context.type_identifier ().GetText ();
+			var onType = UnTick (context.type_identifier ().GetText ());
 			var inherits = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: true);
 			// why, you say, why put a kKind tag into an extension?
 			// The reason is simple: this is a hack. Most of the contents
@@ -881,7 +882,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var extensionElem = currentElement.Pop ();
 			var onType = extensionElem.Attribute (kOnType);
 			var givenOnType = onType.Value;
-			var actualOnType = context.type_identifier ().GetText ();
+			var actualOnType = UnTick (context.type_identifier ().GetText ());
 			if (givenOnType != actualOnType)
 				throw new Exception ($"extension type mismatch on exit declaration: expected {actualOnType} but got {givenOnType}");
 			// remove the kKind attribute - you've done your job.
@@ -952,7 +953,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (addParentGenerics)
 				AddParentGenerics (genericElem);
 			foreach (var generic in genericContext.generic_parameter_list ().generic_parameter ()) {
-				var name = generic.type_name ().GetText ();
+				var name = UnTick (generic.type_name ().GetText ());
 				var genParam = new XElement (kParam, new XAttribute (kName, name));
 				genericElem.Add (genParam);
 				var whereType = generic.type_identifier ()?.GetText () ??
@@ -967,14 +968,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 			foreach (var requirement in whereContext.requirement_list ().requirement ()) {
 				if (requirement.conformance_requirement () != null) {
-					var name = requirement.conformance_requirement ().type_identifier () [0].GetText ();
+					var name = UnTick (requirement.conformance_requirement ().type_identifier () [0].GetText ());
 
 					// if there is no protocol composition type, then it's the second type identifier
 					var from = requirement.conformance_requirement ().protocol_composition_type ()?.GetText ()
 						?? requirement.conformance_requirement ().type_identifier () [1].GetText ();
 					genericElem.Add (MakeConformanceWhere (name, from));
 				} else {
-					var name = requirement.same_type_requirement ().type_identifier ().GetText ();
+					var name = UnTick (requirement.same_type_requirement ().type_identifier ().GetText ());
 					var type = requirement.same_type_requirement ().type ().GetText ();
 					genericElem.Add (MakeEqualityWhere (name, type));
 				}
@@ -988,7 +989,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			// only care about top level typealiases
 			if (currentElement.Peek ().Name != kModule)
 				return;
-			var name = context.typealias_name ().GetText ();
+			var name = UnTick (context.typealias_name ().GetText ());
 			var generics = context.generic_parameter_clause ()?.GetText () ?? "";
 			var targetType = context.typealias_assignment ().type ().GetText ();
 			var access = ToAccess (context.access_level_modifier ());
@@ -1172,9 +1173,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var typeAnnotation = context.type_annotation ();
 			var isInOut = typeAnnotation.inout_clause () != null;
 			var type = typeAnnotation.type ().GetText ();
-			var privateName = NoUnderscore (context.local_parameter_name ()?.GetText () ?? "");
+			var privateName = NoUnderscore (UnTick (context.local_parameter_name ()?.GetText ()) ?? "");
 			var replacementPublicName = isSubscript ? "" : privateName;
-			var publicName = NoUnderscore (context.external_parameter_name ()?.GetText () ?? replacementPublicName);
+			var publicName = NoUnderscore (UnTick (context.external_parameter_name ()?.GetText ()) ?? replacementPublicName);
 			var isVariadic = context.range_operator () != null;
 			if (isVariadic)
 				type = $"Swift.Array<{type}>";
@@ -2237,6 +2238,29 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			input = input.Trim ();
 			return input.StartsWith (":", StringComparison.Ordinal) ?
 				input.Substring (1) : input;
+		}
+
+		public static string UnTick (string str)
+		{
+			// a back-ticked string will start and end with `
+			// the swift grammar guarantees this.
+			// Identifier :
+			// Identifier_head Identifier_characters?
+			// | OpBackTick Identifier_head Identifier_characters? OpBackTick
+			// | ImplicitParameterName
+			// There will be no starting and ending whitespace.
+			//
+			// There are some edge cases that we can take advantage of:
+			// 1. If it starts with `, it *has* to end with back tick, so we don't need to check
+			// 2. `` will never exist, so the minimum length *has* to be 3
+			// In generalized string manipulation, we couldn't make these assumptions,
+			// but in this case the grammar works for us.
+			// first weed out the easy cases:
+			// null, too short, does start and end with back tick
+			// then just substring it
+			if (str is null || str.Length < 3 || str [0] != '`')
+				return str;
+			return str.Substring (1, str.Length - 2);
 		}
 
 
