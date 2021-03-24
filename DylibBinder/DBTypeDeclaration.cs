@@ -38,7 +38,7 @@ namespace DylibBinder {
 
 		public TypeKind Kind { get; }
 		public string Name { get; }
-		public string Accessibility { get; } = "Public";
+		public TypeAccessibility Accessibility { get; } = TypeAccessibility.Public;
 		public bool IsObjC { get; } = false;
 		public bool IsFinal { get; } = false;
 		public bool IsDeprecated { get; } = false;

@@ -6,9 +6,7 @@ namespace DylibBinder {
 	internal static class StringExtensions {
 		internal static bool IsPublic (this string s)
 		{
-			if (s.Contains ("_"))
-				return false;
-			return true;
+			return !s.Contains ("_");
 		}
 
 		internal static string PrependModule (this string s, string moduleName)

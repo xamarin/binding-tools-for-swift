@@ -25,7 +25,7 @@ namespace DylibBinder {
 		public DBFunc Setter { get; }
 		public DBGenericParameters GenericParameters { get; }
 
-		public string Accessibility { get; } = "Public";
+		public TypeAccessibility Accessibility { get; } = TypeAccessibility.Public;
 		public bool IsPossiblyIncomplete { get; } = false;
 		public bool IsDeprecated { get; } = false;
 		public bool IsUnavailable { get; } = false;
@@ -49,9 +49,7 @@ namespace DylibBinder {
 
 		bool IsMetaClass (SwiftType swiftType)
 		{
-			if (swiftType.Type == SwiftReflector.CoreCompoundType.MetaClass)
-				return true;
-			return false;
+			return swiftType.Type == SwiftReflector.CoreCompoundType.MetaClass;
 		}
 	}
 }
