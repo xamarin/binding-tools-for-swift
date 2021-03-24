@@ -1426,6 +1426,27 @@ public class Foo {
 			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get set }", output, "wrong signature");
 		}
 
+		[TestCase (ReflectorMode.Compiler)]
+		[TestCase (ReflectorMode.Parser)]
+		public void TestCtorType (ReflectorMode mode)
+		{
+			var code = @"
+public class Foo {
+	public init () { }
+}
+";
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			var ctor = cl.AllConstructors ().FirstOrDefault ();
+			Assert.IsNotNull (ctor, "no constructor");
+			var pl = ctor.ParameterLists [0];
+			Assert.AreEqual (1, pl.Count, "wrong number of parameters");
+			var uncurriedType = pl [0].TypeName;
+			Assert.AreEqual ("SomeModule.Foo.Type", uncurriedType, "wrong type");
+		}
+
 
 		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
