@@ -1717,7 +1717,7 @@ public func sum (a: Int!, b: Int!) -> Int! {
 
 
 		[TestCase (ReflectorMode.Compiler)]
-		[TestCase (ReflectorMode.Parser, Ignore = "SwiftInterfaceParserFailure https://github.com/xamarin/binding-tools-for-swift/issues/617")]
+		[TestCase (ReflectorMode.Parser)]
 		public void EnumProtocolConformance (ReflectorMode mode)
 		{
 			var code = @"
