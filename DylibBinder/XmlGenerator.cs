@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Xml;
+using SwiftReflector;
 using SwiftReflector.SwiftXmlReflection;
 
 namespace DylibBinder {
@@ -257,6 +258,10 @@ namespace DylibBinder {
 					writer.WriteAttributeString (attribute.name, s);
 				else if (attribute.value is TypeKind kind)
 					writer.WriteAttributeString (attribute.name, kind.ToString ().ToLower ());
+				else if (attribute.value is TypeAccessibility access)
+					writer.WriteAttributeString (attribute.name, access.ToString ());
+				else if (attribute.value is OperatorType operatorType)
+					writer.WriteAttributeString (attribute.name, operatorType.ToString ());
 				else {
 					writer.WriteStartAttribute (attribute.name);
 					writer.WriteValue (attribute.value);

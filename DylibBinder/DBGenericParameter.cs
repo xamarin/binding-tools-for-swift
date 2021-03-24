@@ -19,9 +19,7 @@ namespace DylibBinder {
 
 		public bool Equals (DBGenericParameter other)
 		{
-			if (this.Depth == other.Depth && this.Index == other.Index)
-				return true;
-			return false;
+			return this.Depth == other.Depth && this.Index == other.Index;
 		}
 	}
 
@@ -54,16 +52,16 @@ namespace DylibBinder {
 			foreach (var type in types) {
 				switch (type) {
 				case SwiftFunctionType funcType:
-					HandleFunctionType (funcType);
+					HandleType (funcType);
 					return;
 				case SwiftBoundGenericType boundType:
-					HandleBoundGenericType (boundType);
+					HandleType (boundType);
 					return;
 				case SwiftTupleType tupleType:
-					HandleTupleType (tupleType);
+					HandleType (tupleType);
 					return;
 				case SwiftGenericArgReferenceType refType:
-					HandleGenericArgReferenceType (refType);
+					HandleType (refType);
 					return;
 				default:
 					return;
@@ -71,46 +69,46 @@ namespace DylibBinder {
 			}
 		}
 
-		void HandleFunctionType (SwiftFunctionType funcType)
+		void HandleType (SwiftFunctionType funcType)
 		{
 			switch (funcType.Parameters) {
 			case SwiftBoundGenericType boundType:
-				HandleBoundGenericType (boundType);
+				HandleType (boundType);
 				return;
 			case SwiftTupleType tupleType:
-				HandleTupleType (tupleType);
+				HandleType (tupleType);
 				return;
 			case SwiftGenericArgReferenceType refType:
-				HandleGenericArgReferenceType (refType);
+				HandleType (refType);
 				return;
 			default:
 				return;
 			}
 		}
 
-		void HandleBoundGenericType (SwiftBoundGenericType boundType)
+		void HandleType (SwiftBoundGenericType boundType)
 		{
 			foreach (var bound in boundType.BoundTypes) {
 				if (bound is SwiftGenericArgReferenceType refType)
-					HandleGenericArgReferenceType (refType);
+					HandleType (refType);
 			}
 		}
 
-		void HandleTupleType (SwiftTupleType tupleType)
+		void HandleType (SwiftTupleType tupleType)
 		{
 			foreach (var content in tupleType.Contents) {
 				switch (content) {
 				case SwiftBoundGenericType boundGType:
-					HandleBoundGenericType (boundGType);
+					HandleType (boundGType);
 					return;
 				case SwiftFunctionType cFuncType:
-					HandleFunctionType (cFuncType);
+					HandleType (cFuncType);
 					return;
 				case SwiftGenericArgReferenceType refType:
-					HandleGenericArgReferenceType (refType);
+					HandleType (refType);
 					return;
 				case SwiftTupleType innerTupleType:
-					HandleTupleType (innerTupleType);
+					HandleType (innerTupleType);
 					return;
 				default:
 					return;
@@ -118,7 +116,7 @@ namespace DylibBinder {
 			}
 		}
 
-		void HandleGenericArgReferenceType (SwiftGenericArgReferenceType refType)
+		void HandleType (SwiftGenericArgReferenceType refType)
 		{
 			AddIfNotPresent (new DBGenericParameter (refType.Depth, refType.Index));
 		}

@@ -17,12 +17,9 @@ namespace DylibBinder {
 			IsProperty = false;
 			HasThrows = tlf.Signature.CanThrow;
 			IsMutating = isMutating;
-			OperatorKind = tlf.Operator.ToString ();
-			HasInstance = !tlf.Signature.IsConstructor && !IsStatic;
+			OperatorKind = tlf.Operator;
 			// TODO not sure if/how to handle instances with protocols yet
-			if (isProtocol)
-				HasInstance = false;
-
+			HasInstance = !tlf.Signature.IsConstructor && !IsStatic && !isProtocol;
 			ReturnType = SwiftTypeToString.MapSwiftTypeToString (tlf.Signature.ReturnType, tlf.Module.Name);
 			ParameterLists = new DBParameterLists (tlf.Signature, HasInstance);
 			GenericParameters = new DBGenericParameters (tlf.Signature);
@@ -53,17 +50,17 @@ namespace DylibBinder {
 		public bool IsMutating { get; }
 		public bool HasInstance { get; }
 
-		public string PropertyType { get; } = "";
+		public string PropertyType { get; } = string.Empty;
 		public bool IsPossiblyIncomplete { get; } = false;
-		public string OperatorKind { get; } = "None";
-		public string Accessibility { get; } = "Public";
+		public OperatorType OperatorKind { get; } = OperatorType.None;
+		public TypeAccessibility Accessibility { get; } = TypeAccessibility.Public;
 		public bool IsFinal { get; } = false;
 		public bool IsDeprecated { get; } = false;
 		public bool IsUnavailable { get; } = false;
 		public bool IsOptional { get; } = false;
 		public bool IsRequired { get; } = false;
 		public bool IsConvenienceInit { get; } = false;
-		public string ObjcSelector { get; } = "";
+		public string ObjcSelector { get; } = string.Empty;
 
 		public DBParameterLists ParameterLists { get; }
 		public DBGenericParameters GenericParameters { get; }
@@ -131,9 +128,7 @@ namespace DylibBinder {
 		bool DoesNotDoubleThrow (string s)
 		{
 			var matches = Regex.Matches (s, "->");
-			if (matches.Count > 1)
-				return false;
-			return true;
+			return matches.Count <= 1;
 		}
 	}
 }

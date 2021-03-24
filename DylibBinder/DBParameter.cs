@@ -16,7 +16,7 @@ namespace DylibBinder {
 			IsEmptyParameter = isEmptyParameter;
 		}
 
-		public string Type { get; internal set; }
+		public string Type { get; set; }
 		public string PublicName { get; }
 		public string PrivateName { get; }
 		public bool IsVariadic { get; }

@@ -56,6 +56,7 @@
     <Compile Include="DBInnerTypes.cs" />
     <Compile Include="XmlGenerator.cs" />
     <Compile Include="DBElement.cs" />
+    <Compile Include="Enums.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
