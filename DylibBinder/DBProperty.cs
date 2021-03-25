@@ -36,9 +36,8 @@ namespace DylibBinder {
 	internal class DBProperties {
 		public DBProperties (ClassContents classContents)
 		{
-			var properties = classContents.Properties.Values.ToList ();
-			properties.AddRange (classContents.StaticProperties.Values.ToList ());
-			properties.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.Name, type2.Name.Name));
+			var properties = SortedSetExtensions.CreatePropertySortedSet ();
+			properties.AddRange (classContents.Properties.Values, classContents.StaticProperties.Values);
 			foreach (var property in properties) {
 				if (property.Name.Name.IsPublic () && !IsMetaClass (property.Getter.ReturnType))
 					Properties.Add (new DBProperty (property));
@@ -49,7 +48,7 @@ namespace DylibBinder {
 
 		bool IsMetaClass (SwiftType swiftType)
 		{
-			return swiftType.Type == SwiftReflector.CoreCompoundType.MetaClass;
+			return swiftType.Type == CoreCompoundType.MetaClass;
 		}
 	}
 }

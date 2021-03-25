@@ -6,19 +6,19 @@ namespace DylibBinder {
 	internal class CheckInventory {
 		public CheckInventory (ModuleInventory mi)
 		{
-			Classes = new List<ClassContents> ();
-			Structs = new List<ClassContents> ();
-			Enums = new List<ClassContents> ();
-			Protocols = new List<ProtocolContents> ();
+			Classes = SortedSetExtensions.CreateClassSortedSet ();
+			Structs = SortedSetExtensions.CreateClassSortedSet ();
+			Enums = SortedSetExtensions.CreateClassSortedSet ();
+			Protocols = SortedSetExtensions.CreateProtocolSortedSet ();
 
 			GetClassesStructsEnums (mi);
 			GetProtocols (mi);
 		}
 
-		public List<ClassContents> Classes { get; }
-		public List<ClassContents> Structs { get; }
-		public List<ClassContents> Enums { get; }
-		public List<ProtocolContents> Protocols { get; }
+		public SortedSet<ClassContents> Classes { get; }
+		public SortedSet<ClassContents> Structs { get; }
+		public SortedSet<ClassContents> Enums { get; }
+		public SortedSet<ProtocolContents> Protocols { get; }
 
 		void GetClassesStructsEnums (ModuleInventory mi)
 		{
@@ -34,7 +34,6 @@ namespace DylibBinder {
 						Enums.Add (elem);
 				}
 			}
-			SortNominalTypeLists (Classes, Structs, Enums);
 		}
 
 		void GetProtocols (ModuleInventory mi)
@@ -44,20 +43,6 @@ namespace DylibBinder {
 					if (!p.Name.ToFullyQualifiedName (true).Contains ("_"))
 						Protocols.Add (p);
 				}
-			}
-			SortNominalTypeLists (Protocols);
-		}
-
-		void SortNominalTypeLists (List<ProtocolContents> protocolList)
-		{
-			if (protocolList != null)
-				protocolList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToFullyQualifiedName (true), type2.Name.ToFullyQualifiedName (true)));
-		}
-
-		void SortNominalTypeLists (params List<ClassContents> [] nominalTypeLists)
-		{
-			foreach (var nominalTypeList in nominalTypeLists) {
-				nominalTypeList.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.ToFullyQualifiedName (true), type2.Name.ToFullyQualifiedName (true)));
 			}
 		}
 	}

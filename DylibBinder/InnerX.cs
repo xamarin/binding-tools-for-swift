@@ -17,7 +17,7 @@ namespace DylibBinder {
 
 		public Dictionary<string, List<ClassContents>> InnerXDict { get; } = new Dictionary<string, List<ClassContents>> ();
 
-		public Dictionary<string, List<ClassContents>> AddClassContentsList (params List<ClassContents>[] contents)
+		public Dictionary<string, List<ClassContents>> AddClassContentsList (params SortedSet<ClassContents>[] contents)
 		{
 			foreach (var classContentsList in contents) {
 				foreach (var classContent in classContentsList) {

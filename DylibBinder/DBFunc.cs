@@ -86,10 +86,9 @@ namespace DylibBinder {
 	internal class DBFuncs {
 		public DBFuncs (ClassContents classContents)
 		{
-			var functions = classContents.Methods.Values.ToList ();
-			functions.AddRange (classContents.StaticFunctions.Values.ToList ());
-			functions.AddRange (classContents.Constructors.Values.ToList ());
-			functions.Sort ((type1, type2) => String.CompareOrdinal (type1.Name.Name, type2.Name.Name));
+			var functions = SortedSetExtensions.CreateOverloadSortedSet ();
+			functions.AddRange (classContents.Methods.Values, classContents.StaticFunctions.Values, classContents.Constructors.Values);
+
 			foreach (var function in functions) {
 				foreach (var overloadFunction in function.Functions) {
 					if (overloadFunction.Name.Name.IsPublic () && !IsMetaClass (overloadFunction.Signature)
@@ -102,8 +101,8 @@ namespace DylibBinder {
 
 		public DBFuncs (ProtocolContents protocolContents)
 		{
-			var functions = protocolContents.FunctionsOfUnknownDestination;
-			functions.Sort ((type1, type2) => String.CompareOrdinal (type1.Module.Name, type2.Module.Name));
+			var functions = SortedSetExtensions.CreateTLFunctionSortedSet ();
+			functions.AddRange (protocolContents.FunctionsOfUnknownDestination);
 			foreach (var function in functions) {
 				if (function.Name.Name.IsPublic () && !IsMetaClass (function.Signature)
 					&& DoesNotDoubleThrow (function.Signature.ToString ())) {
@@ -116,10 +115,10 @@ namespace DylibBinder {
 
 		bool IsMetaClass (SwiftBaseFunctionType funcType)
 		{
-			if (funcType.ReturnType.Type == SwiftReflector.CoreCompoundType.MetaClass)
+			if (funcType.ReturnType.Type == CoreCompoundType.MetaClass)
 				return true;
 			foreach (var param in funcType.EachParameter) {
-				if (param.Type == SwiftReflector.CoreCompoundType.MetaClass)
+				if (param.Type == CoreCompoundType.MetaClass)
 					return true;
 			}
 			return false;

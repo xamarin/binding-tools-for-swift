@@ -117,7 +117,7 @@ namespace DylibBinder {
 			FilterTypeDeclarations (checkInventory.Protocols, checkInventory.Classes, checkInventory.Structs, checkInventory.Enums);
 		}
 
-		void FilterTypeDeclarations (List<ProtocolContents> protocolContentList, params List<ClassContents>[] ClassContentListArray)
+		void FilterTypeDeclarations (SortedSet<ProtocolContents> protocolContentList, params SortedSet<ClassContents>[] ClassContentListArray)
 		{
 			foreach (var classContentsList in ClassContentListArray) {
 				foreach (var classContents in classContentsList) {
