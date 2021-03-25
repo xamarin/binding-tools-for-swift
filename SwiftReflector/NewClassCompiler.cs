@@ -3067,8 +3067,16 @@ namespace SwiftReflector {
 							var ic = bc as InheritanceConstraint;
 							if (ic != null) {
 								var cstype = TypeMapper.MapType (classDecl, ic.InheritsTypeSpec, false);
-								use.AddIfNotPresent (cstype.NameSpace);
-								return new CSIdentifier (cstype.Type);
+								// special cases? Yes, we like special cases.
+								// AnyObject is technically an empty protocol, so we map
+								// it to ISwiftObject.
+								if (cstype.FullName == "SwiftRuntimeLibrary.SwiftAnyObject") {
+									use.AddIfNotPresent (typeof (ISwiftObject));
+									return new CSIdentifier ("ISwiftObject");
+								} else {
+									use.AddIfNotPresent (cstype.NameSpace);
+									return new CSIdentifier (cstype.Type);
+								}
 							} else {
 								throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 26, "Equality constraints not supported yet.");
 							}
