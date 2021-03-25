@@ -57,6 +57,7 @@
     <Compile Include="XmlGenerator.cs" />
     <Compile Include="DBElement.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="SortedSetExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
