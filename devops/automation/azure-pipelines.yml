@@ -126,6 +126,22 @@ jobs:
   - script: |
       set -e
       set -x
+      ./binding-tools-for-swift/devops/automation/run-tests.sh
+    displayName: 'Run tests'
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
+
+  - task: PublishTestResults@2
+    displayName: 'Publish NUnit Device Test Results'
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TestResult*.xml'
+      failTaskOnFailedTests: true
+    continueOnError: true
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
+
+  - script: |
+      set -e
+      set -x
       ./binding-tools-for-swift/devops/automation/build-package.sh
       ls -la ./package || true
     displayName: 'Package'
@@ -139,22 +155,6 @@ jobs:
       PathtoPublish: './package'
       ArtifactName: 'drop'
       publishLocation: 'Container'
-
-  - script: |
-      set -e
-      set -x
-      ./binding-tools-for-swift/devops/automation/run-tests.sh
-    displayName: 'Run tests'
-    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
-
-  - task: PublishTestResults@2
-    displayName: 'Publish NUnit Device Test Results'
-    inputs:
-      testResultsFormat: NUnit
-      testResultsFiles: '**/TestResult*.xml'
-      failTaskOnFailedTests: true
-    continueOnError: true
-    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
