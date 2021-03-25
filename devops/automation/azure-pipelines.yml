@@ -96,6 +96,13 @@ jobs:
   - script: |
       set -e
       set -x
+      cd ./binding-tools-for-swift/
+      git clean -xdf
+    displayName: 'Clean workspace'
+
+  - script: |
+      set -e
+      set -x
       ./binding-tools-for-swift/devops/automation/build-swift.sh --publish
       mkdir -p $(System.DefaultWorkingDirectory)/toolchain
       if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
