@@ -30,7 +30,7 @@ namespace DylibBinder {
 		public bool IsDeprecated { get; } = false;
 		public bool IsUnavailable { get; } = false;
 		public bool IsOptional { get; } = false;
-		public string Storage { get; } = "Addressed";
+		public Storage Storage { get; } = Storage.Addressed;
 	}
 
 	internal class DBProperties {

@@ -258,10 +258,8 @@ namespace DylibBinder {
 					writer.WriteAttributeString (attribute.name, s);
 				else if (attribute.value is TypeKind kind)
 					writer.WriteAttributeString (attribute.name, kind.ToString ().ToLower ());
-				else if (attribute.value is TypeAccessibility access)
-					writer.WriteAttributeString (attribute.name, access.ToString ());
-				else if (attribute.value is OperatorType operatorType)
-					writer.WriteAttributeString (attribute.name, operatorType.ToString ());
+				else if (attribute.value is Enum e)
+					writer.WriteAttributeString (attribute.name, e.ToString ());
 				else {
 					writer.WriteStartAttribute (attribute.name);
 					writer.WriteValue (attribute.value);
