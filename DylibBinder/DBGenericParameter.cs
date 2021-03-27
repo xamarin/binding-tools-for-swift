@@ -5,7 +5,7 @@ using SwiftReflector;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	internal class DBGenericParameter : IEquatable<DBGenericParameter> {
+	internal class DBGenericParameter {
 		public DBGenericParameter (int depth, int index)
 		{
 			Depth = depth;
@@ -16,11 +16,6 @@ namespace DylibBinder {
 		public int Depth { get; }
 		public int Index { get; }
 		public string Name { get; }
-
-		public bool Equals (DBGenericParameter other)
-		{
-			return this.Depth == other.Depth && this.Index == other.Index;
-		}
 	}
 
 	internal class DBGenericParameters {
@@ -39,8 +34,7 @@ namespace DylibBinder {
 			ParseTopLevelGenerics (typeDeclaration.Funcs, typeDeclaration.Properties);
 		}
 
-		public List<DBGenericParameter> GenericParameters { get; } = new List<DBGenericParameter> ();
-
+		public HashSet<DBGenericParameter> GenericParameters { get; } = new HashSet<DBGenericParameter> (new DBGenericParameterComparer ());
 
 		void AssignGenericParameters (SwiftBaseFunctionType signature)
 		{
@@ -53,18 +47,18 @@ namespace DylibBinder {
 				switch (type) {
 				case SwiftFunctionType funcType:
 					HandleType (funcType);
-					return;
+					break;
 				case SwiftBoundGenericType boundType:
 					HandleType (boundType);
-					return;
+					break;
 				case SwiftTupleType tupleType:
 					HandleType (tupleType);
-					return;
+					break;
 				case SwiftGenericArgReferenceType refType:
 					HandleType (refType);
-					return;
+					break;
 				default:
-					return;
+					break;
 				}
 			}
 		}
@@ -74,15 +68,15 @@ namespace DylibBinder {
 			switch (funcType.Parameters) {
 			case SwiftBoundGenericType boundType:
 				HandleType (boundType);
-				return;
+				break;
 			case SwiftTupleType tupleType:
 				HandleType (tupleType);
-				return;
+				break;
 			case SwiftGenericArgReferenceType refType:
 				HandleType (refType);
-				return;
+				break;
 			default:
-				return;
+				break;
 			}
 		}
 
@@ -100,36 +94,25 @@ namespace DylibBinder {
 				switch (content) {
 				case SwiftBoundGenericType boundGType:
 					HandleType (boundGType);
-					return;
+					break;
 				case SwiftFunctionType cFuncType:
 					HandleType (cFuncType);
-					return;
+					break;
 				case SwiftGenericArgReferenceType refType:
 					HandleType (refType);
-					return;
+					break;
 				case SwiftTupleType innerTupleType:
 					HandleType (innerTupleType);
-					return;
+					break;
 				default:
-					return;
+					break;
 				}
 			}
 		}
 
 		void HandleType (SwiftGenericArgReferenceType refType)
 		{
-			AddIfNotPresent (new DBGenericParameter (refType.Depth, refType.Index));
-		}
-
-		void AddIfNotPresent (DBGenericParameter newGP)
-		{
-			if (GenericParameters.Count == 0) {
-				GenericParameters.Add (newGP);
-				return;
-			}
-
-			if (!GenericParameters.Contains (newGP))
-				GenericParameters.Add (newGP);
+			GenericParameters.Add (new DBGenericParameter (refType.Depth, refType.Index));
 		}
 
 		void ParseTopLevelGenerics (DBFuncs funcs, DBProperties properties)
@@ -146,8 +129,22 @@ namespace DylibBinder {
 		void GrabTopLevelGenerics (DBGenericParameters genericParameters) {
 			foreach (var gp in genericParameters.GenericParameters) {
 				if (gp.Depth == 0)
-					AddIfNotPresent (gp);
+					GenericParameters.Add (gp);
 			}
 		}
 	}
+
+	class DBGenericParameterComparer : EqualityComparer<DBGenericParameter> {
+		public override bool Equals (DBGenericParameter gp1, DBGenericParameter gp2)
+		{
+			return gp1.Name == gp2.Name;
+		}
+
+		public override int GetHashCode (DBGenericParameter gp)
+		{
+			var maxDepthLevel = 18;
+			return gp.Index * maxDepthLevel + gp.Depth;
+		}
+	}
+
 }
