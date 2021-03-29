@@ -121,6 +121,8 @@ public class Imag {
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Imag");
 			Assert.IsNotNull (cl, "no class");
 
+			Assert.AreEqual (2, cl.AllProperties ().Count, "wrong property count");
+
 			var fn = cl.Members.FirstOrDefault (m => m.Name == "==") as FunctionDeclaration;
 			Assert.IsNotNull (fn, "no function");
 
@@ -148,6 +150,8 @@ public class Imag {
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Imag");
 			Assert.IsNotNull (cl, "no class");
+
+			Assert.AreEqual (2, cl.AllProperties ().Count, "wrong property count");
 
 			var fn = cl.Members.FirstOrDefault (m => m.Name == "*^*") as FunctionDeclaration;
 			Assert.IsNotNull (fn, "no function");
