@@ -5359,11 +5359,6 @@ namespace SwiftReflector {
 					using (DisposableTempDirectory dir = new DisposableTempDirectory ("wrapreflect", true)) {
 						string outputPath = dir.UniquePath (wrappingModuleName, "reflect", "xml");
 						var mdecl = compiler.ReflectToModules (mods, libs, "", wrappingModuleName).FirstOrDefault ();
-						//var output = compiler.Reflect (mods, libs, outputPath, "", wrappingModuleName);
-						////ModuleDeclaration mdecl = Reflector.FromXmlFile (outputPath) [0];
-						//if (!mdecl.IsCompilerCompatibleWith(CompilerVersion)) {
-						//	throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 48, $"The module {mods [0]} was compiled with the swift compiler version {mdecl.SwiftCompilerVersion}. It is incompatible with the compiler in {SwiftCompilerLocations.SwiftCompilerBin} which is version {CompilerVersion}");
-						//}
 						return new WrappingResult (wrapperModulePath, wrapperLibraryPath, wrapperModuleContents, mdecl, wrappingCompiler.FunctionReferenceCodeMap);
 					}
 				}
