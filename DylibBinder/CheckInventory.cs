@@ -1,48 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using SwiftReflector.Inventory;
+using SwiftReflector;
 
 namespace DylibBinder {
-	internal class CheckInventory {
-		public CheckInventory (ModuleInventory mi)
+	internal class CheckInventoryValues {
+		public CheckInventoryValues ()
 		{
-			Classes = SortedSetExtensions.CreateClassSortedSet ();
-			Structs = SortedSetExtensions.CreateClassSortedSet ();
-			Enums = SortedSetExtensions.CreateClassSortedSet ();
-			Protocols = SortedSetExtensions.CreateProtocolSortedSet ();
-
-			GetClassesStructsEnums (mi);
-			GetProtocols (mi);
 		}
 
-		public SortedSet<ClassContents> Classes { get; }
-		public SortedSet<ClassContents> Structs { get; }
-		public SortedSet<ClassContents> Enums { get; }
-		public SortedSet<ProtocolContents> Protocols { get; }
+		public SortedSet<ClassContents> Classes { get; } = SortedSetExtensions.CreateClassSortedSet ();
+		public SortedSet<ClassContents> Structs { get; } = SortedSetExtensions.CreateClassSortedSet ();
+		public SortedSet<ClassContents> Enums { get; } = SortedSetExtensions.CreateClassSortedSet ();
+		public SortedSet<ProtocolContents> Protocols { get; } = SortedSetExtensions.CreateProtocolSortedSet ();
+	}
 
-		void GetClassesStructsEnums (ModuleInventory mi)
+	internal class CheckInventoryDictionary {
+		public CheckInventoryDictionary (ModuleInventory mi)
 		{
-			foreach (var m in mi.ModuleNames) {
-				foreach (var elem in mi.ClassesForName (m)) {
-					if (!elem.Name.ToFullyQualifiedName (true).IsPublic ())
-						continue;
-					if (elem.Name.IsClass)
-						Classes.Add (elem);
-					else if (elem.Name.IsStruct)
-						Structs.Add (elem);
-					else if (elem.Name.IsEnum)
-						Enums.Add (elem);
-				}
+			GetValues (mi);
+		}
+
+		public SortedDictionary<string, CheckInventoryValues> CheckInventoryDict { get; } = new SortedDictionary<string, CheckInventoryValues> ();
+
+		void GetValues (ModuleInventory mi)
+		{
+			foreach (var module in mi.ModuleNames) {
+				if (!CheckInventoryDict.ContainsKey (module.Name))
+					CheckInventoryDict.Add (module.Name, new CheckInventoryValues ());
+
+				GetClassesStructsEnums (mi, module);
+				GetProtocols (mi, module);
 			}
 		}
 
-		void GetProtocols (ModuleInventory mi)
+		void GetClassesStructsEnums (ModuleInventory mi, SwiftName module)
 		{
-			foreach (var m in mi.ModuleNames) {
-				foreach (var p in mi.ProtocolsForName (m)) {
-					if (!p.Name.ToFullyQualifiedName (true).Contains ("_"))
-						Protocols.Add (p);
-				}
+			foreach (var elem in mi.ClassesForName (module)) {
+				if (!elem.Name.ToFullyQualifiedName ().IsPublic ())
+					continue;
+				if (elem.Name.IsClass)
+					CheckInventoryDict [module.Name].Classes.Add (elem);
+				else if (elem.Name.IsStruct)
+					CheckInventoryDict [module.Name].Structs.Add (elem);
+				else if (elem.Name.IsEnum)
+					CheckInventoryDict [module.Name].Enums.Add (elem);
+			}
+		}
+
+		void GetProtocols (ModuleInventory mi, SwiftName module)
+		{
+			foreach (var p in mi.ProtocolsForName (module)) {
+				if (!p.Name.ToFullyQualifiedName ().Contains ("_"))
+					CheckInventoryDict [module.Name].Protocols.Add (p);
 			}
 		}
 	}

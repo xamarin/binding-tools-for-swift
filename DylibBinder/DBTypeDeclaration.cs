@@ -13,6 +13,7 @@ namespace DylibBinder {
 		{
 			Kind = TypeKind.Protocol;
 			Name = protoContents.Name.ToFullyQualifiedName ();
+			Module = protoContents.Name.Module.Name;
 			Funcs = new DBFuncs (protoContents);
 			ApplyInouts ();
 		}
@@ -26,7 +27,8 @@ namespace DylibBinder {
 			else
 				Kind = TypeKind.Struct;
 
-			Name = classContents.Name.ToFullyQualifiedName ();
+			Name = classContents.Name.ToFullyQualifiedName (false);
+			Module = classContents.Name.Module.Name;
 			Funcs = new DBFuncs (classContents);
 			Properties = new DBProperties (classContents);
 			GenericParameters = new DBGenericParameters (this);
@@ -38,6 +40,7 @@ namespace DylibBinder {
 
 		public TypeKind Kind { get; }
 		public string Name { get; }
+		public string Module { get; }
 		public TypeAccessibility Accessibility { get; } = TypeAccessibility.Public;
 		public bool IsObjC { get; } = false;
 		public bool IsFinal { get; } = false;
@@ -89,7 +92,7 @@ namespace DylibBinder {
 		void ApplyInoutsToParameter (DBParameter parameter)
 		{
 			var sb = new StringBuilder ();
-			sb.Append ($"inout {Name}{GenericParametersToString ()}");
+			sb.Append ($"inout {Module}.{Name}{GenericParametersToString ()}");
 			parameter.Type = parameter.Type.Insert (0, sb.ToString ());
 		}
 
@@ -111,28 +114,39 @@ namespace DylibBinder {
 
 	internal class DBTypeDeclarations {
 		public DBTypeDeclarations (ModuleInventory mi) {
-			var checkInventory = new CheckInventory (mi);
+			var checkInventory = new CheckInventoryDictionary (mi);
 			var innerX = new InnerX ();
-			InnerXDictionary = innerX.AddClassContentsList (checkInventory.Classes, checkInventory.Enums, checkInventory.Structs);
-			FilterTypeDeclarations (checkInventory.Protocols, checkInventory.Classes, checkInventory.Structs, checkInventory.Enums);
+
+			foreach (var module in checkInventory.CheckInventoryDict.Keys) {
+				InnerXDictionary = innerX.AddClassContentsList (checkInventory.CheckInventoryDict[module].Classes,
+				                                                checkInventory.CheckInventoryDict [module].Enums,
+				                                                checkInventory.CheckInventoryDict [module].Structs);
+				FilterTypeDeclarations (module, checkInventory.CheckInventoryDict [module].Protocols,
+				                        checkInventory.CheckInventoryDict [module].Classes,
+				                        checkInventory.CheckInventoryDict [module].Structs,
+				                        checkInventory.CheckInventoryDict [module].Enums);
+			}
 		}
 
-		void FilterTypeDeclarations (SortedSet<ProtocolContents> protocolContentList, params SortedSet<ClassContents>[] ClassContentListArray)
+		void FilterTypeDeclarations (string module, SortedSet<ProtocolContents> protocolContentList, params SortedSet<ClassContents>[] ClassContentListArray)
 		{
+			if (!TypeDeclarations.ContainsKey (module))
+				TypeDeclarations.Add (module, new List<DBTypeDeclaration> ());
+
 			foreach (var classContentsList in ClassContentListArray) {
 				foreach (var classContents in classContentsList) {
-					if (classContents.Name.ToString ().IsPublic () && InnerXDictionary.ContainsKey (classContents.Name.ToString ()))
-						TypeDeclarations.Add (new DBTypeDeclaration (classContents));
+					if (classContents.Name.ToFullyQualifiedName ().IsPublic () && InnerXDictionary.ContainsKey (classContents.Name.ToFullyQualifiedName ()))
+						TypeDeclarations [module].Add (new DBTypeDeclaration (classContents));
 				}
 			}
 
 			foreach (var protocolContents in protocolContentList) {
-				if (protocolContents.Name.ToString ().IsPublic ())
-					TypeDeclarations.Add (new DBTypeDeclaration (protocolContents));
+				if (protocolContents.Name.ToFullyQualifiedName ().IsPublic ())
+					TypeDeclarations [module].Add (new DBTypeDeclaration (protocolContents));
 			}
 		}
 
-		public List<DBTypeDeclaration> TypeDeclarations { get; } = new List<DBTypeDeclaration> ();
+		public SortedDictionary<string, List<DBTypeDeclaration>> TypeDeclarations { get; } = new SortedDictionary<string, List<DBTypeDeclaration>> ();
 		public static Dictionary<string, List<ClassContents>> InnerXDictionary { get; private set; } = new Dictionary<string, List<ClassContents>> ();
 	}
 }

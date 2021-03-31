@@ -34,13 +34,13 @@ namespace DylibBinder {
 
 		internal static SortedSet<ProtocolContents> CreateProtocolSortedSet ()
 		{
-			Comparison<ProtocolContents> comp = (x, y) => string.Compare (x.Name.ToFullyQualifiedName (true), y.Name.ToFullyQualifiedName (true));
+			Comparison<ProtocolContents> comp = (x, y) => string.Compare (x.Name.ToFullyQualifiedName (), y.Name.ToFullyQualifiedName ());
 			return new SortedSet<ProtocolContents> (Comparer<ProtocolContents>.Create (comp));
 		}
 
 		internal static SortedSet<ClassContents> CreateClassSortedSet ()
 		{
-			Comparison<ClassContents> comp = (x, y) => string.Compare (x.Name.ToFullyQualifiedName (true), y.Name.ToFullyQualifiedName (true));
+			Comparison<ClassContents> comp = (x, y) => string.Compare (x.Name.ToFullyQualifiedName (), y.Name.ToFullyQualifiedName ());
 			return new SortedSet<ClassContents> (Comparer<ClassContents>.Create (comp));
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using SwiftReflector;
@@ -10,7 +11,7 @@ namespace DylibBinder {
 		{
 			writer = CreateWriter (outputPath);
 			WriteIntro (dBTopLevel);
-			WriteTypeDeclarations (dBTopLevel);
+			WriteModules (dBTopLevel);
 			CloseWriter ();
 		}
 
@@ -30,22 +31,27 @@ namespace DylibBinder {
 			writer.WriteAttributeString ("version", dBTopLevel.XmlVersion);
 
 			writer.WriteStartElement ("modulelist");
+		}
 
-			writer.WriteStartElement ("module");
-			writer.WriteAttributeString ("name", dBTopLevel.ModuleName);
-			writer.WriteAttributeString ("swiftVersion", dBTopLevel.SwiftVersion);
+		void WriteModules (DBTopLevel dBTopLevel)
+		{
+			foreach (var module in dBTopLevel.DBTypeDeclarations.TypeDeclarations.Keys) {
+				writer.WriteStartElement ("module");
+				writer.WriteAttributeString ("name", module);
+				writer.WriteAttributeString ("swiftVersion", dBTopLevel.SwiftVersion);
+				WriteTypeDeclarations (dBTopLevel.DBTypeDeclarations.TypeDeclarations [module]);
+			}
 		}
 
 
-		void WriteTypeDeclarations (DBTopLevel dBTopLevel)
+		void WriteTypeDeclarations (List <DBTypeDeclaration> typeDeclarations)
 		{
-			foreach (var typeDeclaration in dBTopLevel.DBTypeDeclarations.TypeDeclarations) {
+			foreach (var typeDeclaration in typeDeclarations) {
 
-				writer.WriteStartElement ("typedeclaration");
-				WriteAttributeStrings (("kind", typeDeclaration.Kind), ("name", typeDeclaration.Name),
-				                      ("accessibility", typeDeclaration.Accessibility), ("isDeprecated", typeDeclaration.IsDeprecated),
-				                      ("isUnavailable", typeDeclaration.IsUnavailable), ("isObjC", typeDeclaration.IsObjC),
-				                      ("isFinal", typeDeclaration.IsFinal));
+				if (InnerX.IsInnerType (typeDeclaration))
+					continue;
+
+				WriteTypeDeclarationOpening (typeDeclaration);
 
 				if (typeDeclaration.Kind == TypeKind.Protocol)
 					WriteProtocolTypeDeclaration (typeDeclaration);
@@ -53,6 +59,15 @@ namespace DylibBinder {
 					WriteTypeDeclaration (typeDeclaration);
 				writer.WriteEndElement ();
 			}
+		}
+
+		void WriteTypeDeclarationOpening (DBTypeDeclaration typeDeclaration)
+		{
+			writer.WriteStartElement ("typedeclaration");
+			WriteAttributeStrings (("kind", typeDeclaration.Kind), ("name", typeDeclaration.Name),
+								  ("accessibility", typeDeclaration.Accessibility), ("isDeprecated", typeDeclaration.IsDeprecated),
+								  ("isUnavailable", typeDeclaration.IsUnavailable), ("isObjC", typeDeclaration.IsObjC),
+								  ("isFinal", typeDeclaration.IsFinal));
 		}
 
 		void WriteTypeDeclaration (DBTypeDeclaration typeDeclaration)
@@ -84,11 +99,25 @@ namespace DylibBinder {
 			writer.WriteEndElement ();
 		}
 
+		// FIXME Multiple levels of innerType are not being written
+		// string
+		//    - string.type1
+		//    - string.type2
+		//        - string.type1.type1
+		//        - string.type1.type2
+		// string.type1
+		//    - string.type1.type1
+		//    - string.type1.type2
 		void WriteInnerTypes (DBTypeDeclaration typeDeclaration)
 		{
 			foreach (var innerType in typeDeclaration.InnerTypes.InnerTypes) {
 				writer.WriteStartElement ($"inner{innerType.Kind}");
+				WriteTypeDeclarationOpening (innerType);
 				WriteTypeDeclaration (innerType);
+				foreach (var innerInnerType in innerType.InnerTypes.InnerTypes) {
+					WriteInnerTypes (innerInnerType);
+				}
+				writer.WriteEndElement ();
 				writer.WriteEndElement ();
 			}
 		}
