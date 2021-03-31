@@ -33,7 +33,7 @@ namespace DylibBinder {
 			if (nestingNames.Count == 0)
 				return;
 
-			var nestingNameString = c.Name.ToFullyQualifiedName (true);
+			var nestingNameString = c.Name.ToFullyQualifiedName ();
 
 			if (nestingNameString == null)
 				return;
@@ -68,6 +68,11 @@ namespace DylibBinder {
 				return null;
 
 			return childName.Substring (0, matches [matches.Count - 1].Index);
+		}
+
+		public static bool IsInnerType (DBTypeDeclaration typeDeclaration)
+		{
+			return Regex.Matches (typeDeclaration.Name, @"\.").Count > 0;
 		}
 	}
 }
