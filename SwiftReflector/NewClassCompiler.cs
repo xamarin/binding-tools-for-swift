@@ -5354,6 +5354,7 @@ namespace SwiftReflector {
 				var targetInfo = ReflectorLocations.GetTargetInfo (targets [0]);
 				using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, null, true)) {
 					compiler.Verbose = verbose;
+					compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
 					var libs = new List<string> (libraryPaths);
 					libs.Add (outputDirectory);
 					using (DisposableTempDirectory dir = new DisposableTempDirectory ("wrapreflect", true)) {
