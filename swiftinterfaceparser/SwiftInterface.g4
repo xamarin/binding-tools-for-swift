@@ -564,7 +564,7 @@ keyword_as_identifier_in_labels : 'Any' | 'Protocol' | 'Self' | 'Type'
 operator : operator_angles | Operator ;
 
 // 8 consecutive '>' in an operator ought to be enough for anyone
-operator_angles : '>' '>' | '>' '>' '>' | '>' '>' '>' '>' '>' |
+operator_angles : '>' | '>' '>' | '>' '>' '>' | '>' '>' '>' '>' '>' |
 	'>' '>' '>' '>' '>' '>' | '>' '>' '>' '>' '>' '>' '>' |
 	'>' '>' '>' '>' '>' '>' '>' '>' ;
 
