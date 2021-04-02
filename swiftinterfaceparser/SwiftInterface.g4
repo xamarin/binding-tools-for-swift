@@ -257,13 +257,30 @@ parameter_clause : OpLParen OpRParen | OpLParen parameter_list OpRParen ;
 parameter_list : parameter (OpComma parameter)* ;
 
 parameter : 
-	external_parameter_name? local_parameter_name type_annotation
+	external_parameter_name? local_parameter_name type_annotation defaultInitializer?
 	| external_parameter_name? local_parameter_name type_annotation range_operator
 	;
 external_parameter_name : label_identifier ;
 local_parameter_name : label_identifier ;
 
+defaultInitializer : '=' dyckExpression+ ;
+dyckExpression : 
+	 OpLParen dyckSubExpression* OpRParen
+	| OpLBracket dyckSubExpression* OpRBracket
+	| OpLBrace dyckSubExpression* OpRBrace
+	| label_identifier
+	| literal
+	| operator
+	;
+dyckSubExpression :
+	dyckExpression
+	| any_other_things_for_dyck_expression;
 
+any_other_things_for_dyck_expression :	
+	( OpDot | OpComma | OpColon | OpSemi | OpAssign | OpAt | OpPound | OpBackTick | OpQuestion | OpUnder)
+	| arrow_operator
+	;
+	
 declaration_identifier : Identifier | keyword_as_identifier_in_declarations ;
 
 type_inheritance_clause :
