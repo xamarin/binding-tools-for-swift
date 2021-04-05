@@ -197,6 +197,7 @@ namespace SwiftReflector {
 
 			var declsPerModule = new List<List<BaseDeclaration>> ();
 			foreach (ModuleDeclaration moduleDeclaration in moduleDeclarations) {
+				TypeMapper.TypeDatabase.ModuleDatabaseForModuleName (moduleDeclaration.Name);
 				var allTypesAndTopLevel = moduleDeclaration.AllTypesAndTopLevelDeclarations;
 				TypeMapper.RegisterClasses (allTypesAndTopLevel.OfType<TypeDeclaration> ());
 				declsPerModule.Add (allTypesAndTopLevel);

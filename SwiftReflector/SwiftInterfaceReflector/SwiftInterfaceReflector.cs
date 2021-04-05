@@ -1636,6 +1636,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var failures = new StringBuilder ();
 			foreach (var module in importModules) {
+				if (module == "XamGlue")
+					continue;
 				if (!moduleLoader.Load (module, typeDatabase)) {
 					if (failures.Length > 0)
 						failures.Append (", ");
@@ -1899,13 +1901,15 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		}
 
 		string ReplaceGlobalName (string nonQualified)
-		{
+		{		
 			foreach (var module in importModules) {
 				var candidateName = $"{module}.{nonQualified}";
 				var entity = typeDatabase.TryGetEntityForSwiftName (candidateName);
 				if (entity != null)
 					return candidateName;
 			}
+			if (nonQualified == "EveryProtocol")
+				return "XamGlue.EveryProtocol";
 			return null;
 		}
 
