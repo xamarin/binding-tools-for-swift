@@ -1636,6 +1636,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var failures = new StringBuilder ();
 			foreach (var module in importModules) {
+				if (module == "XamGlue")
+					continue;
 				if (!moduleLoader.Load (module, typeDatabase)) {
 					if (failures.Length > 0)
 						failures.Append (", ");
@@ -1906,6 +1908,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				if (entity != null)
 					return candidateName;
 			}
+			if (nonQualified == "EveryProtocol")
+				return "XamGlue.EveryProtocol";
 			return null;
 		}
 

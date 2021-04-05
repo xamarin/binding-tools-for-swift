@@ -308,14 +308,20 @@ namespace SwiftReflector.TypeMapping {
 			}
 		}
 
-		public void AddOperator (OperatorDeclaration op, string moduleName = null)
+		public ModuleDatabase ModuleDatabaseForModuleName (string moduleName)
 		{
-			moduleName = moduleName ?? op.ModuleName;
-			ModuleDatabase db = null;
+			ModuleDatabase db;
 			if (!modules.TryGetValue (moduleName, out db)) {
 				db = new ModuleDatabase ();
 				modules.Add (moduleName, db);
 			}
+			return db;
+		}
+
+		public void AddOperator (OperatorDeclaration op, string moduleName = null)
+		{
+			moduleName = moduleName ?? op.ModuleName;
+			ModuleDatabase db = ModuleDatabaseForModuleName (moduleName);
 			db.Operators.Add (op);
 		}
 
