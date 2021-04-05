@@ -21,12 +21,12 @@ namespace DylibBinder {
 	internal class DBGenericParameters {
 
 		public DBGenericParameters (SwiftBaseFunctionType signature) {
-			AssignGenericParameters (signature);
+			GenericParameters.AddRange (signature.AssignGenericParameters ());
 		}
 
 		public DBGenericParameters (SwiftType swiftType)
 		{
-			FilterGenericParameterSource (swiftType);
+			GenericParameters.AddRange (swiftType.AssignGenericParameters ());
 		}
 
 		public DBGenericParameters (DBTypeDeclaration typeDeclaration)
@@ -36,84 +36,53 @@ namespace DylibBinder {
 
 		public HashSet<DBGenericParameter> GenericParameters { get; } = new HashSet<DBGenericParameter> (new DBGenericParameterComparer ());
 
-		void AssignGenericParameters (SwiftBaseFunctionType signature)
+		public static List<DBGenericParameter> FilterGenericParameterSource (params SwiftType [] types)
 		{
-			FilterGenericParameterSource (signature.Parameters, signature.ReturnType);
-		}
-
-		void FilterGenericParameterSource (params SwiftType [] types)
-		{
+			var genericParameters = new List<DBGenericParameter> ();
 			foreach (var type in types) {
-				switch (type) {
-				case SwiftFunctionType funcType:
-					HandleType (funcType);
-					break;
-				case SwiftBoundGenericType boundType:
-					HandleType (boundType);
-					break;
-				case SwiftTupleType tupleType:
-					HandleType (tupleType);
-					break;
-				case SwiftGenericArgReferenceType refType:
-					HandleType (refType);
-					break;
-				default:
-					break;
-				}
+				genericParameters.AddRange (GenericParameterSwitch (type));
 			}
+			return genericParameters;
 		}
 
-		void HandleType (SwiftFunctionType funcType)
+		public static List<DBGenericParameter> GetGenericParameters (SwiftFunctionType funcType)
 		{
-			switch (funcType.Parameters) {
-			case SwiftBoundGenericType boundType:
-				HandleType (boundType);
-				break;
-			case SwiftTupleType tupleType:
-				HandleType (tupleType);
-				break;
-			case SwiftGenericArgReferenceType refType:
-				HandleType (refType);
-				break;
-			default:
-				break;
-			}
+			var genericParameters = new List<DBGenericParameter> ();
+			genericParameters.AddRange (GenericParameterSwitch (funcType.Parameters));
+			return genericParameters;
 		}
 
-		void HandleType (SwiftBoundGenericType boundType)
+		public static List<DBGenericParameter> GetGenericParameters (SwiftBoundGenericType boundType)
 		{
+			var genericParameters = new List<DBGenericParameter> ();
 			foreach (var bound in boundType.BoundTypes) {
 				if (bound is SwiftGenericArgReferenceType refType)
-					HandleType (refType);
+					genericParameters.AddRange (GetGenericParameters (refType));
 			}
+			return genericParameters;
 		}
 
-		void HandleType (SwiftTupleType tupleType)
+		public static List<DBGenericParameter> GetGenericParameters (SwiftTupleType tupleType)
 		{
+			var genericParameters = new List<DBGenericParameter> ();
 			foreach (var content in tupleType.Contents) {
-				switch (content) {
-				case SwiftBoundGenericType boundGType:
-					HandleType (boundGType);
-					break;
-				case SwiftFunctionType cFuncType:
-					HandleType (cFuncType);
-					break;
-				case SwiftGenericArgReferenceType refType:
-					HandleType (refType);
-					break;
-				case SwiftTupleType innerTupleType:
-					HandleType (innerTupleType);
-					break;
-				default:
-					break;
-				}
+				genericParameters.AddRange (GenericParameterSwitch (content));
 			}
+			return genericParameters;
 		}
 
-		void HandleType (SwiftGenericArgReferenceType refType)
+		public static List<DBGenericParameter> GetGenericParameters (SwiftGenericArgReferenceType refType)
 		{
-			GenericParameters.Add (new DBGenericParameter (refType.Depth, refType.Index));
+			return new List<DBGenericParameter> () { new DBGenericParameter (refType.Depth, refType.Index)};
 		}
+
+		public static List<DBGenericParameter> GenericParameterSwitch (object type) => type switch {
+			SwiftFunctionType funcType => GetGenericParameters (funcType),
+			SwiftBoundGenericType boundType => GetGenericParameters (boundType),
+			SwiftTupleType tupleType => GetGenericParameters (tupleType),
+			SwiftGenericArgReferenceType refType => GetGenericParameters (refType),
+			_ => new List<DBGenericParameter> ()
+		};
 
 		void ParseTopLevelGenerics (DBFuncs funcs, DBProperties properties)
 		{
@@ -144,6 +113,20 @@ namespace DylibBinder {
 		{
 			var maxDepthLevel = 18;
 			return gp.Index * maxDepthLevel + gp.Depth;
+		}
+	}
+
+	internal static class SwiftBaseFunctionTypeExtensions {
+		public static List<DBGenericParameter> AssignGenericParameters (this SwiftBaseFunctionType signature)
+		{
+			return DBGenericParameters.FilterGenericParameterSource (signature.Parameters, signature.ReturnType);
+		}
+	}
+
+	internal static class SwiftTypeExtensions {
+		public static List<DBGenericParameter> AssignGenericParameters (this SwiftType swiftType)
+		{
+			return DBGenericParameters.FilterGenericParameterSource (swiftType);
 		}
 	}
 

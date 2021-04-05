@@ -58,6 +58,7 @@
     <Compile Include="DBElement.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="SortedSetExtensions.cs" />
+    <Compile Include="HashSetExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
