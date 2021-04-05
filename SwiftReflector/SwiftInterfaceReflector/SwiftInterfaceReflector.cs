@@ -1901,7 +1901,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		}
 
 		string ReplaceGlobalName (string nonQualified)
-		{		
+		{
 			foreach (var module in importModules) {
 				var candidateName = $"{module}.{nonQualified}";
 				var entity = typeDatabase.TryGetEntityForSwiftName (candidateName);
