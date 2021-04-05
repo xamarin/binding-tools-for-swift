@@ -65,6 +65,7 @@
     <None Include="Modules\modules.xml" />
     <None Include="Modules\modules_tester.xml" />
     <None Include="Modules\modules_backup.xml" />
+    <None Include="IgnoreList.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">
