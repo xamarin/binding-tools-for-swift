@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using DylibBinder;
@@ -133,15 +134,20 @@ namespace DylibBinder {
 			if (!TypeDeclarations.ContainsKey (module))
 				TypeDeclarations.Add (module, new List<DBTypeDeclaration> ());
 
+			var ignoreListPath = $"{Directory.GetCurrentDirectory ()}/../../IgnoreList.txt";
+			var ignoredTypes = SortedSetExtensions.CreateStringSortedSet ();
+			ignoredTypes.AddRange (File.ReadAllLines (ignoreListPath).Where (line => !line.StartsWith ("//", StringComparison.Ordinal) && line != string.Empty).ToList ());
+
 			foreach (var classContentsList in ClassContentListArray) {
 				foreach (var classContents in classContentsList) {
-					if (classContents.Name.ToFullyQualifiedName ().IsPublic () && InnerXDictionary.ContainsKey (classContents.Name.ToFullyQualifiedName ()))
+					if (classContents.Name.ToFullyQualifiedName ().IsPublic () && InnerXDictionary.ContainsKey (classContents.Name.ToFullyQualifiedName ())
+						&& !ignoredTypes.Contains(classContents.Name.ToFullyQualifiedName ()))
 						TypeDeclarations [module].Add (new DBTypeDeclaration (classContents));
 				}
 			}
 
 			foreach (var protocolContents in protocolContentList) {
-				if (protocolContents.Name.ToFullyQualifiedName ().IsPublic ())
+				if (protocolContents.Name.ToFullyQualifiedName ().IsPublic () && !ignoredTypes.Contains (protocolContents.Name.ToFullyQualifiedName ()))
 					TypeDeclarations [module].Add (new DBTypeDeclaration (protocolContents));
 			}
 		}
