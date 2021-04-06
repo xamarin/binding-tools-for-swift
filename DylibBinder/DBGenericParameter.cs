@@ -31,7 +31,7 @@ namespace DylibBinder {
 
 		public DBGenericParameters (DBTypeDeclaration typeDeclaration)
 		{
-			ParseTopLevelGenerics (typeDeclaration.Funcs, typeDeclaration.Properties);
+			GenericParameters.AddRange (typeDeclaration.ParseTopLevelGenerics ());
 		}
 
 		public HashSet<DBGenericParameter> GenericParameters { get; } = new HashSet<DBGenericParameter> (new DBGenericParameterComparer ());
@@ -83,24 +83,6 @@ namespace DylibBinder {
 			SwiftGenericArgReferenceType refType => GetGenericParameters (refType),
 			_ => new List<DBGenericParameter> ()
 		};
-
-		void ParseTopLevelGenerics (DBFuncs funcs, DBProperties properties)
-		{
-			foreach (var func in funcs.Funcs) {
-				GrabTopLevelGenerics (func.GenericParameters);
-			}
-
-			foreach (var prop in properties.Properties) {
-				GrabTopLevelGenerics (prop.GenericParameters);
-			}
-		}
-
-		void GrabTopLevelGenerics (DBGenericParameters genericParameters) {
-			foreach (var gp in genericParameters.GenericParameters) {
-				if (gp.Depth == 0)
-					GenericParameters.Add (gp);
-			}
-		}
 	}
 
 	class DBGenericParameterComparer : EqualityComparer<DBGenericParameter> {
