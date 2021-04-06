@@ -151,5 +151,65 @@
         <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="SwiftMetatype" entityType="Scalar" blitable="Blitable" size="8" stride="8">
             <typedeclaration kind="struct" name="Any.Type" module="Any" accessibility="Public" isObjC="false" isFinal="true" />
         </entity>
+        <!-- Taken from https://developer.apple.com/documentation/swift/swift_standard_library/operator_declarations -->
+        <!-- prefix -->
+        <operator name="!" operatorKind="Prefix" moduleName="Swift" />
+        <operator name="~" operatorKind="Prefix" moduleName="Swift" />
+        <operator name="+" operatorKind="Prefix" moduleName="Swift" />
+        <operator name="-" operatorKind="Prefix" moduleName="Swift" />
+        <operator name="..&lt;" operatorKind="Prefix" moduleName="Swift" />
+        <operator name="..." operatorKind="Prefix" moduleName="Swift" />
+        <!-- postfix -->
+        <operator name="..." operatorKind="Postfix" moduleName="Swift" />
+        <!-- infix -->
+        <operator name="&lt;&lt;" operatorKind="Infix" precedenceGroup="BitWiseShiftPrecedence" moduleName="Swift" />
+        <operator name="&gt;&gt;" operatorKind="Infix" precedenceGroup="BitWiseShiftPrecedence" moduleName="Swift" />
+        <operator name="*" operatorKind="Infix" precedenceGroup="MultiplicationPrecedence" moduleName="Swift" />
+        <operator name="/" operatorKind="Infix" precedenceGroup="MultiplicationPrecedence" moduleName="Swift" />
+        <operator name="%" operatorKind="Infix" precedenceGroup="MultiplicationPrecedence" moduleName="Swift" />
+        <operator name="&amp;*" operatorKind="Infix" precedenceGroup="MultiplicationPrecedence" moduleName="Swift" />
+        <operator name="&amp;" operatorKind="Infix" precedenceGroup="MultiplicationPrecedence" moduleName="Swift" />
+        <operator name="+" operatorKind="Infix" precedenceGroup="AdditionPrecedence" moduleName="Swift" />
+        <operator name="-" operatorKind="Infix" precedenceGroup="AdditionPrecedence" moduleName="Swift" />
+        <operator name="&amp;+" operatorKind="Infix" precedenceGroup="AdditionPrecedence" moduleName="Swift" />
+        <operator name="&amp;-" operatorKind="Infix" precedenceGroup="AdditionPrecedence" moduleName="Swift" />
+        <operator name="|" operatorKind="Infix" precedenceGroup="AdditionPrecedence" moduleName="Swift" />
+        <operator name="^" operatorKind="Infix" precedenceGroup="AdditionPrecedence" moduleName="Swift" />
+        <operator name="..&lt;" operatorKind="Infix" precedenceGroup="RangeFormationPrecedence" moduleName="Swift" />
+        <operator name="..." operatorKind="Infix" precedenceGroup="RangeFormationPrecedence" moduleName="Swift" />
+        <operator name="is" operatorKind="Infix" precedenceGroup="CastingPrecedence" moduleName="Swift" />
+        <operator name="as" operatorKind="Infix" precedenceGroup="CastingPrecedence" moduleName="Swift" />
+        <operator name="as?" operatorKind="Infix" precedenceGroup="CastingPrecedence" moduleName="Swift" />
+        <operator name="as!" operatorKind="Infix" precedenceGroup="CastingPrecedence" moduleName="Swift" />
+        <operator name="??" operatorKind="Infix" precedenceGroup="NilCoalescingPrecedence" moduleName="Swift" />
+        <operator name="&lt;" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="&lt;=" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="&gt;" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="&gt;=" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="==" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="!=" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="===" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="!==" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="~=" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name=".==" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name=".!=" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name=".&lt;" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name=".&lt;=" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name=".&gt;" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name=".&gt;=" operatorKind="Infix" precedenceGroup="ComparisonPrecedence" moduleName="Swift" />
+        <operator name="&amp;&amp;" operatorKind="Infix" precedenceGroup="LogicalConjunctionPrecedence" moduleName="Swift" />
+        <operator name="||" operatorKind="Infix" precedenceGroup="LogicalConjunctionPrecedence" moduleName="Swift" />
+        <operator name="?:" operatorKind="Infix" precedenceGroup="TernaryPrecedence" moduleName="Swift" />
+        <operator name="=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="*=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="/=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="%=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="+=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="-=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="&lt;&lt;=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="&gt;&gt;=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="&amp;=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="|=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+        <operator name="^=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
     </entities>
 </xamtypedatabase>

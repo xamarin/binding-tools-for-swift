@@ -140,5 +140,11 @@ namespace SwiftReflector {
 		ImplFunction,
 		DirectMethodReference,
 	}
+
+	public enum ReflectionStrategy {
+		None,
+		Compiler,
+		Parser,
+	}
 }
 

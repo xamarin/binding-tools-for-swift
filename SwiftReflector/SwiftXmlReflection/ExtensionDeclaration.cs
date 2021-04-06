@@ -65,14 +65,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 			xobjects.Add (new XElement ("inherits", inherits.ToArray ()));
 		}
 
-		public static ExtensionDeclaration FromXElement (XElement elem, ModuleDeclaration module)
+		public static ExtensionDeclaration FromXElement (TypeAliasFolder folder, XElement elem, ModuleDeclaration module)
 		{
 			var decl = new ExtensionDeclaration ();
 			decl.Module = module;
 			decl.ExtensionOnTypeName = (string)elem.Attribute ("onType");
+			decl.ExtensionOnType = folder.FoldAlias (null, decl.ExtensionOnType);
 			if (elem.Element ("members") != null) {
 				var members = from mem in elem.Element ("members").Elements ()
-					      select Member.FromXElement (mem, module, null) as Member;
+					      select Member.FromXElement (folder, mem, module, null) as Member;
 				decl.Members.AddRange (members);
 				foreach (var member in decl.Members) {
 					member.ParentExtension = decl;
@@ -80,7 +81,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 			if (elem.Element ("inherits") != null) {
 				var inherits = from inherit in elem.Element ("inherits").Elements ()
-					       select SwiftReflector.SwiftXmlReflection.Inheritance.FromXElement (inherit) as Inheritance;
+					       select SwiftReflector.SwiftXmlReflection.Inheritance.FromXElement (folder, inherit) as Inheritance;
 				decl.Inheritance.AddRange (inherits);
 			}
 			return decl;

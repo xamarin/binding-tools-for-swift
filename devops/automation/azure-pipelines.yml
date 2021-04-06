@@ -19,6 +19,8 @@ resources:
 variables:
   - group: xamops-azdev-secrets
   - group: Xamarin-Secrets
+  - name: GitHub.Token                                          # Override the GitHub.Token setting defined in the Xamarin Release group
+    value: $(github--pat--vs-mobiletools-engineering-service2)  # Use a token dedicated to critical production workflows and help avoid GitHub throttling
 
 parameters:
 - name: RunningTests
@@ -33,8 +35,10 @@ jobs:
 
   steps:
   - checkout: maccore
+    clean: true
     persistCredentials: true
   - checkout: self
+    clean: true
 
   - bash: |
       if [ -L /Applications/Xcode_12.0.1.app ]
@@ -63,6 +67,12 @@ jobs:
       ./maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
     env:
+      AUTH_TOKEN_GITHUB_COM: $(github--pat--vs-mobiletools-engineering-service2)
+      AUTH_TOKEN_LA_DEV_APPLE_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_LA_DISTR_APPLE_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_LA_MAC_INSTALLER_DISTR_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_2_P12: $(xqa--certificates--password)
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
   - script: |
@@ -116,6 +126,22 @@ jobs:
   - script: |
       set -e
       set -x
+      ./binding-tools-for-swift/devops/automation/run-tests.sh
+    displayName: 'Run tests'
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
+
+  - task: PublishTestResults@2
+    displayName: 'Publish NUnit Device Test Results'
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TestResult*.xml'
+      failTaskOnFailedTests: true
+    continueOnError: true
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
+
+  - script: |
+      set -e
+      set -x
       ./binding-tools-for-swift/devops/automation/build-package.sh
       ls -la ./package || true
     displayName: 'Package'
@@ -129,22 +155,6 @@ jobs:
       PathtoPublish: './package'
       ArtifactName: 'drop'
       publishLocation: 'Container'
-
-  - script: |
-      set -e
-      set -x
-      ./binding-tools-for-swift/devops/automation/run-tests.sh
-    displayName: 'Run tests'
-    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
-
-  - task: PublishTestResults@2
-    displayName: 'Publish NUnit Device Test Results'
-    inputs:
-      testResultsFormat: NUnit
-      testResultsFiles: '**/TestResult*.xml'
-      failTaskOnFailedTests: true
-    continueOnError: true
-    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
@@ -161,6 +171,12 @@ jobs:
     vmImage: windows-latest
 
   steps:
+  - checkout: maccore
+    clean: true
+    persistCredentials: true
+  - checkout: self
+    clean: true
+
   - task: DownloadPipelineArtifact@2
     inputs:
       source: current
@@ -196,7 +212,7 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
     workingDirectory: $(System.DefaultWorkingDirectory)
 
@@ -241,5 +257,5 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./devops/automation/add-commit-status.sh --token=$(github-pat) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'

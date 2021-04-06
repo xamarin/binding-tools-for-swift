@@ -395,6 +395,9 @@ namespace tomwiftytest {
 				if (Directory.Exists (objcRuntimePath))
 					sourceFiles = sourceFiles.And (Directory.GetFiles (objcRuntimePath, "*.cs"));
 
+				// for grabbing swiftinterface files for use in other testing contexts.
+//				SnarfSwiftInterfaceFile (tempDirectoryPath, testName, testClassName, nameSpace, "/Users/steveh/antlr-hack/swiftiface/testinputfiles");
+
 				var compilerWarnings = Compiler.CSCompile (tempDirectoryPath, sourceFiles, "NameNotImportant.exe", platform: platform);
 
 				if (compilerWarnings.Contains ("warning"))
@@ -796,6 +799,24 @@ public static class Console {
 			capturedMatches.Remove ("warning CS0219:");
 			if (capturedMatches.Count > 0)
 				Assert.Fail ($"Unexpected C# compiler warning(s): {warnings}");
+		}
+
+		static void SnarfSwiftInterfaceFile (string childPath, string testName, string testClassName, string nameSpace, string targetDirectory)
+		{
+			Exceptions.ThrowOnNull (childPath, nameof (childPath));
+			var directoryInfo = Directory.GetParent (childPath);
+			if (!directoryInfo.Exists)
+				return;
+			var path = directoryInfo.FullName;
+			var file = Directory.GetFiles (path, "*.swiftinterface").FirstOrDefault ();
+			if (file == null)
+				return;
+
+			if (!Directory.Exists (targetDirectory))
+				return;
+
+			var targetFile = Path.Combine (targetDirectory, $"{nameSpace}-{testClassName}-{testName}.swiftinterface");
+			File.Copy (Path.Combine (path, file), targetFile);
 		}
 	}
 }

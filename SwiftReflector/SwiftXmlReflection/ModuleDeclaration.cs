@@ -12,6 +12,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 		{
 			Declarations = new List<BaseDeclaration> ();
 			Extensions = new List<ExtensionDeclaration> ();
+			Operators = new List<OperatorDeclaration> ();
+			TypeAliases = new List<TypeAliasDeclaration> ();
 		}
 
 		public ModuleDeclaration (string name)
@@ -34,6 +36,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 		public List<BaseDeclaration> Declarations { get; private set; }
+		public List<TypeAliasDeclaration> TypeAliases { get; private set; }
 
 		public static ModuleDeclaration FromXElement (XElement elem)
 		{
@@ -42,12 +45,17 @@ namespace SwiftReflector.SwiftXmlReflection {
 				SwiftCompilerVersion = new Version((string)elem.Attribute("swiftVersion") ?? "3.1")
 			};
 
+			decl.TypeAliases.AddRange (elem.Descendants ("typealias").Select (al => TypeAliasDeclaration.FromXElement (decl.Name, al)));
+			var folder = new TypeAliasFolder (decl.TypeAliases);
+
 			// non extensions
 			foreach (var child in elem.Elements()) {
 				if (child.Name == "extension") {
-					decl.Extensions.Add (ExtensionDeclaration.FromXElement (child, decl));
+					decl.Extensions.Add (ExtensionDeclaration.FromXElement (folder, child, decl));
+				} else if (child.Name == "operator") {
+					decl.Operators.Add (OperatorDeclaration.FromXElement (child, child.Attribute ("moduleName")?.Value));
 				} else {
-					decl.Declarations.Add (BaseDeclaration.FromXElement (child, decl, null));
+					decl.Declarations.Add (BaseDeclaration.FromXElement (folder, child, decl, null));
 				}
 			}
 			return decl;
@@ -68,6 +76,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public IEnumerable<FunctionDeclaration> TopLevelFunctions { get { return Functions.Where (f => f.Parent == null && f.Access == Accessibility.Public || f.Access == Accessibility.Open); } }
 		public IEnumerable<PropertyDeclaration> TopLevelProperties { get { return Properties.Where (p => p.Parent == null && p.Access == Accessibility.Public || p.Access == Accessibility.Open); } }
 		public List<ExtensionDeclaration> Extensions { get; private set; }
+		public List<OperatorDeclaration> Operators { get; private set; }
 
 
 		public bool IsCompilerCompatibleWith(Version targetCompilerVersion)

@@ -112,6 +112,10 @@
     <Compile Include="SwiftReflector\ProtowitnessTest.cs" />
     <Compile Include="SwiftReflector\EnumTests.cs" />
     <Compile Include="DylibBinderTests\ReferenceStructTests.cs" />
+    <Compile Include="XmlReflectionTests\SwiftInterfaceParserTests.cs" />
+    <Compile Include="XmlReflectionTests\XmlComparator.cs" />
+    <Compile Include="XmlReflectionTests\ComparatorTests.cs" />
+    <Compile Include="XmlReflectionTests\TypeAliasTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

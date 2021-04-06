@@ -46,7 +46,7 @@ namespace SwiftReflector.TypeMapping {
 		Dictionary<DotNetName, string> netNamesToSwiftNames = new Dictionary<DotNetName, string> ();
 		Dictionary<string, DotNetName> swiftNamesToNetNames = new Dictionary<string, DotNetName> ();
 
-		Dictionary<string, Dictionary<string, Entity>> modules = new Dictionary<string, Dictionary<string, Entity>> ();
+		Dictionary<string, ModuleDatabase> modules = new Dictionary<string, ModuleDatabase> ();
 
 		public TypeDatabase ()
 		{
@@ -153,9 +153,9 @@ namespace SwiftReflector.TypeMapping {
 				throw new AggregateException (errors.Errors.Select ((v) => v.Exception));
 		}
 
-		Dictionary<string, Entity> EntityCollection (string moduleName)
+		ModuleDatabase EntityCollection (string moduleName)
 		{
-			Dictionary<string, Entity> module = null;
+			ModuleDatabase module = null;
 			modules.TryGetValue (Exceptions.ThrowOnNull (moduleName, nameof(moduleName)), out module);
 			return module;
 		}
@@ -168,6 +168,13 @@ namespace SwiftReflector.TypeMapping {
 			return Enumerable.Empty<Entity> ();
 		}
 
+		public IEnumerable <OperatorDeclaration> OperatorsForModule (string moduleName)
+		{
+			var module = EntityCollection (moduleName);
+			if (module != null)
+				return module.Operators;
+			return Enumerable.Empty<OperatorDeclaration> ();
+		}
 
 		public void Write (string file, IEnumerable<string> modules)
 		{
@@ -179,6 +186,18 @@ namespace SwiftReflector.TypeMapping {
 		public void Write (Stream stm, IEnumerable<string> modules)
 		{
 			Write (stm, modules.Select (s => EntitiesForModule (s)).SelectMany (x => x).Select (entity => entity.ToXElement ()));
+		}
+
+		IEnumerable<XElement> GatherXElements (IEnumerable<string> modules)
+		{
+			foreach (var modName in modules) {
+				foreach (var entity in EntitiesForModule (modName)) {
+					yield return entity.ToXElement ();
+				}
+				foreach (var op in OperatorsForModule (modName)) {
+					yield return op.ToXElement ();
+				}
+			}
 		}
 
 		public void Write (string file, string module)
@@ -211,6 +230,9 @@ namespace SwiftReflector.TypeMapping {
 			foreach (var mod in other.modules.Values) {
 				foreach (var entity in mod.Values) {
 					AddEntity (entity, errors);
+				}
+				foreach (var op in mod.Operators) {
+					AddOperator (op);
 				}
 			}
 			return initialErrorCount != errors.ErrorCount; 
@@ -276,7 +298,43 @@ namespace SwiftReflector.TypeMapping {
 						continue;
 					AddEntity (e, errors);
 				}
+
+				var ops = from op in entityList.Elements ("operator")
+					  select OperatorDeclaration.FromXElement (op, null);
+
+				foreach (var op in ops) {
+					AddOperator (op);
+				}
 			}
+		}
+
+		public ModuleDatabase ModuleDatabaseForModuleName (string moduleName)
+		{
+			ModuleDatabase db;
+			if (!modules.TryGetValue (moduleName, out db)) {
+				db = new ModuleDatabase ();
+				modules.Add (moduleName, db);
+			}
+			return db;
+		}
+
+		public void AddOperator (OperatorDeclaration op, string moduleName = null)
+		{
+			moduleName = moduleName ?? op.ModuleName;
+			ModuleDatabase db = ModuleDatabaseForModuleName (moduleName);
+			db.Operators.Add (op);
+		}
+
+		public IEnumerable <OperatorDeclaration> FindOperators (IEnumerable <string> moduleNames)
+		{
+			foreach (var moduleName in moduleNames) {
+				ModuleDatabase db = null;
+				if (!modules.TryGetValue (moduleName, out db))
+					continue;
+				foreach (var op in db.Operators)
+					yield return op;
+			}
+			yield break;
 		}
 
 		void AddEntity (Entity e, ErrorHandling errors)
@@ -301,9 +359,9 @@ namespace SwiftReflector.TypeMapping {
 
 		void AddEntityToModuleCollection (string moduleName, Entity e)
 		{
-			Dictionary<string, Entity> entities = null;
+			ModuleDatabase entities = null;
 			if (!modules.TryGetValue (moduleName, out entities)) {
-				entities = new Dictionary<string, Entity> ();
+				entities = new ModuleDatabase ();
 				modules.Add (moduleName, entities);
 			}
 			entities.Add (e.Type.ToFullyQualifiedName (true), e);
@@ -322,7 +380,8 @@ namespace SwiftReflector.TypeMapping {
 				return null;
 			}
 			var module = MakeModuleForName (moduleName, theModules);
-			var decl = TypeDeclaration.FromXElement (typeDeclElement, module, null) as TypeDeclaration;
+			var folder = new TypeAliasFolder (module.TypeAliases);
+			var decl = TypeDeclaration.FromXElement (folder, typeDeclElement, module, null) as TypeDeclaration;
 			if (decl == null) {
 				errors.Add (new ReflectorError (ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 8, "Incorrect type declaration in entity.")));
 				return null;

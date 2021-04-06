@@ -447,6 +447,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public NamedTypeSpec (string name)
 			: base (TypeSpecKind.Named)
 		{
+			name = SwiftInterfaceReflector.SwiftInterfaceReflector.UnTick (name);
 			// Hack filter.
 			// For whatever reason, Any and AnyObject are not
 			// strictly in the Swift module. But they are.
