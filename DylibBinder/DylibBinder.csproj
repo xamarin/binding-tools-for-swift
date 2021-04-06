@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Mono.Options">
-      <HintPath>Mono.Options.dll</HintPath>
+      <HintPath>..\packages\Mono.Options.6.6.0.161\lib\net40\Mono.Options.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
@@ -62,11 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="Mono.Options.dll" />
     <None Include="Modules\modules.xml" />
     <None Include="Modules\modules_tester.xml" />
     <None Include="Modules\modules_backup.xml" />
     <None Include="IgnoreList.txt" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">
