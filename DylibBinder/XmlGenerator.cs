@@ -99,15 +99,6 @@ namespace DylibBinder {
 			writer.WriteEndElement ();
 		}
 
-		// FIXME Multiple levels of innerType are not being written
-		// string
-		//    - string.type1
-		//    - string.type2
-		//        - string.type1.type1
-		//        - string.type1.type2
-		// string.type1
-		//    - string.type1.type1
-		//    - string.type1.type2
 		void WriteInnerTypes (DBTypeDeclaration typeDeclaration)
 		{
 			foreach (var innerType in typeDeclaration.InnerTypes.InnerTypes) {
