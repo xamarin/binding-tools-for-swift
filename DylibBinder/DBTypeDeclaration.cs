@@ -155,4 +155,29 @@ namespace DylibBinder {
 		public SortedDictionary<string, List<DBTypeDeclaration>> TypeDeclarations { get; } = new SortedDictionary<string, List<DBTypeDeclaration>> ();
 		public static Dictionary<string, List<ClassContents>> InnerXDictionary { get; private set; } = new Dictionary<string, List<ClassContents>> ();
 	}
+
+	internal static class DBTypeDeclarationExtensions {
+		public static List<DBGenericParameter> ParseTopLevelGenerics (this DBTypeDeclaration typeDeclaration)
+		{
+			var genericParameters = new List<DBGenericParameter> ();
+			foreach (var func in typeDeclaration.Funcs.Funcs) {
+				genericParameters.AddRange (GrabTopLevelGenerics (func.GenericParameters));
+			}
+
+			foreach (var prop in typeDeclaration.Properties.Properties) {
+				genericParameters.AddRange (GrabTopLevelGenerics (prop.GenericParameters));
+			}
+			return genericParameters;
+		}
+
+		public static List<DBGenericParameter> GrabTopLevelGenerics (DBGenericParameters genericParameters)
+		{
+			var genericParametersList = new List<DBGenericParameter> ();
+			foreach (var gp in genericParameters.GenericParameters) {
+				if (gp.Depth == 0)
+					genericParametersList.Add (gp);
+			}
+			return genericParametersList;
+		}
+	}
 }
