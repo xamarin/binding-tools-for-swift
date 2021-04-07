@@ -686,7 +686,14 @@ public static class Console {
 					var output = new StringBuilder ();
 					var responseFile = Path.Combine (workingDirectory, name + ".rsp");
 					File.WriteAllText (responseFile, mmp.ToString ());
-					var rv = ExecAndCollect.RunCommand ("/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/bin/mmp", "--link_flags=-headerpad_max_install_names " + StringUtils.Quote ($"@{responseFile}"), output: output, verbose: true);
+					// The test environment is coming is with PKG_CONFIG_LIBDIR=""
+					// which causes macOS tests to fail. This removes the environment
+					// variable and lets the tests pass.
+					var env = new Dictionary<string, string> () {
+						{ "PKG_CONFIG_LIBDIR", null }
+					};
+					var rv = ExecAndCollect.RunCommand ("/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/bin/mmp", "--link_flags=-headerpad_max_install_names " + StringUtils.Quote ($"@{responseFile}"),
+						env: env, output: output, verbose: true);
 					if (rv != 0) {
 						Console.WriteLine (output);
 						throw new Exception ($"Failed to run mmp, exit code: {rv}");

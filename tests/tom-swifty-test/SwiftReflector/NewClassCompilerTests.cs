@@ -20,6 +20,7 @@ namespace SwiftReflector {
 	[RunWithLeaks]
 	public class NewClassCompilerTests {
 		[Test]
+		[Ignore ("https://github.com/xamarin/binding-tools-for-swift/issues/645")]
 		public void SmokeTest ()
 		{
 			string code = "public final class Bar { }";
