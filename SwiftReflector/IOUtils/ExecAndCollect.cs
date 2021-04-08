@@ -73,15 +73,25 @@ namespace SwiftReflector.IOUtils {
 				info.EnvironmentVariables.Remove ("XCODE_DEVELOPER_DIR_PATH");
 			}
 
-			if (verbose)
+
+			if (verbose) {
+				var envOut = new StringBuilder ();
+				foreach (var key in info.EnvironmentVariables.Keys) {
+					var value = info.EnvironmentVariables [key as string];
+					envOut.AppendLine ($"export {key}={value}");
+				}
+				envOut.AppendLine ($"{path} {args}");
+				Console.Write (envOut.ToString ());
 				Console.WriteLine ("{0} {1}", path, args);
+			}
 
 			using (var p = Process.Start (info)) {
+				var error_output = new StringBuilder ();
 				var stdout_completed = new ManualResetEvent (false);
 				var stderr_completed = new ManualResetEvent (false);
 
 				ReadStream (p.StandardOutput.BaseStream, output, stdout_completed);
-				ReadStream (p.StandardError.BaseStream, output, stderr_completed);
+				ReadStream (p.StandardError.BaseStream, error_output, stderr_completed);
 
 				p.WaitForExit ();
 
@@ -91,9 +101,13 @@ namespace SwiftReflector.IOUtils {
 				if (verbose) {
 					if (output.Length > 0)
 						Console.WriteLine (output);
+					if (error_output.Length > 0)
+						Console.WriteLine (error_output);
 					if (p.ExitCode != 0)
 						Console.Error.WriteLine ($"Process exited with code {p.ExitCode}");
 				}
+				if (p.ExitCode != 0 && error_output.Length > 0)
+					output.Append (error_output);
 				return p.ExitCode;
 			}
 		}
