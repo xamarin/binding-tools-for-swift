@@ -59,7 +59,7 @@ MODULES:=$(shell ls -d devicetests/*/swiftsrc/*[!_]?????.swift 2>/dev/null | sed
 define SwiftModuleTemplate
 bin/devicetests/$(1)/$(2)/$(4): $$(wildcard devicetests/$(4)/swiftsrc/*.swift)
 	$$(Q) mkdir -p $$(dir $$@)
-	$$(call Q_2,SWIFTC [$(1)/$(2)]) $(SWIFTC) \
+	$$(call Q_2,SWIFTC [$(1)/$(2)]) $(SYSTEM_SWIFTC) \
 		-emit-module \
 		-emit-library \
 		-g \
