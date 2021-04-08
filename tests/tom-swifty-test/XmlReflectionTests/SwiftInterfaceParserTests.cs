@@ -268,7 +268,7 @@ public class Bar : Foo, Nifty {
 		}
 
 		[Test]
-		[Ignore ("Throwing wrong exception ")]
+		[Ignore ("Throwing wrong exception")]
 		public void WontLoadThisModuleHere ()
 		{
 			var swiftCode = @"
