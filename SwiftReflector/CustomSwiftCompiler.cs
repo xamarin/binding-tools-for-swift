@@ -244,10 +244,11 @@ namespace SwiftReflector {
 
 			var modulesInLibraries = SwiftModuleFinder.FindModuleNames (libraryDirectories, CompilerInfo.Target);
 
-			List<ISwiftModuleLocation> locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries,
-			                                                                                     includeDirectories, CompilerInfo.Target);
+			var locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries, includeDirectories, CompilerInfo.Target)
+				.Select (loc => loc.DirectoryPath).ToList ();
+			locations.AddRange (includeDirectories);
 
-			ReflectWithStrategies (locations.Select (loc => loc.DirectoryPath), libraryDirectories, pathName, extraArgs, moduleNames);
+			ReflectWithStrategies (locations, libraryDirectories, pathName, extraArgs, moduleNames);
 			return Reflector.FromXmlFile (pathName);
 		}
 

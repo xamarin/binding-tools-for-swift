@@ -52,9 +52,10 @@ import_kind :
 import_path : import_path_identifier (OpDot import_path_identifier)* ;
 import_path_identifier : declaration_identifier ;
 
-variable_declaration: variable_declaration_head variable_name type_annotation getter_setter_keyword_block? ;
+variable_declaration: variable_declaration_head variable_declaration_tail (OpComma variable_declaration_tail)* ;
 variable_declaration_head : attributes? declaration_modifiers? var_clause
 	| attributes? declaration_modifiers? let_clause ;
+variable_declaration_tail : variable_name type_annotation getter_setter_keyword_block? ;
 variable_name : declaration_identifier ;
 
 var_clause : 'var';
@@ -256,13 +257,30 @@ parameter_clause : OpLParen OpRParen | OpLParen parameter_list OpRParen ;
 parameter_list : parameter (OpComma parameter)* ;
 
 parameter : 
-	external_parameter_name? local_parameter_name type_annotation
+	external_parameter_name? local_parameter_name type_annotation defaultInitializer?
 	| external_parameter_name? local_parameter_name type_annotation range_operator
 	;
 external_parameter_name : label_identifier ;
 local_parameter_name : label_identifier ;
 
+defaultInitializer : '=' dyckExpression+ ;
+dyckExpression : 
+	 OpLParen dyckSubExpression* OpRParen
+	| OpLBracket dyckSubExpression* OpRBracket
+	| OpLBrace dyckSubExpression* OpRBrace
+	| label_identifier
+	| literal
+	| operator
+	;
+dyckSubExpression :
+	dyckExpression
+	| any_other_things_for_dyck_expression;
 
+any_other_things_for_dyck_expression :	
+	( OpDot | OpComma | OpColon | OpSemi | OpAssign | OpAt | OpPound | OpBackTick | OpQuestion | OpUnder)
+	| arrow_operator
+	;
+	
 declaration_identifier : Identifier | keyword_as_identifier_in_declarations ;
 
 type_inheritance_clause :
@@ -466,7 +484,7 @@ fragment Identifier_characters : Identifier_character+ ;
 
 Implicit_parameter_name : '$' Decimal_digits ;
 
-generic_parameter_clause : OpLess generic_parameter_list OpGreater  ;
+generic_parameter_clause : OpLess generic_parameter_list opGreater  ;
 generic_parameter_list : generic_parameter (OpComma generic_parameter)*  ;
 generic_parameter : type_name
 	| type_name OpColon type_identifier
@@ -480,13 +498,13 @@ requirement : conformance_requirement | same_type_requirement  ;
 conformance_requirement : type_identifier ':' type_identifier | type_identifier ':' protocol_composition_type  ;
 same_type_requirement : type_identifier OpEqEq type  ;
 
-generic_argument_clause : OpLess generic_argument_list OpGreater ;
+generic_argument_clause : OpLess generic_argument_list opGreater ;
 generic_argument_list : generic_argument (',' generic_argument)* ;
 generic_argument : type ;
 
+opGreater : '>';
 arrow_operator : '->' ;
 range_operator : '...' ;
-
 
 WS : [ \n\r\t\u000B\u000C\u0000]+ -> channel(HIDDEN) ;
 
@@ -496,7 +514,7 @@ OpAssign : '=' ;
 OpAmp : '&' ;
 OpQuestion : '?' ;
 OpLess : '<' ;
-OpGreater : '>' ;
+//OpGreater : '>' ;
 OpBang : '!' ;
 OpDot : '.' ;
 OpComma : ',' ;
@@ -560,14 +578,20 @@ keyword_as_identifier_in_labels : 'Any' | 'Protocol' | 'Self' | 'Type'
 	| 'where' | 'while' | 'willSet' | 'x86_64'
 	;
  
-operator : Operator ;
+operator : operator_angles | Operator ;
 
+// 8 consecutive '>' in an operator ought to be enough for anyone
+operator_angles : '>' | '>' '>' | '>' '>' '>' | '>' '>' '>' '>' '>' |
+	'>' '>' '>' '>' '>' '>' | '>' '>' '>' '>' '>' '>' '>' |
+	'>' '>' '>' '>' '>' '>' '>' '>' ;
 
 Operator :
 	OperatorHead OperatorCharacters?
+	| OperatorHeadGreater OperatorFollowNoGreater
+	| OperatorHeadGreater OperatorFollowNoGreater OperatorFollow+
 	| DotOperatorHead DotOperatorFollow+;
 
-OperatorHead :
+fragment OperatorHeadGreater :
 	('/' | '=' | '-' | '+' | '!' | '*' | '%' | '&' | '|' | '<' | '>' | '^' | '~' | '?')
 	| [\u00A1-\u00A7]
 	| [\u00A9\u00AB] | [\u00AC\u00AE]
@@ -579,7 +603,36 @@ OperatorHead :
 	| [\u3001-\u3003] | [\u3008-\u3020] | [\u3030]
 	;
 
-OperatorCharacters : OperatorFollow+;
+
+fragment OperatorHead :
+	('/' | '=' | '-' | '+' | '!' | '*' | '%' | '&' | '|' | '<' | '^' | '~' | '?')
+	| [\u00A1-\u00A7]
+	| [\u00A9\u00AB] | [\u00AC\u00AE]
+	| [\u00B0-\u00B1\u00B6\u00BB\u00BF\u00D7\u00F7]
+	| [\u2016-\u2017\u2020-\u2027] | [\u2030-\u203E]
+	| [\u2041-\u2053] | [\u2055-\u205E]
+	| [\u2190-\u23FF] | [\u2500-\u2775]
+	| [\u2794-\u2BFF] | [\u2E00-\u2E7F]
+	| [\u3001-\u3003] | [\u3008-\u3020] | [\u3030]
+	;
+
+fragment OperatorCharacters : OperatorFollow+;
+
+fragment OperatorFollowNoGreater :
+	('/' | '=' | '-' | '+' | '!' | '*' | '%' | '&' | '|' | '<' | '^' | '~' | '?')
+	| [\u00A1-\u00A7]
+	| [\u00A9\u00AB] | [\u00AC\u00AE]
+	| [\u00B0-\u00B1\u00B6\u00BB\u00BF\u00D7\u00F7]
+	| [\u0300–\u036F]
+	| [\u1DC0-\u1DFF] | [\u20D0-\u20FF]
+	| [\u2016-\u2017\u2020-\u2027] | [\u2030-\u203E]
+	| [\u2041-\u2053] | [\u2055-\u205E]
+	| [\u2190-\u23FF] | [\u2500-\u2775]
+	| [\u2794-\u2BFF] | [\u2E00-\u2E7F]
+	| [\u3001-\u3003] | [\u3008-\u3020] | [\u3030]
+	| [\ufe00-\ufe0f] | [\ufe20-\ufe2f]
+	| [\u{e0100}-\u{e01ef}]
+	;
 
 fragment OperatorFollow :
 	('/' | '=' | '-' | '+' | '!' | '*' | '%' | '&' | '|' | '<' | '>' | '^' | '~' | '?')
@@ -605,4 +658,3 @@ OpEqEq : '==' ;
 
 
 Comment_line: '//' ~[\r\n]* ;
-

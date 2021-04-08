@@ -286,8 +286,16 @@ namespace SwiftReflector {
 									var genRef = new CSIdentifier (CSGenericReferenceType.DefaultNamer (depthIndex.Item1, depthIndex.Item2));
 									retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier (genType.ToString ())));
 								} else {
-									packs.AddIfNotPresent (ntb.NameSpace);
-									retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier (ntb.Type)));
+									// special cases? Yes, we like special cases.
+									// AnyObject is technically an empty protocol, so we map
+									// it to ISwiftObject.
+									if (ntb.FullName == "SwiftRuntimeLibrary.SwiftAnyObject") {
+										packs.AddIfNotPresent (typeof (ISwiftObject));
+										retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier ("ISwiftObject")));
+									} else {
+										packs.AddIfNotPresent (ntb.NameSpace);
+										retval.GenericConstraints.Add (new CSGenericConstraint (genTypeId, new CSIdentifier (ntb.Type)));
+									}
 								}
 							} else if (constr is EqualityConstraint eq) {
 								// in swift: f<T, U> (a: T, b: U) where T: SwiftProto, U: T.AssocType

@@ -781,15 +781,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterVariable_declaration ([NotNull] Variable_declarationContext context)
 		{
-			var name = UnTick (context.variable_name ().GetText ());
 			var head = context.variable_declaration_head ();
-			var resultType = TrimColon (context.type_annotation ().GetText ());
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var attributes = GatherAttributes (head.attributes ());
 			var isDeprecated = CheckForDeprecated (attributes);
 			var isUnavailable = CheckForUnavailable (attributes);
 			var isStatic = ModifiersContains (head.declaration_modifiers (), kStatic);
-			var hasThrows = false;
 			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
 			var isLet = head.let_clause () != null;
 			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
@@ -797,59 +794,66 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
 
-			var getParamList = new XElement (kParameterList, new XAttribute (kIndex, "1"));
-			var getFunc = ToFunctionDeclaration ("get_" + name,
-				resultType, accessibility, isStatic, hasThrows, isFinal, isOptional,
-				isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
-				isUnavailable, isMutating, isRequired, isProperty, attributes);
+			foreach (var tail in context.variable_declaration_tail ()) {
 
-			currentElement.Push (getFunc);
-			var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
-			currentElement.Pop ();
-			getFunc.Add (getParamLists);
-			AddElementToParentMembers (getFunc);
-			AddObjCSelector (getFunc);
+				var name = UnTick (tail.variable_name ().GetText ());
+				var resultType = TrimColon (tail.type_annotation ().GetText ());
+				var hasThrows = false;
 
-			var setParamList = HasSetter (context, isLet) ?
-				new XElement (kParameterList, new XAttribute (kIndex, "1")) : null;
-
-			if (setParamList != null) {
-				var parmName = context.getter_setter_keyword_block ()?.setter_keyword_clause ().new_value_name ()?.GetText ()
-					?? kNewValue;
-				var setterType = EscapePossibleClosureType (resultType);
-				var newValueParam = new XElement (kParameter, new XAttribute (kIndex, "0"),
-					new XAttribute (kType, setterType), new XAttribute (kPublicName, parmName),
-					new XAttribute (kPrivateName, parmName), new XAttribute (kIsVariadic, false));
-				setParamList.Add (newValueParam);
-				var setFunc = ToFunctionDeclaration ("set_" + name,
-					"()", accessibility, isStatic, hasThrows, isFinal, isOptional,
+				var getParamList = new XElement (kParameterList, new XAttribute (kIndex, "1"));
+				var getFunc = ToFunctionDeclaration ("get_" + name,
+					resultType, accessibility, isStatic, hasThrows, isFinal, isOptional,
 					isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
 					isUnavailable, isMutating, isRequired, isProperty, attributes);
 
-				currentElement.Push (setFunc);
-				var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
+				currentElement.Push (getFunc);
+				var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
 				currentElement.Pop ();
+				getFunc.Add (getParamLists);
+				AddElementToParentMembers (getFunc);
+				AddObjCSelector (getFunc);
 
-				setFunc.Add (setParamLists);
-				AddElementToParentMembers (setFunc);
-				AddObjCSelector (setFunc);
+				var setParamList = HasSetter (tail, isLet) ?
+					new XElement (kParameterList, new XAttribute (kIndex, "1")) : null;
+
+				if (setParamList != null) {
+					var parmName = tail.getter_setter_keyword_block ()?.setter_keyword_clause ().new_value_name ()?.GetText ()
+						?? kNewValue;
+					var setterType = EscapePossibleClosureType (resultType);
+					var newValueParam = new XElement (kParameter, new XAttribute (kIndex, "0"),
+						new XAttribute (kType, setterType), new XAttribute (kPublicName, parmName),
+						new XAttribute (kPrivateName, parmName), new XAttribute (kIsVariadic, false));
+					setParamList.Add (newValueParam);
+					var setFunc = ToFunctionDeclaration ("set_" + name,
+						"()", accessibility, isStatic, hasThrows, isFinal, isOptional,
+						isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
+						isUnavailable, isMutating, isRequired, isProperty, attributes);
+
+					currentElement.Push (setFunc);
+					var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
+					currentElement.Pop ();
+
+					setFunc.Add (setParamLists);
+					AddElementToParentMembers (setFunc);
+					AddObjCSelector (setFunc);
+				}
+
+				var prop = new XElement (kProperty, new XAttribute (kName, name),
+					new XAttribute (nameof (accessibility), accessibility),
+					new XAttribute (kType, resultType),
+					new XAttribute (kStorage, kComputed),
+					new XAttribute (nameof (isStatic), XmlBool (isStatic)),
+					new XAttribute (nameof (isLet), XmlBool (isLet)),
+					new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)),
+					new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)),
+					new XAttribute (nameof (isOptional), XmlBool (isOptional)));
+				AddElementToParentMembers (prop);
 			}
-
-			var prop = new XElement (kProperty, new XAttribute (kName, name),
-				new XAttribute (nameof (accessibility), accessibility),
-				new XAttribute (kType, resultType),
-				new XAttribute (kStorage, kComputed),
-				new XAttribute (nameof (isStatic), XmlBool (isStatic)),
-				new XAttribute (nameof (isLet), XmlBool (isLet)),
-				new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)),
-				new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)),				
-				new XAttribute (nameof (isOptional), XmlBool (isOptional)));
-			AddElementToParentMembers (prop);
 
 			PushIgnore ();
 		}
 
-		bool HasSetter (Variable_declarationContext context, bool isLet)
+		bool HasSetter (Variable_declaration_tailContext context, bool isLet)
 		{
 			// conditions for having a setter:
 			// getter_setter_keyword_block is null (public var foo: Type)
@@ -1632,6 +1636,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var failures = new StringBuilder ();
 			foreach (var module in importModules) {
+				if (module == "XamGlue")
+					continue;
 				if (!moduleLoader.Load (module, typeDatabase)) {
 					if (failures.Length > 0)
 						failures.Append (", ");
@@ -1902,6 +1908,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				if (entity != null)
 					return candidateName;
 			}
+			if (nonQualified == "EveryProtocol")
+				return "XamGlue.EveryProtocol";
 			return null;
 		}
 
