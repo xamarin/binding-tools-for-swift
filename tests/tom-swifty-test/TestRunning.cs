@@ -151,7 +151,6 @@ namespace tomwiftytest {
 			if (enforceUTF8Encoding) {
 				InsertUTF8Assertion (body);
 			}
-			body.AddRange (callingCode);
 			body.Add (CaptureSwiftOutputPostlude (testName));
 
 			CSMethod run = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void, new CSIdentifier ("Run"),

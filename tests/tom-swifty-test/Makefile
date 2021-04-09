@@ -62,6 +62,8 @@ bin/devicetests/$(1)/$(2)/$(4): $$(wildcard devicetests/$(4)/swiftsrc/*.swift)
 	$$(call Q_2,SWIFTC [$(1)/$(2)]) $(SYSTEM_SWIFTC) \
 		-emit-module \
 		-emit-library \
+		-enable-library-evolution \
+		-emit-module-interface \
 		-g \
 		-sdk $$(shell xcrun --sdk "$(5)" --show-sdk-path) \
 		-target $(3) \
@@ -94,6 +96,7 @@ bin/devicetests/$(1)/$(2).framework/$(2): $$(foreach arch,$(3),bin/devicetests/$
 	$$(Q) mkdir -p bin/devicetests/$(1)/$(2).framework/Modules/$(2).swiftmodule
 	$$(Q) $$(foreach arch,$(3),$(CP) bin/devicetests/$(1)/$$(arch)/$(2).swiftdoc bin/devicetests/$(1)/$(2).framework/Modules/$(2).swiftmodule/$$(arch).swiftdoc &&) true
 	$$(Q) $$(foreach arch,$(3),$(CP) bin/devicetests/$(1)/$$(arch)/$(2).swiftmodule bin/devicetests/$(1)/$(2).framework/Modules/$(2).swiftmodule/$$(arch).swiftmodule &&) true
+	$$(Q) $$(foreach arch,$(3),$(CP) bin/devicetests/$(1)/$$(arch)/$(2).swiftinterface bin/devicetests/$(1)/$(2).framework/Modules/$(2).swiftmodule/$$(arch).swiftinterface &&) true
 	$$(call Q_2,LIPO [$(1)]) lipo $$^ -create -output $$@.tmp
 	$$(Q) mv $$@.tmp $$@
 
