@@ -75,7 +75,6 @@ namespace DylibBinder {
 		public List<DBParameter> Parameters { get; } = new List<DBParameter> ();
 	}
 
-
 	internal class DBParameterLists {
 		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance)
 		{
