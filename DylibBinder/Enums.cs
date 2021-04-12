@@ -1,13 +1,13 @@
 ﻿using System;
 namespace DylibBinder {
-	public enum TypeAccessibility {
+	internal enum TypeAccessibility {
 		Public,
 		Private,
 		Internal,
 		Open,
 	}
 
-	public enum Storage {
+	internal enum Storage {
 		Addressed,
 		AddressedWithObservers,
 		AddressedWithTrivialAccessors,
@@ -20,5 +20,14 @@ namespace DylibBinder {
 		StoredWithTrivialAccessors,
 		Coroutine,
 		MutableAddressor,
+	}
+
+	[Flags]
+	internal enum ParameterOptions {
+		None = 0,
+		IsVariadic = 1 << 0,
+		HasInstance = 1 << 1,
+		IsConstructor = 1 << 2,
+		IsEmptyParameter = 1 << 3,
 	}
 }

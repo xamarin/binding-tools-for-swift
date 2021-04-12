@@ -15,10 +15,6 @@ namespace DylibBinder {
 	}
 
 	internal class DBElements {
-		public DBElements ()
-		{
-		}
-
 		public List<DBElement> Elements { get; } = new List<DBElement> ();
 	}
 }

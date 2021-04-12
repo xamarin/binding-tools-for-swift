@@ -5,10 +5,6 @@ using SwiftReflector;
 
 namespace DylibBinder {
 	internal class CheckInventoryValues {
-		public CheckInventoryValues ()
-		{
-		}
-
 		public SortedSet<ClassContents> Classes { get; } = SortedSetExtensions.CreateClassSortedSet ();
 		public SortedSet<ClassContents> Structs { get; } = SortedSetExtensions.CreateClassSortedSet ();
 		public SortedSet<ClassContents> Enums { get; } = SortedSetExtensions.CreateClassSortedSet ();

@@ -4,16 +4,16 @@ using SwiftReflector;
 
 namespace DylibBinder {
 	internal class DBParameter {
-		public DBParameter (string type, string publicName, string privateName, bool isVariadic, bool hasInstance, bool isConstructor, int index, bool isEmptyParameter)
+		public DBParameter (string type, string publicName, string privateName, int index, ParameterOptions parameterOptions)
 		{
 			Type = type;
 			PublicName = publicName;
 			PrivateName = privateName;
-			IsVariadic = isVariadic;
 			Index = index;
-			HasInstance = hasInstance;
-			IsConstructor = isConstructor;
-			IsEmptyParameter = isEmptyParameter;
+			IsVariadic = parameterOptions.HasFlag (ParameterOptions.IsVariadic);
+			HasInstance = parameterOptions.HasFlag (ParameterOptions.HasInstance);
+			IsConstructor = parameterOptions.HasFlag (ParameterOptions.IsConstructor);
+			IsEmptyParameter = parameterOptions.HasFlag (ParameterOptions.IsEmptyParameter);
 		}
 
 		public string Type { get; set; }
@@ -35,25 +35,22 @@ namespace DylibBinder {
 			int parameterIndex = 0;
 
 			if (hasInstance) {
-				Parameters.Add (new DBParameter ("", "", "self", false, true, false, parameterIndex, false));
+				Parameters.Add (new DBParameter ("", "", "self", parameterIndex, ParameterOptions.HasInstance));
 				return;
 			} else if (isConstructor) {
-				Parameters.Add (new DBParameter (".Type", "", "self", false, false, true, parameterIndex, false));
+				Parameters.Add (new DBParameter (".Type", "", "self", parameterIndex, ParameterOptions.IsConstructor));
 				return;
 			}
 
 			foreach (var parameter in signature.EachParameter) {
 				var type = SwiftTypeToString.MapSwiftTypeToString (parameter);
 				var publicName = "_";
-				var privateName = $"privateName{PrivateNameCounter}";
-				PrivateNameCounter++;
+				var privateName = "privateName";
 
-				if (parameter.Name != null) {
+				if (parameter.Name != null)
 					publicName = privateName = parameter.Name.Name;
-					PrivateNameCounter--;
-				}
 
-				Parameters.Add (new DBParameter (type, publicName, privateName, parameter.IsVariadic, false, false, parameterIndex, false));
+				Parameters.Add (new DBParameter (type, publicName, privateName, parameterIndex, parameter.IsVariadic ? ParameterOptions.IsVariadic : ParameterOptions.None));
 				parameterIndex++;
 			}
 		}
@@ -63,21 +60,19 @@ namespace DylibBinder {
 			Index = index;
 
 			if (hasInstance) {
-				Parameters.Add (new DBParameter ("", "", "self", false, true, false, 0, false));
+				Parameters.Add (new DBParameter ("", "", "self", 0, ParameterOptions.HasInstance));
 				return;
 			}
 
 			if (propertyType == "Getter") {
-				Parameters.Add (new DBParameter (null, null, null, false, false, false, 0, true));
+				Parameters.Add (new DBParameter (null, null, null, 0, ParameterOptions.IsEmptyParameter));
 			} else {
-				Parameters.Add (new DBParameter (type, "_", $"privateName{PrivateNameCounter}", false, false, false, 0, false));
-				PrivateNameCounter++;
+				Parameters.Add (new DBParameter (type, "_", "privateName", 0, ParameterOptions.None));
 			}
 		}
 
 		public int Index { get; }
 		public List<DBParameter> Parameters { get; } = new List<DBParameter> ();
-		static int PrivateNameCounter { get; set; }
 	}
 
 

@@ -91,10 +91,8 @@ namespace DylibBinder {
 
 			foreach (var function in functions) {
 				foreach (var overloadFunction in function.Functions) {
-					if (overloadFunction.Name.Name.IsPublic () && !IsMetaClass (overloadFunction.Signature)
-						&& DoesNotDoubleThrow (overloadFunction.Signature.ToString ())) {
+					if (overloadFunction.Name.Name.IsPublic () && !IsMetaClass (overloadFunction.Signature))
 						Funcs.Add (new DBFunc (overloadFunction));
-					}
 				}
 			}
 		}
@@ -104,10 +102,8 @@ namespace DylibBinder {
 			var functions = SortedSetExtensions.CreateTLFunctionSortedSet ();
 			functions.AddRange (protocolContents.FunctionsOfUnknownDestination);
 			foreach (var function in functions) {
-				if (function.Name.Name.IsPublic () && !IsMetaClass (function.Signature)
-					&& DoesNotDoubleThrow (function.Signature.ToString ())) {
+				if (function.Name.Name.IsPublic () && !IsMetaClass (function.Signature))
 					Funcs.Add (new DBFunc (function, isProtocol: true));
-				}
 			}
 		}
 
@@ -122,12 +118,6 @@ namespace DylibBinder {
 					return true;
 			}
 			return false;
-		}
-
-		bool DoesNotDoubleThrow (string s)
-		{
-			var matches = Regex.Matches (s, "->");
-			return matches.Count <= 1;
 		}
 	}
 }

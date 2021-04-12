@@ -93,8 +93,7 @@ namespace DylibBinder {
 
 		public override int GetHashCode (DBGenericParameter gp)
 		{
-			var maxDepthLevel = 18;
-			return gp.Index * maxDepthLevel + gp.Depth;
+			return gp.Name.GetHashCode ();
 		}
 	}
 
