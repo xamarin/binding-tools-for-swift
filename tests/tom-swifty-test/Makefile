@@ -6,7 +6,7 @@ all: build run-tests
 	@# has already calculated required variables that contain output from
 	@# the 'run-tests' target, which hadn't executed when the variables were
 	@# evaluated.
-	$(MAKE) -j8 build-device-tests
+	#$(MAKE) -j8 build-device-tests
 
 check: run-tests
 
