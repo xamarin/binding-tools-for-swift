@@ -488,7 +488,7 @@ namespace tomwiftytest {
 					env.Add ("LEAKTEST_STDOUT_PATH", outputFile);
 				} else {
 					foreach (var key in new List<string> (env.Keys)) {
-						if (key.StartsWith ("LEAKTEST", StringComparison.Ordinal))
+						if (key.StartsWith ("LEAK", StringComparison.Ordinal))
 							env.Remove (key);
 					}
 				}
