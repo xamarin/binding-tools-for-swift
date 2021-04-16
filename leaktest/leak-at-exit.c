@@ -48,7 +48,7 @@ my__exit (int status)
 	if (errno != ENOENT)
 		fprintf (stdout, "Failed to access done file %s: %s\n", done_file, strerror (errno));
 
-	fprintf (stdout, "Leak check performed\n");
+	fprintf (stderr, "Leak check performed\n");
 
 	system__exit (status);
 }
