@@ -292,7 +292,7 @@ namespace Dynamo.SwiftLang {
 
 
 	public class SLGenericReferenceType : SLType {
-		public SLGenericReferenceType (int depth, int index, bool isMetatype = false)
+		public SLGenericReferenceType (int depth, int index, bool isMetatype = false, List<string> associatedTypePath = null)
 		{
 			if (depth < 0)
 				throw new ArgumentOutOfRangeException (nameof (depth));
@@ -301,16 +301,18 @@ namespace Dynamo.SwiftLang {
 			Depth = depth;
 			Index = index;
 			IsMetatype = isMetatype;
+			AssociatedTypePath = associatedTypePath;
 		}
 
 		public int Depth { get; private set; }
 		public int Index { get; private set; }
 		public bool IsMetatype { get; private set; }
 		public Func<int, int, string> ReferenceNamer { get; set; }
+		public List<string> AssociatedTypePath { get; }
 
 		protected override void LLWrite (ICodeWriter writer, object o)
 		{
-			var name = IsMetatype ? (Name + ".Type") : Name;
+			var name = IsMetatype ? (Name + ".Type") : AssociatedTypePath.Any () ? Name + $".{AssociatedTypePath.FirstOrDefault ()}" : Name;
 			writer.Write (name, true);
 		}
 

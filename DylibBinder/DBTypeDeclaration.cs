@@ -16,6 +16,7 @@ namespace DylibBinder {
 			Name = protoContents.Name.ToFullyQualifiedName ();
 			Module = protoContents.Name.Module.Name;
 			Funcs = new DBFuncs (protoContents);
+			AssociatedTypes = new DBAssociatedTypes (this);
 			ApplyInouts ();
 		}
 
@@ -34,8 +35,7 @@ namespace DylibBinder {
 			Properties = new DBProperties (classContents);
 			GenericParameters = new DBGenericParameters (this);
 			InnerTypes = new DBInnerTypes (classContents.Name);
-			AssociatedTypes = new DBAssociatedTypes ();
-			Elements = new DBElements ();
+			AssociatedTypes = new DBAssociatedTypes (this);
 			ApplyInouts ();
 		}
 
@@ -53,7 +53,6 @@ namespace DylibBinder {
 		public DBGenericParameters GenericParameters { get; }
 		public DBAssociatedTypes AssociatedTypes { get; }
 		public DBInnerTypes InnerTypes { get; }
-		public DBElements Elements { get; }
 
 		// we want to go through all the parameters in this DBTypeDeclaration
 		// and add the appropriate type to Instances and Constructors
@@ -135,7 +134,7 @@ namespace DylibBinder {
 				TypeDeclarations.Add (module, new List<DBTypeDeclaration> ());
 
 			var ignoreListPath = $"{Directory.GetCurrentDirectory ()}/../../IgnoreList.txt";
-			var ignoredTypes = SortedSetExtensions.CreateStringSortedSet ();
+			var ignoredTypes = SortedSetExtensions.Create<string> ();
 			ignoredTypes.AddRange (File.ReadAllLines (ignoreListPath).Where (line => !line.StartsWith ("//", StringComparison.Ordinal) && line != string.Empty).ToList ());
 
 			foreach (var classContentsList in ClassContentListArray) {

@@ -55,7 +55,6 @@
     <Compile Include="SwiftTypeToString.cs" />
     <Compile Include="DBInnerTypes.cs" />
     <Compile Include="XmlGenerator.cs" />
-    <Compile Include="DBElement.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="SortedSetExtensions.cs" />
     <Compile Include="HashSetExtensions.cs" />

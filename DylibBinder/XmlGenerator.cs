@@ -173,16 +173,6 @@ namespace DylibBinder {
 				return;
 
 			writer.WriteStartElement ("elements");
-			foreach (var element in typeDeclaration.Elements.Elements) {
-				WriteElement (element);
-			}
-			writer.WriteEndElement ();
-		}
-
-		void WriteElement (DBElement element)
-		{
-			writer.WriteStartElement ("element");
-			WriteAttributeStrings (("name", element.Name), ("intValue", element.IntValue));
 			writer.WriteEndElement ();
 		}
 

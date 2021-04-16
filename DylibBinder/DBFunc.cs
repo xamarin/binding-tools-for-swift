@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DylibBinder {
-	internal class DBFunc {
+	internal class DBFunc : IAssociatedTypes {
 		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false)
 		{
 			Name = tlf.Name.Name;
@@ -23,14 +23,13 @@ namespace DylibBinder {
 			ReturnType = SwiftTypeToString.MapSwiftTypeToString (tlf.Signature.ReturnType, tlf.Module.Name);
 			ParameterLists = new DBParameterLists (tlf.Signature, HasInstance);
 			GenericParameters = new DBGenericParameters (tlf.Signature);
+			AssociatedTypes.Add (tlf.Signature.ReturnType.GetAssociatedTypes ());
+			AssociatedTypes.Add (ParameterLists.AssociatedTypes);
 		}
 
 		public DBFunc (DBProperty dbProperty, string propertyType, bool isMutating = false)
 		{
-			if (propertyType == "Getter")
-				Name = $"get_{dbProperty.Name}";
-			else
-				Name = $"set_{dbProperty.Name}";
+			Name = propertyType == "Getter" ? $"get_{dbProperty.Name}" : $"set_{dbProperty.Name}";
 			PropertyType = propertyType;
 			IsStatic = dbProperty.IsStatic;
 			IsProperty = true;
@@ -64,7 +63,7 @@ namespace DylibBinder {
 
 		public DBParameterLists ParameterLists { get; }
 		public DBGenericParameters GenericParameters { get; }
-		public List<DBAssociatedType> AssociatedTypes { get; } = new List<DBAssociatedType> ();
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
 		bool GetStaticStatus (SwiftBaseFunctionType signature)
 		{
@@ -83,10 +82,10 @@ namespace DylibBinder {
 		}
 	}
 
-	internal class DBFuncs {
+	internal class DBFuncs : IAssociatedTypes {
 		public DBFuncs (ClassContents classContents)
 		{
-			var functions = SortedSetExtensions.CreateOverloadSortedSet ();
+			var functions = SortedSetExtensions.Create<OverloadInventory> ();
 			functions.AddRange (classContents.Methods.Values, classContents.StaticFunctions.Values, classContents.Constructors.Values);
 
 			foreach (var function in functions) {
@@ -95,19 +94,22 @@ namespace DylibBinder {
 						Funcs.Add (new DBFunc (overloadFunction));
 				}
 			}
+			AssociatedTypes.Add (Funcs.GetChildrenAssociatedTypes ());
 		}
 
 		public DBFuncs (ProtocolContents protocolContents)
 		{
-			var functions = SortedSetExtensions.CreateTLFunctionSortedSet ();
+			var functions = SortedSetExtensions.Create<TLFunction> ();
 			functions.AddRange (protocolContents.FunctionsOfUnknownDestination);
 			foreach (var function in functions) {
 				if (function.Name.Name.IsPublic () && !IsMetaClass (function.Signature))
 					Funcs.Add (new DBFunc (function, isProtocol: true));
 			}
+			AssociatedTypes.Add (Funcs.GetChildrenAssociatedTypes ());
 		}
 
 		public List<DBFunc> Funcs { get; } = new List<DBFunc> ();
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
 		bool IsMetaClass (SwiftBaseFunctionType funcType)
 		{

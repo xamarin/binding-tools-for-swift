@@ -5,10 +5,10 @@ using SwiftReflector;
 
 namespace DylibBinder {
 	internal class CheckInventoryValues {
-		public SortedSet<ClassContents> Classes { get; } = SortedSetExtensions.CreateClassSortedSet ();
-		public SortedSet<ClassContents> Structs { get; } = SortedSetExtensions.CreateClassSortedSet ();
-		public SortedSet<ClassContents> Enums { get; } = SortedSetExtensions.CreateClassSortedSet ();
-		public SortedSet<ProtocolContents> Protocols { get; } = SortedSetExtensions.CreateProtocolSortedSet ();
+		public SortedSet<ClassContents> Classes { get; } = SortedSetExtensions.Create<ClassContents> ();
+		public SortedSet<ClassContents> Structs { get; } = SortedSetExtensions.Create<ClassContents> ();
+		public SortedSet<ClassContents> Enums { get; } = SortedSetExtensions.Create<ClassContents> ();
+		public SortedSet<ProtocolContents> Protocols { get; } = SortedSetExtensions.Create<ProtocolContents> ();
 	}
 
 	internal class CheckInventoryDictionary {

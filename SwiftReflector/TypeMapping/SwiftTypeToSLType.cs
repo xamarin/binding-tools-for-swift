@@ -145,7 +145,7 @@ namespace SwiftReflector.TypeMapping {
 
 		SLType ToGenericArgReference (SLImportModules modules, SwiftGenericArgReferenceType arg)
 		{
-			return new SLGenericReferenceType (arg.Depth, arg.Index);
+			return new SLGenericReferenceType (arg.Depth, arg.Index, associatedTypePath: arg.AssociatedTypePath);
 		}
 
 		SLType ToClosure (SLImportModules modules, SwiftFunctionType func)

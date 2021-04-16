@@ -28,17 +28,18 @@ namespace DylibBinder {
 	}
 
 
-	internal class DBParameterList {
+	internal class DBParameterList : IAssociatedTypes {
 		public DBParameterList (SwiftBaseFunctionType signature, bool hasInstance, bool isConstructor, int index)
 		{
 			Index = index;
 			int parameterIndex = 0;
+			AssociatedTypes.Add (signature.GetAssociatedTypes ());
 
-			if (hasInstance) {
-				Parameters.Add (new DBParameter ("", "", "self", parameterIndex, ParameterOptions.HasInstance));
-				return;
-			} else if (isConstructor) {
-				Parameters.Add (new DBParameter (".Type", "", "self", parameterIndex, ParameterOptions.IsConstructor));
+			if (hasInstance || isConstructor) {
+				if (hasInstance)
+					Parameters.Add (new DBParameter ("", "", "self", parameterIndex, ParameterOptions.HasInstance));
+				else
+					Parameters.Add (new DBParameter (".Type", "", "self", parameterIndex, ParameterOptions.IsConstructor));
 				return;
 			}
 
@@ -73,9 +74,10 @@ namespace DylibBinder {
 
 		public int Index { get; }
 		public List<DBParameter> Parameters { get; } = new List<DBParameter> ();
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 	}
 
-	internal class DBParameterLists {
+	internal class DBParameterLists : IAssociatedTypes {
 		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance)
 		{
 			var parameterListIndex = 0;
@@ -88,6 +90,7 @@ namespace DylibBinder {
 			}
 
 			ParameterLists.Add (new DBParameterList (signature, false, false, parameterListIndex));
+			AssociatedTypes.Add (ParameterLists.GetChildrenAssociatedTypes ());
 		}
 
 		public DBParameterLists (string type, bool hasInstance, string propertyType)
@@ -101,5 +104,7 @@ namespace DylibBinder {
 		}
 
 		public List<DBParameterList> ParameterLists { get; } = new List<DBParameterList> ();
+
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 	}
 }

@@ -5,11 +5,12 @@ using SwiftReflector;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
-	internal class DBProperty {
+	internal class DBProperty : IAssociatedTypes {
 		public DBProperty (PropertyContents propertyContents)
 		{
 			Name = propertyContents.Name.Name;
 			IsStatic = propertyContents.Getter.IsStatic;
+			AssociatedTypes.Add (propertyContents.Getter.ReturnType.GetAssociatedTypes ());
 			Type = SwiftTypeToString.MapSwiftTypeToString (propertyContents.Getter.ReturnType, propertyContents.Class.ClassName.Module.Name);
 			GenericParameters = new DBGenericParameters (propertyContents.Getter.ReturnType);
 
@@ -24,6 +25,7 @@ namespace DylibBinder {
 		public DBFunc Getter { get; }
 		public DBFunc Setter { get; }
 		public DBGenericParameters GenericParameters { get; }
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
 		public TypeAccessibility Accessibility { get; } = TypeAccessibility.Public;
 		public bool IsPossiblyIncomplete { get; } = false;
@@ -33,18 +35,20 @@ namespace DylibBinder {
 		public Storage Storage { get; } = Storage.Addressed;
 	}
 
-	internal class DBProperties {
+	internal class DBProperties : IAssociatedTypes {
 		public DBProperties (ClassContents classContents)
 		{
-			var properties = SortedSetExtensions.CreatePropertySortedSet ();
+			var properties = SortedSetExtensions.Create<PropertyContents> ();
 			properties.AddRange (classContents.Properties.Values, classContents.StaticProperties.Values);
 			foreach (var property in properties) {
 				if (property.Name.Name.IsPublic () && !IsMetaClass (property.Getter.ReturnType))
 					Properties.Add (new DBProperty (property));
 			}
+			AssociatedTypes.Add (Properties.GetChildrenAssociatedTypes ());
 		}
 
 		public List<DBProperty> Properties { get; } = new List<DBProperty> ();
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
 		bool IsMetaClass (SwiftType swiftType)
 		{

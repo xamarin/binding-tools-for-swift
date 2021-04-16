@@ -14,40 +14,48 @@ namespace DylibBinder {
 			}
 		}
 
-		public static SortedSet<OverloadInventory> CreateOverloadSortedSet ()
+		public static SortedSet<T> Create<T> ()
 		{
-			Comparison<OverloadInventory> comp = (x, y) => string.Compare (x.Name.Name, y.Name.Name);
-			return new SortedSet<OverloadInventory> (Comparer<OverloadInventory>.Create (comp));
-		}
-
-		public static SortedSet<TLFunction> CreateTLFunctionSortedSet ()
-		{
-			Comparison<TLFunction> comp = (x, y) => string.Compare (x.Module.Name, y.Module.Name);
-			return new SortedSet<TLFunction> (Comparer<TLFunction>.Create (comp));
-		}
-
-		public static SortedSet<PropertyContents> CreatePropertySortedSet ()
-		{
-			Comparison<PropertyContents> comp = (x, y) => string.Compare (x.Name.Name, y.Name.Name);
-			return new SortedSet<PropertyContents> (Comparer<PropertyContents>.Create (comp));
-		}
-
-		public static SortedSet<ProtocolContents> CreateProtocolSortedSet ()
-		{
-			Comparison<ProtocolContents> comp = (x, y) => string.Compare (x.Name.ToFullyQualifiedName (), y.Name.ToFullyQualifiedName ());
-			return new SortedSet<ProtocolContents> (Comparer<ProtocolContents>.Create (comp));
-		}
-
-		public static SortedSet<ClassContents> CreateClassSortedSet ()
-		{
-			Comparison<ClassContents> comp = (x, y) => string.Compare (x.Name.ToFullyQualifiedName (), y.Name.ToFullyQualifiedName ());
-			return new SortedSet<ClassContents> (Comparer<ClassContents>.Create (comp));
-		}
-
-		public static SortedSet<string> CreateStringSortedSet ()
-		{
-			Comparison<string> comp = (x, y) => string.Compare (x, y);
-			return new SortedSet<string> (Comparer<string>.Create (comp));
+			switch (typeof (T)) {
+			case Type t when t == typeof (OverloadInventory):
+				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
+					var type1 = x as OverloadInventory;
+					var type2 = y as OverloadInventory;
+					return string.Compare (type1?.Name.Name, type2?.Name.Name);
+				}));
+			case Type t when t == typeof (TLFunction):
+				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
+					var type1 = x as TLFunction;
+					var type2 = y as TLFunction;
+					return string.Compare (type1?.Module.Name, type2?.Module.Name);
+				}));
+			case Type t when t == typeof (PropertyContents):
+				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
+					var type1 = x as PropertyContents;
+					var type2 = y as PropertyContents;
+					return string.Compare (type1?.Name.Name, type2?.Name.Name);
+				}));
+			case Type t when t == typeof (ProtocolContents):
+				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
+					var type1 = x as ProtocolContents;
+					var type2 = y as ProtocolContents;
+					return string.Compare (type1?.Name.ToFullyQualifiedName (), type2?.Name.ToFullyQualifiedName ());
+				}));
+			case Type t when t == typeof (ClassContents):
+				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
+					var type1 = x as ClassContents;
+					var type2 = y as ClassContents;
+					return string.Compare (type1?.Name.ToFullyQualifiedName (), type2?.Name.ToFullyQualifiedName ());
+				}));
+			case Type t when t == typeof (string):
+				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
+					var type1 = x as string;
+					var type2 = y as string;
+					return string.Compare (type1, type2);
+				}));
+			default:
+				throw new ArgumentException ("");
+			}
 		}
 	}
 }
