@@ -202,7 +202,6 @@ public func blindAssocFuncAny{nameSuffix} () -> Any {{
 
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssoc ()
 		{
 			var swiftCode = @"
@@ -217,7 +216,6 @@ public protocol Iterator0 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssocGetProp ()
 		{
 			var swiftCode = @"
@@ -232,7 +230,6 @@ public protocol Iterator1 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssocGetSetProp ()
 		{
 			var swiftCode = @"
@@ -247,7 +244,6 @@ public protocol Iterator2 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SmokeProtocolAssocFuncArg ()
 		{
 			var swiftCode = @"
@@ -262,7 +258,6 @@ public protocol Iterator3 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SomeProtocolAssocSubscriptGet ()
 		{
 			var swiftCode = @"
@@ -279,7 +274,6 @@ public protocol Iterator4 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SomeProtocolAssocSubscriptGetSet ()
 		{
 			var swiftCode = @"
@@ -296,7 +290,6 @@ public protocol Iterator5 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SomeProtocolAssocSubscriptGetSetParams ()
 		{
 			var swiftCode = @"
@@ -313,7 +306,6 @@ public protocol Iterator6 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SimplestProtocolAssocTest ()
 		{
 			var swiftCode = @"
@@ -347,7 +339,6 @@ public func doPrintSimplest0<T>(a:T) where T:Simplest0 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SimplestProtocolPropGetAssocTest ()
 		{
 			var swiftCode = @"
@@ -381,7 +372,6 @@ public func doPrintSimplest1<T>(a:T) where T:Simplest1 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolPropGetSetAssocTest ()
 		{
 			var swiftCode = @"
@@ -411,7 +401,6 @@ public func doSetProp<T, U> (a: inout T, b:U) where T:Simplest2, U==T.Item {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolProGetSetAssocTestAltSyntax ()
 		{
 			var swiftCode = @"
@@ -441,7 +430,6 @@ public func doSetProp<T> (a: inout T, b:T.Item) where T:Simplest3 {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolProGetIndexer ()
 		{
 			var swiftCode = @"
@@ -476,7 +464,6 @@ public func doGetIt<T:Simplest4> (a: T, i: Int) -> T.Item {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void SimpleProtocolProGetSetIndexer ()
 		{
 			var swiftCode = @"

@@ -496,7 +496,7 @@ requirement_list : requirement (OpComma requirement)*  ;
 requirement : conformance_requirement | same_type_requirement  ;
 
 conformance_requirement : type_identifier ':' type_identifier | type_identifier ':' protocol_composition_type  ;
-same_type_requirement : type_identifier OpEqEq type  ;
+same_type_requirement : type_identifier operator type  ;
 
 generic_argument_clause : OpLess generic_argument_list opGreater ;
 generic_argument_list : generic_argument (',' generic_argument)* ;

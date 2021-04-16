@@ -55,6 +55,8 @@ namespace Dynamo.SwiftLang {
 				return "internal";
 			case Visibility.Open:
 				return "open";
+			case Visibility.FilePrivate:
+				return "fileprivate";
 			default:
 				throw new ArgumentOutOfRangeException (nameof (vis));
 			}
