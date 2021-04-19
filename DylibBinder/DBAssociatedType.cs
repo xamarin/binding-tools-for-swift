@@ -8,6 +8,8 @@ namespace DylibBinder {
 	internal class DBAssociatedType {
 		public DBAssociatedType (string name)
 		{
+			if (string.IsNullOrEmpty (name))
+				throw new ArgumentException ("DBAssociateType name cannot be null or empty");
 			Name = name;
 		}
 

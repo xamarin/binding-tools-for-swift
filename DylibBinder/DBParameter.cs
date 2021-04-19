@@ -25,6 +25,12 @@ namespace DylibBinder {
 		public bool HasInstance { get; }
 		public bool IsConstructor { get; }
 		public bool IsEmptyParameter { get; }
+
+		public static DBParameter CreateInstanceParameter () => new ("", "", "self", 0, ParameterOptions.HasInstance);
+		public static DBParameter CreateInstanceParameter (int index) => new ("", "", "self", index, ParameterOptions.HasInstance);
+		public static DBParameter CreateConstructorParameter (int index) => new (".Type", "", "self", index, ParameterOptions.IsConstructor);
+		public static DBParameter CreateGetterParameter () => new  (null, null, null, 0, ParameterOptions.IsEmptyParameter);
+		public static DBParameter CreateSetterParameter () => new ("", "", "self", 0, ParameterOptions.HasInstance);
 	}
 
 
@@ -37,9 +43,9 @@ namespace DylibBinder {
 
 			if (hasInstance || isConstructor) {
 				if (hasInstance)
-					Parameters.Add (new DBParameter ("", "", "self", parameterIndex, ParameterOptions.HasInstance));
+					Parameters.Add (DBParameter.CreateInstanceParameter(parameterIndex));
 				else
-					Parameters.Add (new DBParameter (".Type", "", "self", parameterIndex, ParameterOptions.IsConstructor));
+					Parameters.Add (DBParameter.CreateConstructorParameter (parameterIndex));
 				return;
 			}
 
@@ -56,25 +62,27 @@ namespace DylibBinder {
 			}
 		}
 
-		public DBParameterList (string type, string propertyType, bool hasInstance, int index)
+		public DBParameterList (string propertyType, bool hasInstance, int index)
 		{
 			Index = index;
 
 			if (hasInstance) {
-				Parameters.Add (new DBParameter ("", "", "self", 0, ParameterOptions.HasInstance));
+				Parameters.Add (DBParameter.CreateInstanceParameter ());
 				return;
 			}
 
 			if (propertyType == "Getter") {
-				Parameters.Add (new DBParameter (null, null, null, 0, ParameterOptions.IsEmptyParameter));
+				Parameters.Add (DBParameter.CreateGetterParameter ());
 			} else {
-				Parameters.Add (new DBParameter (type, "_", "privateName", 0, ParameterOptions.None));
+				Parameters.Add (DBParameter.CreateSetterParameter ());
 			}
 		}
 
 		public int Index { get; }
 		public List<DBParameter> Parameters { get; } = new List<DBParameter> ();
 		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
+
+
 	}
 
 	internal class DBParameterLists : IAssociatedTypes {
@@ -93,14 +101,14 @@ namespace DylibBinder {
 			AssociatedTypes.Add (ParameterLists.GetChildrenAssociatedTypes ());
 		}
 
-		public DBParameterLists (string type, bool hasInstance, string propertyType)
+		public DBParameterLists (bool hasInstance, string propertyType)
 		{
 			var parameterListIndex = 0;
 			if (hasInstance) {
-				ParameterLists.Add (new DBParameterList (type, propertyType, true, parameterListIndex));
+				ParameterLists.Add (new DBParameterList (propertyType, true, parameterListIndex));
 				parameterListIndex++;
 			}
-			ParameterLists.Add (new DBParameterList (type, propertyType, false, parameterListIndex));
+			ParameterLists.Add (new DBParameterList (propertyType, false, parameterListIndex));
 		}
 
 		public List<DBParameterList> ParameterLists { get; } = new List<DBParameterList> ();

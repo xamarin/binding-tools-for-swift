@@ -17,12 +17,13 @@ namespace DylibBinder {
 		internal static string AppendModuleToBit (this string s)
 		{
 			var sb = new StringBuilder (s);
-			var builtInTypes = new string [] { "Bool", "Double", "Float", "UInt", "Int" };
-			foreach (var builtInType in builtInTypes) {
+			foreach (var builtInType in BuiltInTypes) {
 				FindAndAppendModule (sb, builtInType);
 			}
 			return sb.ToString ();
 		}
+
+		static readonly string [] BuiltInTypes = {"Bool", "Double", "Float", "UInt", "Int"};
 
 		static void FindAndAppendModule (StringBuilder sb, string builtInType)
 		{

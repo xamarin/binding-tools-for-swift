@@ -37,7 +37,7 @@ namespace DylibBinder {
 			IsMutating = isMutating;
 			HasInstance = !IsStatic;
 			ReturnType = dbProperty.Type;
-			ParameterLists = new DBParameterLists (ReturnType, HasInstance, propertyType);
+			ParameterLists = new DBParameterLists (HasInstance, propertyType);
 			GenericParameters = dbProperty.GenericParameters;
 		}
 
@@ -65,21 +65,11 @@ namespace DylibBinder {
 		public DBGenericParameters GenericParameters { get; }
 		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
-		bool GetStaticStatus (SwiftBaseFunctionType signature)
-		{
-			switch (signature) {
-			case SwiftStaticFunctionType:
-				return true;
-			case SwiftPropertyType propType:
-				return propType.IsStatic;
-			case SwiftUncurriedFunctionThunkType:
-				return false;
-			case SwiftUncurriedFunctionType:
-				return false;
-			default:
-				return false;
-			}
-		}
+		bool GetStaticStatus (SwiftBaseFunctionType signature) => signature switch {
+			SwiftStaticFunctionType => true,
+			SwiftPropertyType propType => propType.IsStatic,
+			_ => false,
+		};
 	}
 
 	internal class DBFuncs : IAssociatedTypes {
