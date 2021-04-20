@@ -571,7 +571,6 @@ public func isThisATrait (a: ThisServesAsATrait) -> Bool {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void EqConstraintSmokeTest ()
 		{
 			var swiftCode = @"
@@ -594,7 +593,6 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void TestProtocolTypeAttribute ()
 		{
 			var swiftCode = @"
