@@ -219,7 +219,13 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      # VSTS does provide a diff build id depending if it is a PR or a CI triggered build, this results in issues when
+      # setting the status :/ 
+      COMMIT_ID="$BUILD_BUILDID"
+      if [ "$BUILD_REASON" = "PullRequest" ]; then
+        COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
+      fi
+      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
     workingDirectory: $(System.DefaultWorkingDirectory)
 
