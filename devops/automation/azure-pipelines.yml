@@ -221,7 +221,7 @@ jobs:
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
       # VSTS does provide a diff build id depending if it is a PR or a CI triggered build, this results in issues when
       # setting the status :/ 
-      COMMIT_ID="$BUILD_BUILDID"
+      COMMIT_ID="$BUILD_SOURCEVERSION"
       echo "Build reason is $BUILD_REASON"
       if [[ "$BUILD_REASON" == "PullRequest" ]]; then
         echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
@@ -272,7 +272,7 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      COMMIT_ID="$BUILD_BUILDID"
+      COMMIT_ID="$BUIlD_SOURCEVERSION"
       echo "Build reason is $BUILD_REASON"
       if [[ "$BUILD_REASON" == "PullRequest" ]]; then
         echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
