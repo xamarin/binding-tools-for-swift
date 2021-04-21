@@ -222,7 +222,9 @@ jobs:
       # VSTS does provide a diff build id depending if it is a PR or a CI triggered build, this results in issues when
       # setting the status :/ 
       COMMIT_ID="$BUILD_BUILDID"
-      if [ "$BUILD_REASON" = "PullRequest" ]; then
+      echo "Build reason is $BUILD_REASON"
+      if [[ "$BUILD_REASON" == "PullRequest" ]]; then
+        echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
         COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
       fi
       ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
