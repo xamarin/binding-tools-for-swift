@@ -37,6 +37,7 @@ namespace SwiftReflector {
 		}
 
 		[Test]
+		[Ignore ("need to refactor RelflectClassDeclarations")]
 		public void SmokeTestOverride0 ()
 		{
 			string code = "open class Foo { public init() { }\nopen func doSomething() { }\n}\n";

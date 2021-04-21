@@ -21,9 +21,7 @@ namespace XmlReflectionTests {
 	public class DynamicXmlTests {
 
 		public enum ReflectorMode {
-			Compiler,
 			Parser,
-			Comparator,
 		}
 		static TypeDatabase typeDatabase;
 
@@ -68,32 +66,14 @@ namespace XmlReflectionTests {
 			return Reflector.FromXml (doc);
 		}
 
-		List<ModuleDeclaration> ComparatorToModule (CustomSwiftCompiler compiler, string moduleName)
-		{
-			var compilerDoc = compiler.ReflectToXDocument (null, null, null, moduleName);
-			var parserDoc = ParserToXDocument (compiler.DirectoryPath, moduleName);
-
-			var diffs = XmlComparator.Compare (compilerDoc, parserDoc);
-			var sb = new StringBuilder ();
-			foreach (var s in diffs) {
-				sb.Append ('\n').Append (s);
-			}
-			Assert.AreEqual (0, diffs.Count, "Diffs in xml: " + sb.ToString ());
-			return Reflector.FromXml (compilerDoc);
-		}
-
-		List<ModuleDeclaration> ReflectToModules (string code, string moduleName, ReflectorMode mode = ReflectorMode.Compiler)
+		List<ModuleDeclaration> ReflectToModules (string code, string moduleName, ReflectorMode mode = ReflectorMode.Parser)
 		{
 			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
 
 
 			switch (mode) {
-			case ReflectorMode.Compiler:
-				return compiler.ReflectToModules (null, null, null, moduleName);
 			case ReflectorMode.Parser:
 				return ParserToModule (compiler.DirectoryPath, moduleName);
-			case ReflectorMode.Comparator:
-				return ComparatorToModule (compiler, moduleName);
 			default:
 				throw new ArgumentOutOfRangeException (nameof (mode));
 			}
@@ -116,7 +96,7 @@ namespace XmlReflectionTests {
 		}
 
 
-		void TestFuncReturning (string declaredType, string value, string expectedType, ReflectorMode mode = ReflectorMode.Compiler)
+		void TestFuncReturning (string declaredType, string value, string expectedType, ReflectorMode mode = ReflectorMode.Parser)
 		{
 			string code = String.Format ("public func foo() -> {0} {{ return {1} }}", declaredType, value);
 			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
@@ -134,49 +114,42 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestFuncReturningBool (ReflectorMode mode)
 		{
 			TestFuncReturning ("Bool", "true", "Swift.Bool", mode);
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestFuncReturningInt (ReflectorMode mode)
 		{
 			TestFuncReturning ("Int", "42", "Swift.Int", mode);
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestFuncReturningUInt (ReflectorMode mode)
 		{
 			TestFuncReturning ("UInt", "43", "Swift.UInt", mode);
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestFuncReturningFloat (ReflectorMode mode)
 		{
 			TestFuncReturning ("Float", "2.0", "Swift.Float", mode);
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestFuncReturningDouble (ReflectorMode mode)
 		{
 			TestFuncReturning ("Double", "3.0", "Swift.Double", mode);
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestFuncReturningString (ReflectorMode mode)
 		{
 			TestFuncReturning ("String", "\"nothing\"", "Swift.String", mode);
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestEmptyClass (ReflectorMode mode)
 		{
@@ -187,7 +160,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Foo", module.Classes.First ().Name, "wrong name");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestEmptyStruct (ReflectorMode mode)
 		{
@@ -198,7 +170,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Foo", module.Structs.First ().Name, "wrong name");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestStructLayout (ReflectorMode mode)
 		{
@@ -217,7 +188,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Float", props [2].TypeName, "not float");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestClassWithConstructor (ReflectorMode mode)
 		{
@@ -234,7 +204,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("y", cons.ParameterLists [1] [0].PublicName, "wrong name");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestClassHasDestructor (ReflectorMode mode)
 		{
@@ -247,7 +216,6 @@ namespace XmlReflectionTests {
 			Assert.NotNull (dtor, "not a destructor");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void FuncReturningTuple (ReflectorMode mode)
 		{
@@ -259,7 +227,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("(Swift.Int,Swift.Float)", result, "wrong type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void FuncReturningDictionary (ReflectorMode mode)
 		{
@@ -272,7 +239,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void FuncReturningIntThrows (ReflectorMode mode)
 		{
@@ -287,7 +253,6 @@ namespace XmlReflectionTests {
 
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void FuncReturningIntOption (ReflectorMode mode)
 		{
@@ -298,7 +263,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Optional<Swift.Int>", func.ReturnTypeName, "wrong type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void GlobalBool (ReflectorMode mode)
 		{
@@ -309,7 +273,6 @@ namespace XmlReflectionTests {
 			Assert.IsNotNull (decl, "no declaration");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest1 (ReflectorMode mode)
 		{
@@ -325,7 +288,6 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest2 (ReflectorMode mode)
 		{
@@ -345,7 +307,6 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest3 (ReflectorMode mode)
 		{
@@ -365,7 +326,6 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest4 (ReflectorMode mode)
 		{
@@ -385,7 +345,6 @@ namespace XmlReflectionTests {
 
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest5 (ReflectorMode mode)
 		{
@@ -403,7 +362,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Int", edecl.RawTypeName, "wrong raw type name");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest6 (ReflectorMode mode)
 		{
@@ -421,7 +379,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Int", edecl.RawTypeName, "wrong raw type name");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumSmokeTest7 (ReflectorMode mode)
 		{
@@ -444,7 +401,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void OptionalSmokeTest1 (ReflectorMode mode)
 		{
@@ -453,7 +409,6 @@ namespace XmlReflectionTests {
 			Assert.IsNotNull (module, "not a module");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TypeAliasTest (ReflectorMode mode)
 		{
@@ -475,7 +430,6 @@ namespace XmlReflectionTests {
 
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DeprecatedFunction (ReflectorMode mode)
 		{
@@ -491,7 +445,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DeprecatedClass (ReflectorMode mode)
 		{
@@ -506,7 +459,6 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (cl.IsUnavailable, "available");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObsoletedFunction (ReflectorMode mode)
 		{
@@ -522,7 +474,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObsoletedClass (ReflectorMode mode)
 		{
@@ -538,7 +489,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void UnavailableFunction (ReflectorMode mode)
 		{
@@ -554,7 +504,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void UnavailableClass (ReflectorMode mode)
 		{
@@ -570,7 +519,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void MethodInStruct (ReflectorMode mode)
 		{
@@ -593,7 +541,6 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.IsDeprecated, "deprecated");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void UnavailableProperty (ReflectorMode mode)
 		{
@@ -611,7 +558,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ExtensionProperty (ReflectorMode mode)
 		{
@@ -627,7 +573,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (2, ext.Members.Count, $"Expected 2 members but got {ext.Members.Count}");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ExtensionFunc (ReflectorMode mode)
 		{
@@ -645,7 +590,6 @@ namespace XmlReflectionTests {
 			Assert.IsNotNull (func, $"Expected a FunctionDeclaration but got {ext.Members [0].GetType ().Name}");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ExtensionProto (ReflectorMode mode)
 		{
@@ -670,7 +614,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (InheritanceKind.Protocol, inh.InheritanceKind, $"Should always be protocol inheritance");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObjCOptionalMember (ReflectorMode mode)
 		{
@@ -697,7 +640,6 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (barFunc.IsOptional, "should not be optional");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObjCOptionalProp (ReflectorMode mode)
 		{
@@ -727,7 +669,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObjCOptionalSubsript (ReflectorMode mode)
 		{
@@ -754,13 +695,9 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func1.IsOptional, "func 1 should be optional");
 		}
 
-		[TestCase ("open", Accessibility.Open, ReflectorMode.Compiler)]
 		[TestCase ("open", Accessibility.Open, ReflectorMode.Parser)]
-		[TestCase ("public", Accessibility.Public, ReflectorMode.Compiler)]
 		[TestCase ("public", Accessibility.Public, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
-		[TestCase ("internal", Accessibility.Internal, ReflectorMode.Compiler)]
 		[TestCase ("internal", Accessibility.Internal, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
-		[TestCase ("private", Accessibility.Private, ReflectorMode.Compiler)]
 		[TestCase ("private", Accessibility.Private, ReflectorMode.Parser, Ignore = "This is not a public interface, parser never sees it")]
 		public void PropertyVisibilityCore (string swiftVisibility, Accessibility accessibility, ReflectorMode mode)
 		{
@@ -776,7 +713,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (accessibility, fooClass.AllProperties () [0].GetSetter ().Access, "Unexpected Visibility.");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObjCMemberSelector (ReflectorMode mode)
 		{
@@ -804,7 +740,6 @@ namespace XmlReflectionTests {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObjCPropSelector (ReflectorMode mode)
 		{
@@ -832,7 +767,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("setX:", setter.ObjCSelector, $"incorrect set X selector name {setter.ObjCSelector}");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObjCPropSelectorLower (ReflectorMode mode)
 		{
@@ -860,7 +794,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("setX:", setter.ObjCSelector, $"incorrect set X selector name {setter.ObjCSelector}");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void ObjCSubsriptSelector (ReflectorMode mode)
 		{
@@ -887,7 +820,6 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("setObject:atIndexedSubscript:", func1.ObjCSelector, $"Incorrect selector for setter {func1.ObjCSelector}");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void RequiredInitTest (ReflectorMode mode)
 		{
@@ -918,7 +850,6 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (subInit.IsRequired, "incorrect IsRequired on sub class");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void NotRequiredInitTest (ReflectorMode mode)
 		{
@@ -949,7 +880,6 @@ namespace XmlReflectionTests {
 
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestPublicPrivateParamNames (ReflectorMode mode)
 		{
@@ -965,7 +895,6 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.ParameterLists [0] [0].NameIsRequired, "Wrong name requirement");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestOnlyPublicParamNames (ReflectorMode mode)
 		{
@@ -981,7 +910,6 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.ParameterLists [0] [0].NameIsRequired, "Wrong name requirement");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestNotRequiredParamName (ReflectorMode mode)
 		{
@@ -997,7 +925,6 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (func.ParameterLists [0] [0].NameIsRequired, "Wrong name requirement");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestSimpleVariadicFunc (ReflectorMode mode)
 		{
@@ -1012,7 +939,6 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.IsVariadic, "Func is not mared variadic");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestSimpleNotVariadicFunc (ReflectorMode mode)
 		{
@@ -1027,7 +953,6 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (func.IsVariadic, "Func is not mared variadic");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestReturnsOptionalProtocol (ReflectorMode mode)
 		{
@@ -1052,7 +977,6 @@ public func itMightBeAProtocol () -> Foo? {
 
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestPropReturnsOptionalProtocol (ReflectorMode mode)
 		{
@@ -1081,7 +1005,6 @@ public class Container {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestConvenienceCtor (ReflectorMode mode)
 		{
@@ -1110,7 +1033,6 @@ open class Foo {
 			}
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestProtocolListType (ReflectorMode mode)
 		{
@@ -1135,7 +1057,6 @@ public func joe (a: FooA & FooB) {
 			Assert.AreEqual (2, protoList.Protocols.Count, "wrong protocol list count");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestFuncReturningAny (ReflectorMode mode)
 		{
@@ -1153,7 +1074,6 @@ public func returnsAny() -> Any {
 			Assert.AreEqual ("Swift.Any", returnType.Name, $"Wrong type: {returnType.Name}");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void AssocTypeSmoke (ReflectorMode mode)
 		{
@@ -1175,7 +1095,6 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void AssocTypeTimesTwo (ReflectorMode mode)
 		{
@@ -1200,7 +1119,6 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void AssocTypeDefaultType (ReflectorMode mode)
 		{
@@ -1223,7 +1141,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Swift.Int", assoc.DefaultType.ToString (), "wrong type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser, Ignore = "Don't have IteratorProtocol in type database")]
 		public void AssocTypeConformance (ReflectorMode mode)
 		{
@@ -1247,7 +1164,6 @@ public protocol HoldsThing {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void AssocTypeSuper (ReflectorMode mode)
 		{
@@ -1274,7 +1190,6 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void FindsAssocTypeByName (ReflectorMode mode)
 		{
@@ -1295,7 +1210,6 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc, "Found a non-existent associated type");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncNoArgsNoReturnOutput (ReflectorMode mode)
 		{
@@ -1308,7 +1222,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc () -> ()", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncNoArgsReturnsIntOutput (ReflectorMode mode)
 		{
@@ -1321,7 +1234,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc () -> Swift.Int", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncNoArgsReturnsIntThrowsOutput (ReflectorMode mode)
 		{
@@ -1334,7 +1246,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc () throws -> Swift.Int", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncOneArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
@@ -1347,7 +1258,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncOneArgDiffPubPrivReturnsInt (ReflectorMode mode)
 		{
@@ -1360,7 +1270,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (b a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncOneArgNoPubPrivReturnsInt (ReflectorMode mode)
 		{
@@ -1373,7 +1282,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (_ a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestTLFuncTwoArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
@@ -1386,7 +1294,6 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int, b: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestPropGetFunc (ReflectorMode mode)
 		{
@@ -1406,7 +1313,6 @@ public class Foo {
 			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get }", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestPropGetSet (ReflectorMode mode)
 		{
@@ -1426,7 +1332,6 @@ public class Foo {
 			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get set }", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestCtorType (ReflectorMode mode)
 		{
@@ -1448,7 +1353,6 @@ public class Foo {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestSubscriptGetSet (ReflectorMode mode)
 		{
@@ -1473,7 +1377,6 @@ public class Foo {
 			Assert.AreEqual ("Public SomeModule.Foo.subscript [_ Index: Swift.Int] -> Swift.String { get }", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void TestGenericMethodInGenericClass (ReflectorMode mode)
 		{
@@ -1496,7 +1399,6 @@ private var x: T
 			Assert.AreEqual ("Public SomeModule.Foo.printIt<T, U> (a: U) -> ()", output, "wrong signature");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DetectsSelfEasy (ReflectorMode mode)
 		{
@@ -1512,7 +1414,6 @@ public protocol Simple {
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DetectsSelfEasy1 (ReflectorMode mode)
 		{
@@ -1532,7 +1433,6 @@ public protocol Simple {
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DetectsSelfInTuple (ReflectorMode mode)
 		{
@@ -1548,7 +1448,6 @@ public protocol Simple {
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DetectsSelfInOptional (ReflectorMode mode)
 		{
@@ -1564,7 +1463,6 @@ public protocol Simple {
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DetectsSelfInBoundGeneric (ReflectorMode mode)
 		{
@@ -1580,7 +1478,6 @@ public protocol Simple {
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void DetectsSelfInClosure (ReflectorMode mode)
 		{
@@ -1596,7 +1493,6 @@ public protocol Simple {
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let - apple's bug, not mine: https://bugs.swift.org/browse/SR-13790")]
 		public void TopLevelLet (ReflectorMode mode)
 		{
@@ -1610,7 +1506,6 @@ public protocol Simple {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let")]
 		public void TheEpsilonIssue (ReflectorMode mode)
 		{
@@ -1623,7 +1518,6 @@ public protocol Simple {
 			Assert.IsNull (prop.GetSetter (), "why is there a setter");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void InfixOperatorDecl (ReflectorMode mode)
 		{
@@ -1642,7 +1536,6 @@ extension Int {
 			Assert.AreEqual (OperatorType.Infix, opDecl.OperatorType, "operator type mismatch");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void PrefixOperatorDecl (ReflectorMode mode)
 		{
@@ -1661,7 +1554,6 @@ extension Int {
 			Assert.AreEqual (OperatorType.Prefix, opDecl.OperatorType, "operator type mismatch");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void PostfixOperatorDecl (ReflectorMode mode)
 		{
@@ -1698,7 +1590,6 @@ public func sum (a: Foo, b: Foo) -> Foo {
 			Assert.AreEqual ("Swift.Int", alias.TargetTypeName, "wrong typealias target");
 		}
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void UnwrappedOptionalTest (ReflectorMode mode)
 		{
@@ -1716,7 +1607,6 @@ public func sum (a: Int!, b: Int!) -> Int! {
 		}
 
 
-		[TestCase (ReflectorMode.Compiler)]
 		[TestCase (ReflectorMode.Parser)]
 		public void EnumProtocolConformance (ReflectorMode mode)
 		{

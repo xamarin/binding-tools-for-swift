@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
+
 namespace SwiftReflector {
 	public enum CoreCompoundType {
 		ModuleName,
@@ -143,6 +145,7 @@ namespace SwiftReflector {
 
 	public enum ReflectionStrategy {
 		None,
+		[Obsolete ("Compiler reflection is no longer supported.", true)]
 		Compiler,
 		Parser,
 	}
