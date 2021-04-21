@@ -272,5 +272,11 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      COMMIT_ID="$BUILD_BUILDID"
+      echo "Build reason is $BUILD_REASON"
+      if [[ "$BUILD_REASON" == "PullRequest" ]]; then
+        echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
+        COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
+      fi
+      ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
