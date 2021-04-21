@@ -49,22 +49,20 @@ namespace XmlReflectionTests {
 		}
 
 
-		Tuple<ModuleInventory, ModuleDeclaration> ReflectToModules (string code, string moduleName)
+		(ModuleInventory, ModuleDeclaration) ReflectToModules (string code, string moduleName)
 		{
 			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
 			var module = ParserToModule (compiler.DirectoryPath, moduleName).FirstOrDefault ();
 			var errors = new ErrorHandling ();
 			var inventory = ModuleInventory.FromFile (Path.Combine (compiler.DirectoryPath, "libCanFind.dylib"), errors);
-			return new Tuple<ModuleInventory, ModuleDeclaration> (inventory, module);
+			return (inventory, module);
 		}
 
 
 		void CanFindThing (string code, Func<FunctionDeclaration, bool> funcFinder,
 			Func<TLFunction, bool> tlVerifier)
 		{
-			var inventoryModule = ReflectToModules (code, "CanFind");
-			var mi = inventoryModule.Item1;
-			var mod = inventoryModule.Item2;
+			(var mi, var mod) = ReflectToModules (code, "CanFind");
 
 			FunctionDeclaration funcDecl = mod.Functions.FirstOrDefault (funcFinder);
 			Assert.IsNotNull (funcDecl, "no function found");
