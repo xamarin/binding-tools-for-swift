@@ -83,7 +83,7 @@ namespace SwiftReflector {
 			tempDirectory = fileProvider ?? new DisposableTempDirectory (null, true);
 			disposeTempDirectory = fileProvider != null ? disposeSuppliedDirectory : true;
 			PrimaryReflectionStrategy = ReflectionStrategy.Parser;
-			SecondaryReflectionStrategy = ReflectionStrategy.Compiler;
+			SecondaryReflectionStrategy = ReflectionStrategy.None;
 		}
 
 		public void CompileString (SwiftCompilerOptions compilerOptions, string codeString)
@@ -305,10 +305,7 @@ namespace SwiftReflector {
 			if (strategy == ReflectionStrategy.None)
 				throw new ArgumentOutOfRangeException (nameof (strategy));
 
-			if (strategy == ReflectionStrategy.Compiler) {
-				var output = Reflect (includeDirectories, libraryDirectories, outputFile, extraArgs, moduleNames);
-				ThrowOnCompilerVersionMismatch (output, moduleNames);
-			} else if (strategy == ReflectionStrategy.Parser) {
+			if (strategy == ReflectionStrategy.Parser) {
 				ReflectWithParser (includeDirectories, libraryDirectories, outputFile, moduleNames);
 			}
 		}

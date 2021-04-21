@@ -713,11 +713,11 @@ namespace SwiftReflector {
 
 		SLFunc [] DefineSuperSubscript (FunctionDeclaration getter, FunctionDeclaration setter)
 		{
-			// internal final func xam_super_subscript_get(parameters) -> type
+			// fileprivate final func xam_super_subscript_get(parameters) -> type
 			// {
 			//     return super[parameters]
 			// }
-			// internal final func xam_super_subscript_set(newValue:type, parameters)
+			// fileprivate final func xam_super_subscript_set(newValue:type, parameters)
 			// {
 			//    super[parameters] = newValue;
 			// }
@@ -738,7 +738,7 @@ namespace SwiftReflector {
 			var getterBody = new SLCodeBlock (null);
 			getterBody.Add (SLReturn.ReturnLine (new SLSubscriptExpr (SLIdentifier.Super,
 				propArgs)));
-			var fnGetter = new SLFunc (Visibility.Internal, propType, new SLIdentifier (SuperSubscriptName (getter)),
+			var fnGetter = new SLFunc (Visibility.FilePrivate, propType, new SLIdentifier (SuperSubscriptName (getter)),
 			                           new SLParameterList (propParams), getterBody);
 			funcs [0] = fnGetter;
 
@@ -748,7 +748,7 @@ namespace SwiftReflector {
 				var setterBody = new SLCodeBlock (null);
 				setterBody.Add (new SLLine (new SLBinding (new SLSubscriptExpr (SLIdentifier.Super,
 				                                                                propArgs.Skip (1)), newValue)));
-				SLFunc fnSetter = new SLFunc (Visibility.Internal, null, new SLIdentifier (SuperSubscriptName (setter)),
+				SLFunc fnSetter = new SLFunc (Visibility.FilePrivate, null, new SLIdentifier (SuperSubscriptName (setter)),
 				                              new SLParameterList (propParams), setterBody);
 				funcs [1] = fnSetter;
 			}
@@ -898,7 +898,7 @@ namespace SwiftReflector {
 
 		SLProperty DefineSuperProperty (FunctionDeclaration getter, FunctionDeclaration setter)
 		{
-			// internal final var xam_super_name {
+			// fileprivate final var xam_super_name {
 			// get {
 			//     return super.name
 			// }
@@ -924,7 +924,7 @@ namespace SwiftReflector {
 				returnType = typeMapper.OverrideTypeSpecMapper.MapType (getter, Imports, getter.ReturnTypeSpec, true);
 			}
 
-			return new SLProperty (Visibility.Internal, FunctionKind.Final, returnType,
+			return new SLProperty (Visibility.FilePrivate, FunctionKind.Final, returnType,
 			                       new SLIdentifier (SuperPropName (getter)), getterCode, setterCode);
 
 		}
@@ -1086,7 +1086,7 @@ namespace SwiftReflector {
 
 		SLFunc DefineSuper (FunctionDeclaration func, List<SLParameter> parameters)
 		{
-			// internal final func xam_super_functionName([parameters]) [ -> returnType]
+			// fileprivate final func xam_super_functionName([parameters]) [ -> returnType]
 			// {
 			//     [return] super.([parameter set]);
 			// }
@@ -1128,7 +1128,7 @@ namespace SwiftReflector {
 			var funcKind = FunctionKind.Final;
 			if (func.HasThrows)
 				funcKind |= FunctionKind.Throws;
-			var super = new SLFunc (Visibility.Internal, funcKind, returnType,
+			var super = new SLFunc (Visibility.FilePrivate, funcKind, returnType,
 			                        new SLIdentifier (SuperName (func)), new SLParameterList (parameters), body);
 
 			return super;
@@ -1314,7 +1314,7 @@ namespace SwiftReflector {
 			var fieldLine = SLDeclaration.VarLine (vtableName, new SLDictionaryType (new SLSimpleType ("TypeCacheKey"),
 			                                                                         new SLSimpleType (vtableTypeName)),
 			                                       new SLFunctionCall (String.Format ("[TypeCacheKey : {0}]", vtableTypeName), true),
-			                                       Visibility.Internal);
+			                                       Visibility.FilePrivate);
 			return fieldLine;
 		}
 
@@ -1334,7 +1334,7 @@ namespace SwiftReflector {
 
 		SLFunc DefineGenericVtableGetter ()
 		{
-			// internal func _vtableGetterName(t0: Any.Type /* ... */) -> _vtableType?
+			// fileprivate func _vtableGetterName(t0: Any.Type /* ... */) -> _vtableType?
 			// {
 			//     return _vtableName[TypeCacheKey(types:ObjectIdentifier(t0))]
 			// }
@@ -1344,7 +1344,7 @@ namespace SwiftReflector {
 
 			SLCodeBlock body = new SLCodeBlock (null);
 			body.Add (SLReturn.ReturnLine (new SLSubscriptExpr (vtableName, typeCacheKeyExpr)));
-			var func = new SLFunc (Visibility.Internal,
+			var func = new SLFunc (Visibility.FilePrivate,
 						 new SLOptionalType (new SLSimpleType (vtableTypeName)),
 						 new SLIdentifier (vtableGetterName),
 			                       new SLParameterList (parms), body);
@@ -1407,7 +1407,7 @@ namespace SwiftReflector {
 			parms.Add (new SLParameter (vtableID, new SLSimpleType (vtableTypeName)));
 			var body = new SLCodeBlock (null);
 			body.Add (new SLLine (new SLBinding (vtableName, vtableID, null)));
-			var func = new SLFunc (Visibility.Internal, FunctionKind.Static, null,
+			var func = new SLFunc (Visibility.FilePrivate, FunctionKind.Static, null,
 			                       new SLIdentifier (vtableSetterName), new SLParameterList (parms), body);
 			return func;
 		}
@@ -1459,7 +1459,7 @@ namespace SwiftReflector {
 		SLClass DefineInnerVtableStruct ()
 		{
 			// this defines the type of the struct that will hold the vtable
-			var cl = new SLClass (Visibility.Internal, vtableTypeName, null, false, false, NamedType.Struct);
+			var cl = new SLClass (Visibility.FilePrivate, vtableTypeName, null, false, false, NamedType.Struct);
 			var fieldIdentifiers = new List<string> ();
 			int j = 0;
 			foreach (FunctionDeclaration func in OverriddenVirtualMethods) {
@@ -1491,7 +1491,7 @@ namespace SwiftReflector {
 			var closureType = ToClosureType (func);
 			SLAttribute.ConventionC ().AttachBefore (closureType);
 
-			var fieldLine = SLDeclaration.VarLine (VTableEntryIdentifier (index), new SLOptionalType (closureType), null, Visibility.Internal);
+			var fieldLine = SLDeclaration.VarLine (VTableEntryIdentifier (index), new SLOptionalType (closureType), null, Visibility.FilePrivate);
 			return fieldLine;
 		}
 

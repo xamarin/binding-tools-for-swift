@@ -1,12 +1,16 @@
 # Pipeline for Binding Tools for Swift.
 #
 # yaml help: https://aka.ms/yaml
-
 trigger:
-- '*'
+  branches:
+    include:
+    - '*'
 
 pr:
-- '*'
+  autoCancel: true
+  branches:
+    include:
+    - '*'
 
 resources:
   repositories:
@@ -25,7 +29,7 @@ variables:
 parameters:
 - name: RunningTests
   type: boolean
-  default: false # we can change this to true or check the box in pipelines when we want to run tests
+  default: true # we can change this to true or check the box in pipelines when we want to run tests
 
 jobs:
 - job: ContinuousIntegration
@@ -92,6 +96,13 @@ jobs:
       set -x
       ./binding-tools-for-swift/devops/automation/provision-deps.sh
     displayName: 'Provision dependencies'
+
+  - script: |
+      set -e
+      set -x
+      cd ./binding-tools-for-swift/
+      git clean -xdf
+    displayName: 'Clean workspace'
 
   - script: |
       set -e

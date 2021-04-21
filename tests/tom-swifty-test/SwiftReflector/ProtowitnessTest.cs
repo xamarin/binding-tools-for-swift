@@ -16,6 +16,7 @@ namespace SwiftReflector {
 	public class ProtowitnessTest {
 
 		[Test]
+		[Ignore ("Not loading RegisterAccess - https://github.com/xamarin/binding-tools-for-swift/issues/656")]
 		public void VerifyProtoAccess ()
 		{
 			var swiftCode = @"

@@ -101,7 +101,8 @@ namespace SwiftReflector {
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleSubscriptGetOnly{type}", otherClass : overCS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleSubscriptGetOnly{type}", otherClass : overCS,
+				platform: PlatformName.macOS);
 		}
 
 		[Test]
@@ -284,7 +285,8 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock .Create (decl, decl1, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSubscriptGetSetOnly{type}", otherClass : overCS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSubscriptGetSetOnly{type}", otherClass : overCS,
+				platform: PlatformName.macOS);
 		}
 
 		[Test]
@@ -569,7 +571,6 @@ public func isThisATrait (a: ThisServesAsATrait) -> Bool {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void EqConstraintSmokeTest ()
 		{
 			var swiftCode = @"
@@ -592,7 +593,6 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void TestProtocolTypeAttribute ()
 		{
 			var swiftCode = @"
