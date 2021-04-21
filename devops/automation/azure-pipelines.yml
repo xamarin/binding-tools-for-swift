@@ -1,12 +1,16 @@
 # Pipeline for Binding Tools for Swift.
 #
 # yaml help: https://aka.ms/yaml
-
 trigger:
-- '*'
+  branches:
+    include:
+    - '*'
 
 pr:
-- '*'
+  autoCancel: true
+  branches:
+    include:
+    - '*'
 
 resources:
   repositories:
