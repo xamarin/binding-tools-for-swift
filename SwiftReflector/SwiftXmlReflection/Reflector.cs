@@ -11,13 +11,14 @@ using SwiftReflector.IOUtils;
 using System.Diagnostics;
 using System.Text;
 using ObjCRuntime;
+using SwiftReflector.TypeMapping;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class Reflector {
 		public const double kCurrentVersion = 1.0;
 		const double kNextMajorVersion = 2.0;
 
-		public static List<ModuleDeclaration> FromXml (XDocument doc)
+		public static List<ModuleDeclaration> FromXml (XDocument doc, TypeDatabase typeDatabase)
 		{
 			var xamreflect = doc.Element ("xamreflect");
 			var version = xamreflect.DoubleAttribute ("version");
@@ -28,35 +29,35 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 			try {
 				List<ModuleDeclaration> modules = (from module in xamreflect.Descendants ("module")
-								   select ModuleDeclaration.FromXElement (module)).ToList ();
+								   select ModuleDeclaration.FromXElement (module, typeDatabase)).ToList ();
 				return modules;
 			} catch (Exception e) {
 				throw ErrorHelper.CreateError (ReflectorError.kReflectionErrorBase + 6, $"Error while reading XML reflection information: {e.Message}");
 			}
 		}
 
-		public static List<ModuleDeclaration> FromXml (Stream stm)
+		public static List<ModuleDeclaration> FromXml (Stream stm, TypeDatabase typeDatabase)
 		{
 			var doc = XDocument.Load (stm);
-			return FromXml (doc);
+			return FromXml (doc, typeDatabase);
 		}
 
-		public static List<ModuleDeclaration> FromXmlFile (string path)
+		public static List<ModuleDeclaration> FromXmlFile (string path, TypeDatabase typeDatabase)
 		{
 			try {
 				using (FileStream stm = new FileStream (path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-					return FromXml (stm);
+					return FromXml (stm, typeDatabase);
 				}
 			} catch (Exception e) {
 				throw ErrorHelper.CreateError (ReflectorError.kReflectionErrorBase + 10, e, $"Failed to load xml file '{path}': {e.Message}");
 			}
 		}
 
-		public static List<ModuleDeclaration> FromXml (string xmlText)
+		public static List<ModuleDeclaration> FromXml (string xmlText, TypeDatabase typeDatabase)
 		{
 			using (StringReader reader = new StringReader (xmlText)) {
 				var doc = XDocument.Load (reader);
-				return FromXml (doc);
+				return FromXml (doc, typeDatabase);
 			}
 		}
 
@@ -64,7 +65,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			IFileProvider<string> provider, string outfileName, out string fullOutputPath)
 		{
 			fullOutputPath = PathToXmlFromModules (executablePath, searchDirectories, modules, provider, outfileName);
-			return FromXmlFile (fullOutputPath);
+			return FromXmlFile (fullOutputPath, null);
 		}
 
 		public static string PathToXmlFromModules (string executablePath, List<string> searchDirectories, List<string> modules,

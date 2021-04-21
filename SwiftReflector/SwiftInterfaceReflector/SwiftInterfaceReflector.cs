@@ -1636,7 +1636,12 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var failures = new StringBuilder ();
 			foreach (var module in importModules) {
+				// XamGlue and RegisterAccess may very well get
+				// used, but we the functions/types exported from these
+				// should never need to be loaded.
 				if (module == "XamGlue")
+					continue;
+				if (module == "RegisterAccess")
 					continue;
 				if (!moduleLoader.Load (module, typeDatabase)) {
 					if (failures.Length > 0)

@@ -50,7 +50,7 @@ namespace XmlReflectionTests {
 
 		List<ModuleDeclaration> ReflectToModules (string code, string moduleName, out SwiftInterfaceReflector reflector)
 		{
-			return Reflector.FromXml (ReflectToXDocument (code, moduleName, out reflector));
+			return Reflector.FromXml (ReflectToXDocument (code, moduleName, out reflector), typeDatabase);
 		}
 
 		[Test]

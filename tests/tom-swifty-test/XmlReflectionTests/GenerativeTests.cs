@@ -42,7 +42,7 @@ namespace XmlReflectionTests {
 		{
 			var decls = new List<ModuleDeclaration> ();
 			var doc = ParserToXDocument (directory, moduleName);
-			return Reflector.FromXml (doc);
+			return Reflector.FromXml (doc, typeDatabase);
 		}
 
 

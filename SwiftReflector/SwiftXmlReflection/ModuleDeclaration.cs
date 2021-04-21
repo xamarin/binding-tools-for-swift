@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using SwiftReflector.TypeMapping;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class ModuleDeclaration {
@@ -38,7 +39,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public List<BaseDeclaration> Declarations { get; private set; }
 		public List<TypeAliasDeclaration> TypeAliases { get; private set; }
 
-		public static ModuleDeclaration FromXElement (XElement elem)
+		public static ModuleDeclaration FromXElement (XElement elem, TypeDatabase typeDatabase)
 		{
 			ModuleDeclaration decl = new ModuleDeclaration {
 				Name = (string)elem.Attribute ("name"),
@@ -47,6 +48,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 			decl.TypeAliases.AddRange (elem.Descendants ("typealias").Select (al => TypeAliasDeclaration.FromXElement (decl.Name, al)));
 			var folder = new TypeAliasFolder (decl.TypeAliases);
+			folder.AddDatabaseAliases (typeDatabase);
 
 			// non extensions
 			foreach (var child in elem.Elements()) {
