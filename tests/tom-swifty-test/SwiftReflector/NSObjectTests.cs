@@ -278,6 +278,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("Not loading Cocoa - https://github.com/xamarin/binding-tools-for-swift/issues/656")]
 		public void NSImageViewSmokeTest ()
 		{
 			string swiftCode =
@@ -306,6 +307,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("Not loading Cocoa - https://github.com/xamarin/binding-tools-for-swift/issues/656")]
 		public void NSImageViewSmokeTest1 ()
 		{
 			string swiftCode =
@@ -326,6 +328,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("Not loading Cocoa - https://github.com/xamarin/binding-tools-for-swift/issues/656")]
 		public void NSImageViewSmokeTest2 ()
 		{
 			string swiftCode =
@@ -354,6 +357,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("Not loading Cocoa - https://github.com/xamarin/binding-tools-for-swift/issues/656")]
 		public void NSImageViewSmokeTest3 ()
 		{
 			string swiftCode =
@@ -374,6 +378,7 @@ namespace SwiftReflector {
 
 
 		[Test]
+		[Ignore ("Not loading Cocoa - https://github.com/xamarin/binding-tools-for-swift/issues/656")]
 		public void NSImageViewSmokeTest4 ()
 		{
 			string swiftCode =

@@ -118,7 +118,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				} else if (errorConvention) {
 					scratch.Append ("AndReturnError");
 					firstPiece = scratch.ToString ();
-				} else if (argNames [argIndex] != "_") {
+				} else if (argNames [argIndex] != "_" && argNames [argIndex] != "") {
 					// If the first argument name doesn't start with a preposition, and the
 					// method name doesn't end with a preposition, add "with".
 					var firstName = argNames [argIndex++];
