@@ -77,8 +77,9 @@ jobs:
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*p12
       rm -f ~/Library/Caches/com.xamarin.provisionator/Provisions/*mobileprovision
       cd $(System.DefaultWorkingDirectory)
-      $(Build.SourcesDirectory)/maccore/tools/install-qa-provisioning-profiles.sh -v
+      ./maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
+    workingDirectory: $(Build.SourcesDirectory)
     env:
       AUTH_TOKEN_GITHUB_COM: $(github--pat--vs-mobiletools-engineering-service2)
       AUTH_TOKEN_LA_DEV_APPLE_P12: $(xqa--certificates--password)
@@ -88,7 +89,7 @@ jobs:
       AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_2_P12: $(xqa--certificates--password)
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
-  - script: |
+  - bash: |
       set +e # we don't care about errors here
       set -x
       pwd
@@ -100,18 +101,20 @@ jobs:
       exit 0 # make sure we don't return an error code if the last command failed
     displayName: 'Environment info'
 
-  - script: |
+  - bash: |
       set -e
       set -x
-      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/provision-deps.sh
+      ./binding-tools-for-swift/devops/automation/provision-deps.sh
     displayName: 'Provision dependencies'
+    workingDirectory: $(Build.SourcesDirectory)
 
-  - script: |
+  - bash: |
       set -e
       set -x
       cd ./binding-tools-for-swift/
       git clean -xdf
     displayName: 'Clean workspace'
+    workingDirectory: $(Build.SourcesDirectory)
 
   - script: |
       set -e
@@ -137,17 +140,19 @@ jobs:
       ArtifactName: 'toolchain'
       publishLocation: 'Container'
 
-  - script: |
+  - bash: |
       set -e
       set -x
-      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/build.sh
+      ./binding-tools-for-swift/devops/automation/build.sh
     displayName: 'Build'
+    workingDirectory: $(Build.SourcesDirectory)
 
-  - script: |
+  - bash: |
       set -e
       set -x
-      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/run-tests.sh
+      ./binding-tools-for-swift/devops/automation/run-tests.sh
     displayName: 'Run tests'
+    workingDirectory: $(Build.SourcesDirectory)
     condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishTestResults@2
@@ -306,7 +311,6 @@ jobs:
         echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
         COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
       fi
-      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
-    env:
-      BUILD_REVISION: $(System.PullRequest.SourceCommitId)
+    workingDirectory: $(Build.SourcesDirectory)
