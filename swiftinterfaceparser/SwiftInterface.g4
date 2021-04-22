@@ -271,6 +271,7 @@ dyckExpression :
 	| label_identifier
 	| literal
 	| operator
+	| dotSymbol
 	;
 dyckSubExpression :
 	dyckExpression
@@ -280,6 +281,8 @@ any_other_things_for_dyck_expression :
 	( OpDot | OpComma | OpColon | OpSemi | OpAssign | OpAt | OpPound | OpBackTick | OpQuestion | OpUnder)
 	| arrow_operator
 	;
+
+dotSymbol : '.' declaration_identifier;
 	
 declaration_identifier : Identifier | keyword_as_identifier_in_declarations ;
 
