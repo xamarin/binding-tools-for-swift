@@ -1,6 +1,12 @@
 #!/bin/bash -e
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.."
+# env var should have been defined by the CI
+if test -z "$BTFS_TOP"; then
+    echo "Variable BTFS_TOP is missing."
+    exit 1
+fi
+
+cd $BTFS_TOP
 WORKSPACE=$(pwd)
 
 # SC1091: Not following: SwiftVersion.mk was not specified as input (see shellcheck -x).

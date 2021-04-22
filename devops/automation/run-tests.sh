@@ -1,4 +1,8 @@
 #!/bin/bash -e
+if test -z "$BTFS_TOP"; then
+    echo "Variable BTFS_TOP is missing."
+    exit 1
+fi
 
 echo $SOM_PATH
 unset SOM_PATH
