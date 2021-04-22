@@ -20,7 +20,7 @@ namespace tomwiftytest {
 	public sealed class RunWithLeaksAttribute : Attribute { }
 
 	public enum XCodeCompiler {
-		C = 0, Cpp, ObjectiveC, Swiftc, CSharp, CSharpExe, SwiftcCustom, SwiftCustom
+		C = 0, Cpp, ObjectiveC, Swiftc, CSharp, CSharpExe
 	}
 
 	[TestFixture ()]
@@ -28,7 +28,6 @@ namespace tomwiftytest {
 	public class Compiler {
 		// Enviroment var that can be used to test binding-tools-for-swift from a package
 		static string SOM_PATH = Environment.GetEnvironmentVariable ("SOM_PATH");
-		public const string kSwiftCustomDirectoryRel = "../../../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64";
 #if DEBUG
 		public const string kSwiftRuntimeGlueDirectoryRel = "../../../../swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework";
 		public const string kSwiftRuntimeSourceDirectoryRel = "../../../../swiftglue/";
@@ -36,11 +35,7 @@ namespace tomwiftytest {
 		public static string kSwiftDeviceTestRoot = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "../../devicetests"));
 		public static string kLeakCheckBinary = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "..", "..", "..", "..", "leaktest", "bin", "Debug", "leaktest"));
 		public static string kSwiftRuntimeGlueDirectory = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), kSwiftRuntimeGlueDirectoryRel) : FindPathFromEnvVariable ("lib/SwiftInterop/mac/XamGlue.framework"));
-		public static string kSwiftCustomDirectory = PosixHelpers.RealPath (SOM_PATH ?? Path.Combine (GetTestDirectory (), kSwiftCustomDirectoryRel));
 		public static string kXamGlueSourceDirectory = PosixHelpers.RealPath (SOM_PATH ?? Path.Combine (GetTestDirectory (), kSwiftRuntimeSourceDirectoryRel));
-
-		static string kSwiftCustomBin = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (kSwiftCustomDirectory, "bin/") : FindPathFromEnvVariable ("bin/swift/bin/")) + "/";
-		static string kSwiftCustomLib = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (kSwiftCustomDirectory, "lib/swift/macosx/") : FindPathFromEnvVariable ("bin/swift/lib/swift/macosx/"));
 
 		static string kSystemBin = "/usr/bin/";
 		static string kSystemLib = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx";
@@ -57,8 +52,6 @@ namespace tomwiftytest {
 
 
 		public static List<string> kTypeDatabases = new List<string> { PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../bindings") : FindPathFromEnvVariable ("bindings")) };
-		public static string kSwiftCustomSwiftc = SOM_PATH is null ? Path.Combine (kSwiftCustomBin, "swiftc") : FindPathFromEnvVariable ("bin/swift/bin/swiftc");
-		public static string kSwiftCustomSwift = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (kSwiftCustomBin, "swift") : FindPathFromEnvVariable ("bin/swift/bin/swift"));
 		public const string kMono64Path = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
 		public static string kTestRoot = PosixHelpers.RealPath (GetTestDirectory ());
 #if DEBUG
@@ -116,17 +109,6 @@ namespace tomwiftytest {
 				return String.Format ("{0} -target:library -out:{1} {2}", extraOptions, outfile, pathToCode);
 			} else if (compiler == XCodeCompiler.CSharpExe) {
 				return String.Format ("{0} -out:{1} {2}", extraOptions, outfile, pathToCode);
-			} else if (compiler == XCodeCompiler.SwiftCustom) {
-				return String.Format ("{0} -o {1} {2}", extraOptions, outfile, pathToCode);
-			} else if (compiler == XCodeCompiler.SwiftcCustom) {
-				string moduleOption = extraOptions.Contains ("-module-name") ? "" : "-module-name noname";
-				if (extraOptions.Contains ("-emit-module")) {
-					return String.Format ("-emit-library -sdk {3} {0} {1} {2}", moduleOption, extraOptions, pathToCode,
-						GetSDKPath ());
-				} else {
-					return String.Format ("-emit-library  -sdk {4}{0} {1} -o {2} {3}", moduleOption, extraOptions,
-						outfile, pathToCode, GetSDKPath ());
-				}
 			} else {
 				return String.Format ("{0} {1} -c -o {2} {3}", compilerName, extraOptions, outfile, pathToCode);
 			}
@@ -145,12 +127,6 @@ namespace tomwiftytest {
 			xcrun = xcrun ?? "/usr/bin/xcrun";
 			if (compiler == XCodeCompiler.CSharp || compiler == XCodeCompiler.CSharpExe)
 				xcrun = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mcs";
-			if (compiler == XCodeCompiler.SwiftcCustom) {
-				xcrun = Path.Combine (kSwiftCustomBin, "swiftc");
-			}
-			if (compiler == XCodeCompiler.SwiftCustom) {
-				xcrun = Path.Combine (kSwiftCustomBin, "/swift");
-			}
 			extraOptions = extraOptions ?? "";
 
 			// get the xcrun subcommand
@@ -234,7 +210,7 @@ namespace tomwiftytest {
 		// compile an inline code string
 		public static Stream CompileStringUsing (string xcrun, XCodeCompiler compiler, string code, string extraOptions)
 		{
-			using (DisposableTempFile tf = new DisposableTempFile (null, null, (compiler == XCodeCompiler.Swiftc || compiler == XCodeCompiler.SwiftcCustom) ? "swift" : null, false)) {
+			using (DisposableTempFile tf = new DisposableTempFile (null, null, compiler == XCodeCompiler.Swiftc ? "swift" : null, false)) {
 				File.WriteAllText (tf.Filename, code);
 				return CompileUsing (xcrun, compiler, tf.Filename, extraOptions);
 			}
@@ -250,7 +226,7 @@ namespace tomwiftytest {
 
 		public static DisposableTempFile CompileStringToFileUsing (string xcrun, XCodeCompiler compiler, string code, string extraOptions, DisposableTempFile outputFile = null)
 		{
-			using (DisposableTempFile tf = new DisposableTempFile (null, null, (compiler == XCodeCompiler.Swiftc || compiler == XCodeCompiler.SwiftcCustom) ? "swift" : null, false)) {
+			using (DisposableTempFile tf = new DisposableTempFile (null, null, compiler == XCodeCompiler.Swiftc ? "swift" : null, false)) {
 				File.WriteAllText (tf.Filename, code);
 				return CompileToFileUsing (xcrun, compiler, tf.Filename, extraOptions, outputFile);
 			}
@@ -274,19 +250,6 @@ namespace tomwiftytest {
 		public static string kHelloSwift = "public func main() -> String { return \"hello, world\"; }";
 		public static string kHelloCSharp = "using System;\npublic class Hello { public static void Main(string[] args) { Console.WriteLine(\"hello, world\\n\"); } }";
 
-		[Test]
-		public void HasCustomCompiler ()
-		{
-			if (SOM_PATH != null)
-				Console.WriteLine ($"Using SOM_PATH: {SOM_PATH}");
-			Assert.IsTrue (Directory.Exists (kSwiftCustomDirectory), "If this fails, then we weren't able to find the custom swift build directory "
-			+ kSwiftCustomDirectory + ". Did you forget to build it?");
-			Assert.IsTrue (Directory.Exists (kSwiftCustomBin), "If this fails, then we weren't able to find the custom swift build bin directory ");
-			Assert.IsTrue (File.Exists (kSwiftCustomBin + "swift"), "If this fails, then you have the custom build directory "
-				+ kSwiftCustomBin + ", but you don't have the output swift.");
-			Assert.IsTrue (File.Exists (kSwiftCustomBin + "swiftc"), "If this fails, then you have the custom build directory "
-				+ kSwiftCustomBin + ", but you don't have the output swiftc.");
-		}
 
 		[Test]
 		public void HelloWorldC ()
@@ -403,7 +366,7 @@ namespace tomwiftytest {
 		[Test]
 		public void HelloWorldSwiftcCustom ()
 		{
-			using (Stream ostm = CompileStringUsing (null, XCodeCompiler.SwiftcCustom,
+			using (Stream ostm = CompileStringUsing (null, XCodeCompiler.Swiftc,
 				kHelloSwift,
 				null)) {
 				Assert.IsNotNull (ostm);
