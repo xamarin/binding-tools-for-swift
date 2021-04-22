@@ -4,7 +4,9 @@ if test -z "$BTFS_TOP"; then
     exit 1
 fi
 
-cd $BTFS_TOP
+echo $SOM_PATH
+unset SOM_PATH
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 #WORKSPACE=$(pwd)
 
 make -C tests/tom-swifty-test

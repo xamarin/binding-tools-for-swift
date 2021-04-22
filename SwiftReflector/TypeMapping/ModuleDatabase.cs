@@ -10,8 +10,10 @@ namespace SwiftReflector.TypeMapping {
 		public ModuleDatabase ()
 		{
 			Operators = new List<OperatorDeclaration> ();
+			TypeAliases = new List<TypeAliasDeclaration> ();
 		}
 
 		public List<OperatorDeclaration> Operators { get; private set; }
+		public List<TypeAliasDeclaration> TypeAliases { get; private set; }
 	}
 }

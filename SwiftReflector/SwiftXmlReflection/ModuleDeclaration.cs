@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using SwiftReflector.TypeMapping;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class ModuleDeclaration {
@@ -13,6 +14,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			Declarations = new List<BaseDeclaration> ();
 			Extensions = new List<ExtensionDeclaration> ();
 			Operators = new List<OperatorDeclaration> ();
+			TypeAliases = new List<TypeAliasDeclaration> ();
 		}
 
 		public ModuleDeclaration (string name)
@@ -35,22 +37,27 @@ namespace SwiftReflector.SwiftXmlReflection {
 		}
 
 		public List<BaseDeclaration> Declarations { get; private set; }
+		public List<TypeAliasDeclaration> TypeAliases { get; private set; }
 
-		public static ModuleDeclaration FromXElement (XElement elem)
+		public static ModuleDeclaration FromXElement (XElement elem, TypeDatabase typeDatabase)
 		{
 			ModuleDeclaration decl = new ModuleDeclaration {
 				Name = (string)elem.Attribute ("name"),
 				SwiftCompilerVersion = new Version((string)elem.Attribute("swiftVersion") ?? "3.1")
 			};
 
+			decl.TypeAliases.AddRange (elem.Descendants ("typealias").Select (al => TypeAliasDeclaration.FromXElement (decl.Name, al)));
+			var folder = new TypeAliasFolder (decl.TypeAliases);
+			folder.AddDatabaseAliases (typeDatabase);
+
 			// non extensions
 			foreach (var child in elem.Elements()) {
 				if (child.Name == "extension") {
-					decl.Extensions.Add (ExtensionDeclaration.FromXElement (child, decl));
+					decl.Extensions.Add (ExtensionDeclaration.FromXElement (folder, child, decl));
 				} else if (child.Name == "operator") {
 					decl.Operators.Add (OperatorDeclaration.FromXElement (child, child.Attribute ("moduleName")?.Value));
 				} else {
-					decl.Declarations.Add (BaseDeclaration.FromXElement (child, decl, null));
+					decl.Declarations.Add (BaseDeclaration.FromXElement (folder, child, decl, null));
 				}
 			}
 			return decl;

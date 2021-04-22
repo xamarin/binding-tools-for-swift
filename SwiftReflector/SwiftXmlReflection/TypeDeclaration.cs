@@ -171,7 +171,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 
 		#endregion
 
-		public static TypeDeclaration TypeFromXElement (XElement elem, ModuleDeclaration module, BaseDeclaration parent /* can be null */)
+		public static TypeDeclaration TypeFromXElement (TypeAliasFolder folder, XElement elem, ModuleDeclaration module, BaseDeclaration parent /* can be null */)
 		{
 			var decl = FromKind ((string)elem.Attribute ("kind"));
 			bool isUnrooted = elem.Attribute ("module") != null;
@@ -192,17 +192,17 @@ namespace SwiftReflector.SwiftXmlReflection {
 			decl.IsDeprecated = elem.BoolAttribute ("isDeprecated");
 			decl.IsUnavailable = elem.BoolAttribute ("isUnavailable");
 
-			decl.InnerClasses.AddRange (InnerFoo<ClassDeclaration> (elem, "innerclasses", module, decl));
-			decl.InnerStructs.AddRange (InnerFoo<StructDeclaration> (elem, "innerstructs", module, decl));
-			decl.InnerEnums.AddRange (InnerFoo<EnumDeclaration> (elem, "innerenums", module, decl));
+			decl.InnerClasses.AddRange (InnerFoo<ClassDeclaration> (folder, elem, "innerclasses", module, decl));
+			decl.InnerStructs.AddRange (InnerFoo<StructDeclaration> (folder, elem, "innerstructs", module, decl));
+			decl.InnerEnums.AddRange (InnerFoo<EnumDeclaration> (folder, elem, "innerenums", module, decl));
 			if (elem.Element ("members") != null) {
 				var members = from mem in elem.Element ("members").Elements ()
-					      select Member.FromXElement (mem, module, decl) as Member;
+					      select Member.FromXElement (folder, mem, module, decl) as Member;
 				decl.Members.AddRange (members);
 			}
 			if (elem.Element ("inherits") != null) {
 				var inherits = from inherit in elem.Element ("inherits").Elements ()
-					       select SwiftReflector.SwiftXmlReflection.Inheritance.FromXElement (inherit) as Inheritance;
+					       select SwiftReflector.SwiftXmlReflection.Inheritance.FromXElement (folder, inherit) as Inheritance;
 				decl.Inheritance.AddRange (inherits);
 			}
 			EnumDeclaration edecl = decl as EnumDeclaration;
@@ -212,7 +212,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 						 (long?)enumElement.Attribute ("intValue"))).ToList (); ;
 				edecl.Elements.AddRange (enumElements);
 				if (elem.Attribute ("rawType") != null) {
-					edecl.RawTypeName = (string)elem.Attribute ("rawType");
+					var rawType = TypeSpecParser.Parse ((string)elem.Attribute ("rawType"));
+					edecl.RawTypeName = folder.FoldAlias (parent, rawType).ToString ();
 				}
 			}
 
@@ -220,7 +221,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			if (protoDecl != null) {
 				if (elem.Element ("associatedtypes") != null) {
 					var assocElements = from assocElem in elem.Element ("associatedtypes").Elements ()
-							    select AssociatedTypeDeclaration.FromXElement (assocElem);
+							    select AssociatedTypeDeclaration.FromXElement (folder, assocElem);
 					protoDecl.AssociatedTypes.AddRange (assocElements);
 				}
 			}
@@ -228,10 +229,10 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return decl;
 		}
 
-		static IEnumerable<T> InnerFoo<T> (XElement parent, string innerName, ModuleDeclaration module, BaseDeclaration parDecl) where T : TypeDeclaration
+		static IEnumerable<T> InnerFoo<T> (TypeAliasFolder folder, XElement parent, string innerName, ModuleDeclaration module, BaseDeclaration parDecl) where T : TypeDeclaration
 		{
 			var inner = parent.Elements (innerName).SelectMany (el => el.Elements ("typedeclaration"));
-			var innerList = inner.Select (elem => FromXElement (elem, module, parDecl)).ToList ();
+			var innerList = inner.Select (elem => FromXElement (folder, elem, module, parDecl)).ToList ();
 			var innerCast = innerList.Cast<T> ().ToList ();
 			return innerCast;
 		}

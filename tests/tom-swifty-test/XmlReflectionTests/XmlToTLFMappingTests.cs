@@ -14,21 +14,55 @@ using SwiftReflector;
 using SwiftReflector.Demangling;
 using SwiftReflector.Inventory;
 using SwiftReflector.TypeMapping;
+using SwiftReflector.SwiftInterfaceReflector;
 
 namespace XmlReflectionTests {
 	[TestFixture]
 	[Parallelizable (ParallelScope.All)]
 	public class XmlToTLFMappingTests {
 
+		static TypeDatabase typeDatabase;
+
+		static XmlToTLFMappingTests ()
+		{
+			typeDatabase = new TypeDatabase ();
+			foreach (var dbPath in Compiler.kTypeDatabases) {
+				if (!Directory.Exists (dbPath))
+					continue;
+				foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
+					typeDatabase.Read (dbFile);
+				}
+			}
+		}
+
+		XDocument ParserToXDocument (string directory, string moduleName)
+		{
+			var parser = new SwiftInterfaceReflector (typeDatabase, new NoLoadLoader ());
+			return parser.Reflect (Path.Combine (directory, moduleName + ".swiftinterface"));
+		}
+
+		List<ModuleDeclaration> ParserToModule (string directory, string moduleName)
+		{
+			var decls = new List<ModuleDeclaration> ();
+			var doc = ParserToXDocument (directory, moduleName);
+			return Reflector.FromXml (doc, typeDatabase);
+		}
+
+
+		(ModuleInventory, ModuleDeclaration) ReflectToModules (string code, string moduleName)
+		{
+			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
+			var module = ParserToModule (compiler.DirectoryPath, moduleName).FirstOrDefault ();
+			var errors = new ErrorHandling ();
+			var inventory = ModuleInventory.FromFile (Path.Combine (compiler.DirectoryPath, "libCanFind.dylib"), errors);
+			return (inventory, module);
+		}
+
+
 		void CanFindThing (string code, Func<FunctionDeclaration, bool> funcFinder,
 			Func<TLFunction, bool> tlVerifier)
 		{
-			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: "CanFind");
-
-			var errors = new ErrorHandling ();
-			ModuleInventory mi = ModuleInventory.FromFile (Path.Combine (compiler.DirectoryPath, "libCanFind.dylib"), errors);
-			ModuleDeclaration mod = compiler.ReflectToModules (new string [] { compiler.DirectoryPath },
-				new string [] { compiler.DirectoryPath }, null, "CanFind") [0];
+			(var mi, var mod) = ReflectToModules (code, "CanFind");
 
 			FunctionDeclaration funcDecl = mod.Functions.FirstOrDefault (funcFinder);
 			Assert.IsNotNull (funcDecl, "no function found");
@@ -268,12 +302,9 @@ namespace XmlReflectionTests {
 			Func<FunctionDeclaration, bool> funcFinder,
 			Func<TLFunction, bool> tlVerifier)
 		{
-			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: "CanFind");
-
-			var errors = new ErrorHandling ();
-			ModuleInventory mi = ModuleInventory.FromFile (Path.Combine (compiler.DirectoryPath, "libCanFind.dylib"), errors);
-			ModuleDeclaration mod = compiler.ReflectToModules (new string [] { compiler.DirectoryPath },
-				new string [] { compiler.DirectoryPath }, null, "CanFind") [0];
+			var inventoryModule = ReflectToModules (code, "CanFind");
+			var mi = inventoryModule.Item1;
+			var mod = inventoryModule.Item2;
 
 			ClassDeclaration classDecl = mod.AllClasses.FirstOrDefault (classFinder);
 			Assert.IsNotNull (classDecl, "nominal type not found");
@@ -398,10 +429,9 @@ namespace XmlReflectionTests {
 		{
 			string code = "public class Bar { public var x:Int = 0; }";
 
-			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: "CanFind");
-
-			ModuleDeclaration mod = compiler.ReflectToModules (new string [] { compiler.DirectoryPath },
-			new string [] { compiler.DirectoryPath }, null, "CanFind") [0];
+			var inventoryModule = ReflectToModules (code, "CanFind");
+			var mi = inventoryModule.Item1;
+			var mod = inventoryModule.Item2;
 
 			ClassDeclaration classDecl = mod.AllClasses.FirstOrDefault (cl => cl.Name == "Bar");
 			Assert.IsNotNull (classDecl);
@@ -420,12 +450,9 @@ namespace XmlReflectionTests {
 		void FindsProperty (string code, Func<ClassDeclaration, bool> classFinder,
 			Func<PropertyDeclaration, bool> propFinder)
 		{
-			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: "CanFind");
-
-			var errors = new ErrorHandling ();
-			ModuleInventory mi = ModuleInventory.FromFile (Path.Combine (compiler.DirectoryPath, "libCanFind.dylib"), errors);
-			ModuleDeclaration mod = compiler.ReflectToModules (new string [] { compiler.DirectoryPath },
-				new string [] { compiler.DirectoryPath }, null, "CanFind") [0];
+			var inventoryModule = ReflectToModules (code, "CanFind");
+			var mi = inventoryModule.Item1;
+			var mod = inventoryModule.Item2;
 
 			ClassDeclaration classDecl = mod.AllClasses.FirstOrDefault (classFinder);
 			Assert.IsNotNull (classDecl, "null class");

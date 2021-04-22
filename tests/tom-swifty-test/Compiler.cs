@@ -486,6 +486,11 @@ namespace tomwiftytest {
 					// Running with leaks causes additional output to stdout/stderr, so take steps to write the stdout from the test itself to a file to untangle it from leaks' output.
 					outputFile = Path.GetTempFileName ();
 					env.Add ("LEAKTEST_STDOUT_PATH", outputFile);
+				} else {
+					foreach (var key in new List<string> (env.Keys)) {
+						if (key.StartsWith ("LEAK", StringComparison.Ordinal))
+							env.Remove (key);
+					}
 				}
 
 				var rv = ExecAndCollect.RunCommand (executable, args.ToString (), env, output, workingDirectory: workingDirectory ?? string.Empty);

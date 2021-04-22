@@ -62,6 +62,7 @@ namespace Dynamo.SwiftLang {
 		Private,
 		Internal,
 		Open,
+		FilePrivate,
 	}
 
 	[Flags]

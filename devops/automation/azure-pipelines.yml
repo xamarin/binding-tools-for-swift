@@ -1,7 +1,6 @@
 # Pipeline for Binding Tools for Swift.
 #
 # yaml help: https://aka.ms/yaml
-
 trigger:
   branches:
     include:
@@ -30,7 +29,7 @@ variables:
 parameters:
 - name: RunningTests
   type: boolean
-  default: false # we can change this to true or check the box in pipelines when we want to run tests
+  default: true # we can change this to true or check the box in pipelines when we want to run tests
 
 jobs:
 - job: ContinuousIntegration
@@ -81,6 +80,12 @@ jobs:
       $(Build.SourcesDirectory)/maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
     env:
+      AUTH_TOKEN_GITHUB_COM: $(github--pat--vs-mobiletools-engineering-service2)
+      AUTH_TOKEN_LA_DEV_APPLE_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_LA_DISTR_APPLE_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_LA_MAC_INSTALLER_DISTR_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_P12: $(xqa--certificates--password)
+      AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_2_P12: $(xqa--certificates--password)
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
   - script: |
@@ -100,6 +105,13 @@ jobs:
       set -x
       $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/provision-deps.sh
     displayName: 'Provision dependencies'
+
+  - script: |
+      set -e
+      set -x
+      cd ./binding-tools-for-swift/
+      git clean -xdf
+    displayName: 'Clean workspace'
 
   - script: |
       set -e
@@ -134,6 +146,22 @@ jobs:
   - script: |
       set -e
       set -x
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/run-tests.sh
+    displayName: 'Run tests'
+    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
+
+  - task: PublishTestResults@2
+    displayName: 'Publish NUnit Device Test Results'
+    inputs:
+      testResultsFormat: NUnit
+      testResultsFiles: '**/TestResult*.xml'
+      failTaskOnFailedTests: true
+    continueOnError: true
+    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
+
+  - script: |
+      set -e
+      set -x
       $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/build-package.sh
       ls -la ./package || true
     displayName: 'Package'
@@ -147,22 +175,6 @@ jobs:
       PathtoPublish: './package'
       ArtifactName: 'drop'
       publishLocation: 'Container'
-
-  - script: |
-      set -e
-      set -x
-      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/run-tests.sh
-    displayName: 'Run tests'
-    condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
-
-  - task: PublishTestResults@2
-    displayName: 'Publish NUnit Device Test Results'
-    inputs:
-      testResultsFormat: NUnit
-      testResultsFiles: '**/TestResult*.xml'
-      failTaskOnFailedTests: true
-    continueOnError: true
-    condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Artifact: TestResult'
@@ -220,7 +232,15 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
+      # VSTS does provide a diff build id depending if it is a PR or a CI triggered build, this results in issues when
+      # setting the status :/ 
+      COMMIT_ID="$BUILD_SOURCEVERSION"
+      echo "Build reason is $BUILD_REASON"
+      if [[ "$BUILD_REASON" == "PullRequest" ]]; then
+        echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
+        COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
+      fi
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
     displayName: 'Add Toolchain as GitHub Status'
     workingDirectory: $(Build.SourcesDirectory)/binding-tools-for-swift
 
@@ -280,7 +300,13 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_REVISION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      COMMIT_ID="$BUIlD_SOURCEVERSION"
+      echo "Build reason is $BUILD_REASON"
+      if [[ "$BUILD_REASON" == "PullRequest" ]]; then
+        echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
+        COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
+      fi
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
     env:
       BUILD_REVISION: $(System.PullRequest.SourceCommitId)

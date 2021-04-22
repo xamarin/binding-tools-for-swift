@@ -27,7 +27,7 @@ namespace XmlReflectionTests {
 								"      </module>" +
 								"   </modulelist>" +
 								"</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -62,7 +62,7 @@ namespace XmlReflectionTests {
 								"      </module>" +
 								"   </modulelist>" +
 								"</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -98,7 +98,7 @@ namespace XmlReflectionTests {
 				"      </module>" +
 				"   </modulelist>" +
 				"</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -131,7 +131,7 @@ namespace XmlReflectionTests {
 				"      </module>" +
 				"   </modulelist>" +
 				"</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -158,7 +158,7 @@ namespace XmlReflectionTests {
 					 "      </module>" +
 					 "   </modulelist>" +
 					 "</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -182,7 +182,7 @@ namespace XmlReflectionTests {
 				"      </module>" +
 				"   </modulelist>" +
 				"</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -205,7 +205,7 @@ namespace XmlReflectionTests {
 				"      </module>" +
 				"   </modulelist>" +
 				"</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -248,7 +248,7 @@ namespace XmlReflectionTests {
 				"				</module>" +
 				"				</modulelist>" +
 				"				</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -294,7 +294,7 @@ namespace XmlReflectionTests {
 				"				</module>" +
 				"				</modulelist>" +
 				"				</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);
@@ -338,7 +338,7 @@ namespace XmlReflectionTests {
 				"				</module>" +
 				"				</modulelist>" +
 				"				</xamreflect>";
-			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText);
+			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
 			Assert.NotNull (modules);
 			Assert.AreEqual (1, modules.Count);
 			Assert.AreEqual ("None1", modules [0].Name);

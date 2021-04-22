@@ -11,15 +11,45 @@ using System.Linq;
 using SwiftReflector.TypeMapping;
 using System.IO;
 using System.Text;
+using System.Xml.Linq;
+using SwiftReflector.SwiftInterfaceReflector;
 
 namespace XmlReflectionTests {
 	[TestFixture]
 	[Parallelizable (ParallelScope.All)]
 	public class GenerativeTests {
+		static TypeDatabase typeDatabase;
+
+		static GenerativeTests ()
+		{
+			typeDatabase = new TypeDatabase ();
+			foreach (var dbPath in Compiler.kTypeDatabases) {
+				if (!Directory.Exists (dbPath))
+					continue;
+				foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
+					typeDatabase.Read (dbFile);
+				}
+			}
+		}
+
+		XDocument ParserToXDocument (string directory, string moduleName)
+		{
+			var parser = new SwiftInterfaceReflector (typeDatabase, new NoLoadLoader ());
+			return parser.Reflect (Path.Combine (directory, moduleName + ".swiftinterface"));
+		}
+
+		List<ModuleDeclaration> ParserToModule (string directory, string moduleName)
+		{
+			var decls = new List<ModuleDeclaration> ();
+			var doc = ParserToXDocument (directory, moduleName);
+			return Reflector.FromXml (doc, typeDatabase);
+		}
+
+
 		List<ModuleDeclaration> ReflectToModules (string code, string moduleName)
 		{
 			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
-			return compiler.ReflectToModules (null, null, null, moduleName);
+			return ParserToModule (compiler.DirectoryPath, moduleName);
 		}
 
 		[Test]

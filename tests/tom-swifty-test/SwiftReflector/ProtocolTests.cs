@@ -101,46 +101,41 @@ namespace SwiftReflector {
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleSubscriptGetOnly{type}", otherClass : overCS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleSubscriptGetOnly{type}", otherClass : overCS,
+				platform: PlatformName.macOS);
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyBool ()
 		{
 			WrapSingleSubscriptGetOnly ("Bool", "bool", "false", "true", "false\ntrue\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyInt ()
 		{
 			WrapSingleSubscriptGetOnly ("Int32", "int", "43", "-40", "43\n-40\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyUInt ()
 		{
 			WrapSingleSubscriptGetOnly ("UInt32", "uint", "(uint)43", "(uint)40", "43\n40\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyDouble ()
 		{
 			WrapSingleSubscriptGetOnly ("Double", "double", "43.0", "40.0", "43.0\n40.0\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyFloat ()
 		{
 			WrapSingleSubscriptGetOnly ("Float", "float", "43.0f", "40.0f", "43.0\n40.0\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSingleSubscriptGetOnlyString ()
 		{
 			WrapSingleSubscriptGetOnly ("String", "SwiftString", "SwiftString.FromString(\"one\")",
@@ -290,46 +285,41 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock .Create (decl, decl1, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSubscriptGetSetOnly{type}", otherClass : overCS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSubscriptGetSetOnly{type}", otherClass : overCS,
+				platform: PlatformName.macOS);
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetBool ()
 		{
 			WrapSubscriptGetSetOnly ("Bool", "bool", "true", "false", "true\nfalse\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetInt ()
 		{
 			WrapSubscriptGetSetOnly ("Int32", "int", "5", "6", "5\n6\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetUInt ()
 		{
 			WrapSubscriptGetSetOnly ("UInt32", "uint", "5", "6", "5\n6\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetFloat ()
 		{
 			WrapSubscriptGetSetOnly ("Float", "float", "5.0f", "6.0", "5.0\n6.0\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetDouble ()
 		{
 			WrapSubscriptGetSetOnly ("Double", "double", "5.0", "6.0", "5.0\n6.0\n");
 		}
 
 		[Test]
-		[TestCase (PlatformName.macOS)]
 		public void WrapSubscriptPropGetSetString ()
 		{
 			WrapSubscriptGetSetOnly ("String", "SwiftString", "SwiftString.FromString(\"hi\")", "\"mom\"", "hi\nmom\n");
@@ -581,7 +571,6 @@ public func isThisATrait (a: ThisServesAsATrait) -> Bool {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void EqConstraintSmokeTest ()
 		{
 			var swiftCode = @"
@@ -604,7 +593,6 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 		}
 
 		[Test]
-		[Ignore ("vtable should be fileprivate")]
 		public void TestProtocolTypeAttribute ()
 		{
 			var swiftCode = @"

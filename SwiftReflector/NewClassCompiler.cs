@@ -197,6 +197,7 @@ namespace SwiftReflector {
 
 			var declsPerModule = new List<List<BaseDeclaration>> ();
 			foreach (ModuleDeclaration moduleDeclaration in moduleDeclarations) {
+				TypeMapper.TypeDatabase.ModuleDatabaseForModuleName (moduleDeclaration.Name);
 				var allTypesAndTopLevel = moduleDeclaration.AllTypesAndTopLevelDeclarations;
 				TypeMapper.RegisterClasses (allTypesAndTopLevel.OfType<TypeDeclaration> ());
 				declsPerModule.Add (allTypesAndTopLevel);
@@ -3067,8 +3068,16 @@ namespace SwiftReflector {
 							var ic = bc as InheritanceConstraint;
 							if (ic != null) {
 								var cstype = TypeMapper.MapType (classDecl, ic.InheritsTypeSpec, false);
-								use.AddIfNotPresent (cstype.NameSpace);
-								return new CSIdentifier (cstype.Type);
+								// special cases? Yes, we like special cases.
+								// AnyObject is technically an empty protocol, so we map
+								// it to ISwiftObject.
+								if (cstype.FullName == "SwiftRuntimeLibrary.SwiftAnyObject") {
+									use.AddIfNotPresent (typeof (ISwiftObject));
+									return new CSIdentifier ("ISwiftObject");
+								} else {
+									use.AddIfNotPresent (cstype.NameSpace);
+									return new CSIdentifier (cstype.Type);
+								}
 							} else {
 								throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 26, "Equality constraints not supported yet.");
 							}
@@ -5346,15 +5355,12 @@ namespace SwiftReflector {
 				var targetInfo = ReflectorLocations.GetTargetInfo (targets [0]);
 				using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, null, true)) {
 					compiler.Verbose = verbose;
+					compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
 					var libs = new List<string> (libraryPaths);
 					libs.Add (outputDirectory);
 					using (DisposableTempDirectory dir = new DisposableTempDirectory ("wrapreflect", true)) {
 						string outputPath = dir.UniquePath (wrappingModuleName, "reflect", "xml");
-						var output = compiler.Reflect (mods, libs, outputPath, "", wrappingModuleName);
-						ModuleDeclaration mdecl = Reflector.FromXmlFile (outputPath) [0];
-						if (!mdecl.IsCompilerCompatibleWith(CompilerVersion)) {
-							throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 48, $"The module {mods [0]} was compiled with the swift compiler version {mdecl.SwiftCompilerVersion}. It is incompatible with the compiler in {SwiftCompilerLocations.SwiftCompilerBin} which is version {CompilerVersion}");
-						}
+						var mdecl = compiler.ReflectToModules (mods, libs, "", wrappingModuleName).FirstOrDefault ();
 						return new WrappingResult (wrapperModulePath, wrapperLibraryPath, wrapperModuleContents, mdecl, wrappingCompiler.FunctionReferenceCodeMap);
 					}
 				}
@@ -5457,6 +5463,7 @@ namespace SwiftReflector {
 					var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget);
 					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, provider, false)) {
 						compiler.Verbose = Verbose;
+						compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
 
 						var decls = compiler.ReflectToModules (
 							moduleDirectories.ToArray (), moduleDirectories.ToArray (),
@@ -5512,6 +5519,7 @@ namespace SwiftReflector {
 				using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
 					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (ReflectorLocations.GetTargetInfo (null), provider, false)) {
 						compiler.Verbose = Verbose;
+						compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
 
 						var decls = compiler.ReflectToModules (moduleSeachPaths, null, "-f XamGlue", moduleName);
 						if (decls.Count != 1) {

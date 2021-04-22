@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Text;
 using SwiftReflector.IOUtils;
 using NUnit.Framework;
 using System.IO;
@@ -11,11 +12,30 @@ using System.Collections.Generic;
 using SwiftReflector.SwiftXmlReflection;
 using System.Linq;
 using SwiftReflector;
+using SwiftReflector.SwiftInterfaceReflector;
+using SwiftReflector.TypeMapping;
 
 namespace XmlReflectionTests {
 	[TestFixture]
 	[Parallelizable (ParallelScope.All)]
 	public class DynamicXmlTests {
+
+		public enum ReflectorMode {
+			Parser,
+		}
+		static TypeDatabase typeDatabase;
+
+		static DynamicXmlTests ()
+		{
+			typeDatabase = new TypeDatabase ();
+			foreach (var dbPath in Compiler.kTypeDatabases) {
+				if (!Directory.Exists (dbPath))
+					continue;
+				foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
+					typeDatabase.Read (dbFile);
+				}
+			}
+		}
 
 		void CompileStringToModule (string code, string moduleName)
 		{
@@ -33,10 +53,31 @@ namespace XmlReflectionTests {
 			return XDocument.Load (ReflectToXml (code, moduleName));
 		}
 
-		List<ModuleDeclaration> ReflectToModules (string code, string moduleName)
+		XDocument ParserToXDocument (string directory, string moduleName)
+		{
+			var parser = new SwiftInterfaceReflector (typeDatabase, new NoLoadLoader ());
+			return parser.Reflect (Path.Combine (directory, moduleName + ".swiftinterface"));
+		}
+
+		List<ModuleDeclaration> ParserToModule (string directory, string moduleName)
+		{
+			var decls = new List<ModuleDeclaration> ();
+			var doc = ParserToXDocument (directory, moduleName);
+			return Reflector.FromXml (doc, typeDatabase);
+		}
+
+		List<ModuleDeclaration> ReflectToModules (string code, string moduleName, ReflectorMode mode = ReflectorMode.Parser)
 		{
 			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
-			return compiler.ReflectToModules (null, null, null, moduleName);
+
+
+			switch (mode) {
+			case ReflectorMode.Parser:
+				return ParserToModule (compiler.DirectoryPath, moduleName);
+			default:
+				throw new ArgumentOutOfRangeException (nameof (mode));
+			}
+
 		}
 
 		// these two tests are smoke tests for module compilation
@@ -55,10 +96,10 @@ namespace XmlReflectionTests {
 		}
 
 
-		void TestFuncReturning (string declaredType, string value, string expectedType)
+		void TestFuncReturning (string declaredType, string value, string expectedType, ReflectorMode mode = ReflectorMode.Parser)
 		{
 			string code = String.Format ("public func foo() -> {0} {{ return {1} }}", declaredType, value);
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "no module");
 			Assert.AreEqual (1, module.Functions.Count (), "wrong func count");
 			FunctionDeclaration func = module.Functions.First ();
@@ -72,39 +113,45 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (expectedType, ns.Name, "wrong name");
 		}
 
-		[Test]
-		public void TestFuncReturningBool ()
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestFuncReturningBool (ReflectorMode mode)
 		{
-			TestFuncReturning ("Bool", "true", "Swift.Bool");
-		}
-		[Test]
-		public void TestFuncReturningInt ()
-		{
-			TestFuncReturning ("Int", "42", "Swift.Int");
-		}
-		[Test]
-		public void TestFuncReturningUInt ()
-		{
-			TestFuncReturning ("UInt", "43", "Swift.UInt");
-		}
-		[Test]
-		public void TestFuncReturningFloat ()
-		{
-			TestFuncReturning ("Float", "2.0", "Swift.Float");
-		}
-		[Test]
-		public void TestFuncReturningDouble ()
-		{
-			TestFuncReturning ("Double", "3.0", "Swift.Double");
-		}
-		[Test]
-		public void TestFuncReturningString ()
-		{
-			TestFuncReturning ("String", "\"nothing\"", "Swift.String");
+			TestFuncReturning ("Bool", "true", "Swift.Bool", mode);
 		}
 
-		[Test]
-		public void TestEmptyClass ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestFuncReturningInt (ReflectorMode mode)
+		{
+			TestFuncReturning ("Int", "42", "Swift.Int", mode);
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestFuncReturningUInt (ReflectorMode mode)
+		{
+			TestFuncReturning ("UInt", "43", "Swift.UInt", mode);
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestFuncReturningFloat (ReflectorMode mode)
+		{
+			TestFuncReturning ("Float", "2.0", "Swift.Float", mode);
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestFuncReturningDouble (ReflectorMode mode)
+		{
+			TestFuncReturning ("Double", "3.0", "Swift.Double", mode);
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestFuncReturningString (ReflectorMode mode)
+		{
+			TestFuncReturning ("String", "\"nothing\"", "Swift.String", mode);
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestEmptyClass (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { } ", "SomeModule").Find (m => m.Name == "SomeModule");
 			Assert.AreEqual (1, module.Classes.Count (), "wrong classes count");
@@ -113,8 +160,8 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Foo", module.Classes.First ().Name, "wrong name");
 		}
 
-		[Test]
-		public void TestEmptyStruct ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestEmptyStruct (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public struct Foo { } ", "SomeModule").Find (m => m.Name == "SomeModule");
 			Assert.AreEqual (0, module.Classes.Count (), "wrong classes count");
@@ -123,10 +170,10 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Foo", module.Structs.First ().Name, "wrong name");
 		}
 
-		[Test]
-		public void TestStructLayout ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestStructLayout (ReflectorMode mode)
 		{
-			ModuleDeclaration module = ReflectToModules ("public struct Foo { public var X:Int;\n public var Y:Bool; public var Z: Float; }", "SomeModule")
+			ModuleDeclaration module = ReflectToModules ("public struct Foo { public var X:Int;\n public var Y:Bool; public var Z: Float; }", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "no module");
 			StructDeclaration theStruct = module.Structs.FirstOrDefault (s => s.Name == "Foo");
@@ -141,10 +188,10 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Float", props [2].TypeName, "not float");
 		}
 
-		[Test]
-		public void TestClassWithConstructor ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestClassWithConstructor (ReflectorMode mode)
 		{
-			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule")
+			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			ClassDeclaration theClass = module.Classes.FirstOrDefault (c => c.Name == "Foo");
@@ -157,10 +204,10 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("y", cons.ParameterLists [1] [0].PublicName, "wrong name");
 		}
 
-		[Test]
-		public void TestClassHasDestructor ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestClassHasDestructor (ReflectorMode mode)
 		{
-			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule")
+			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			ClassDeclaration theClass = module.Classes.FirstOrDefault (c => c.Name == "Foo");
@@ -169,32 +216,34 @@ namespace XmlReflectionTests {
 			Assert.NotNull (dtor, "not a destructor");
 		}
 
-		[Test]
-		public void FuncReturningTuple ()
+		[TestCase (ReflectorMode.Parser)]
+		public void FuncReturningTuple (ReflectorMode mode)
 		{
-			ModuleDeclaration module = ReflectToModules ("public func returnTuple()->(Int,Float) { return (0, 3.0); }", "SomeModule")
+			ModuleDeclaration module = ReflectToModules ("public func returnTuple()->(Int,Float) { return (0, 3.0); }", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnTuple");
-			Assert.AreEqual ("(Swift.Int, Swift.Float)", func.ReturnTypeName, "wrong type");
+			var result = func.ReturnTypeName.Replace (" ", "");
+			Assert.AreEqual ("(Swift.Int,Swift.Float)", result, "wrong type");
 		}
 
-		[Test]
-		public void FuncReturningDictionary ()
+		[TestCase (ReflectorMode.Parser)]
+		public void FuncReturningDictionary (ReflectorMode mode)
 		{
-			ModuleDeclaration module = ReflectToModules ("public func returnDict()->[Int:Float] { return [Int:Float](); }", "SomeModule")
+			ModuleDeclaration module = ReflectToModules ("public func returnDict()->[Int:Float] { return [Int:Float](); }", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnDict");
-			Assert.AreEqual ("Swift.Dictionary<Swift.Int, Swift.Float>", func.ReturnTypeName, "wrong type");
+			var returnType = func.ReturnTypeName.Replace (" ", "");
+			Assert.AreEqual ("Swift.Dictionary<Swift.Int,Swift.Float>", returnType, "wrong type");
 		}
 
 
-		[Test]
-		public void FuncReturningIntThrows ()
+		[TestCase (ReflectorMode.Parser)]
+		public void FuncReturningIntThrows (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public enum MathError : Error {\ncase divZero\n}\n" +
-								    "public func returnInt(a:Int) throws ->Int { if a < 1\n{\n throw MathError.divZero\n }\n else {\n return a\n}\n}", "SomeModule")
+								    "public func returnInt(a:Int) throws ->Int { if a < 1\n{\n throw MathError.divZero\n }\n else {\n return a\n}\n}", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnInt");
@@ -204,31 +253,31 @@ namespace XmlReflectionTests {
 
 
 
-		[Test]
-		public void FuncReturningIntOption ()
+		[TestCase (ReflectorMode.Parser)]
+		public void FuncReturningIntOption (ReflectorMode mode)
 		{
-			ModuleDeclaration module = ReflectToModules ("public func returnIntOpt()->Int? { return 3; }", "SomeModule")
+			ModuleDeclaration module = ReflectToModules ("public func returnIntOpt()->Int? { return 3; }", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			FunctionDeclaration func = module.Functions.FirstOrDefault (f => f.Name == "returnIntOpt");
 			Assert.AreEqual ("Swift.Optional<Swift.Int>", func.ReturnTypeName, "wrong type");
 		}
 
-		[Test]
-		public void GlobalBool ()
+		[TestCase (ReflectorMode.Parser)]
+		public void GlobalBool (ReflectorMode mode)
 		{
-			ModuleDeclaration module = ReflectToModules ("public var aGlobal:Bool = true", "SomeModule")
+			ModuleDeclaration module = ReflectToModules ("public var aGlobal:Bool = true", "SomeModule", mode)
 				.Find (m => m.Name == "SomeModule");
 			Assert.NotNull (module, "not module");
 			PropertyDeclaration decl = module.TopLevelProperties.FirstOrDefault (f => f.Name == "aGlobal");
 			Assert.IsNotNull (decl, "no declaration");
 		}
 
-		[Test]
-		public void EnumSmokeTest1 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumSmokeTest1 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a, b, c, d }";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
@@ -239,11 +288,11 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
-		[Test]
-		public void EnumSmokeTest2 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumSmokeTest2 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(Int), b(Int), c(Int), d(Int) }";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
@@ -258,11 +307,11 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
-		[Test]
-		public void EnumSmokeTest3 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumSmokeTest3 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Int), d(Int) }";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
@@ -277,11 +326,11 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (edecl.HasRawType, "wrong has raw type");
 		}
 
-		[Test]
-		public void EnumSmokeTest4 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumSmokeTest4 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(Int), b, c, d }";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
@@ -296,11 +345,11 @@ namespace XmlReflectionTests {
 
 
 
-		[Test]
-		public void EnumSmokeTest5 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumSmokeTest5 (ReflectorMode mode)
 		{
 			string code = "public enum foo:Int { case a=1, b, c, d }";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
@@ -313,11 +362,11 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Int", edecl.RawTypeName, "wrong raw type name");
 		}
 
-		[Test]
-		public void EnumSmokeTest6 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumSmokeTest6 (ReflectorMode mode)
 		{
 			string code = "public enum foo:Int { case a, b, c, d }";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
@@ -330,11 +379,11 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("Swift.Int", edecl.RawTypeName, "wrong raw type name");
 		}
 
-		[Test]
-		public void EnumSmokeTest7 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumSmokeTest7 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Bool), d(Float) }";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.AllEnums.Count, "wrong enums count");
 			EnumDeclaration edecl = module.AllEnums.First ();
@@ -352,21 +401,21 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void OptionalSmokeTest1 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void OptionalSmokeTest1 (ReflectorMode mode)
 		{
 			string code = "public func optInt(x:Int) -> Int? { if (x >= 0) { return x; }\nreturn nil; }\n";
-			ModuleDeclaration module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			ModuleDeclaration module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 		}
 
-		[Test]
-		public void TypeAliasTest ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TypeAliasTest (ReflectorMode mode)
 		{
 			string code = "public typealias Foo = OpaquePointer\n" +
 				"public typealias Bar = Foo\n" +
 				"public func aliased(a: Bar, b: (Bar)->()) {\n}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "aliased");
 			Assert.IsNotNull (func, "no func");
@@ -381,13 +430,13 @@ namespace XmlReflectionTests {
 
 		}
 
-		[Test]
-		public void DeprecatedFunction ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DeprecatedFunction (ReflectorMode mode)
 		{
 			string code =
 				"@available(*, deprecated, message: \"no reason\")" +
 				"public func foo() { }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
 			Assert.IsNotNull (func, "func");
@@ -396,13 +445,13 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void DeprecatedClass ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DeprecatedClass (ReflectorMode mode)
 		{
 			string code =
 				"@available(*, deprecated, message: \"no reason\")" +
 				"public class Foo { }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
 			Assert.IsNotNull (cl, "no class");
@@ -410,13 +459,13 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (cl.IsUnavailable, "available");
 		}
 
-		[Test]
-		public void ObsoletedFunction ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObsoletedFunction (ReflectorMode mode)
 		{
 			string code =
 				"@available(swift, obsoleted:3.0, message: \"no reason\")" +
 				"public func foo() { }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
 			Assert.IsNotNull (func, "func");
@@ -425,13 +474,13 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void ObsoletedClass ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObsoletedClass (ReflectorMode mode)
 		{
 			string code =
 				"@available(swift, obsoleted:3.0, message: \"no reason\")" +
 				"public class Foo { }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
 			Assert.IsNotNull (cl, "no class");
@@ -440,13 +489,13 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void UnavailableFunction ()
+		[TestCase (ReflectorMode.Parser)]
+		public void UnavailableFunction (ReflectorMode mode)
 		{
 			string code =
 				"@available(*, unavailable)" +
 				"public func foo() { }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
 			Assert.IsNotNull (func, "no func");
@@ -455,13 +504,13 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void UnavailableClass ()
+		[TestCase (ReflectorMode.Parser)]
+		public void UnavailableClass (ReflectorMode mode)
 		{
 			string code =
 				"@available(*, unavailable)" +
 				"public class Foo { }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
 			Assert.IsNotNull (cl, "class");
@@ -470,8 +519,8 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void MethodInStruct ()
+		[TestCase (ReflectorMode.Parser)]
+		public void MethodInStruct (ReflectorMode mode)
 		{
 			string code =
 
@@ -481,7 +530,7 @@ namespace XmlReflectionTests {
 				"               return \"foo\"\n" +
 				"       }\n" +
 				"}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			var st = module.Structs.FirstOrDefault (f => f.Name == "CommandEvaluation");
 			Assert.IsNotNull (st, "no struct");
@@ -492,15 +541,15 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.IsDeprecated, "deprecated");
 		}
 
-		[Test]
-		public void UnavailableProperty ()
+		[TestCase (ReflectorMode.Parser)]
+		public void UnavailableProperty (ReflectorMode mode)
 		{
 			string code =
 				"public struct JSON {\n" +
 				"    @available(*, unavailable, renamed:\"null\")\n" +
     				"    public static var nullJSON: Int { return 3 }\n" +
 				"}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			var st = module.Structs.FirstOrDefault (f => f.Name == "JSON");
 			var prop = st.AllProperties ().Where (fn => fn.Name == "nullJSON").FirstOrDefault ();
@@ -509,14 +558,14 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void ExtensionProperty ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ExtensionProperty (ReflectorMode mode)
 		{
 			string code =
 				"public extension Double {\n" +
 				"    public var millisecond: Double  { return self / 1000 }\n" +
 				"}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.Extensions.Count, "Expected an extension");
 			var ext = module.Extensions [0];
@@ -524,14 +573,14 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (2, ext.Members.Count, $"Expected 2 members but got {ext.Members.Count}");
 		}
 
-		[Test]
-		public void ExtensionFunc ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ExtensionFunc (ReflectorMode mode)
 		{
 			string code =
 				"public extension Double {\n" +
 				"    public func DoubleIt() -> Double  { return self * 2; }\n" +
 				"}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.Extensions.Count, "Expected an extension");
 			var ext = module.Extensions [0];
@@ -541,8 +590,8 @@ namespace XmlReflectionTests {
 			Assert.IsNotNull (func, $"Expected a FunctionDeclaration but got {ext.Members [0].GetType ().Name}");
 		}
 
-		[Test]
-		public void ExtensionProto ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ExtensionProto (ReflectorMode mode)
 		{
 			string code =
 				"public protocol Printer {\n" +
@@ -551,7 +600,7 @@ namespace XmlReflectionTests {
 				"extension Double : Printer {\n" +
 				"    public func printIt() { print(self) }\n" +
 				"}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "not a module");
 			Assert.AreEqual (1, module.Extensions.Count, "Expected an extension");
 			var ext = module.Extensions [0];
@@ -565,8 +614,8 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (InheritanceKind.Protocol, inh.InheritanceKind, $"Should always be protocol inheritance");
 		}
 
-		[Test]
-		public void ObjCOptionalMember ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObjCOptionalMember (ReflectorMode mode)
 		{
 			string code =
 				"import Foundation\n" +
@@ -576,7 +625,7 @@ namespace XmlReflectionTests {
 				"    func bar()\n" +
 				"}\n";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
 			var proto = module.Protocols.First ();
@@ -591,8 +640,8 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (barFunc.IsOptional, "should not be optional");
 		}
 
-		[Test]
-		public void ObjCOptionalProp ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObjCOptionalProp (ReflectorMode mode)
 		{
 			string code =
 				"import Foundation\n" +
@@ -601,7 +650,7 @@ namespace XmlReflectionTests {
 				"    @objc optional var X:Int { get set }\n" +
 				"}\n";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
 			var proto = module.Protocols.First ();
@@ -620,8 +669,8 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void ObjCOptionalSubsript ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObjCOptionalSubsript (ReflectorMode mode)
 		{
 			string code =
 				"import Foundation\n" +
@@ -630,7 +679,7 @@ namespace XmlReflectionTests {
 				"    @objc optional subscript (index:Int) ->Int { get set }\n" +
 				"}\n";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
 			var proto = module.Protocols.First ();
@@ -646,22 +695,17 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func1.IsOptional, "func 1 should be optional");
 		}
 
-		[Test]
-		public void PropertyVisibility ()
-		{
-			PropertyVisibilityCore ("open", Accessibility.Open);
-			PropertyVisibilityCore ("public", Accessibility.Public);
-			PropertyVisibilityCore ("internal", Accessibility.Internal);
-			PropertyVisibilityCore ("private", Accessibility.Private);
-		}
-
-		void PropertyVisibilityCore (string swiftVisibility, Accessibility accessibility)
+		[TestCase ("open", Accessibility.Open, ReflectorMode.Parser)]
+		[TestCase ("public", Accessibility.Public, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
+		[TestCase ("internal", Accessibility.Internal, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
+		[TestCase ("private", Accessibility.Private, ReflectorMode.Parser, Ignore = "This is not a public interface, parser never sees it")]
+		public void PropertyVisibilityCore (string swiftVisibility, Accessibility accessibility, ReflectorMode mode)
 		{
 			string code = $@"open class Foo {{
 			open {swiftVisibility} (set) weak var parent: Foo?
 }}";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (1, module.AllClasses.Count (), "Expected a class.");
 			var fooClass = module.AllClasses.First ();
@@ -669,8 +713,8 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (accessibility, fooClass.AllProperties () [0].GetSetter ().Access, "Unexpected Visibility.");
 		}
 
-		[Test]
-		public void ObjCMemberSelector ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObjCMemberSelector (ReflectorMode mode)
 		{
 			string code =
 				"import Foundation\n" +
@@ -680,7 +724,7 @@ namespace XmlReflectionTests {
 				"    @objc func bar(a:Int)\n" +
 				"}\n";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
 			var proto = module.Protocols.First ();
@@ -696,8 +740,8 @@ namespace XmlReflectionTests {
 		}
 
 
-		[Test]
-		public void ObjCPropSelector ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObjCPropSelector (ReflectorMode mode)
 		{
 			string code =
 				"import Foundation\n" +
@@ -706,7 +750,7 @@ namespace XmlReflectionTests {
 				"    @objc var X:Int { get set }\n" +
 				"}\n";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
 			var proto = module.Protocols.First ();
@@ -723,8 +767,35 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("setX:", setter.ObjCSelector, $"incorrect set X selector name {setter.ObjCSelector}");
 		}
 
-		[Test]
-		public void ObjCSubsriptSelector ()
+		[TestCase (ReflectorMode.Parser)]
+		public void ObjCPropSelectorLower (ReflectorMode mode)
+		{
+			string code =
+				"import Foundation\n" +
+				"@objc\n" +
+				"public protocol Proto {\n" +
+				"    @objc var x:Int { get set }\n" +
+				"}\n";
+
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
+			var proto = module.Protocols.First ();
+			Assert.IsTrue (proto.IsObjC, "not objc protocol");
+			Assert.AreEqual ("SomeModule.Proto", proto.ToFullyQualifiedName (true), "Misnamed protocol");
+			Assert.AreEqual (3, proto.Members.Count (), "incorrect number of members");
+			var xProp = proto.Members.OfType<PropertyDeclaration> ().Where (f => f.Name == "x").FirstOrDefault ();
+			Assert.IsNotNull (xProp, "No prop named x");
+			var getter = xProp.GetGetter ();
+			Assert.IsNotNull (getter, "Null getter");
+			Assert.AreEqual ("x", getter.ObjCSelector, $"incorrect get X selector name {getter.ObjCSelector}");
+			var setter = xProp.GetSetter ();
+			Assert.IsNotNull (setter, "Null setter");
+			Assert.AreEqual ("setX:", setter.ObjCSelector, $"incorrect set X selector name {setter.ObjCSelector}");
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void ObjCSubsriptSelector (ReflectorMode mode)
 		{
 			string code =
 				"import Foundation\n" +
@@ -733,7 +804,7 @@ namespace XmlReflectionTests {
 				"    @objc subscript (index:Int) ->Int { get set }\n" +
 				"}\n";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (1, module.Protocols.Count (), "Expected a protocol.");
 			var proto = module.Protocols.First ();
@@ -749,8 +820,8 @@ namespace XmlReflectionTests {
 			Assert.AreEqual ("setObject:atIndexedSubscript:", func1.ObjCSelector, $"Incorrect selector for setter {func1.ObjCSelector}");
 		}
 
-		[Test]
-		public void RequiredInitTest ()
+		[TestCase (ReflectorMode.Parser)]
+		public void RequiredInitTest (ReflectorMode mode)
 		{
 			string code =
 				"open class BaseWithReq {\n" +
@@ -762,7 +833,7 @@ namespace XmlReflectionTests {
 				"open class SubOfBase : BaseWithReq {\n" +
 				"}\n";
 
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (2, module.Classes.Count (), "Expected 2 classes");
 			var baseClass = module.Classes.FirstOrDefault (cl => cl.Name == "BaseWithReq");
@@ -779,8 +850,8 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (subInit.IsRequired, "incorrect IsRequired on sub class");
 		}
 
-		[Test]
-		public void NotRequiredInitTest ()
+		[TestCase (ReflectorMode.Parser)]
+		public void NotRequiredInitTest (ReflectorMode mode)
 		{
 			string code =
 				"open class BaseWithoutReq {\n" +
@@ -791,7 +862,7 @@ namespace XmlReflectionTests {
 				"}\n" +
 				"open class SubOfBase : BaseWithoutReq {\n" +
 				"}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			Assert.AreEqual (2, module.Classes.Count (), "Expected 2 classes");
 			var baseClass = module.Classes.FirstOrDefault (cl => cl.Name == "BaseWithoutReq");
@@ -809,11 +880,11 @@ namespace XmlReflectionTests {
 
 		}
 
-		[Test]
-		public void TestPublicPrivateParamNames ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestPublicPrivateParamNames (ReflectorMode mode)
 		{
 			string code = "public func foo(seen notseen:Int) { }\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
 			Assert.IsNotNull (func, "no function");
@@ -824,11 +895,11 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.ParameterLists [0] [0].NameIsRequired, "Wrong name requirement");
 		}
 
-		[Test]
-		public void TestOnlyPublicParamNames ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestOnlyPublicParamNames (ReflectorMode mode)
 		{
 			string code = "public func foo(seen:Int) { }\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
 			Assert.IsNotNull (func, "no function");
@@ -839,11 +910,11 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.ParameterLists [0] [0].NameIsRequired, "Wrong name requirement");
 		}
 
-		[Test]
-		public void TestNotRequiredParamName ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestNotRequiredParamName (ReflectorMode mode)
 		{
 			string code = "public func foo(_ seen:Int) { }\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
 			Assert.IsNotNull (func, "no function");
@@ -854,8 +925,8 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (func.ParameterLists [0] [0].NameIsRequired, "Wrong name requirement");
 		}
 
-		[Test]
-		public void TestSimpleVariadicFunc ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestSimpleVariadicFunc (ReflectorMode mode)
 		{
 			string code = "public func itemsAsArray (a:Int ...) -> [Int] {\n return a\n}\n";
 			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
@@ -867,11 +938,12 @@ namespace XmlReflectionTests {
 			Assert.IsTrue (func.ParameterLists [0] [0].IsVariadic, "Parameter item is not marked variadic");
 			Assert.IsTrue (func.IsVariadic, "Func is not mared variadic");
 		}
-		[Test]
-		public void TestSimpleNotVariadicFunc ()
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestSimpleNotVariadicFunc (ReflectorMode mode)
 		{
 			string code = "public func itemsAsArray (a:Int) -> [Int] {\n return [a]\n}\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "itemsAsArray");
 			Assert.IsNotNull (func, "no function");
@@ -881,8 +953,8 @@ namespace XmlReflectionTests {
 			Assert.IsFalse (func.IsVariadic, "Func is not mared variadic");
 		}
 
-		[Test]
-		public void TestReturnsOptionalProtocol ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestReturnsOptionalProtocol (ReflectorMode mode)
 		{
 			var code = @"
 public protocol Foo {
@@ -892,7 +964,7 @@ public func itMightBeAProtocol () -> Foo? {
 	return nil
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "itMightBeAProtocol");
 			Assert.IsNotNull (func, "no function");
@@ -905,8 +977,8 @@ public func itMightBeAProtocol () -> Foo? {
 
 		}
 
-		[Test]
-		public void TestPropReturnsOptionalProtocol ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestPropReturnsOptionalProtocol (ReflectorMode mode)
 		{
 			var code = @"
 public protocol Foo {
@@ -917,7 +989,7 @@ public class Container {
 	public var itMightBeAProtocol : Foo? = nil
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Container");
 			Assert.IsNotNull (cl, "no class");
@@ -933,8 +1005,8 @@ public class Container {
 		}
 
 
-		[Test]
-		public void TestConvenienceCtor ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestConvenienceCtor (ReflectorMode mode)
 		{
 			var code = @"
 open class Foo {
@@ -947,7 +1019,7 @@ open class Foo {
 	}
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
 			Assert.IsNotNull (cl, "no class");
@@ -961,8 +1033,8 @@ open class Foo {
 			}
 		}
 
-		[Test]
-		public void TestProtocolListType ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestProtocolListType (ReflectorMode mode)
 		{
 			var code = @"
 public protocol FooA {
@@ -974,7 +1046,7 @@ public protocol FooB {
 public func joe (a: FooA & FooB) {
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.FirstOrDefault (fn => fn.Name == "joe");
 			Assert.IsNotNull (func, "no func");
@@ -985,14 +1057,14 @@ public func joe (a: FooA & FooB) {
 			Assert.AreEqual (2, protoList.Protocols.Count, "wrong protocol list count");
 		}
 
-		[Test]
-		public void TestFuncReturningAny ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestFuncReturningAny (ReflectorMode mode)
 		{
 			var code = @"
 public func returnsAny() -> Any {
     return 7
 }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.FirstOrDefault (fn => fn.Name == "returnsAny");
 			Assert.IsNotNull (func, "no func");
@@ -1002,8 +1074,8 @@ public func returnsAny() -> Any {
 			Assert.AreEqual ("Swift.Any", returnType.Name, $"Wrong type: {returnType.Name}");
 		}
 
-		[Test]
-		public void AssocTypeSmoke ()
+		[TestCase (ReflectorMode.Parser)]
+		public void AssocTypeSmoke (ReflectorMode mode)
 		{
 			var code = @"
 public protocol HoldsThing {
@@ -1011,7 +1083,7 @@ public protocol HoldsThing {
 	func getThing() -> Thing
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
 			Assert.IsNotNull (protocol, "no protocol");
@@ -1023,8 +1095,8 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
-		[Test]
-		public void AssocTypeTimesTwo ()
+		[TestCase (ReflectorMode.Parser)]
+		public void AssocTypeTimesTwo (ReflectorMode mode)
 		{
 			var code = @"
 public protocol HoldsThing {
@@ -1033,7 +1105,7 @@ public protocol HoldsThing {
 	func doThing(a: ThingOne) -> ThingTwo
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
 			Assert.IsNotNull (protocol, "no protocol");
@@ -1047,8 +1119,8 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
-		[Test]
-		public void AssocTypeDefaultType ()
+		[TestCase (ReflectorMode.Parser)]
+		public void AssocTypeDefaultType (ReflectorMode mode)
 		{
 			var code = @"
 public protocol HoldsThing {
@@ -1056,7 +1128,7 @@ public protocol HoldsThing {
 	func doThing() -> Thing
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
 			Assert.IsNotNull (protocol, "no protocol");
@@ -1069,8 +1141,8 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Swift.Int", assoc.DefaultType.ToString (), "wrong type");
 		}
 
-		[Test]
-		public void AssocTypeConformance ()
+		[TestCase (ReflectorMode.Parser, Ignore = "Don't have IteratorProtocol in type database")]
+		public void AssocTypeConformance (ReflectorMode mode)
 		{
 			var code = @"
 public protocol HoldsThing {
@@ -1078,7 +1150,7 @@ public protocol HoldsThing {
 	func doThing() -> Thing
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
 			Assert.IsNotNull (protocol, "no protocol");
@@ -1092,8 +1164,8 @@ public protocol HoldsThing {
 		}
 
 
-		[Test]
-		public void AssocTypeSuper ()
+		[TestCase (ReflectorMode.Parser)]
+		public void AssocTypeSuper (ReflectorMode mode)
 		{
 			var code = @"
 open class Foo {
@@ -1105,7 +1177,7 @@ public protocol HoldsThing {
 	func doThing() -> Thing
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
 			Assert.IsNotNull (protocol, "no protocol");
@@ -1118,8 +1190,8 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc.DefaultType, "non-null default type");
 		}
 
-		[Test]
-		public void FindsAssocTypeByName ()
+		[TestCase (ReflectorMode.Parser)]
+		public void FindsAssocTypeByName (ReflectorMode mode)
 		{
 			var code = @"
 public protocol HoldsThing {
@@ -1127,7 +1199,7 @@ public protocol HoldsThing {
 	func doThing() -> Thing
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var protocol = module.Protocols.Where (p => p.Name == "HoldsThing").FirstOrDefault ();
 			Assert.IsNotNull (protocol, "no protocol");
@@ -1138,11 +1210,11 @@ public protocol HoldsThing {
 			Assert.IsNull (assoc, "Found a non-existent associated type");
 		}
 
-		[Test]
-		public void TestTLFuncNoArgsNoReturnOutput ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestTLFuncNoArgsNoReturnOutput (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc () { }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
@@ -1150,11 +1222,11 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc () -> ()", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestTLFuncNoArgsReturnsIntOutput ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestTLFuncNoArgsReturnsIntOutput (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc () -> Int { return 3; }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
@@ -1162,11 +1234,11 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc () -> Swift.Int", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestTLFuncNoArgsReturnsIntThrowsOutput ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestTLFuncNoArgsReturnsIntThrowsOutput (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc () throws -> Int { return 3; }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
@@ -1174,11 +1246,11 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc () throws -> Swift.Int", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestTLFuncOneArgSamePubPrivReturnsInt ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestTLFuncOneArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (a: Int) -> Int { return a; }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
@@ -1186,11 +1258,11 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestTLFuncOneArgDiffPubPrivReturnsInt ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestTLFuncOneArgDiffPubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (b a: Int) -> Int { return a; }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
@@ -1198,11 +1270,11 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (b a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestTLFuncOneArgNoPubPrivReturnsInt ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestTLFuncOneArgNoPubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (_ a: Int) -> Int { return a; }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
@@ -1210,11 +1282,11 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (_ a: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestTLFuncTwoArgSamePubPrivReturnsInt ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestTLFuncTwoArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (a: Int, b: Int) -> Int { return a + b; }";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var func = module.TopLevelFunctions.Where (f => f.Name == "SomeFunc").FirstOrDefault ();
 			Assert.IsNotNull (func, "null func");
@@ -1222,8 +1294,8 @@ public protocol HoldsThing {
 			Assert.AreEqual ("Public SomeModule.SomeFunc (a: Swift.Int, b: Swift.Int) -> Swift.Int", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestPropGetFunc ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestPropGetFunc (ReflectorMode mode)
 		{
 			var code = @"
 public class Foo {
@@ -1231,7 +1303,7 @@ public class Foo {
 	public var prop: Int = 0
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
 			Assert.IsNotNull (cl, "no class");
@@ -1241,8 +1313,8 @@ public class Foo {
 			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get }", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestPropGetSet ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestPropGetSet (ReflectorMode mode)
 		{
 			var code = @"
 public class Foo {
@@ -1250,7 +1322,7 @@ public class Foo {
 	public var prop: Int = 0
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
 			Assert.IsNotNull (cl, "no class");
@@ -1260,9 +1332,29 @@ public class Foo {
 			Assert.AreEqual ("Public var SomeModule.Foo.prop: Swift.Int { get set }", output, "wrong signature");
 		}
 
+		[TestCase (ReflectorMode.Parser)]
+		public void TestCtorType (ReflectorMode mode)
+		{
+			var code = @"
+public class Foo {
+	public init () { }
+}
+";
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
+			Assert.IsNotNull (cl, "no class");
+			var ctor = cl.AllConstructors ().FirstOrDefault ();
+			Assert.IsNotNull (ctor, "no constructor");
+			var pl = ctor.ParameterLists [0];
+			Assert.AreEqual (1, pl.Count, "wrong number of parameters");
+			var uncurriedType = pl [0].TypeName;
+			Assert.AreEqual ("SomeModule.Foo.Type", uncurriedType, "wrong type");
+		}
 
-		[Test]
-		public void TestSubscriptGetSet ()
+
+		[TestCase (ReflectorMode.Parser)]
+		public void TestSubscriptGetSet (ReflectorMode mode)
 		{
 			var code = @"
 public class Foo {
@@ -1275,7 +1367,7 @@ public class Foo {
 	}
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
 			Assert.IsNotNull (cl, "no class");
@@ -1285,8 +1377,8 @@ public class Foo {
 			Assert.AreEqual ("Public SomeModule.Foo.subscript [_ Index: Swift.Int] -> Swift.String { get }", output, "wrong signature");
 		}
 
-		[Test]
-		public void TestGenericMethodInGenericClass ()
+		[TestCase (ReflectorMode.Parser)]
+		public void TestGenericMethodInGenericClass (ReflectorMode mode)
 		{
 			var code = @"
 public class Foo<T> {
@@ -1298,7 +1390,7 @@ private var x: T
 	}
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var cl = module.Classes.Where (c => c.Name == "Foo").FirstOrDefault ();
 			Assert.IsNotNull (cl, "no class");
@@ -1307,23 +1399,23 @@ private var x: T
 			Assert.AreEqual ("Public SomeModule.Foo.printIt<T, U> (a: U) -> ()", output, "wrong signature");
 		}
 
-		[Test]
-		public void DetectsSelfEasy ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DetectsSelfEasy (ReflectorMode mode)
 		{
 			var code = @"
 public protocol Simple {
 	func whoami() -> Self
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
 			Assert.IsNotNull (proto, "no protocol");
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[Test]
-		public void DetectsSelfEasy1 ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DetectsSelfEasy1 (ReflectorMode mode)
 		{
 			var code = @"
 public protocol NoSelf {
@@ -1334,78 +1426,78 @@ public protocol Simple {
 	func whoami(a: Self) -> Thing
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
 			Assert.IsNotNull (proto, "no protocol");
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[Test]
-		public void DetectsSelfInTuple ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DetectsSelfInTuple (ReflectorMode mode)
 		{
 			var code = @"
 public protocol Simple {
 	func whoami() -> (Int, Bool, Self)
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
 			Assert.IsNotNull (proto, "no protocol");
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[Test]
-		public void DetectsSelfInOptional ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DetectsSelfInOptional (ReflectorMode mode)
 		{
 			var code = @"
 public protocol Simple {
 	func whoami() -> Self?
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
 			Assert.IsNotNull (proto, "no protocol");
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[Test]
-		public void DetectsSelfInBoundGeneric ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DetectsSelfInBoundGeneric (ReflectorMode mode)
 		{
 			var code = @"
 public protocol Simple {
 	func whoami() -> UnsafeMutablePointer<Self>
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
 			Assert.IsNotNull (proto, "no protocol");
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[Test]
-		public void DetectsSelfInClosure ()
+		[TestCase (ReflectorMode.Parser)]
+		public void DetectsSelfInClosure (ReflectorMode mode)
 		{
 			var code = @"
 public protocol Simple {
 	func whoami(a: (Self)->()) -> ()
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var proto = module.Protocols.Where (p => p.Name == "Simple").FirstOrDefault ();
 			Assert.IsNotNull (proto, "no protocol");
 			Assert.IsTrue (proto.HasDynamicSelf, "no dynamic self");
 		}
 
-		[Test]
-		public void TopLevelLet ()
+		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let - apple's bug, not mine: https://bugs.swift.org/browse/SR-13790")]
+		public void TopLevelLet (ReflectorMode mode)
 		{
 			var code = "public let myVar:Int = 42";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var prop = module.Properties.Where (p => p.Name == "myVar").FirstOrDefault ();
 			Assert.IsNotNull (prop, "no prop");
@@ -1414,11 +1506,11 @@ public protocol Simple {
 		}
 
 
-		[Test]
-		public void TheEpsilonIssue ()
+		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let")]
+		public void TheEpsilonIssue (ReflectorMode mode)
 		{
 			string code = "public let 𝑒 = 2.718\n";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var prop = module.Properties.Where (p => p.Name == "𝑒").FirstOrDefault ();
 			Assert.IsNotNull (prop, "no prop");
@@ -1426,8 +1518,8 @@ public protocol Simple {
 			Assert.IsNull (prop.GetSetter (), "why is there a setter");
 		}
 
-		[Test]
-		public void InfixOperatorDecl ()
+		[TestCase (ReflectorMode.Parser)]
+		public void InfixOperatorDecl (ReflectorMode mode)
 		{
 			var code = @"infix operator *^* : AdditionPrecedence
 extension Int {
@@ -1436,7 +1528,7 @@ extension Int {
 	}
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var opDecl = module.Operators.Where (op => op.Name == "*^*").FirstOrDefault ();
 			Assert.AreEqual ("*^*", opDecl.Name, "name mismatch");
@@ -1444,8 +1536,8 @@ extension Int {
 			Assert.AreEqual (OperatorType.Infix, opDecl.OperatorType, "operator type mismatch");
 		}
 
-		[Test]
-		public void PrefixOperatorDecl ()
+		[TestCase (ReflectorMode.Parser)]
+		public void PrefixOperatorDecl (ReflectorMode mode)
 		{
 			var code = @"prefix operator *^^*
 extension Int {
@@ -1454,7 +1546,7 @@ extension Int {
 	}
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var opDecl = module.Operators.Where (op => op.Name == "*^^*").FirstOrDefault ();
 			Assert.AreEqual ("*^^*", opDecl.Name, "name mismatch");
@@ -1462,8 +1554,8 @@ extension Int {
 			Assert.AreEqual (OperatorType.Prefix, opDecl.OperatorType, "operator type mismatch");
 		}
 
-		[Test]
-		public void PostfixOperatorDecl ()
+		[TestCase (ReflectorMode.Parser)]
+		public void PostfixOperatorDecl (ReflectorMode mode)
 		{
 			var code = @"postfix operator *^&^*
 extension Int {
@@ -1472,12 +1564,63 @@ extension Int {
 	}
 }
 ";
-			var module = ReflectToModules (code, "SomeModule").Find (m => m.Name == "SomeModule");
+			var module = ReflectToModules (code, "SomeModule", mode).Find (m => m.Name == "SomeModule");
 			Assert.IsNotNull (module, "module is null");
 			var opDecl = module.Operators.Where (op => op.Name == "*^&^*").FirstOrDefault ();
 			Assert.AreEqual ("*^&^*", opDecl.Name, "name mismatch");
 			Assert.IsNull (opDecl.PrecedenceGroup, "predence group mismatch");
 			Assert.AreEqual (OperatorType.Postfix, opDecl.OperatorType, "operator type mismatch");
+		}
+
+		[Test]
+		public void TypeAliasSmokeTest ()
+		{
+			var code = @"
+public typealias Foo = Int
+public func sum (a: Foo, b: Foo) -> Foo {
+    return a + b
+}
+";
+			var module = ReflectToModules (code, "SomeModule", ReflectorMode.Parser).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			Assert.AreEqual (1, module.TypeAliases.Count, "wrong number of typealiases");
+			var alias = module.TypeAliases [0];
+			Assert.AreEqual (Accessibility.Public, alias.Access, "wrong access");
+			Assert.AreEqual ("SomeModule.Foo", alias.TypeName, "wrong typealias name");
+			Assert.AreEqual ("Swift.Int", alias.TargetTypeName, "wrong typealias target");
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void UnwrappedOptionalTest (ReflectorMode mode)
+		{
+			var code = @"
+public func sum (a: Int!, b: Int!) -> Int! {
+	return a + b
+}
+
+";
+			var module = ReflectToModules (code, "SomeModule", mode).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var func = module.Functions.Where (fn => fn.Name == "sum").FirstOrDefault ();
+			Assert.IsNotNull (func, "no func");
+			Assert.AreEqual ("Swift.Optional<Swift.Int>", func.ReturnTypeName);
+		}
+
+
+		[TestCase (ReflectorMode.Parser)]
+		public void EnumProtocolConformance (ReflectorMode mode)
+		{
+			var code = @"
+public enum E : Error {
+case a, b
+}
+";
+			var module = ReflectToModules (code, "SomeModule", mode).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+			var en = module.Enums.FirstOrDefault (e => e.Name == "E");
+			Assert.IsNotNull (en, "no enum");
+			Assert.AreEqual (1, en.Inheritance.Count, "wrong inheritance count");
+			Assert.AreEqual ("Swift.Error", en.Inheritance [0].InheritedTypeName, "wrong inherited name");
 		}
 	}
 }

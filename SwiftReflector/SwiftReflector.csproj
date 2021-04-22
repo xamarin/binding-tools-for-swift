@@ -179,6 +179,12 @@
     <Compile Include="SwiftInterfaceReflector\ParseException.cs" />
     <Compile Include="SwiftXmlReflection\OperatorDeclaration.cs" />
     <Compile Include="TypeMapping\ModuleDatabase.cs" />
+    <Compile Include="SwiftInterfaceReflector\IModuleLoader.cs" />
+    <Compile Include="SwiftXmlReflection\AttributeDeclaration.cs" />
+    <Compile Include="SwiftInterfaceReflector\ObjCSelectorFactory.cs" />
+    <Compile Include="SwiftInterfaceReflector\SyntaxDesugaringParser.cs" />
+    <Compile Include="SwiftXmlReflection\TypeAliasDeclaration.cs" />
+    <Compile Include="SwiftXmlReflection\TypeAliasFolder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

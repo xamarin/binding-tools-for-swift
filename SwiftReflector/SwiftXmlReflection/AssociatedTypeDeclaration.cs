@@ -20,7 +20,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public List<NamedTypeSpec> ConformingProtocols { get; private set; }
 
 
-		public static AssociatedTypeDeclaration FromXElement (XElement elem)
+		public static AssociatedTypeDeclaration FromXElement (TypeAliasFolder folder, XElement elem)
 		{
 			var assocType = new AssociatedTypeDeclaration ();
 			assocType.Name = NameAttribute (elem);
@@ -29,17 +29,17 @@ namespace SwiftReflector.SwiftXmlReflection {
 			if (superClassElem != null) {
 				var superClassName = NameAttribute (superClassElem);
 				if (superClassName != null) {
-					assocType.SuperClass = TypeSpecParser.Parse (superClassName);
+					assocType.SuperClass = folder.FoldAlias (null, TypeSpecParser.Parse (superClassName));
 				}
 			}
 			var defaultDefn = elem.Attribute ("defaulttype");
 			if (defaultDefn != null) {
-				assocType.DefaultType = TypeSpecParser.Parse ((string)defaultDefn);
+				assocType.DefaultType = folder.FoldAlias (null, TypeSpecParser.Parse ((string)defaultDefn));
 			}
 			
 			if (elem.Element ("conformingprotocols") != null) {
 				var conforming = from conform in elem.Element ("conformingprotocols").Elements ()
-						 select TypeSpecParser.Parse (NameAttribute (conform)) as NamedTypeSpec;
+						 select folder.FoldAlias (null, TypeSpecParser.Parse (NameAttribute (conform))) as NamedTypeSpec;
 				assocType.ConformingProtocols.AddRange (conforming);
 			}
 

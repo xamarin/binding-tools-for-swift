@@ -20,6 +20,7 @@ This is not without its problems:
 2. The deliverables are huge. They can be trimmed down since we don’t need everything that gets built, but care needs to be taken so we don’t accidentally trim out something that should get shipped
 3. This ties our builds to Apple’s builds since the compiler will hard fail on version mismatches between the compiler and `.swiftmodule` files
 
+We are now adding in a separate reflection component. This is a parser that can consume `.swiftinterface` files and will generate the corresponding XML. I chose to generate XML rather than going directly to the `*Declaration` classes because the XML isn't going away anytime soon and it honestly keeps the code cleaner.
 
 ## Hooking Into the Compiler
 
@@ -29,6 +30,9 @@ The Apple infrastructure follows a visitor pattern. To get reflection, we implem
 
 In the infrastructure, there is code to handle output indentation. `indent` increases the indentation level. `exdent` decreases the indentation level. `indents` prints 3 spaces per indent level.
 
+## Implementing the Parser
+
+The parser is generated from an ANTLR grammar that is based on a more-or-less complete swift language description provided in the sample grammars in ANTLR. It differs in that it corrects issues with nosebleed unicode as well as hacking out the language elements that just aren't used at all (code statements, for example). There are two passes that are made to an input file. The first is code to desugar the syntax which turns references to optional types into `Swift.Optional<>` and other similar things.
 
 ## XML Layout
 
@@ -57,6 +61,27 @@ A `<module>` element will contain 0 or more declarations of the types:
 - func
 - type declaration
 - property
+
+## Type Aliases
+
+Swift type aliases get aggregated into a list of `<typealias>` that live inside a `<typealiases>` tag.
+Typealiases are only needed when typealiases are present and the types presented have not been flattened to their actual type.
+The reflector flattens all aliased types, so it includes no typealiases. The `.swiftinterface` parser can't flatten typealiases, so it includes them.
+
+A `<typealias>` tag will contain the following attributes:
+
+- name - a string that represents the type being aliases including any generic part of its signature
+- accessibility - one of `Public`, `Private`, `Internal`, `Open`
+- type - a string that represents the target type to which name is aliased.
+For example,
+```Swift
+public typealias Foo<T> = Swift.Array<T:Hashable, String>
+```
+should produce this:
+```XML
+<typealias name="Foo<T>" accessibility="Public" type="Swift.Array<T:Hashable, String>" />
+```
+
 ## Type Declaration
 
 A `<typedeclaration>` element has the following attributes:
@@ -146,4 +171,26 @@ It contains the following elements:
 - members - a list of members in the extension (see above)
 - inherits - a list of inheritance (see above)
 
+## Attributes
 
+An `<attribute>` element will always appear as part of an `<attributes>` list.
+An `<attribute>` element contains the following attribute:
+
+- name - a string containing the name of the attribute. For example `@objc` has the name `"objc"`
+
+An attribute may also contain an `<attributeparameterlist>` element which will contain one or more `<attributeparameter>` elements.
+
+An `<attributeparameter>` element contains the following:
+
+- kind - one of `Sublist`, `Label`, or `Literal`.
+- value - if the kind is **not** `Sublist`, there will be a `value` attribute that contains the value of the element.
+
+If the kind is `Sublist`, there will be an `<attributeparameterlist>` inside the attribute.
+
+attribute parameters will contain any punctuation allowed (for example commas or quotation marks).
+Sublists are generally set off when an attribute contains what the swift grammar calls "balanced tokens". So you might have something like this:
+```Swift
+@someAttribute(a, b: [a list, of things, to consider { or not }])
+```
+Attributes are not currently supported in the reflector (and may never be). They are going to be supported in the `.swiftinterface` parser.
+Currently, attributes only appear on functions and nominal types, but in the future, they will be exposed on everything in the language that allows them.
