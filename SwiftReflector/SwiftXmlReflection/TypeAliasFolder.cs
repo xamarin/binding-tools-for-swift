@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SwiftReflector.TypeMapping;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class TypeAliasFolder {
@@ -14,6 +15,18 @@ namespace SwiftReflector.SwiftXmlReflection {
 			this.aliases = new Dictionary<string, TypeAliasDeclaration> ();
 			foreach (var alias in aliases) {
 				this.aliases.Add (AliasKey (alias.TypeSpec), alias);
+			}
+		}
+
+		public void AddDatabaseAliases (TypeDatabase typeDatabase)
+		{
+			if (typeDatabase == null)
+				return;
+			foreach (var moduleName in typeDatabase.ModuleNames) {
+				var moduleDB = typeDatabase.ModuleDatabaseForModuleName (moduleName);
+				foreach (var alias in moduleDB.TypeAliases) {
+					this.aliases.Add (AliasKey (alias.TypeSpec), alias);
+				}
 			}
 		}
 

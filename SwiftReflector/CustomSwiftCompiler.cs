@@ -44,6 +44,8 @@ namespace SwiftReflector {
 
 		public bool Load (string moduleName, TypeDatabase into)
 		{
+			if (moduleName == "Cocoa")
+				moduleName = "AppKit";
 			if (into.ModuleNames.Contains (moduleName))
 				return true;
 			foreach (var location in locations) {
@@ -249,7 +251,7 @@ namespace SwiftReflector {
 			locations.AddRange (includeDirectories);
 
 			ReflectWithStrategies (locations, libraryDirectories, pathName, extraArgs, moduleNames);
-			return Reflector.FromXmlFile (pathName);
+			return Reflector.FromXmlFile (pathName, ReflectionTypeDatabase);
 		}
 
 		public void ReflectWithStrategies (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectories,
