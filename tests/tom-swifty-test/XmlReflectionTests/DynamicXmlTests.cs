@@ -42,17 +42,6 @@ namespace XmlReflectionTests {
 			Utils.CompileSwift (code, moduleName: moduleName);
 		}
 
-		Stream ReflectToXml (string code, string moduleName)
-		{
-			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
-			return compiler.ReflectToStream (null, null, null, moduleName);
-		}
-
-		XDocument ReflectToXDocument (string code, string moduleName)
-		{
-			return XDocument.Load (ReflectToXml (code, moduleName));
-		}
-
 		XDocument ParserToXDocument (string directory, string moduleName)
 		{
 			var parser = new SwiftInterfaceReflector (typeDatabase, new NoLoadLoader ());
@@ -87,12 +76,6 @@ namespace XmlReflectionTests {
 		public void HelloModuleTest ()
 		{
 			CompileStringToModule (Compiler.kHelloSwift, "MyModule");
-		}
-
-		[Test]
-		public void HelloXmlTest ()
-		{
-			ReflectToXml (Compiler.kHelloSwift, "MyModule");
 		}
 
 

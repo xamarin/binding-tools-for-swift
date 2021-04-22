@@ -46,16 +46,6 @@ namespace tomwiftytest {
 		static string kSystemLib = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx";
 
 		[ThreadStatic]
-		static SwiftCompilerLocation compilerLocation;
-		public static SwiftCompilerLocation CompilerLocation {
-			get {
-				if (compilerLocation == null)
-					compilerLocation = new SwiftCompilerLocation (kSwiftCustomBin, kSwiftCustomLib);
-				return compilerLocation;
-			}
-		}
-
-		[ThreadStatic]
 		static SwiftCompilerLocation systemCompilerLocation;
 		public static SwiftCompilerLocation SystemCompilerLocation {
 			get {
