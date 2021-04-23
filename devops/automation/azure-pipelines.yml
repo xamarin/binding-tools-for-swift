@@ -116,30 +116,6 @@ jobs:
     displayName: 'Clean workspace'
     workingDirectory: $(Build.SourcesDirectory)
 
-#  - script: |
-#      set -e
-#      set -x
-#      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/build-swift.sh --publish
-#      mkdir -p $(System.DefaultWorkingDirectory)/toolchain
-#      if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
-#        cp -c $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
-#        echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
-#      else
-#        echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
-#      fi
-#    displayName: 'Build Swift'
-#    name: BuildSwift
-
-#  # This will upload the updated toolchain zip (if any) to Azure Devops
-#  # A later job further down will then publish the toolchain to Azure Blob Storage.
-#  # This is a two-step process because the task that can publish to Azure Blob Storage only works on Windows :/
-#  - task: PublishBuildArtifacts@1
-#    displayName: 'Upload Swift Toolchain'
-#    inputs:
-#      PathtoPublish: $(System.DefaultWorkingDirectory)/toolchain
-#      ArtifactName: 'toolchain'
-#      publishLocation: 'Container'
-
   - bash: |
       set -e
       set -x
@@ -188,66 +164,6 @@ jobs:
       artifactName: TestResults
     continueOnError: true
     condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
-
-#- job: UploadToolchain
-#  dependsOn: ContinuousIntegration
-#  condition: eq(dependencies.ContinuousIntegration.outputs['BuildSwift.uploadtoolchain'], '1')
-#  pool:
-#    vmImage: windows-latest
-
-#  steps:
-#  - checkout: maccore
-#    clean: true
-#    persistCredentials: true
-#  - checkout: self
-#    clean: true
-
-#  - task: DownloadPipelineArtifact@2
-#    inputs:
-#      source: current
-#      artifact: toolchain
-#      path: 'toolchain'
-
-#  - task: AzureFileCopy@2
-#    displayName: 'Publish toolchain to Azure'
-#    inputs:
-#      SourcePath: 'toolchain'
-#      azureSubscription: BOSStorageMirror
-#      Destination: AzureBlob
-#      storage: bosstoragemirror
-#      ContainerName: wrench
-#      BlobPrefix: 'binding-tools-for-swift/toolchain'
-#      outputStorageUri: ToolchainUrl
-#      outputStorageContainerSasToken: ToolchainSasToken
-
-#  - bash: |
-#      set -e
-#      set -x
-#      ZIPS=(toolchain/*.zip)
-#      if (( ${#ZIPS[@]} == 1 )); then
-#        if test -f "${ZIPS[0]}"; then
-#          FILE=${ZIPS[0]}
-#        else
-#          echo "Could not find any zip files to upload"
-#          exit 1
-#        fi
-#      elif (( ${#ZIPS[@]} > 1 )); then
-#        echo "More than one zip file!"
-#        exit 1
-#      fi
-#      FILENAME="$(basename "$FILE")"
-#      TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      # VSTS does provide a diff build id depending if it is a PR or a CI triggered build, this results in issues when
-      # setting the status :/ 
-#      COMMIT_ID="$BUILD_SOURCEVERSION"
-#      echo "Build reason is $BUILD_REASON"
-#      if [[ "$BUILD_REASON" == "PullRequest" ]]; then
-#        echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
-#        COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
-#      fi
-#      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
-#    displayName: 'Add Toolchain as GitHub Status'
-#    workingDirectory: $(Build.SourcesDirectory)/binding-tools-for-swift
 
 - job: UploadPackages
   dependsOn: ContinuousIntegration
