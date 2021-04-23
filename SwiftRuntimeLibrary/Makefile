@@ -1,5 +1,6 @@
 TOP=..
 include $(TOP)/common.mk
+include $(TOP)/Make.config
 
 configuration ?= debug
 BINDING_METADATA_IOS = SwiftRuntimeLibrary.iOS/GeneratedCode/BindingMetadata.iOS.cs
