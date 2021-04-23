@@ -32,6 +32,7 @@ $(TOP)/$(BINDING_METADATA_IOS): $(TYPE_O_MATIC_EXE) $(TOP)/common.mk $(XAMGLUE_I
 
 $(TOP)/$(BINDING_METADATA_MAC): $(TYPE_O_MATIC_EXE) $(TOP)/common.mk $(XAMGLUE_MAC)
 	@echo "Generating code for MacOS..."
+	@echo "Swift library path: " $(SWIFT_LIB_PATH)
 	@mkdir -p $(TOP)/SwiftRuntimeLibrary.Mac/GeneratedCode
 	@/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono $(TYPE_O_MATIC_EXE) --swift-lib-path=$(SWIFT_LIB_PATH) --platform=mac --generate=csharp $(addprefix --namespace=, $(TYPE_O_MATIC_MAC_NAMESPACES)) --xamglue-framework=$(XAMGLUE_MAC) --output=$@
 	@echo "Generated C# binding metadata files for MacOS at $@"
