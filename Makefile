@@ -2,16 +2,12 @@ TOP=.
 GIT_DIR=$(TOP)/.git
 
 all: check-system
-	./devops/automation/build-swift.sh
 	./devops/automation/build.sh
 
 include $(TOP)/Make.config
 
 provision:
 	./devops/automation/provision-deps.sh
-
-swift:
-	./devops/automation/build-swift.sh
 
 som binding-tools-for-swift:
 	./devops/automation/build.sh

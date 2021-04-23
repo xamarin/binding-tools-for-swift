@@ -24,12 +24,6 @@ Provision
 Provisions the bot using our system-dependencies.sh script. What to provision is
 described in the Make.config file.
 
-Build Swift
------------
-
-If needed, build swift and upload a package of it, otherwise download a
-previously uploaded swift package.
-
 Build
 -----
 
