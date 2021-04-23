@@ -713,7 +713,7 @@ public static class Console {
 					swift_stdlib_tool.Append ($"--scan-folder {StringUtils.Quote (Path.Combine (appPath, "Contents", "MonoBundle"))} ");
 					swift_stdlib_tool.Append ($"--scan-folder {StringUtils.Quote (Path.Combine (appPath, "Contents", "Frameworks"))} ");
 					swift_stdlib_tool.Append ($"--platform macosx ");
-					swift_stdlib_tool.Append ($"--source-libraries {StringUtils.Quote (Compiler.CompilerLocation.SwiftCompilerLib)} ");
+					swift_stdlib_tool.Append ($"--source-libraries {StringUtils.Quote (Compiler.SystemCompilerLocation.SwiftCompilerLib)} ");
 					output.Clear ();
 					rv = ExecAndCollect.RunCommand ("xcrun", swift_stdlib_tool.ToString (), output: output, verbose: true);
 					if (rv != 0) {

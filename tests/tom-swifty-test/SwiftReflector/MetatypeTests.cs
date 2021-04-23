@@ -167,7 +167,7 @@ namespace dlopentest
 				source += TestRunning.GetManagedConsoleRedirectCode ();
 				File.WriteAllText (csFile, source);
 
-				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.CompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
+				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
@@ -225,7 +225,7 @@ namespace dlopentest
 }}";
 				source += TestRunning.GetManagedConsoleRedirectCode ();
 				File.WriteAllText (csFile, source);
-				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.CompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
+				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				var output = TestRunning.Execute (temp.DirectoryPath, "TestIt.exe", PlatformName.macOS);
@@ -283,7 +283,7 @@ namespace dlopentest
 }}";
 				source += TestRunning.GetManagedConsoleRedirectCode ();
 				File.WriteAllText (csFile, source);
-				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.CompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
+				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				var output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
@@ -372,7 +372,7 @@ namespace dlopentest
 				source += TestRunning.GetManagedConsoleRedirectCode ();
 				File.WriteAllText (csFile, source);
 
-				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.CompilerLocation.SwiftCompilerLib}");
+				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}");
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath);
