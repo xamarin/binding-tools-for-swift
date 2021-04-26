@@ -99,7 +99,6 @@ public enum SomeForce {
 		}
 
 		[Test]
-		[Ignore ("This is not parsing properly - https://github.com/xamarin/binding-tools-for-swift/issues/657")]
 		public void NestedEnum ()
 		{
 			var swiftCode = @"

@@ -45,6 +45,15 @@ jobs:
     clean: true
 
   - bash: |
+      # set env vars used by bash scripts so that we do not need to worry about locations after the checkout
+      maccoreTop="$(Build.SourcesDirectory)/maccore"
+      btfsTop="$(Build.SourcesDirectory)/binding-tools-for-swift"
+      echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
+      echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
+      echo "$(System.PullRequest.SourceBranch)"
+    displayName: 'Configure build'
+
+  - bash: |
       if [ -L /Applications/Xcode_12.0.1.app ]
       then
         unlink /Applications/Xcode_12.0.1.app
@@ -70,6 +79,7 @@ jobs:
       cd $(System.DefaultWorkingDirectory)
       ./maccore/tools/install-qa-provisioning-profiles.sh -v
     displayName: 'Add provisioning profiles'
+    workingDirectory: $(Build.SourcesDirectory)
     env:
       AUTH_TOKEN_GITHUB_COM: $(github--pat--vs-mobiletools-engineering-service2)
       AUTH_TOKEN_LA_DEV_APPLE_P12: $(xqa--certificates--password)
@@ -79,7 +89,7 @@ jobs:
       AUTH_TOKEN_VSENG_XAMARIN_MAC_DEVICES_2_P12: $(xqa--certificates--password)
       LOGIN_KEYCHAIN_PASSWORD: $(OSX_KEYCHAIN_PASS)
 
-  - script: |
+  - bash: |
       set +e # we don't care about errors here
       set -x
       pwd
@@ -91,54 +101,34 @@ jobs:
       exit 0 # make sure we don't return an error code if the last command failed
     displayName: 'Environment info'
 
-  - script: |
+  - bash: |
       set -e
       set -x
       ./binding-tools-for-swift/devops/automation/provision-deps.sh
     displayName: 'Provision dependencies'
+    workingDirectory: $(Build.SourcesDirectory)
 
-  - script: |
+  - bash: |
       set -e
       set -x
       cd ./binding-tools-for-swift/
       git clean -xdf
     displayName: 'Clean workspace'
+    workingDirectory: $(Build.SourcesDirectory)
 
-  - script: |
-      set -e
-      set -x
-      ./binding-tools-for-swift/devops/automation/build-swift.sh --publish
-      mkdir -p $(System.DefaultWorkingDirectory)/toolchain
-      if test -f $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip; then
-        cp -c $(System.DefaultWorkingDirectory)/binding-tools-for-swift/Pack-Man/SwiftToolchain-*.zip $(System.DefaultWorkingDirectory)/toolchain
-        echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]1"
-      else
-        echo "##vso[task.setvariable variable=uploadtoolchain;isOutput=true]0"
-      fi
-    displayName: 'Build Swift'
-    name: BuildSwift
-
-  # This will upload the updated toolchain zip (if any) to Azure Devops
-  # A later job further down will then publish the toolchain to Azure Blob Storage.
-  # This is a two-step process because the task that can publish to Azure Blob Storage only works on Windows :/
-  - task: PublishBuildArtifacts@1
-    displayName: 'Upload Swift Toolchain'
-    inputs:
-      PathtoPublish: $(System.DefaultWorkingDirectory)/toolchain
-      ArtifactName: 'toolchain'
-      publishLocation: 'Container'
-
-  - script: |
+  - bash: |
       set -e
       set -x
       ./binding-tools-for-swift/devops/automation/build.sh
     displayName: 'Build'
+    workingDirectory: $(Build.SourcesDirectory)
 
-  - script: |
+  - bash: |
       set -e
       set -x
       ./binding-tools-for-swift/devops/automation/run-tests.sh
     displayName: 'Run tests'
+    workingDirectory: $(Build.SourcesDirectory)
     condition: and(succeeded(), eq('${{ parameters.RunningTests }}', true))
 
   - task: PublishTestResults@2
@@ -153,7 +143,7 @@ jobs:
   - script: |
       set -e
       set -x
-      ./binding-tools-for-swift/devops/automation/build-package.sh
+      $(Build.SourcesDirectory)/binding-tools-for-swift/devops/automation/build-package.sh
       ls -la ./package || true
     displayName: 'Package'
 
@@ -175,9 +165,8 @@ jobs:
     continueOnError: true
     condition: and(succeededOrFailed(), eq('${{ parameters.RunningTests }}', true))
 
-- job: UploadToolchain
+- job: UploadPackages
   dependsOn: ContinuousIntegration
-  condition: eq(dependencies.ContinuousIntegration.outputs['BuildSwift.uploadtoolchain'], '1')
   pool:
     vmImage: windows-latest
 
@@ -188,61 +177,15 @@ jobs:
   - checkout: self
     clean: true
 
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      source: current
-      artifact: toolchain
-      path: 'toolchain'
-
-  - task: AzureFileCopy@2
-    displayName: 'Publish toolchain to Azure'
-    inputs:
-      SourcePath: 'toolchain'
-      azureSubscription: BOSStorageMirror
-      Destination: AzureBlob
-      storage: bosstoragemirror
-      ContainerName: wrench
-      BlobPrefix: 'binding-tools-for-swift/toolchain'
-      outputStorageUri: ToolchainUrl
-      outputStorageContainerSasToken: ToolchainSasToken
-
   - bash: |
-      set -e
-      set -x
-      ZIPS=(toolchain/*.zip)
-      if (( ${#ZIPS[@]} == 1 )); then
-        if test -f "${ZIPS[0]}"; then
-          FILE=${ZIPS[0]}
-        else
-          echo "Could not find any zip files to upload"
-          exit 1
-        fi
-      elif (( ${#ZIPS[@]} > 1 )); then
-        echo "More than one zip file!"
-        exit 1
-      fi
-      FILENAME="$(basename "$FILE")"
-      TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/toolchain/$FILENAME"
-      # VSTS does provide a diff build id depending if it is a PR or a CI triggered build, this results in issues when
-      # setting the status :/ 
-      COMMIT_ID=$BUILD_SOURCEVERSION
-      echo "Build reason is $BUILD_REASON for $BUILD_SOURCEBRANCHNAME"
-      if [[ "$BUILD_REASON" == "PullRequest" ]]; then
-        echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
-        COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
-        ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$SYSTEM_PULLREQUEST_SOURCECOMMITID --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
-      else
-        ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --state=success --target-url=$TARGET_URL "--description=$FILENAME" --context=Toolchain-Binding-Tools-For-Swift
-      fi
-    displayName: 'Add Toolchain as GitHub Status'
-    workingDirectory: $(System.DefaultWorkingDirectory)
+      # set env vars used by bash scripts so that we do not need to worry about locations after the checkout
+      maccoreTop="$(System.DefaultWorkingDirectory)/maccore"
+      btfsTop="$(System.DefaultWorkingDirectory)/binding-tools-for-swift"
+      echo "##vso[task.setvariable variable=MACCORE_TOP]$maccoreTop"
+      echo "##vso[task.setvariable variable=BTFS_TOP]$btfsTop"
+      echo "$(System.PullRequest.SourceBranch)"
+    displayName: 'Configure build'
 
-- job: UploadPackages
-  dependsOn: ContinuousIntegration
-  pool:
-    vmImage: windows-latest
-
-  steps:
   - task: DownloadPipelineArtifact@2
     inputs:
       source: current
@@ -286,3 +229,4 @@ jobs:
         ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
       fi
     displayName: 'Add Packages as GitHub Status'
+    workingDirectory: $(Build.SourcesDirectory)

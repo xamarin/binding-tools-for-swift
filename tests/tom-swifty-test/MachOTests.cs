@@ -15,7 +15,7 @@ namespace tomwiftytest {
 	public class MachOTests {
 		public static Stream HelloSwiftAsLibrary (string extraOptions)
 		{
-			return Compiler.CompileStringUsing (null, XCodeCompiler.SwiftcCustom, Compiler.kHelloSwift, extraOptions);
+			return Compiler.CompileStringUsing (null, XCodeCompiler.Swiftc, Compiler.kHelloSwift, extraOptions);
 		}
 
 		[Test]

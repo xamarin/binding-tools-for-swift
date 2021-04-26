@@ -21,7 +21,7 @@ namespace dynamotests {
 			SLFunc func = new SLFunc (Visibility.Public, type, new SLIdentifier ("simpleFunc"), null, block);
 
 			string code = CodeWriter.WriteToString (func);
-			Compiler.CompileStringUsing (null, XCodeCompiler.SwiftcCustom, code, null);
+			Compiler.CompileStringUsing (null, XCodeCompiler.Swiftc, code, null);
 		}
 
 		[Test]
@@ -53,7 +53,7 @@ namespace dynamotests {
 		{
 			SLLine line = SLDeclaration.LetLine ("foo", SLSimpleType.Int, SLConstant.Val (5), Visibility.Public);
 			string code = CodeWriter.WriteToString (line);
-			Compiler.CompileStringUsing (null, XCodeCompiler.SwiftcCustom, code, null);
+			Compiler.CompileStringUsing (null, XCodeCompiler.Swiftc, code, null);
 		}
 
 
@@ -63,7 +63,7 @@ namespace dynamotests {
 			SLLine line = isLet ? SLDeclaration.LetLine ("foo", type, value, vis)
 				: SLDeclaration.VarLine ("foo", type, value, vis);
 			string code = CodeWriter.WriteToString (line);
-			Compiler.CompileStringUsing (null, XCodeCompiler.SwiftcCustom, code, null);
+			Compiler.CompileStringUsing (null, XCodeCompiler.Swiftc, code, null);
 		}
 
 		[Test]

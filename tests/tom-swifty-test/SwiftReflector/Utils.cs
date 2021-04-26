@@ -28,7 +28,7 @@ namespace SwiftReflector {
 
 		public static CustomSwiftCompiler DefaultSwiftCompiler (DisposableTempDirectory provider = null, string target = "x86_64-apple-macosx10.9")
 		{
-			var targetInfo = Compiler.CompilerLocation.GetTargetInfo (target);
+			var targetInfo = Compiler.SystemCompilerLocation.GetTargetInfo (target);
 			return new CustomSwiftCompiler (targetInfo, provider, false);
 		}
 
@@ -77,7 +77,7 @@ namespace SwiftReflector {
 		public static NewClassCompiler DefaultCSharpCompiler (UnicodeMapper unicodeMapper = null)
 		{
 			ClassCompilerOptions compilerOptions = new ClassCompilerOptions (targetPlatformIs64Bit : true, verbose : false, retainReflectedXmlOutput : true, retainSwiftWrappers : true);
-			return new NewClassCompiler (Compiler.CompilerLocation, compilerOptions, unicodeMapper ?? UnicodeMapper.Default);
+			return new NewClassCompiler (Compiler.SystemCompilerLocation, compilerOptions, unicodeMapper ?? UnicodeMapper.Default);
 		}
 
 		public static string CompileToCSharp (DisposableTempDirectory provider, string outputDirectory = null, string moduleName = "Xython", string target = "x86_64-apple-macosx10.9", IEnumerable<string> additionalTypeDatabases = null, bool separateProcess = false, UnicodeMapper unicodeMapper = null, int expectedErrorCount = -1)
@@ -96,8 +96,8 @@ namespace SwiftReflector {
 				var args = new StringBuilder ();
 				args.Append ($"--debug ");
 				args.Append ($"{Path.Combine (Path.GetDirectoryName (ncc.GetType ().Assembly.Location), "tom-swifty.exe")} ");
-				args.Append ($"--swift-bin-path={StringUtils.Quote (Compiler.CompilerLocation.SwiftCompilerBin)} ");
-				args.Append ($"--swift-lib-path={StringUtils.Quote (Path.GetDirectoryName (Compiler.CompilerLocation.SwiftCompilerLib))} ");
+				args.Append ($"--swift-bin-path={StringUtils.Quote (Compiler.SystemCompilerLocation.SwiftCompilerBin)} ");
+				args.Append ($"--swift-lib-path={StringUtils.Quote (Path.GetDirectoryName (Compiler.SystemCompilerLocation.SwiftCompilerLib))} ");
 				args.Append ($"--retain-xml-reflection ");
 				foreach (var db in typeDatabases)
 					args.Append ($"--type-database-path={StringUtils.Quote (db)} ");

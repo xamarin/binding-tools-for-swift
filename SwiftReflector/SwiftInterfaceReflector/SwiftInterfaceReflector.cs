@@ -730,7 +730,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isRequired = ModifiersContains (head.declaration_modifiers (), kRequired);
 			var isProperty = true;
 
-			var getParamList = MakeParamterList (head.parameter_clause ().parameter_list (), 1, true);
+			var getParamList = MakeParameterList (head.parameter_clause ().parameter_list (), 1, true);
 			var getFunc = ToFunctionDeclaration (kGetSubscript, resultType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
@@ -745,7 +745,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			AddElementToParentMembers (getFunc);
 
 			var setParamList = context.getter_setter_keyword_block ()?.setter_keyword_clause () != null
-				? MakeParamterList (head.parameter_clause ().parameter_list (), 1, true, startIndex: 1) : null;
+				? MakeParameterList (head.parameter_clause ().parameter_list (), 1, true, startIndex: 1) : null;
 
 
 			if (setParamList != null) {
@@ -1053,13 +1053,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				formalIndex = 1;
 			}
 
-			var formalArguments = MakeParamterList (context.parameter_list (), formalIndex, false);
+			var formalArguments = MakeParameterList (context.parameter_list (), formalIndex, false);
 
 			parameterLists.Add (formalArguments);
 			currentElement.Peek ().Add (parameterLists);
 		}
 
-		XElement MakeParamterList (Parameter_listContext parmList, int index, bool isSubscript, int startIndex = 0)
+		XElement MakeParameterList (Parameter_listContext parmList, int index, bool isSubscript, int startIndex = 0)
 		{
 			var formalArguments = new XElement (kParameterList, new XAttribute (kIndex, index.ToString ()));
 

@@ -30,16 +30,6 @@ IEnumerable<(FilePath Src, FilePath Dest)> GetFilesToBundle (BuildInfo bi, bool 
 {
 	var fl = new List<(FilePath Src, FilePath Dest)> ();
 
-	// Get custom compiler 'bin' files
-	var swiftDestBin = swiftToolchainOnly ? "bin" : "bin/swift/bin";
-	fl.Add (GetInfo (bi.SwiftBaseDir, "bin/swift", $"{swiftDestBin}/swift"));
-	fl.Add (GetInfo (bi.SwiftBaseDir, "bin/swift-demangle", $"{swiftDestBin}/swift-demangle"));
-	fl.Add (GetInfo (bi.SwiftBaseDir, "bin/swift-stdlib-tool", $"{swiftDestBin}/swift-stdlib-tool"));
-
-	// Get custom compiler 'lib' files
-	var swiftDestLib = swiftToolchainOnly ? "lib" : "bin/swift/lib";
-	fl.Add (GetInfo (bi.SwiftBaseDir, "lib/libswiftDemangle.dylib", $"{swiftDestLib}/libswiftDemangle.dylib"));
-
 	if (swiftToolchainOnly)
 		return fl;
 
@@ -84,17 +74,10 @@ IEnumerable<(DirectoryPath Src, DirectoryPath Dest)> GetDirectoriesToBundle (Bui
 {
 	var dl = new List<(DirectoryPath Src, DirectoryPath Dest)> ();
 
-	// Get custom compiler 'lib' folders to copy
-	var swiftDestLib = swiftToolchainOnly ? "lib" : "bin/swift/lib";
-	dl.Add (GetInfo (bi.SwiftBaseDir, "lib/sourcekitd.framework", $"{swiftDestLib}/sourcekitd.framework"));
-
 	var swiftFolders = new [] {
 		"appletvos", "appletvsimulator", "clang", "iphoneos", "iphonesimulator",
 		"macosx", "migrator", "shims", "watchos", "watchsimulator",
 	};
-	var innerSwiftDestLib = $"{swiftDestLib}/swift";
-	foreach (var swiftFolder in swiftFolders)
-		 dl.Add (GetInfo (bi.SwiftBaseDir, $"lib/swift/{swiftFolder}", $"{innerSwiftDestLib}/{swiftFolder}"));
 
 	if (swiftToolchainOnly)
 		return dl;
@@ -129,23 +112,6 @@ void EnsureDirectoryAndFilesToCopyExist (IEnumerable<(DirectoryPath Src, Directo
 	foreach (var file in files) {
 		if (!FileExists (file.Src))
 			throw new InvalidOperationException ($"Required file does not exist: '{file.Src}'.");
-	}
-}
-
-void CreateSwiftcSymlink (BuildInfo bi, bool swiftToolchainOnly = false)
-{
-	var settings = new ProcessSettings {
-		WorkingDirectory = swiftToolchainOnly ?  bi.DestBaseDir.Combine ("bin") : bi.DestBaseDir.Combine ("bin/swift/bin"),
-		Arguments = @"-s ""./swift"" ""swiftc"""
-	};
-
-	Information ("Creating 'swiftc' symlink...");
-	using (var process = StartAndReturnProcess ("ln", settings)) {
-		process.WaitForExit ();
-		if (process.GetExitCode () == 0)
-			Information ("'swiftc' symlink created!");
-		else
-			throw new Exception ($"An error ocurred creating 'swiftc' symlink: Exit code {process.GetExitCode ()}");
 	}
 }
 
