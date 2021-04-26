@@ -1605,5 +1605,22 @@ case a, b
 			Assert.AreEqual (1, en.Inheritance.Count, "wrong inheritance count");
 			Assert.AreEqual ("Swift.Error", en.Inheritance [0].InheritedTypeName, "wrong inherited name");
 		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void InlineFunction (ReflectorMode mode)
+		{
+			var code = @"
+@inlinable
+@inline (__always)
+public func sum (a:Int, b:Int) -> Int {
+return a + b
+}
+";
+			var module = ReflectToModules (code, "SomeModule", mode).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+
+			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "sum");
+			Assert.IsNotNull (fn, "no function");
+		}
 	}
 }
