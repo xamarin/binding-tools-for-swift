@@ -33,7 +33,7 @@ namespace SwiftReflector {
 		public void SimpleConstructor ()
 		{
 			string swiftcode = "public class None { public init() { } }";
-			using (Stream stm = Compiler.CompileStringUsing (null, XCodeCompiler.SwiftcCustom, swiftcode, "")) {
+			using (Stream stm = Compiler.CompileStringUsing (null, XCodeCompiler.Swiftc, swiftcode, "")) {
 				var errors = new ErrorHandling ();
 				ModuleInventory inventory = ModuleInventory.FromStream (stm, errors);
 				Utils.CheckErrors (errors);

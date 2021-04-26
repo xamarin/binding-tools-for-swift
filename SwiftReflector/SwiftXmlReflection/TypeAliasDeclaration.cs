@@ -63,12 +63,26 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
+		public String ModuleName {
+			get {
+				var spec = TypeSpec as NamedTypeSpec;
+				return spec?.Module;
+			}
+		}
+
+		public XElement ToXElement ()
+		{
+			return new XElement ("typealias", new XAttribute ("name", TypeName),
+				new XAttribute ("type", TargetTypeName));
+		}
+
 		public static TypeAliasDeclaration FromXElement (string moduleName, XElement element)
 		{
-			Exceptions.ThrowOnNull (moduleName, nameof (moduleName));
 			var aliasName = element.Attribute ("name").Value;
-			if (!aliasName.Contains ("."))
+			if (!aliasName.Contains (".")) {
+				Exceptions.ThrowOnNull (moduleName, nameof (moduleName));
 				aliasName = $"{moduleName}.{aliasName}";
+			}
 			return new TypeAliasDeclaration () {
 				Access = TypeDeclaration.AccessibilityFromString ((string)element.Attribute ("accessibility")),
 				TypeName = aliasName,

@@ -224,10 +224,11 @@ protocol_associated_type_declaration : attributes? access_level_modifier? 'assoc
 	generic_where_clause? ;
 
 
-function_declaration : function_head function_name generic_parameter_clause? function_signature generic_where_clause? ;
+function_declaration : function_head function_name generic_parameter_clause? function_signature generic_where_clause? function_body?;
 
 function_head : attributes? declaration_modifiers? 'func' ;
 function_name : declaration_identifier | operator_name ;
+function_body : OpLBrace dyckSubExpression* OpRBrace ;
 
 operator_name : operator ;
 
@@ -271,6 +272,7 @@ dyckExpression :
 	| label_identifier
 	| literal
 	| operator
+	| dotSymbol
 	;
 dyckSubExpression :
 	dyckExpression
@@ -280,6 +282,8 @@ any_other_things_for_dyck_expression :
 	( OpDot | OpComma | OpColon | OpSemi | OpAssign | OpAt | OpPound | OpBackTick | OpQuestion | OpUnder)
 	| arrow_operator
 	;
+
+dotSymbol : '.' declaration_identifier;
 	
 declaration_identifier : Identifier | keyword_as_identifier_in_declarations ;
 

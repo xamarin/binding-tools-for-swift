@@ -211,5 +211,6 @@
         <operator name="&amp;=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
         <operator name="|=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
         <operator name="^=" operatorKind="Infix" precedenceGroup="AssignmentPrecedence" moduleName="Swift" />
+	<typealias name="Foundation.NSRect" type="CoreGraphics.CGRect" />
     </entities>
 </xamtypedatabase>

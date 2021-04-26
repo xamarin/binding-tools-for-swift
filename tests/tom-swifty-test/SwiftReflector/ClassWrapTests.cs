@@ -26,7 +26,7 @@ namespace SwiftReflector {
 			string simpleClass = "public class Garble { public final func finalmethod() { }; public func virtmethod() { } }";
 			using (DisposableTempFile montyLib = new DisposableTempFile ("libXython.dylib", false)) {
 
-				Compiler.CompileStringToFileUsing (null, XCodeCompiler.SwiftcCustom, simpleClass, " -emit-library -module-name Xython", montyLib);
+				Compiler.CompileStringToFileUsing (null, XCodeCompiler.Swiftc, simpleClass, " -emit-library -module-name Xython", montyLib);
 				var errors = new ErrorHandling ();
 				ModuleInventory inventory = ModuleInventory.FromFile (montyLib.Filename, errors);
 				Utils.CheckErrors (errors);

@@ -176,6 +176,14 @@ namespace SwiftReflector.TypeMapping {
 			return Enumerable.Empty<OperatorDeclaration> ();
 		}
 
+		public IEnumerable<TypeAliasDeclaration> TypeAliasesForModule (string moduleName)
+		{
+			var module = EntityCollection (moduleName);
+			if (module != null)
+				return module.TypeAliases;
+			return Enumerable.Empty<TypeAliasDeclaration> ();
+		}
+
 		public void Write (string file, IEnumerable<string> modules)
 		{
 			using (FileStream stm = new FileStream (Exceptions.ThrowOnNull (file, nameof(file)), FileMode.Create)) {
@@ -196,6 +204,9 @@ namespace SwiftReflector.TypeMapping {
 				}
 				foreach (var op in OperatorsForModule (modName)) {
 					yield return op.ToXElement ();
+				}
+				foreach (var alias in TypeAliasesForModule (modName)) {
+					yield return alias.ToXElement ();
 				}
 			}
 		}
@@ -305,6 +316,13 @@ namespace SwiftReflector.TypeMapping {
 				foreach (var op in ops) {
 					AddOperator (op);
 				}
+
+				var aliases = from alias in entityList.Elements ("typealias")
+					      select TypeAliasDeclaration.FromXElement (null, alias);
+
+				foreach (var alias in aliases) {
+					AddTypeAlias (alias);
+				}
 			}
 		}
 
@@ -335,6 +353,13 @@ namespace SwiftReflector.TypeMapping {
 					yield return op;
 			}
 			yield break;
+		}
+
+		public void AddTypeAlias (TypeAliasDeclaration alias, string moduleName = null)
+		{
+			moduleName = moduleName ?? alias.ModuleName;
+			ModuleDatabase db = ModuleDatabaseForModuleName (moduleName);
+			db.TypeAliases.Add (alias);
 		}
 
 		void AddEntity (Entity e, ErrorHandling errors)

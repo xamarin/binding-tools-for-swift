@@ -1,6 +1,12 @@
 #!/bin/bash -ex
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.."
+# env var should have been defined by the CI
+if test -z "$BTFS_TOP"; then
+    echo "Variable BTFS_TOP is missing."
+    exit 1
+fi
+
+cd $BTFS_TOP
 WORKSPACE=$(pwd)
 
 # Use Pack-Man to produce zip package

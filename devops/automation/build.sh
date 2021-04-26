@@ -1,6 +1,11 @@
 #!/bin/bash -ex
 
-cd "$(dirname "${BASH_SOURCE[0]}")/../.."
+if test -z "$BTFS_TOP"; then
+    echo "Variable BTFS_TOP is missing."
+    exit 1
+fi
+
+cd $BTFS_TOP
 WORKSPACE=$(pwd)
 
 nuget restore tom-swifty.sln

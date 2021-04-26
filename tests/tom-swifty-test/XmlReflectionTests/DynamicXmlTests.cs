@@ -42,17 +42,6 @@ namespace XmlReflectionTests {
 			Utils.CompileSwift (code, moduleName: moduleName);
 		}
 
-		Stream ReflectToXml (string code, string moduleName)
-		{
-			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
-			return compiler.ReflectToStream (null, null, null, moduleName);
-		}
-
-		XDocument ReflectToXDocument (string code, string moduleName)
-		{
-			return XDocument.Load (ReflectToXml (code, moduleName));
-		}
-
 		XDocument ParserToXDocument (string directory, string moduleName)
 		{
 			var parser = new SwiftInterfaceReflector (typeDatabase, new NoLoadLoader ());
@@ -63,7 +52,7 @@ namespace XmlReflectionTests {
 		{
 			var decls = new List<ModuleDeclaration> ();
 			var doc = ParserToXDocument (directory, moduleName);
-			return Reflector.FromXml (doc);
+			return Reflector.FromXml (doc, typeDatabase);
 		}
 
 		List<ModuleDeclaration> ReflectToModules (string code, string moduleName, ReflectorMode mode = ReflectorMode.Parser)
@@ -87,12 +76,6 @@ namespace XmlReflectionTests {
 		public void HelloModuleTest ()
 		{
 			CompileStringToModule (Compiler.kHelloSwift, "MyModule");
-		}
-
-		[Test]
-		public void HelloXmlTest ()
-		{
-			ReflectToXml (Compiler.kHelloSwift, "MyModule");
 		}
 
 
@@ -1621,6 +1604,23 @@ case a, b
 			Assert.IsNotNull (en, "no enum");
 			Assert.AreEqual (1, en.Inheritance.Count, "wrong inheritance count");
 			Assert.AreEqual ("Swift.Error", en.Inheritance [0].InheritedTypeName, "wrong inherited name");
+		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void InlineFunction (ReflectorMode mode)
+		{
+			var code = @"
+@inlinable
+@inline (__always)
+public func sum (a:Int, b:Int) -> Int {
+return a + b
+}
+";
+			var module = ReflectToModules (code, "SomeModule", mode).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "module is null");
+
+			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "sum");
+			Assert.IsNotNull (fn, "no function");
 		}
 	}
 }

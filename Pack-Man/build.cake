@@ -19,12 +19,10 @@ BuildInfo buildInfo;
 
 // Executed before the first task.
 Setup (ctx => {
-	if (!DirectoryExists (DirectoryPath.FromString ("../apple")))
-		throw new InvalidOperationException ("You must setup 'apple' directory first.");
 	
 	if (configuration == "Debug" || configuration == "Release") {
 		buildInfo = new BuildInfo (ctx, configuration, outputDir, target);
-		buildInfo.EnsurePathsExistance (ctx, swiftToolchainOnly: target == "SwiftToolchain");
+		buildInfo.EnsurePathsExistance (ctx);
 	} else
 		throw new InvalidOperationException ($"Invalid 'configuration' parameter supplied: '{configuration}'.");
 });
@@ -50,33 +48,9 @@ Task ("CreatePackage")
 		foreach (var file in files)
 			CopyFile (file.Src, file.Dest);
 
-		CreateSwiftcSymlink (buildInfo);
-
 		// Using a custom zip method (instead of 'Zip ()') so we can preserve symlinks
 		ZipEverything (buildInfo);
 	}
-});
-
-Task ("SwiftToolchain")
-.Does (() => {
-	Information ($"Copying Swift Toolchain to {outputDir}...");
-	CreateFolderStructure (buildInfo, swiftToolchainOnly: true);
-	var directories = GetDirectoriesToBundle (buildInfo, swiftToolchainOnly: true);
-	var files = GetFilesToBundle (buildInfo, swiftToolchainOnly: true);
-	EnsureDirectoryAndFilesToCopyExist (directories, files);
-
-	Information ($"Copying directories to {outputDir}...");
-	foreach (var directory in directories)
-		CopyDirectory (directory.Src, directory.Dest);
-
-	Information ($"Copying files to {outputDir}...");
-	foreach (var file in files)
-		CopyFile (file.Src, file.Dest);
-
-	CreateSwiftcSymlink (buildInfo, swiftToolchainOnly: true);
-
-	// Using a custom zip method (instead of 'Zip ()') so we can preserve symlinks
-	ZipEverything (buildInfo, outputDir);
 });
 
 Task ("Clean")
@@ -97,7 +71,6 @@ void ShowUsage ()
 	Information ("--output-directory=VALUE \n\t Output directory name, defaults to 'binding-tools-for-swift' if not supplied.\n");
 	Information ("--target=Clean \n\t Removes the packager output directory and zip file.\n");
 	Information ("--target=CreatePackage \n\t 'CreatePackage' is the default target that creates the SoM package.\n");
-	Information ("--target=SwiftToolchain \n\t Creates the Swift toolchain package.\n");
 }
 
 RunTarget (target);
