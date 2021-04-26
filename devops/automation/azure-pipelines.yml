@@ -224,9 +224,9 @@ jobs:
       echo "Build reason is $BUILD_REASON for $BUILD_SOURCEBRANCHNAME"
       if [[ "$BUILD_REASON" == "PullRequest" ]]; then
         echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
-        ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$SYSTEM_PULLREQUEST_SOURCECOMMITID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+        binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$SYSTEM_PULLREQUEST_SOURCECOMMITID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
       else
-        ./devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+        binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
       fi
     displayName: 'Add Packages as GitHub Status'
     workingDirectory: $(Build.SourcesDirectory)
