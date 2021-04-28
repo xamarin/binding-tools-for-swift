@@ -55,20 +55,15 @@ In order to run the binding tools, you will need a compiled Swift library which 
           --version              print version information.
       -h, -?, --help             prints this message
 
-If you run this on its own, you will likely run into the error `Unable to find the custom swift compiler. Try using --swift-bin-path.` This is because the tool `tom-swifty` needs a separate tool, the reflector, which can reflect on the types in a Swift module. This is the custom Swift compiler. It also needs access to the associated Swift libraries.
-
-When you make binding-tools-for-swift, the build will bring down a copy of the built Swift reflector in the directory `/path/to/binding-tools-for-swift/SwiftToolchain-v3-GITHASH` where `GITHASH` is a git hash. The bin and lib paths are:
-
-    /path/to/binding-tools-for-swift/SwiftToolchain-v3/GITHASH/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin
-    /path/to/binding-tools-for-swift/SwiftToolchain-v3/GITHASH/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib
-
-Since the binding tools need to compile Swift wrappers that use some runtime glue, it needs a reference
-
 A typical set of commands to generate bindings is:
 
     mono /path/to/tom-swifty.exe --swift-bin-path SWIFT_BIN_PATH --swift-lib-path SWIFT_LIB_PATH -o /path/to/output_directory -C /path/to/YOURLIBRARY.framework -C /path/to/binding-tools-for-swift/swiftglue/bin/Debug/PLATFORM/XamGlue.framework -module-name YOURLIBRARY
 
-In this example `SWIFT_BIN_PATH` and `SWIFT_LIB_PATH` are paths to the Swift reflector build (see above). `YOURLIBRARY` is the name of the library you’re trying to bind. `PLATFORM` is one of `appletv`, `iphone`, `mac`, or `watch`.
+In this example `SWIFT_BIN_PATH` and `SWIFT_LIB_PATH` are paths to the Swift binaries directory and the Swift libraries directory respectively.
+On a typical macOS machine `SWIFT_BIN_PATH` is `/usr/bin`.
+`SWIFT_LIB_PATH` will be `/path/to/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0`
+
+`YOURLIBRARY` is the name of the library you’re trying to bind. `PLATFORM` is one of `appletv`, `iphone`, `mac`, or `watch`.
 
 If you add the argument `--retain-swift-wrappers`, the binding tools will leave a directory that contains the source to the Swift wrappers written during the compilation. If you add the argument `--retain-xml-reflection`, the binding tools will leaves a directory that contains output of the reflector in XML format.
 
@@ -79,7 +74,7 @@ The binding tools need the following to operate:
 - the location of your framework
 - the name of your framework
 
-In addition, the tools can operator on separate `.swiftmodule` and `.dylib` files. This can be handled by using a `-M` argument for the `.swiftmodule` and `-L` for the library. It’s easier to use the `.framework` directory and a single `-C` argument.
+In addition, the tools can operator on separate `.swiftinterface` and `.dylib` files. This can be handled by using a `-M` argument for the `.swiftinterface` and `-L` for the library. It’s easier to use the `.framework` directory and a single `-C` argument.
 
 ## Building and Running Samples
 
