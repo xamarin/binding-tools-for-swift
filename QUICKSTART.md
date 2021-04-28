@@ -61,7 +61,7 @@ A typical set of commands to generate bindings is:
 
 In this example `SWIFT_BIN_PATH` and `SWIFT_LIB_PATH` are paths to the Swift binaries directory and the Swift libraries directory respectively.
 On a typical macOS machine `SWIFT_BIN_PATH` is `/usr/bin`.
-`SWIFT_LIB_PATH` will be `/path/to/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0`
+`SWIFT_LIB_PATH` will be `/path/to/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0`. Do **NOT** use `/usr/lib/swift` as that does not have the full set of libraries for iOS, tvOS etc.
 
 `YOURLIBRARY` is the name of the library you’re trying to bind. `PLATFORM` is one of `appletv`, `iphone`, `mac`, or `watch`.
 
