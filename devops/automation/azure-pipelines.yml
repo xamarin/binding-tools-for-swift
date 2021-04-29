@@ -1,6 +1,16 @@
 # Pipeline for Binding Tools for Swift.
 #
 # yaml help: https://aka.ms/yaml
+
+parameters:
+- name: RunningTests
+  type: boolean
+  default: true # we can change this to true or check the box in pipelines when we want to run tests
+
+- name: provisionatorChannel
+  type: string
+  default: 'pr/mandel-macaque/401' # to be changed to latest once vseng fixes it
+
 trigger:
   branches:
     include:
@@ -25,11 +35,8 @@ variables:
   - group: Xamarin-Secrets
   - name: GitHub.Token                                          # Override the GitHub.Token setting defined in the Xamarin Release group
     value: $(github--pat--vs-mobiletools-engineering-service2)  # Use a token dedicated to critical production workflows and help avoid GitHub throttling
-
-parameters:
-- name: RunningTests
-  type: boolean
-  default: true # we can change this to true or check the box in pipelines when we want to run tests
+  - name: PROVISIONATOR_CHANNEL
+    value: ${{ parameters.provisionatorChannel }}
 
 jobs:
 - job: ContinuousIntegration
