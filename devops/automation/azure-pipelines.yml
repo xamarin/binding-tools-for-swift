@@ -9,7 +9,7 @@ parameters:
 
 - name: provisionatorChannel
   type: string
-  default: 'pr/mandel-macaque/401' # to be changed to latest once vseng fixes it
+  default: 'latest'
 
 trigger:
   branches:
