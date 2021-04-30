@@ -1,6 +1,5 @@
-SWIFT_DIR = "../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/"
-SWIFT_BIN = $(SWIFT_DIR)/bin
-SWIFT_LIB = $(SWIFT_DIR)/lib/swift/macosx/
+SWIFT_BIN = /usr/bin
+SWIFT_LIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0
 
 TOM_SWIFTY = ../../tom-swifty/bin/Debug/tom-swifty.exe
 SWIFT_GLUE = ../../swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework
