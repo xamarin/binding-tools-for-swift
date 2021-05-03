@@ -1,5 +1,5 @@
-SWIFT_BIN = ../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin
-SWIFT_LIB = ../../apple/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/
+SWIFT_BIN = /usr/bin
+SWIFT_LIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0
 
 SWIFTC = $(SWIFT_BIN)/swiftc
 

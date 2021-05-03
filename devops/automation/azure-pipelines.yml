@@ -1,6 +1,16 @@
 # Pipeline for Binding Tools for Swift.
 #
 # yaml help: https://aka.ms/yaml
+
+parameters:
+- name: RunningTests
+  type: boolean
+  default: true # we can change this to true or check the box in pipelines when we want to run tests
+
+- name: provisionatorChannel
+  type: string
+  default: 'latest'
+
 trigger:
   branches:
     include:
@@ -25,17 +35,14 @@ variables:
   - group: Xamarin-Secrets
   - name: GitHub.Token                                          # Override the GitHub.Token setting defined in the Xamarin Release group
     value: $(github--pat--vs-mobiletools-engineering-service2)  # Use a token dedicated to critical production workflows and help avoid GitHub throttling
-
-parameters:
-- name: RunningTests
-  type: boolean
-  default: true # we can change this to true or check the box in pipelines when we want to run tests
+  - name: PROVISIONATOR_CHANNEL
+    value: ${{ parameters.provisionatorChannel }}
 
 jobs:
 - job: ContinuousIntegration
   timeoutInMinutes: 720 # 12 hours (but 6 is max on hosted agents)
   pool:
-    vmImage: 'macos-10.15'
+    vmImage: 'macOS-10.15'
 
   steps:
   - checkout: maccore
@@ -221,12 +228,12 @@ jobs:
       fi
       FILENAME="$(basename "$FILE")"
       TARGET_URL="https://bosstoragemirror.blob.core.windows.net/wrench/binding-tools-for-swift/$BUILD_SOURCEBRANCHNAME/$BUILD_SOURCEVERSION/$BUILD_BUILDID/$FILENAME"
-      COMMIT_ID="$BUIlD_SOURCEVERSION"
-      echo "Build reason is $BUILD_REASON"
+      echo "Build reason is $BUILD_REASON for $BUILD_SOURCEBRANCHNAME"
       if [[ "$BUILD_REASON" == "PullRequest" ]]; then
         echo "Setting commit id to $SYSTEM_PULLREQUEST_SOURCECOMMITID"
-        COMMIT_ID="$SYSTEM_PULLREQUEST_SOURCECOMMITID"
+        binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$SYSTEM_PULLREQUEST_SOURCECOMMITID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
+      else
+        binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$BUILD_SOURCEVERSION --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
       fi
-      ./binding-tools-for-swift/devops/automation/add-commit-status.sh --token=$(GitHub.Token) --hash=$COMMIT_ID --azdo-state=$AGENT_JOBSTATUS --target-url=$TARGET_URL "--description=$FILENAME" --context=PKG-Binding-Tools-For-Swift
     displayName: 'Add Packages as GitHub Status'
     workingDirectory: $(Build.SourcesDirectory)

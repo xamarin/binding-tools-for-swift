@@ -76,6 +76,7 @@ namespace SwiftReflector.Importing {
 			{ "CoreData.NSFetchedResultsChangeType", macos10_12 },
 			// CoreLocation
 			{ "CoreLocation.CLRegionState", macos10_10 },
+			{ "CoreLocation.CLProximity", macos10_15 },
 			// Foundation
 			{ "Foundation.NSItemProviderErrorCode", macos10_10 },
 			{ "Foundation.NSLengthFormatterUnit", macos10_10 },
@@ -314,6 +315,7 @@ namespace SwiftReflector.Importing {
 			"Intents.INMessageAttribute", // marked unavailable
 			"Intents.INMessageAttributeOptions",
 			"Intents.INPersonHandleType",
+			"Intents.INPersonSuggestionType",
 			"Intents.INSearchCallHistoryIntentResponseCode",
 			"Intents.INSearchForMessagesIntentResponseCode",
 			"Intents.INSendMessageRecipientUnsupportedReason",
