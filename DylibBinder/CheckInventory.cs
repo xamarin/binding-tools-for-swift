@@ -12,12 +12,12 @@ namespace DylibBinder {
 	}
 
 	internal class CheckInventoryDictionary {
+		public SortedDictionary<string, CheckInventoryValues> CheckInventoryDict { get; } = new SortedDictionary<string, CheckInventoryValues> ();
+
 		public CheckInventoryDictionary (ModuleInventory mi)
 		{
 			GetValues (mi);
 		}
-
-		public SortedDictionary<string, CheckInventoryValues> CheckInventoryDict { get; } = new SortedDictionary<string, CheckInventoryValues> ();
 
 		void GetValues (ModuleInventory mi)
 		{

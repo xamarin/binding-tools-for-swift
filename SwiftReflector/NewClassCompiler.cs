@@ -165,10 +165,11 @@ namespace SwiftReflector {
 			ClassCompilerNames compilerNames,
 			List<string> targets,
 			string outputDirectory,
-			bool isLibrary = false) // TJ adding optional parameter isLibrary
+			string dylibXmlPath = null) // TJ adding optional parameter dylibXmlPath
 		{
 			ClassCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (classCompilerLocations, nameof (classCompilerLocations));
 			CompilerNames = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (compilerNames, nameof (compilerNames));
+			var isLibrary = !string.IsNullOrEmpty (dylibXmlPath);
 
 			var errors = new ErrorHandling ();
 			CurrentPlatform = PlatformFromTargets (targets);
@@ -197,9 +198,9 @@ namespace SwiftReflector {
 			if (errors.AnyErrors)
 				return errors;
 
-			// TJ - adding isLibrary bool
+			// TJ - adding dylibXmlPath arg
 			var moduleDeclarations = GetModuleDeclarations (ClassCompilerLocations.ModuleDirectories, moduleNames, outputDirectory,
-									Options.RetainReflectedXmlOutput, targets, errors, isLibrary);
+									Options.RetainReflectedXmlOutput, targets, errors, dylibXmlPath);
 			if (errors.AnyErrors)
 				return errors;
 
@@ -5461,18 +5462,24 @@ namespace SwiftReflector {
 			return null;
 		}
 
-		// TJ - adding isLibrary bool
+		// TJ - adding dylibXmlPath arg
 		List<ModuleDeclaration> GetModuleDeclarations (List<string> moduleDirectories, List<string> moduleNames,
 		                                               string outputDirectory, bool retainReflectedXmlOutput,
-		                                               List<string> targets, ErrorHandling errors, bool isLibrary = false)
+		                                               List<string> targets, ErrorHandling errors, string dylibXmlPath = null)
 		{
 			try {
 				string bestTarget = ChooseBestTarget (targets);
 
 				// TJ - if we have a dylib, we will be using our already generated xml
-				if (isLibrary) {
+				if (!string.IsNullOrEmpty (dylibXmlPath)) {
+					var typeDatabase = new TypeDatabase ();
+					var dbPath = Path.Combine (Directory.GetCurrentDirectory (), "../../../../bindings");
+					foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
+						typeDatabase.Read (dbFile);
+					}
+
 					// TODO this path will be decided later
-					var decls = Reflector.FromXmlFile ("../../../DylibBinder/Modules/NewXml.xml");
+					var decls = Reflector.FromXmlFile (dylibXmlPath, typeDatabase);
 					return decls;
 				} else {
 					using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {

@@ -37,6 +37,7 @@
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
+    <Reference Include="mscorlib" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -57,15 +58,13 @@
     <Compile Include="XmlGenerator.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="SortedSetExtensions.cs" />
-    <Compile Include="HashSetExtensions.cs" />
+    <Compile Include="DylibBinderReflector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="Modules\modules.xml" />
-    <None Include="Modules\modules_tester.xml" />
-    <None Include="Modules\modules_backup.xml" />
     <None Include="IgnoreList.txt" />
     <None Include="packages.config" />
+    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">

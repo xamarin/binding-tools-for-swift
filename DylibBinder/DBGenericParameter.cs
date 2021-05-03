@@ -3,34 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.SwiftLang;
 using SwiftReflector;
-using SwiftReflector.Inventory;
 
 namespace DylibBinder {
 	internal class DBGenericParameter {
+		public int Depth { get; }
+		public int Index { get; }
+		public string Name { get; }
+
 		public DBGenericParameter (int depth, int index)
 		{
 			Depth = depth;
 			Index = index;
 			Name = SLGenericReferenceType.DefaultNamer (depth, index);
 		}
-
-		public int Depth { get; }
-		public int Index { get; }
-		public string Name { get; }
 	}
 
 	internal class DBGenericParameters {
+		public HashSet<DBGenericParameter> GenericParameterCollection { get; } = new HashSet<DBGenericParameter> (new DBGenericParameterComparer ());
 
 		public DBGenericParameters (SwiftBaseFunctionType signature)
-			=> GenericParameters.AddRange (signature.GetGenericParameters ());
+			=> GenericParameterCollection.UnionWith (signature.GetGenericParameters ());
 
 		public DBGenericParameters (SwiftType swiftType)
-			=> GenericParameters.AddRange (swiftType.GetGenericParameters ());
+			=> GenericParameterCollection.UnionWith (swiftType.GetGenericParameters ());
 
 		public DBGenericParameters (DBTypeDeclaration typeDeclaration)
-			=> GenericParameters.AddRange (typeDeclaration.ParseTopLevelGenerics ());
-
-		public HashSet<DBGenericParameter> GenericParameters { get; } = new HashSet<DBGenericParameter> (new DBGenericParameterComparer ());
+			=> GenericParameterCollection.UnionWith (typeDeclaration.ParseTopLevelGenerics ());
 	}
 
 	internal static class DBGenericParameterExtensions {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Mono.Options;
@@ -9,29 +8,22 @@ namespace DylibBinder {
 
         public OptionSet optionsSet { get; set; }
         public bool PrintHelp { get; set; }
-        public string SwiftLibPath { get; set; }
-        public string ModuleName { get; set; }
         public string DylibPath { get; set; }
-        public List<string> TypeDatabasePaths = new List<string>();
+        public string OutputPath { get; set; }
+        public string SwiftVersion { get; set; } = "5.0";
 
         public DylibBinderOptions ()
         {
-            // create an option set that will be used to parse the different
-            // options of the command line.
             optionsSet = new OptionSet {
-                { "swiftLibPath=", "the path to the lib directory that contains the dylib", swiftLibPath => {
-                    SwiftLibPath = swiftLibPath;
-                } },
                 { "dylibPath=", "the path to the dylib", dylibPath => {
                     DylibPath = dylibPath;
                 } },
-                { "moduleName=", "the name of the module", moduleName => {
-                    ModuleName = moduleName;
+                { "outputPath=", "the path to output the xml", outputPath => {
+                    OutputPath = outputPath;
                 } },
-                { "type-database-path=", "searches in directory for type database files; can be used multiple times", p => {
-                    if (!string.IsNullOrEmpty (p))
-                        TypeDatabasePaths.Add (Path.GetFullPath (p));
-                }},
+                { "swiftVersion=", "the swift version", swiftVersion => {
+                    SwiftVersion = swiftVersion;
+                } },
                 { "h|?|help", "prints this message", h => {
                     PrintHelp |= h != null;
                 }}

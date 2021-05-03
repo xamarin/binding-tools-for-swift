@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 
 namespace DylibBinder {
 	internal static class StringExtensions {
+		static readonly string [] BuiltInTypes = { "Bool", "Double", "Float", "UInt", "Int" };
+
 		internal static bool IsPublic (this string s)
 		{
 			return !s.Contains ("_");
@@ -23,8 +25,6 @@ namespace DylibBinder {
 			return sb.ToString ();
 		}
 
-		static readonly string [] BuiltInTypes = {"Bool", "Double", "Float", "UInt", "Int"};
-
 		static void FindAndAppendModule (StringBuilder sb, string builtInType)
 		{
 			var offset = 0;
@@ -34,14 +34,25 @@ namespace DylibBinder {
 				if (builtInType == "Int" && IsIntMatchUInt (sb, match, offset))
 					continue;
 
-				if (!IsSwiftAlreadyPresent (sb, match, sizeOfSwiftInsert)) {
+				if (!ContainsSwift (sb, match, sizeOfSwiftInsert)) {
 					sb.Insert (match.Index + offset, "Swift.");
 					offset += sizeOfSwiftInsert;
 				}
 			}
 		}
 
-		static bool IsSwiftAlreadyPresent (StringBuilder sb, Match match, int sizeOfSwiftInsert)
+		static bool IsIntMatchUInt (StringBuilder sb, Match match, int offset)
+		{
+			if (match.Index > 0) {
+				if (sb.ToString () [match.Index - 1 + offset] == 'U') {
+					return true;
+				}
+				return false;
+			}
+			return false;
+		}
+
+		static bool ContainsSwift (StringBuilder sb, Match match, int sizeOfSwiftInsert)
 		{
 			if (match.Index > sizeOfSwiftInsert) {
 				var substring = sb.ToString ().Substring (match.Index - sizeOfSwiftInsert, sizeOfSwiftInsert);
@@ -49,17 +60,6 @@ namespace DylibBinder {
 					return false;
 				}
 				return true;
-			}
-			return false;
-		}
-
-		static bool IsIntMatchUInt (StringBuilder sb, Match match, int offset)
-		{
-			if (match.Index > 0) {
-				if (sb.ToString ()[match.Index-1 + offset] == 'U') {
-					return true;
-				}
-				return false;
 			}
 			return false;
 		}

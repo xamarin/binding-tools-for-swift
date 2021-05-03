@@ -101,6 +101,9 @@ namespace tomswifty {
 				{ "version", "print version information.", v => {
 					PrintVersion |=v != null;
 				}},
+				{ "dylibXmlPath=", "path to the xml when using a Dylib.", dylibXmlPath => {
+					DylibXmlPath = dylibXmlPath;
+				}},
 				{ "h|?|help", "prints this message", h => {
 					PrintHelp |=h != null;
 				}},
@@ -109,6 +112,7 @@ namespace tomswifty {
 
 		public string SwiftBinPath { get; set; }
 		public string SwiftLibPath { get; set; }
+		public string DylibXmlPath { get; set; }
 		public List<string> TypeDatabasePaths { get; private set; }
 		public string SwiftGluePath { get; set; }
 		public List<string> ModulePaths { get; private set; }

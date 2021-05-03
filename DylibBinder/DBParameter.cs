@@ -4,6 +4,15 @@ using SwiftReflector;
 
 namespace DylibBinder {
 	internal class DBParameter {
+		public string Type { get; set; }
+		public string PublicName { get; }
+		public string PrivateName { get; }
+		public bool IsVariadic { get; }
+		public int Index { get; }
+		public bool HasInstance { get; }
+		public bool IsConstructor { get; }
+		public bool IsEmptyParameter { get; }
+
 		public DBParameter (string type, string publicName, string privateName, int index, ParameterOptions parameterOptions)
 		{
 			Type = type;
@@ -16,16 +25,6 @@ namespace DylibBinder {
 			IsEmptyParameter = parameterOptions.HasFlag (ParameterOptions.IsEmptyParameter);
 		}
 
-		public string Type { get; set; }
-		public string PublicName { get; }
-		public string PrivateName { get; }
-		public bool IsVariadic { get; }
-		public int Index { get; }
-
-		public bool HasInstance { get; }
-		public bool IsConstructor { get; }
-		public bool IsEmptyParameter { get; }
-
 		public static DBParameter CreateInstanceParameter () => new ("", "", "self", 0, ParameterOptions.HasInstance);
 		public static DBParameter CreateInstanceParameter (int index) => new ("", "", "self", index, ParameterOptions.HasInstance);
 		public static DBParameter CreateConstructorParameter (int index) => new (".Type", "", "self", index, ParameterOptions.IsConstructor);
@@ -35,17 +34,18 @@ namespace DylibBinder {
 
 
 	internal class DBParameterList : IAssociatedTypes {
+		public int Index { get; }
+		public List<DBParameter> ParameterCollection { get; } = new List<DBParameter> ();
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
+
 		public DBParameterList (SwiftBaseFunctionType signature, bool hasInstance, bool isConstructor, int index)
 		{
 			Index = index;
 			int parameterIndex = 0;
-			AssociatedTypes.Add (signature.GetAssociatedTypes ());
+			AssociatedTypes.AssociatedTypeCollection.UnionWith (signature.GetAssociatedTypes ());
 
 			if (hasInstance || isConstructor) {
-				if (hasInstance)
-					Parameters.Add (DBParameter.CreateInstanceParameter(parameterIndex));
-				else
-					Parameters.Add (DBParameter.CreateConstructorParameter (parameterIndex));
+				ParameterCollection.Add (hasInstance ? DBParameter.CreateInstanceParameter (parameterIndex) : DBParameter.CreateConstructorParameter (parameterIndex));
 				return;
 			}
 
@@ -57,7 +57,7 @@ namespace DylibBinder {
 				if (parameter.Name != null)
 					publicName = privateName = parameter.Name.Name;
 
-				Parameters.Add (new DBParameter (type, publicName, privateName, parameterIndex, parameter.IsVariadic ? ParameterOptions.IsVariadic : ParameterOptions.None));
+				ParameterCollection.Add (new DBParameter (type, publicName, privateName, parameterIndex, parameter.IsVariadic ? ParameterOptions.IsVariadic : ParameterOptions.None));
 				parameterIndex++;
 			}
 		}
@@ -67,52 +67,45 @@ namespace DylibBinder {
 			Index = index;
 
 			if (hasInstance) {
-				Parameters.Add (DBParameter.CreateInstanceParameter ());
+				ParameterCollection.Add (DBParameter.CreateInstanceParameter ());
 				return;
 			}
 
 			if (propertyType == "Getter") {
-				Parameters.Add (DBParameter.CreateGetterParameter ());
+				ParameterCollection.Add (DBParameter.CreateGetterParameter ());
 			} else {
-				Parameters.Add (DBParameter.CreateSetterParameter ());
+				ParameterCollection.Add (DBParameter.CreateSetterParameter ());
 			}
 		}
-
-		public int Index { get; }
-		public List<DBParameter> Parameters { get; } = new List<DBParameter> ();
-		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
-
-
 	}
 
 	internal class DBParameterLists : IAssociatedTypes {
+		public List<DBParameterList> ParameterListCollection { get; } = new List<DBParameterList> ();
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
+
 		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance)
 		{
 			var parameterListIndex = 0;
 			if (hasInstance) {
-				ParameterLists.Add (new DBParameterList (signature, true, false, parameterListIndex));
+				ParameterListCollection.Add (new DBParameterList (signature, true, false, parameterListIndex));
 				parameterListIndex++;
 			} else if (signature.IsConstructor) {
-				ParameterLists.Add (new DBParameterList (signature, false, true, parameterListIndex));
+				ParameterListCollection.Add (new DBParameterList (signature, false, true, parameterListIndex));
 				parameterListIndex++;
 			}
 
-			ParameterLists.Add (new DBParameterList (signature, false, false, parameterListIndex));
-			AssociatedTypes.Add (ParameterLists.GetChildrenAssociatedTypes ());
+			ParameterListCollection.Add (new DBParameterList (signature, false, false, parameterListIndex));
+			AssociatedTypes.AssociatedTypeCollection.UnionWith (ParameterListCollection.GetChildrenAssociatedTypes ());
 		}
 
 		public DBParameterLists (bool hasInstance, string propertyType)
 		{
 			var parameterListIndex = 0;
 			if (hasInstance) {
-				ParameterLists.Add (new DBParameterList (propertyType, true, parameterListIndex));
+				ParameterListCollection.Add (new DBParameterList (propertyType, true, parameterListIndex));
 				parameterListIndex++;
 			}
-			ParameterLists.Add (new DBParameterList (propertyType, false, parameterListIndex));
+			ParameterListCollection.Add (new DBParameterList (propertyType, false, parameterListIndex));
 		}
-
-		public List<DBParameterList> ParameterLists { get; } = new List<DBParameterList> ();
-
-		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 	}
 }

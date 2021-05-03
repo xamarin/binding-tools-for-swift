@@ -5,16 +5,16 @@ using SwiftReflector.Inventory;
 
 namespace DylibBinder {
 	internal class DBInnerTypes {
+		public List<DBTypeDeclaration> InnerTypeCollection { get; } = new List<DBTypeDeclaration> ();
+
 		public DBInnerTypes (SwiftClassName swiftClassName)
 		{
-			var name = swiftClassName.ToString ();
-			if (DBTypeDeclarations.InnerXDictionary.ContainsKey (name)) {
-				foreach (var innerType in DBTypeDeclarations.InnerXDictionary[name]) {
-					InnerTypes.Add (new DBTypeDeclaration (innerType));
+			var name = swiftClassName.ToFullyQualifiedName ();
+			if (DBTypeDeclarations.InnerXDictionary.TryGetValue (name, out List<ClassContents> innerTypeList)) {
+				foreach (var innerType in innerTypeList) {
+					InnerTypeCollection.Add (new DBTypeDeclaration (innerType));
 				}
 			}
 		}
-
-		public List<DBTypeDeclaration> InnerTypes { get; } = new List<DBTypeDeclaration> ();
 	}
 }

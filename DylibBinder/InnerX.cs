@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
 	internal class InnerX {
 		// This class will be responsible for creating a dictionary
-		// telling us if a TypeDeclaration is on the top level and if not,
+		// telling us if a TypeDeclaration is on the top level or
 		// which TypeDeclaration it is an innerType for
-
-		public InnerX ()
-		{
-		}
 
 		public Dictionary<string, List<ClassContents>> InnerXDict { get; } = new Dictionary<string, List<ClassContents>> ();
 

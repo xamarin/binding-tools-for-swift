@@ -84,6 +84,8 @@ Global
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 80
+		$1.TabWidth = 8
+		$1.IndentWidth = 8
 		$1.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $2
 		$2.IndentSwitchSection = False

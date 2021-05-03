@@ -6,6 +6,8 @@ using SwiftReflector.TypeMapping;
 
 namespace DylibBinder {
 	internal static class SwiftTypeToString {
+		public static List<string> TypeDatabasePaths = new List<string> ();
+
 		public static string MapSwiftTypeToString (SwiftType swiftType, string moduleName = null)
 		{
 			var slType = MapSwiftTypeToSlType (swiftType);
@@ -21,7 +23,5 @@ namespace DylibBinder {
 			var sLImportModules = new SLImportModules ();
 			return swiftTypeToSLType.MapType (sLImportModules, swiftType);
 		}
-
-		public static List<string> TypeDatabasePaths = new List<string> ();
 	}
 }

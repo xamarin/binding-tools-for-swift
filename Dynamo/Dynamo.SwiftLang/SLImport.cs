@@ -11,12 +11,6 @@ namespace Dynamo.SwiftLang {
 			                       Exceptions.ThrowOnNull (module, nameof(module))),
 			        false, false, false)
 		{
-
-			// TJ - TODO not sure why we are hitting cases where it tries to import U0 & T0
-			if (module == "U0" || module == "T0") {
-				return;
-			}
-
 			Module = module;
 		}
 
@@ -78,10 +72,6 @@ namespace Dynamo.SwiftLang {
 			if (package == "Self")
 				return;
 
-			// TJ - TODO not sure why we are hitting cases where it tries to import U0 & T0
-			if (package == "U0" || package == "T0") {
-				return;
-			}
 
 			if (package != OwningModule && !this.Exists (imp => imp.Contents == target.Contents))
 				Add (target);

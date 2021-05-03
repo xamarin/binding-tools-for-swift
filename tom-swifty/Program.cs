@@ -24,20 +24,7 @@ namespace tomswifty {
 			SwiftyOptions options = new SwiftyOptions ();
 
 			var extra = options.ParseCommandLine (args);
-
-			// TJ - TODO currently hardcoding options to debug. Eventually need to have tom-swifty call
-			// DylibBinder and pass in SwiftLibPath, ModuleName
-			options.SwiftBinPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/bin";
-			options.SwiftLibPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib";
-			options.ModuleName = "swiftCore";
-			options.OutputDirectory = Directory.GetCurrentDirectory () + "/../../Modules";
-			options.RetainXmlReflection = true;
-			options.RetainSwiftWrappingCode = true;
-			options.ModulePaths.Clear ();
-			options.DylibPaths.Clear ();
-			options.DylibPaths.Add (Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/iphoneos//");
-			options.SwiftGluePath = Directory.GetCurrentDirectory () + "/../../../swiftglue/bin/Debug";
-			options.TypeDatabasePaths.Add (Directory.GetCurrentDirectory () + "/../../../bindings");
+			var isLibrary = false;
 
 			// deal with those options that do not care about the extra params, 
 			// then check if we have some and print.
@@ -77,8 +64,17 @@ namespace tomswifty {
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
-			// TJ - TODO adding this second parameter that we can set to true if we are dealing with dylib
-			options.CheckForOptionErrors (errors, true);
+			// TJ - adding check for options.DylibXmlPath
+			if (!string.IsNullOrEmpty (options.DylibXmlPath)) {
+				if (!File.Exists (options.DylibXmlPath)) {
+					Console.WriteLine ($"Unable to the find the the path to the dylib xml: {options.DylibXmlPath}");
+					return 1;
+				}
+				isLibrary = true;
+			}
+
+			// TJ - adding isLibrary bool
+			options.CheckForOptionErrors (errors, isLibrary);
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
@@ -96,7 +92,8 @@ namespace tomswifty {
 				unicodeMapper.AddMappingsFromFile (options.UnicodeMappingFile);
 			}
 
-			Compile (options, unicodeMapper, errors);
+			// TJ - adding isLibrary argument
+			Compile (options, unicodeMapper, errors, isLibrary);
 			if (errors.AnyMessages) {
 				Console.WriteLine ("{0}{1} warnings and {2} errors{0}", Environment.NewLine, errors.WarningCount, errors.ErrorCount);
 				return HandleErrors (options, errors);
@@ -104,7 +101,7 @@ namespace tomswifty {
 			return 0;
 		}
 
-		static void Compile (SwiftyOptions options, UnicodeMapper unicodeMapper, ErrorHandling errors)
+		static void Compile (SwiftyOptions options, UnicodeMapper unicodeMapper, ErrorHandling errors, bool isLibrary = false)
 		{
 			try {
 				using (DisposableTempDirectory temp = new DisposableTempDirectory (null, true)) {
@@ -114,9 +111,8 @@ namespace tomswifty {
 
 					ClassCompilerNames compilerNames = new ClassCompilerNames (options.ModuleName, options.WrappingModuleName);
 					ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (options.ModulePaths, options.DylibPaths, options.TypeDatabasePaths);
-					// TJ - TODO Adding this last argument which will tell the CompileToCSharp method
-					// we are dealing with a dylib
-					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory, true);
+					// TJ - Adding this last argument to tell the CompileToCSharp method we are dealing with a dylib
+					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory, options.DylibXmlPath);
 					errors.Add (compileErrors);
 				}
 			} catch (Exception err) {

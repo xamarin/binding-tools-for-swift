@@ -1,24 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SwiftReflector;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
 	internal class DBProperty : IAssociatedTypes {
-		public DBProperty (PropertyContents propertyContents)
-		{
-			Name = propertyContents.Name.Name;
-			IsStatic = propertyContents.Getter.IsStatic;
-			AssociatedTypes.Add (propertyContents.Getter.ReturnType.GetAssociatedTypes ());
-			Type = SwiftTypeToString.MapSwiftTypeToString (propertyContents.Getter.ReturnType, propertyContents.Class.ClassName.Module.Name);
-			GenericParameters = new DBGenericParameters (propertyContents.Getter.ReturnType);
-
-			Getter = new DBFunc (this, "Getter");
-			if (propertyContents.Setter != null) 
-				Setter = new DBFunc (this, "Setter");
-		}
-
 		public string Name { get; private set; }
 		public bool IsStatic { get; }
 		public string Type { get; }
@@ -33,22 +19,35 @@ namespace DylibBinder {
 		public bool IsUnavailable { get; } = false;
 		public bool IsOptional { get; } = false;
 		public Storage Storage { get; } = Storage.Addressed;
+
+		public DBProperty (PropertyContents propertyContents)
+		{
+			Name = propertyContents.Name.Name;
+			IsStatic = propertyContents.Getter.IsStatic;
+			AssociatedTypes.AssociatedTypeCollection.UnionWith (propertyContents.Getter.ReturnType.GetAssociatedTypes ());
+			Type = SwiftTypeToString.MapSwiftTypeToString (propertyContents.Getter.ReturnType, propertyContents.Class.ClassName.Module.Name);
+			GenericParameters = new DBGenericParameters (propertyContents.Getter.ReturnType);
+
+			Getter = new DBFunc (this, "Getter");
+			if (propertyContents.Setter != null)
+				Setter = new DBFunc (this, "Setter");
+		}
 	}
 
 	internal class DBProperties : IAssociatedTypes {
+		public List<DBProperty> PropertyCollection { get; } = new List<DBProperty> ();
+		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
+
 		public DBProperties (ClassContents classContents)
 		{
 			var properties = SortedSetExtensions.Create<PropertyContents> ();
 			properties.AddRange (classContents.Properties.Values, classContents.StaticProperties.Values);
 			foreach (var property in properties) {
 				if (property.Name.Name.IsPublic () && !IsMetaClass (property.Getter.ReturnType))
-					Properties.Add (new DBProperty (property));
+					PropertyCollection.Add (new DBProperty (property));
 			}
-			AssociatedTypes.Add (Properties.GetChildrenAssociatedTypes ());
+			AssociatedTypes.AssociatedTypeCollection.UnionWith (PropertyCollection.GetChildrenAssociatedTypes ());
 		}
-
-		public List<DBProperty> Properties { get; } = new List<DBProperty> ();
-		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
 		bool IsMetaClass (SwiftType swiftType)
 		{

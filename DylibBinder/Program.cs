@@ -2,10 +2,6 @@
 using SwiftReflector.Inventory;
 using SwiftReflector;
 using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Text;
 
 namespace DylibBinder {
 	class Program {
@@ -19,17 +15,25 @@ namespace DylibBinder {
 				return;
 			}
 
-			// these will eventually come from tom-swifty
-			options.SwiftLibPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib";
-			options.ModuleName = "Swift";
-			options.TypeDatabasePaths.Add (Directory.GetCurrentDirectory () + "/../../../bindings");
-			options.DylibPath = Directory.GetCurrentDirectory () + "/../../../SwiftToolchain-v1-28e007252c2ec7217c7d75bd6f111b9c682153e3/build/Ninja-ReleaseAssert/swift-macosx-x86_64/lib/swift/appletvos//libswiftCore.dylib";
-			SwiftTypeToString.TypeDatabasePaths = options.TypeDatabasePaths;
+			if (string.IsNullOrEmpty (options.DylibPath)) {
+				Console.WriteLine ("The path to the Dylib was not included. Try using --dylibPath.");
+				return;
+			}
+
+			if (string.IsNullOrEmpty (options.OutputPath)) {
+				Console.WriteLine ("The path for the output xml was not included. Try using --outputPath.");
+				return;
+			}
+
+			if (!File.Exists (options.DylibPath)) {
+				Console.WriteLine ($"Unable to find the path to the Dylib: {options.DylibPath}.");
+				return;
+			}
 
 			var errors = new ErrorHandling ();
 			var mi = ModuleInventory.FromFile (options.DylibPath, errors);
-			var dBTopLevel = new DBTopLevel ("1.0", options.ModuleName, "5.0", mi);
-			using var xmlGenerator = new XmlGenerator (dBTopLevel, "../../Modules/NewXml.xml");
+			var dBTopLevel = new DBTopLevel (mi, options.SwiftVersion);
+			using var xmlGenerator = new XmlGenerator (dBTopLevel, options.OutputPath);
 		}
 	}
 }
