@@ -12,17 +12,16 @@ OUTPUT_MODULE=Sandwiches
 
 libSandwiches.dylib: *.swift 
 	@rm -rf XamWrappingSource armv7 armv7s arm64 x86_64
-	@mkdir XamGlue.framework
+	@cp ../../lib/SwiftInterop/SwiftRuntimeLibrary.Mac.dll .
 	@cp ../../lib/SwiftInterop/mac/XamGlue.framework/XamGlue .
-	@cp ../../lib/binding-tools-for-swift/SwiftRuntimeLibrary.dll .
 	$(SWIFTC) $(SWIFTARGS) -module-name $(OUTPUT_MODULE) *.swift
 	$(BINDINGTOOLSFORSWIFT) --retain-swift-wrappers --swift-bin-path $(SWIFT_BIN) --swift-lib-path $(SWIFT_LIB) -o . -C . -module-name $(OUTPUT_MODULE) 
 	@xcrun install_name_tool -change "@rpath/XamGlue.framework/XamGlue" XamGlue libXamWrapping.dylib
-	mcs -nowarn:CS0169 -lib:../lib -r:SwiftRuntimeLibrary -lib:. *.cs -unsafe+ -out:$(OUTPUT_MODULE).exe
+	mcs -nowarn:CS0169 -lib:../lib -r:SwiftRuntimeLibrary.Mac -lib:. *.cs -unsafe+ -out:$(OUTPUT_MODULE).exe
 
 runit:
-	@DYLD_LIBRARY_PATH=$(SWIFT_LIB)/macosx:$(SWIFT_GLUE):. mono --arch=64 $(OUTPUT_MODULE).exe
+	@DYLD_LIBRARY_PATH=$(SWIFT_LIB)/macosx:. mono --arch=64 $(OUTPUT_MODULE).exe
 
 clean:
-	@rm -f *.dylib *.swiftmodule *.swiftdoc *.dll *.exe TopLevelEntities.cs IBreadSandwiches.cs IFillingSandwiches.cs HamSandwiches.cs RyeSandwiches.cs XamGlue
+	@rm -f *.dylib *.swiftmodule *.swiftdoc *.swiftinterface *.swiftsourceinfo *.dll *.exe TopLevelEntities.cs IBreadSandwiches.cs IFillingSandwiches.cs HamSandwiches.cs RyeSandwiches.cs XamGlue
 	@rm -rf XamWrappingSource armv7 armv7s arm64 x86_64 bindings
