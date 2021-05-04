@@ -1710,6 +1710,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			foreach (var ext in extensions) {
 				var onType = (string)ext.Attribute (kOnType).Value;
 				var parts = onType.Split ('.');
+				if (parts [0] == "XamGlue")
+					continue;
 				if (parts.Length > 1 && !typeDatabase.ModuleNames.Contains (parts [0])) {
 					moduleLoader.Load (parts [0], typeDatabase);
 				}
