@@ -5472,13 +5472,7 @@ namespace SwiftReflector {
 
 				// TJ - if we have a dylib, we will be using our already generated xml
 				if (!string.IsNullOrEmpty (dylibXmlPath)) {
-					var typeDatabase = new TypeDatabase ();
-					var dbPath = Path.Combine (Directory.GetCurrentDirectory (), "../../../../bindings");
-					foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
-						typeDatabase.Read (dbFile);
-					}
-
-					// TODO this path will be decided later
+					var typeDatabase = CreateTypeDatabase ();
 					var decls = Reflector.FromXmlFile (dylibXmlPath, typeDatabase);
 					return decls;
 				} else {
@@ -5510,6 +5504,34 @@ namespace SwiftReflector {
 				errors.Add (e);
 				return null;
 			}
+		}
+
+		TypeDatabase CreateTypeDatabase ()
+		{
+			var typeDatabase = new TypeDatabase ();
+			var dbPath = GetBindingsPath ();
+			if (dbPath != null)
+				foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
+					typeDatabase.Read (dbFile);
+				}
+			return typeDatabase;
+		}
+
+		static readonly string [] BindingPaths = {
+			"bindings",
+			"../bindings",
+			"../../bindings",
+			"../../../bindings"
+		};
+
+		string GetBindingsPath ()
+		{
+			foreach (var bindingPath in BindingPaths) {
+				var wholePath = Path.Combine (Directory.GetCurrentDirectory (), bindingPath);
+				if (Directory.Exists (wholePath))
+					return wholePath;
+			}
+			throw new FileNotFoundException ("bindings directory was not found");
 		}
 
 
