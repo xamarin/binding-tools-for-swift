@@ -5510,10 +5510,11 @@ namespace SwiftReflector {
 		{
 			var typeDatabase = new TypeDatabase ();
 			var dbPath = GetBindingsPath ();
-			if (dbPath != null)
+			if (dbPath != null) {
 				foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
 					typeDatabase.Read (dbFile);
 				}
+			}
 			return typeDatabase;
 		}
 

@@ -29,7 +29,6 @@ namespace DylibBinder {
 			writer.WriteStartDocument ();
 			writer.WriteStartElement ("xamreflect");
 			writer.WriteAttributeString ("version", "1.0");
-
 			writer.WriteStartElement ("modulelist");
 		}
 

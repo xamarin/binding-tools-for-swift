@@ -28,7 +28,7 @@ namespace DylibBinder {
 		}
 	}
 
-	// interface for having an AssociatedTypeCollection Property
+	// interface for having an AssociatedTypes Property
 	internal interface IAssociatedTypes {
 		public DBAssociatedTypes AssociatedTypes { get; }
 	}

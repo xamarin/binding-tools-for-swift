@@ -72,7 +72,6 @@ namespace Dynamo.SwiftLang {
 			if (package == "Self")
 				return;
 
-
 			if (package != OwningModule && !this.Exists (imp => imp.Contents == target.Contents))
 				Add (target);
 		}

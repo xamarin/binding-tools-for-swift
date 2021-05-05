@@ -51,37 +51,37 @@ namespace DylibBinder {
 		void ApplyInouts ()
 		{
 			foreach (var func in Funcs.FuncCollection) {
-				ApplyInoutsToParameterLists (func.ParameterLists);
+				ApplyInouts (func.ParameterLists);
 			}
 			// protocols currently only hold Funcs so they should finish here
 			if (Kind == TypeKind.Protocol)
 				return;
 
 			foreach (var property in Properties.PropertyCollection) {
-				ApplyInoutsToParameterLists (property.Getter.ParameterLists);
+				ApplyInouts (property.Getter.ParameterLists);
 				if (property.Setter != null) {
-					ApplyInoutsToParameterLists (property.Setter.ParameterLists);
+					ApplyInouts (property.Setter.ParameterLists);
 				}
 			}
 		}
 
-		void ApplyInoutsToParameterLists (DBParameterLists parameterLists)
+		void ApplyInouts (DBParameterLists parameterLists)
 		{
 			foreach (var parameterList in parameterLists.ParameterListCollection) {
-				ApplyInoutsToParameterList (parameterList);
+				ApplyInouts (parameterList);
 			}
 		}
 
-		void ApplyInoutsToParameterList (DBParameterList parameterList)
+		void ApplyInouts (DBParameterList parameterList)
 		{
 			foreach (var parameter in parameterList.ParameterCollection) {
 				if (parameter.HasInstance || parameter.IsConstructor) {
-					ApplyInoutsToParameter (parameter);
+					ApplyInouts (parameter);
 				}
 			}
 		}
 
-		void ApplyInoutsToParameter (DBParameter parameter)
+		void ApplyInouts (DBParameter parameter)
 		{
 			var sb = new StringBuilder ();
 			sb.Append ($"inout {Module}.{Name}{GenericParametersToString ()}");

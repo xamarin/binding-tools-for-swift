@@ -12,13 +12,12 @@ using SwiftRuntimeLibrary;
 namespace SwiftReflector.TypeMapping {
 	public class SwiftTypeToSLType {
 		TypeMapper typeMapper;
+		bool IncludeModule { get; }
 		public SwiftTypeToSLType (TypeMapper typeMapper, bool includeModule = false)
 		{
 			this.typeMapper = Exceptions.ThrowOnNull (typeMapper, "typeMapper");
 			IncludeModule = includeModule;
 		}
-
-		bool IncludeModule { get; }
 
 
 		public SLType MapType (SLImportModules modules, SwiftType st)
