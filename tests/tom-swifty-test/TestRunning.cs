@@ -305,7 +305,8 @@ namespace tomwiftytest {
 					    UnicodeMapper unicodeMapper = null, int expectedErrorCount = 0,
 					    Action<string> postCompileCheck = null,
 					    string[] expectedOutputContains = null,
-					    bool enforceUTF8Encoding = false)
+					    bool enforceUTF8Encoding = false,
+					    bool generateDeviceTest = true)
 		{
 			SetInvokingTestNameIfUnset (ref testName, out string nameSpace);
 			string testClassName = "TomTest" + testName;
@@ -374,15 +375,17 @@ namespace tomwiftytest {
 					throw new NotImplementedException (platform.ToString ());
 				}
 
-				File.WriteAllText (Path.Combine (thisTestPathSwift, $"{testClassName}{testName}{nameSuffix}.swift"), swiftPrefix + swiftCode + swiftSuffix);
+				if (generateDeviceTest) {
+					File.WriteAllText (Path.Combine (thisTestPathSwift, $"{testClassName}{testName}{nameSuffix}.swift"), swiftPrefix + swiftCode + swiftSuffix);
 
-				CSFile csTestFile = CSFile.Create (testClassParts.Item2, testClassParts.Item1);
-				var csTestFilePath = Path.Combine (thisTestPath, $"{testClassName}{testName}{nameSuffix}.cs");
-				// Write out the file without csPrefix/csSuffix
-				CodeWriter.WriteToFile (csTestFilePath, csTestFile);
-				if (!string.IsNullOrEmpty (csPrefix) || !string.IsNullOrEmpty (csSuffix)) {
-					// Read the C# code, and prepend/append the csPrefix/csSuffix blobs, then save the modified contents again.
-					File.WriteAllText (csTestFilePath, csPrefix + File.ReadAllText (csTestFilePath) + csSuffix);
+					CSFile csTestFile = CSFile.Create (testClassParts.Item2, testClassParts.Item1);
+					var csTestFilePath = Path.Combine (thisTestPath, $"{testClassName}{testName}{nameSuffix}.cs");
+					// Write out the file without csPrefix/csSuffix
+					CodeWriter.WriteToFile (csTestFilePath, csTestFile);
+					if (!string.IsNullOrEmpty (csPrefix) || !string.IsNullOrEmpty (csSuffix)) {
+						// Read the C# code, and prepend/append the csPrefix/csSuffix blobs, then save the modified contents again.
+						File.WriteAllText (csTestFilePath, csPrefix + File.ReadAllText (csTestFilePath) + csSuffix);
+					}
 				}
 
 				var csFile = TestRunningCodeGenerator.GenerateTestEntry (callingCode, testName, nameSpace, platform, otherClass, enforceUTF8Encoding, testPathDumper);

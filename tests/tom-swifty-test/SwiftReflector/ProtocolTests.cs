@@ -652,5 +652,66 @@ public class HotDog : Food
 			var callingCode = CSCodeBlock.Create (hotdogDecl, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Added onions.\n");
 		}
+
+		[Test]
+		public void TestSandwich ()
+		{
+			var swiftCode = @"
+public protocol Filling {
+	var stuff: String { get }
+}
+
+public protocol Bread {
+	var name: String { get }
+	var sliced: Bool { get }
+}
+
+public struct Rye : Bread {
+	public init () { }
+	public var name: String {
+		get { return ""rye""; }
+	}
+	public var sliced:Bool {
+		get { return true }
+	}
+}
+
+public struct Ham : Filling {
+	public init () { }
+	public var stuff: String {
+		get { return ""ham"" }
+	}
+}
+
+public func printSandwich (of: Bread, with: Filling) {
+	print (""\(with.stuff) on \(of.name)"")
+}
+";
+			var altClass = new CSClass (CSVisibility.Public, "WholeWheat");
+			altClass.Inheritance.Add (new CSIdentifier ("IBread"));
+
+			var returnBread = CSReturn.ReturnLine (new CSCastExpression ("SwiftString", CSConstant.Val ("whole wheat")));
+			var nameProp = new CSProperty (new CSSimpleType ("SwiftString"), CSMethodKind.None, new CSIdentifier ("Name"),
+				CSVisibility.Public, CSCodeBlock.Create (returnBread), CSVisibility.Public, null);
+			altClass.Properties.Add (nameProp);
+
+			var returnSliced = CSReturn.ReturnLine (CSConstant.Val (true));
+			var slicedProp = new CSProperty (new CSSimpleType ("bool"), CSMethodKind.None, new CSIdentifier ("Sliced"),
+				CSVisibility.Public, CSCodeBlock.Create (returnSliced), CSVisibility.Public, null);
+			altClass.Properties.Add (slicedProp);
+
+
+			var printIt = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("lefty"));
+
+			var whichHandMethod = new CSMethod (CSVisibility.Public, CSMethodKind.None, CSSimpleType.Void, new CSIdentifier ("WhichHand"), new CSParameterList (),
+							    CSCodeBlock.Create (printIt));
+			altClass.Methods.Add (whichHandMethod);
+
+			var printer = CSFunctionCall.FunctionCallLine ("TopLevelEntities.PrintSandwich",
+				new CSFunctionCall ("WholeWheat", true), new CSFunctionCall ("Ham", true));
+			var callingCode = CSCodeBlock.Create (printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "ham on whole wheat\n", otherClass: altClass,
+				generateDeviceTest: false);
+		}
 	}
 }
