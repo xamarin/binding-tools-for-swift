@@ -63,6 +63,12 @@ IEnumerable<(FilePath Src, FilePath Dest)> GetFilesToBundle (BuildInfo bi, bool 
 		fl.Add ((srcFile, dest));
 	}
 
+	var sampleDocPattern = $"{bi.BaseDir}/samples/*.md";
+	foreach (var sampleDoc in GetFiles (sampleDocPattern)) {
+		var destDoc = bi.DestBaseDir.CombineWithFilePath ($"samples/{sampleDoc.GetFilename ()}");
+		fl.Add ((sampleDoc, destDoc));
+	}
+
 	return fl;
 
 	(FilePath, FilePath) GetInfo (DirectoryPath srcBaseDir, string s, string d) {

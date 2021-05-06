@@ -3,7 +3,6 @@ XCODE_DEV = /Applications/Xcode.app/Contents/Developer
 SWIFT_LIB = $(XCODE_DEV)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0
 
 SWIFTC = $(SWIFT_BIN)/swiftc
-SDK = `xcrun --sdk macosx --show-sdk-path`
 SWIFTARGS = -emit-library -enable-library-evolution -emit-module -emit-module-interface \
 	-sdk $(XCODE_DEV)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk \
 	-L $(SWIFT_LIB)/macosx \
@@ -18,7 +17,7 @@ libSandwiches.dylib: *.swift
 	@rm -rf XamWrappingSource armv7 armv7s arm64 x86_64
 	@cp ../../lib/binding-tools-for-swift/SwiftRuntimeLibrary.dll .
 	@mkdir -p XamGlue.framework
-	@cp ../../lib/SwiftInterop/mac/XamGlue.framework/XamGlue XamGlue.Framework
+	@cp ../../lib/SwiftInterop/mac/XamGlue.framework/XamGlue XamGlue.framework
 	$(SWIFTC) $(SWIFTARGS) -module-name $(OUTPUT_MODULE) \
 		-F . \
 		*.swift
