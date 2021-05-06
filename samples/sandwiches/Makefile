@@ -5,7 +5,7 @@ SWIFT_LIB = $(XCODE_DEV)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0
 SWIFTC = $(SWIFT_BIN)/swiftc
 SDK = `xcrun --sdk macosx --show-sdk-path`
 SWIFTARGS = -emit-library -enable-library-evolution -emit-module -emit-module-interface \
-	-sdk $(XCODE_DEV)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.1.sdk \
+	-sdk $(XCODE_DEV)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk \
 	-L $(SWIFT_LIB)/macosx \
 	-framework XamGlue
 
