@@ -17,7 +17,7 @@ libHello.dylib: *.swift *.cs
 	mcs -nowarn:CS0169 -lib:../lib -r:SwiftRuntimeLibrary.Mac -lib:. *.cs -out:$(OUTPUT_MODULE).exe
 
 runit:
-	@LD_LIBRARY_PATH=.:$(SWIFT_GLUE):$(SWIFT_LIB)/macosx mono --arch=64 $(OUTPUT_MODULE).exe
+	@DYLD_LIBRARY_PATH=.:$(SWIFT_GLUE):$(SWIFT_LIB)/macosx mono --arch=64 $(OUTPUT_MODULE).exe
 
 clean:
 	@rm -f *.dylib *.swiftmodule *.swiftdoc *.dll *.exe XamGlue HelloHelloMod.cs
