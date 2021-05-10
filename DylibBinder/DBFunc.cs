@@ -62,7 +62,7 @@ namespace DylibBinder {
 		}
 
 		bool GetStaticStatus (SwiftBaseFunctionType signature) => signature switch {
-			SwiftStaticFunctionType => true,
+			SwiftStaticFunctionType funcType => true,
 			SwiftPropertyType propType => propType.IsStatic,
 			_ => false,
 		};
