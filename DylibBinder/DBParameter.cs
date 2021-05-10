@@ -25,11 +25,11 @@ namespace DylibBinder {
 			IsEmptyParameter = parameterOptions.HasFlag (ParameterOptions.IsEmptyParameter);
 		}
 
-		public static DBParameter CreateInstanceParameter () => new ("", "", "self", 0, ParameterOptions.HasInstance);
-		public static DBParameter CreateInstanceParameter (int index) => new ("", "", "self", index, ParameterOptions.HasInstance);
-		public static DBParameter CreateConstructorParameter (int index) => new (".Type", "", "self", index, ParameterOptions.IsConstructor);
-		public static DBParameter CreateGetterParameter () => new  (null, null, null, 0, ParameterOptions.IsEmptyParameter);
-		public static DBParameter CreateSetterParameter () => new ("", "", "self", 0, ParameterOptions.HasInstance);
+		public static DBParameter CreateInstanceParameter () => new DBParameter ("", "", "self", 0, ParameterOptions.HasInstance);
+		public static DBParameter CreateInstanceParameter (int index) => new DBParameter ("", "", "self", index, ParameterOptions.HasInstance);
+		public static DBParameter CreateConstructorParameter (int index) => new DBParameter (".Type", "", "self", index, ParameterOptions.IsConstructor);
+		public static DBParameter CreateGetterParameter () => new DBParameter (null, null, null, 0, ParameterOptions.IsEmptyParameter);
+		public static DBParameter CreateSetterParameter () => new DBParameter ("", "", "self", 0, ParameterOptions.HasInstance);
 	}
 
 

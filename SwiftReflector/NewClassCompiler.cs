@@ -165,7 +165,7 @@ namespace SwiftReflector {
 			ClassCompilerNames compilerNames,
 			List<string> targets,
 			string outputDirectory,
-			string dylibXmlPath = null) // TJ adding optional parameter dylibXmlPath
+			string dylibXmlPath = null)
 		{
 			ClassCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (classCompilerLocations, nameof (classCompilerLocations));
 			CompilerNames = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (compilerNames, nameof (compilerNames));
@@ -190,15 +190,13 @@ namespace SwiftReflector {
 
 			var moduleInventory = GetModuleInventories (ClassCompilerLocations.LibraryDirectories, moduleNames, errors);
 
-			// TJ - GetModuleInventories from the dylibs create many errors and warnings in GetModuleInventories that probably
-			// can be ignored for now - Steve Approved
+			// Dylibs may create extra errors when Getting Module Inventories that we will ignore
 			if (isLibrary)
 				errors = new ErrorHandling ();
 
 			if (errors.AnyErrors)
 				return errors;
 
-			// TJ - adding dylibXmlPath arg
 			var moduleDeclarations = GetModuleDeclarations (ClassCompilerLocations.ModuleDirectories, moduleNames, outputDirectory,
 									Options.RetainReflectedXmlOutput, targets, errors, dylibXmlPath);
 			if (errors.AnyErrors)
@@ -5300,7 +5298,6 @@ namespace SwiftReflector {
 			return ct.ClassName.ToFullyQualifiedName (true) == "Swift.UnsafeMutablePointer";
 		}
 
-		// TJ - adding isLibrary bool
 		WrappingResult WrapModuleContents (
 			List<ModuleDeclaration> moduleDecls,
 			ModuleInventory moduleInventory,
@@ -5462,7 +5459,6 @@ namespace SwiftReflector {
 			return null;
 		}
 
-		// TJ - adding dylibXmlPath arg
 		List<ModuleDeclaration> GetModuleDeclarations (List<string> moduleDirectories, List<string> moduleNames,
 		                                               string outputDirectory, bool retainReflectedXmlOutput,
 		                                               List<string> targets, ErrorHandling errors, string dylibXmlPath = null)
@@ -5470,7 +5466,7 @@ namespace SwiftReflector {
 			try {
 				string bestTarget = ChooseBestTarget (targets);
 
-				// TJ - if we have a dylib, we will be using our already generated xml
+				// If we have a dylib, we will be using our already generated xml
 				if (!string.IsNullOrEmpty (dylibXmlPath)) {
 					var typeDatabase = CreateTypeDatabase ();
 					var decls = Reflector.FromXmlFile (dylibXmlPath, typeDatabase);

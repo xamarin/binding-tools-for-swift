@@ -129,7 +129,7 @@ namespace DylibBinder {
 										 where g.Depth > 0
 										 select g;
 
-			if (validGenericParameters.Count () == 0)
+			if (!validGenericParameters.Any ())
 				return;
 
 			writer.WriteStartElement ("GenericParameterCollection");

@@ -43,11 +43,11 @@ namespace DylibBinder {
 		static List<DBAssociatedType> AssociatedTypesSwitch (object type) => type switch {
 			SwiftGenericArgReferenceType genericArgType => GetAssociatedTypes (genericArgType),
 			SwiftFunctionType funcType => GetAssociatedTypes (funcType),
-			_ => new ()
+			_ => new List<DBAssociatedType> ()
 		};
 
 		static List<DBAssociatedType> GetAssociatedTypes (SwiftFunctionType funcType)
-			=> funcType.Parameters is SwiftGenericArgReferenceType genericArgType ? GetAssociatedTypes (genericArgType) : new ();
+			=> funcType.Parameters is SwiftGenericArgReferenceType genericArgType ? GetAssociatedTypes (genericArgType) : new List<DBAssociatedType> ();
 
 		static List<DBAssociatedType> GetAssociatedTypes (SwiftGenericArgReferenceType genericArgType)
 			=> genericArgType.AssociatedTypePath.Select (t => new DBAssociatedType (t)).ToList ();

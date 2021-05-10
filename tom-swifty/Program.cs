@@ -64,7 +64,6 @@ namespace tomswifty {
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
-			// TJ - adding check for options.DylibXmlPath
 			if (!string.IsNullOrEmpty (options.DylibXmlPath)) {
 				if (!File.Exists (options.DylibXmlPath)) {
 					Console.WriteLine ($"Unable to the find the the path to the dylib xml: {options.DylibXmlPath}");
@@ -73,7 +72,6 @@ namespace tomswifty {
 				isLibrary = true;
 			}
 
-			// TJ - adding isLibrary bool
 			options.CheckForOptionErrors (errors, isLibrary);
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
@@ -92,7 +90,6 @@ namespace tomswifty {
 				unicodeMapper.AddMappingsFromFile (options.UnicodeMappingFile);
 			}
 
-			// TJ - adding isLibrary argument
 			Compile (options, unicodeMapper, errors, isLibrary);
 			if (errors.AnyMessages) {
 				Console.WriteLine ("{0}{1} warnings and {2} errors{0}", Environment.NewLine, errors.WarningCount, errors.ErrorCount);
@@ -111,7 +108,6 @@ namespace tomswifty {
 
 					ClassCompilerNames compilerNames = new ClassCompilerNames (options.ModuleName, options.WrappingModuleName);
 					ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (options.ModulePaths, options.DylibPaths, options.TypeDatabasePaths);
-					// TJ - Adding this last argument to tell the CompileToCSharp method we are dealing with a dylib
 					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory, options.DylibXmlPath);
 					errors.Add (compileErrors);
 				}

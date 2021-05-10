@@ -39,7 +39,6 @@ namespace SwiftReflector {
 			this.errors = errors;
 		}
 
-		// TJ - adding isLibrary bool
 		public Tuple<string, HashSet<string>> CompileWrappers (string [] inputLibraryDirectories, string [] inputModuleDirectories,
 			IEnumerable<ModuleDeclaration> modulesToCompile, ModuleInventory modInventory,
 			List<string> targets, string wrappingModuleName, bool outputIsFramework, bool isLibrary = false)
@@ -84,14 +83,14 @@ namespace SwiftReflector {
 					targetOutDirs.Add (targetoutdir);
 					Directory.CreateDirectory (targetoutdir);
 
-					// TJ - if we are using a dylib, we will not have a module location
+					// If we are using a dylib, we will not have a module location
 					List<ISwiftModuleLocation> locations = null;
 					if (!isLibrary)
 						locations = SwiftModuleFinder.GatherAllReferencedModules (allReferencedModules,
 												      inputModuleDirectories, targets [i]);
 
 					try {
-						// TJ - same, we will keep inputModDirs as null if using a dylib
+						// We will keep inputModDirs as null if using a dylib
 						string [] inputModDirs = null;
 						if (!isLibrary)
 							inputModDirs = locations.Select (loc => loc.DirectoryPath).ToArray ();

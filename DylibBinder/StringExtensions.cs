@@ -8,7 +8,7 @@ namespace DylibBinder {
 
 		internal static bool IsPublic (this string s)
 		{
-			return !s.Contains ("_");
+			return !s.Contains ('_');
 		}
 
 		internal static string PrependModule (this string s, string moduleName)
@@ -44,7 +44,7 @@ namespace DylibBinder {
 		static bool IsIntMatchUInt (StringBuilder sb, Match match, int offset)
 		{
 			if (match.Index > 0) {
-				if (sb.ToString () [match.Index - 1 + offset] == 'U') {
+				if (sb[match.Index - 1 + offset] == 'U') {
 					return true;
 				}
 				return false;
@@ -55,8 +55,7 @@ namespace DylibBinder {
 		static bool ContainsSwift (StringBuilder sb, Match match, int sizeOfSwiftInsert)
 		{
 			if (match.Index > sizeOfSwiftInsert) {
-				var substring = sb.ToString ().Substring (match.Index - sizeOfSwiftInsert, sizeOfSwiftInsert);
-				if (sb.ToString ().Substring (match.Index - sizeOfSwiftInsert, sizeOfSwiftInsert) != "Swift.") {
+				if (sb.ToString (match.Index - sizeOfSwiftInsert, sizeOfSwiftInsert) != "Swift.") {
 					return false;
 				}
 				return true;

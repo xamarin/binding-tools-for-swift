@@ -59,7 +59,7 @@ namespace DylibBinder {
 			=> tupleType.Contents.SelectMany (t => GenericParameterSwitch (t)).ToList ();
 
 		static List<DBGenericParameter> GetGenericParameters (SwiftGenericArgReferenceType refType)
-			=> new () { new DBGenericParameter (refType.Depth, refType.Index) };
+			=> new List<DBGenericParameter> () { new DBGenericParameter (refType.Depth, refType.Index) };
 	}
 
 	class DBGenericParameterComparer : EqualityComparer<DBGenericParameter> {

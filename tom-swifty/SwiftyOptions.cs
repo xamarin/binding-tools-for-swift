@@ -241,9 +241,6 @@ namespace tomswifty {
 			{ "macos", "macosx" }, { "ios", "iphoneos" }, { "tvos", "appletvos" }, {"watchos", "watchos" }
 		};
 
-		// TJ
-		// adding optional parameter to check if we are dealing with a library
-		// if so, we can skip swiftmodule specific things
 		public void CheckForOptionErrors (ErrorHandling errors, bool isLibrary = false)
 		{
 			CheckPath (SwiftBinPath, "path to swift binaries", errors);
@@ -282,7 +279,7 @@ namespace tomswifty {
 								if (!targetOSToTargetDirectory.TryGetValue (targetOSAlpha, out targetOSPathPart)) {
 									throw new ArgumentException ("Target not found", nameof (targetOSAlpha));
 								}
-								// TJ - The SwiftGluePath may have a 'FinalProduct' directory inside the path
+								// The SwiftGluePath may have a 'FinalProduct' directory inside the path
 								path = Path.Combine (SwiftGluePath, $"{targetOSPathPart}/XamGlue.framework");
 								if (!Directory.Exists (path))
 									path = Path.Combine (SwiftGluePath, $"{targetOSPathPart}/FinalProduct/XamGlue.framework");
@@ -295,7 +292,7 @@ namespace tomswifty {
 							if (!targetOSToTargetLibrary.TryGetValue (targetOSAlpha, out targetOSLibraryPathPart)) {
 								throw new ArgumentException ("Target not found", nameof (targetOSAlpha));
 							}
-							// TJ - The SwiftLibPath may have a 'swift' directory inside the path
+							// The SwiftLibPath may have a 'swift' directory inside the path
 							var swiftLibPath = SwiftLibPath;
 							SwiftLibPath = Path.Combine (swiftLibPath, targetOSLibraryPathPart);
 							if (!Directory.Exists (SwiftLibPath))
@@ -307,7 +304,6 @@ namespace tomswifty {
 								foreach (string s in ModulePaths.Interleave (", ")) {
 									sb.Append (s);
 								}
-								// Added by TJ
 								// If we are looking at a dylib file, it will not have the swiftmodule file so skip these
 								if (isLibrary)
 									continue;
