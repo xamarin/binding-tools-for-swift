@@ -84,7 +84,7 @@ namespace DylibBinder {
 		void ApplyInouts (DBParameter parameter)
 		{
 			var sb = new StringBuilder ();
-			sb.Append ($"inout {Module}.{Name}{GenericParametersToString ()}");
+			sb.Append ("inout ").Append (Module).Append ('.').Append (Name).Append (GenericParametersToString ());
 			parameter.Type = parameter.Type.Insert (0, sb.ToString ());
 		}
 
@@ -94,9 +94,10 @@ namespace DylibBinder {
 			var sortedGenericParameters = GenericParameters.GenericParameterCollection.OrderBy (gp => gp.Index);
 			foreach (var gp in sortedGenericParameters) {
 				if (sb.Length > 0)
-					sb.Append ($", {gp.Name}");
+					sb.Append ($", ");
 				else
-					sb.Append ($"<{gp.Name}");
+					sb.Append ($"<");
+				sb.Append (gp.Name);
 			}
 			if (sb.Length > 0)
 				sb.Append ('>');

@@ -64,9 +64,15 @@ namespace DylibBinder {
 
 	class DBGenericParameterComparer : EqualityComparer<DBGenericParameter> {
 		public override bool Equals (DBGenericParameter gp1, DBGenericParameter gp2)
-			=> gp1.Name == gp2.Name;
+		{
+			if (gp1 == null && gp2 == null)
+				return true;
+			else if (gp1 == null || gp2 == null)
+				return false;
+			return gp1.Name == gp2.Name;
+		}
 
 		public override int GetHashCode (DBGenericParameter gp)
-			=> gp.Name.GetHashCode ();
+			=> gp == null ? "null".GetHashCode () : gp.Name.GetHashCode ();
 	}
 }

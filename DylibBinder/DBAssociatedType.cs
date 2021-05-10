@@ -58,9 +58,15 @@ namespace DylibBinder {
 
 	internal class DBAssociatedTypeComparer : EqualityComparer<DBAssociatedType> {
 		public override bool Equals (DBAssociatedType at1, DBAssociatedType at2)
-			=> at1.Name == at2.Name;
+		{
+			if (at1 == null && at2 == null)
+				return true;
+			else if (at1 == null || at2 == null)
+				return false;
+			return at1.Name == at2.Name;
+		}
 
 		public override int GetHashCode (DBAssociatedType at)
-			=> at.Name.GetHashCode ();
+			=> at == null ? "null".GetHashCode () : at.Name.GetHashCode ();
 	}
 }
