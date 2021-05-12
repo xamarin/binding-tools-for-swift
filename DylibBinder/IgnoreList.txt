@@ -33,7 +33,7 @@ Swift.CustomStringConvertible
 Swift.AnyObject
 Swift.Any
 Swift.Hashable
-Swift.Equatable"
+Swift.Equatable
 Swift.Comparable
 CoreGraphics.CGFloat
 Swift.Hasher
