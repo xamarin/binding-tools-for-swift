@@ -8,11 +8,11 @@ namespace DylibBinder {
 		public ModuleInventory Mi { get; }
 		public DBTypeDeclarations DBTypeDeclarations { get; }
 
-		public DBTopLevel (ModuleInventory moduleInventory, string swiftVersion)
+		public DBTopLevel (ModuleInventory moduleInventory, string ignoreListPath, string swiftVersion)
 		{
 			SwiftVersion = swiftVersion;
 			Mi = Exceptions.ThrowOnNull (moduleInventory, "moduleInventory");
-			DBTypeDeclarations = new DBTypeDeclarations (Mi);
+			DBTypeDeclarations = new DBTypeDeclarations (Mi, ignoreListPath);
 		}
 	}
 }

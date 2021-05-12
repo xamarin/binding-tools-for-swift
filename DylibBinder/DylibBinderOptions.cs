@@ -10,6 +10,7 @@ namespace DylibBinder {
         public bool PrintHelp { get; set; }
         public string DylibPath { get; set; }
         public string OutputPath { get; set; }
+        public string IgnoreListPath { get; set; }
         public string SwiftVersion { get; set; } = "5.0";
 
         public DylibBinderOptions ()
@@ -20,6 +21,9 @@ namespace DylibBinder {
                 } },
                 { "outputPath=", "the path to output the xml", outputPath => {
                     OutputPath = outputPath;
+                } },
+                { "ignoreListPath=", "the path to the list of ignored types", ignoreListPath => {
+                    IgnoreListPath = ignoreListPath;
                 } },
                 { "swiftVersion=", "the swift version", swiftVersion => {
                     SwiftVersion = swiftVersion;

@@ -30,10 +30,17 @@ namespace DylibBinder {
 				return 1;
 			}
 
+			if (!string.IsNullOrEmpty (options.IgnoreListPath)) {
+				if (!File.Exists (options.IgnoreListPath)) {
+					Console.WriteLine ($"Unable to find the path to the IgnoreList: {options.IgnoreListPath}.");
+					return 1;
+				}
+			}
+
 			var errors = new ErrorHandling ();
 			var mi = ModuleInventory.FromFile (options.DylibPath, errors);
-			var dBTopLevel = new DBTopLevel (mi, options.SwiftVersion);
-			using var xmlGenerator = new XmlGenerator (dBTopLevel, options.OutputPath);
+			var dBTopLevel = new DBTopLevel (mi, options.IgnoreListPath, options.SwiftVersion);
+			XmlGenerator.WriteDBToFile (dBTopLevel, options.OutputPath);
 			return 0;
 		}
 	}

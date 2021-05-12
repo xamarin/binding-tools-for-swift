@@ -62,9 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
-    <None Include="IgnoreList.txt" />
     <None Include="packages.config" />
     <None Include="Makefile" />
+    <None Include="IgnoreList.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj">

@@ -114,8 +114,10 @@ namespace DylibBinder {
 	internal class DBTypeDeclarations {
 		public SortedDictionary<string, List<DBTypeDeclaration>> TypeDeclarationCollection { get; } = new SortedDictionary<string, List<DBTypeDeclaration>> ();
 		public static Dictionary<string, List<ClassContents>> InnerXDictionary { get; private set; } = new Dictionary<string, List<ClassContents>> ();
+		public string IgnoreListPath { get; set; }
 
-		public DBTypeDeclarations (ModuleInventory mi) {
+		public DBTypeDeclarations (ModuleInventory mi, string ignoreListPath) {
+			IgnoreListPath = ignoreListPath;
 			var checkInventory = new CheckInventoryDictionary (mi);
 			var innerX = new InnerX ();
 
@@ -153,23 +155,10 @@ namespace DylibBinder {
 
 		SortedSet<string> GetIgnoredTypes ()
 		{
-			var fromTestPath = Path.Combine (Directory.GetCurrentDirectory (), "../../../../DylibBinder/IgnoreList.txt");
-			var fromVSPath = Path.Combine (Directory.GetCurrentDirectory (), "../../IgnoreList.txt");
-			var fromCommandLinePath = Path.Combine (Directory.GetCurrentDirectory (), "IgnoreList.txt");
-
-			string ignoreListPath;
-			if (File.Exists (fromTestPath))
-				ignoreListPath = fromTestPath;
-			else if (File.Exists (fromVSPath))
-				ignoreListPath = fromVSPath;
-			else if (File.Exists (fromCommandLinePath))
-				ignoreListPath = fromCommandLinePath;
-			else
-				throw new FileNotFoundException ("DylibBinder/IgnoreList.txt was not found");
-
 			var ignoredTypes = SortedSetExtensions.Create<string> ();
-			ignoredTypes.AddRange (File.ReadAllLines (ignoreListPath).Where (line => !line.StartsWith ("//", StringComparison.Ordinal) && line != string.Empty).ToList ());
-
+			if (File.Exists (IgnoreListPath)) {
+				ignoredTypes.AddRange (File.ReadAllLines (IgnoreListPath).Where (line => !line.StartsWith ("//", StringComparison.Ordinal) && line != string.Empty).ToList ());
+			}
 			return ignoredTypes;
 		}
 	}

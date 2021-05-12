@@ -8,13 +8,26 @@ namespace DylibBinder {
 	sealed internal class XmlGenerator : IDisposable {
 		XmlWriter writer;
 		private bool _disposed = false;
+		readonly string OutputPath;
 
-		public XmlGenerator (DBTopLevel dBTopLevel, string outputPath)
+		public static void WriteDBToFile (DBTopLevel dBTopLevel, string outputPath)
 		{
-			writer = CreateWriter (outputPath);
-			WriteIntro (dBTopLevel);
-			WriteModules (dBTopLevel);
-			CloseWriter ();
+			var generator = new XmlGenerator (outputPath);
+			generator.WriteDBToFile (dBTopLevel);
+		}
+
+		XmlGenerator (string outputPath)
+		{
+			OutputPath = outputPath;
+		}
+
+		void WriteDBToFile (DBTopLevel dBTopLevel)
+		{
+			using (writer = CreateWriter (OutputPath)) {
+				WriteIntro (dBTopLevel);
+				WriteModules (dBTopLevel);
+				CloseWriter ();
+			}
 		}
 
 		XmlWriter CreateWriter (string outputPath)
