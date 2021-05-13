@@ -25,6 +25,9 @@ contained inside the dylib.
         1. Be sure that the extension to your output path is '.xml'
     1. [Optional] --swiftVersion=<SwiftVersion>
         1. If not present, swiftVersion will default to version 5.0
+    1. [Optional] --ignoreListPath=<Path/To/IgnoreList>
+        1. This list will be a txt file with Types that you want to not include in the reflection xml
+        1. An example is in DylibBinder/IgnoreList.txt which you can include here
 
 ### From DylibBinderReflector.cs
 
@@ -33,5 +36,7 @@ contained inside the dylib.
     * 'dylibPath' is a string with the path to the dylib
     * 'outputPath' is a string to the path where you want the reflected xml to go
         * the extension to the file should be ".xml"
+    * 'ignoreListPath' is a path to a file that includes Types you do not want included in the reflection xml
+        * DylibBinder/IgnoreList.txt is a nice example that you can expand and/or include here
     * 'swiftVersion' is a string with the swiftVersion
         * default value is "5.0"
