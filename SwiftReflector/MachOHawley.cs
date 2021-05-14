@@ -779,18 +779,6 @@ namespace Xamarin {
 			}
 			public MachO.Platform Platform;
 			public Version Sdk;
-			public bool IsSimulator {
-				get {
-					switch (Platform) {
-					case MachO.Platform.IOSSimulator:
-					case MachO.Platform.TvOSSimulator:
-					case MachO.Platform.WatchOSSimulator:
-						return true;
-					default:
-						return false;
-					}
-				}
-			}
 		}
 
 		public MinOSVersion MinOS {
@@ -825,12 +813,12 @@ namespace Xamarin {
 						if (version.HasValue)
 							throw new NotSupportedException ("File has multiple minOS load commands.");
 						version = build_lc.minos;
+						sdk = build_lc.sdk;
 						platform = build_lc.Platform;
 					}
 				}
 				if (!version.HasValue)
 					return null;
-				sdk = sdk ?? version;
 
 				return new MinOSVersion {
 					Version = BuildVersionCommand.DeNibble (version.Value),
