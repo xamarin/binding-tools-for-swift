@@ -51,8 +51,6 @@ namespace SwiftReflector {
 
 		static string MinOSSdk (MachOFile.MinOSVersion minOS)
 		{
-			if (!minOS.IsSimulator)
-				return minOS.Version.ToString ();
 			var min = minOS.Version < minOS.Sdk ? minOS.Version : minOS.Sdk;
 			return min.ToString ();
 		}
