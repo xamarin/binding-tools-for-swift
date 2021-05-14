@@ -276,7 +276,7 @@ namespace SwiftReflector.IOUtils {
 			return Directory.Exists (modulesDir) && Directory.Exists (swiftModuleDir);
 		}
 
-		static bool IsXamarinLayout (string dir, string moduleFileName, string target)
+		public static bool IsXamarinLayout (string dir, string moduleFileName, string target)
 		{
 			string moduleDir = Path.Combine (dir, target.ClangTargetCpu ());
 			string modulePath = Path.Combine (moduleDir, moduleFileName);

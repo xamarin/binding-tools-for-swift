@@ -22,9 +22,39 @@ namespace SwiftReflector {
 				var osmin = file.MinOS;
 				if (osmin == null)
 					throw new NotSupportedException ("dylib files without a minimum supported operating system load command are not supported.");
-				targets.Add ($"{arch}-apple-{osmin.OSName}{osmin.Version.ToString ()}");
+				targets.Add ($"{arch}-apple-{TripleOSName(osmin, MinOSSdk (osmin))}");
 			}
 			return targets;
+		}
+
+		static string TripleOSName (MachOFile.MinOSVersion minOS, string version)
+		{
+			switch (minOS.Platform) {
+			case MachO.Platform.IOS:
+				return $"ios{version}";
+			case MachO.Platform.IOSSimulator:
+				return $"ios{version}-simulator";
+			case MachO.Platform.MacOS:
+				return $"macosx{version}";
+			case MachO.Platform.TvOS:
+				return $"tvos{version}";
+			case MachO.Platform.TvOSSimulator:
+				return $"tvos{version}-simulator";
+			case MachO.Platform.WatchOS:
+				return $"watchos{version}";
+			case MachO.Platform.WatchOSSimulator:
+				return $"watchos{version}-simulator";
+			default:
+				throw new ArgumentOutOfRangeException (nameof (minOS));
+			}
+		}
+
+		static string MinOSSdk (MachOFile.MinOSVersion minOS)
+		{
+			if (!minOS.IsSimulator)
+				return minOS.Version.ToString ();
+			var min = minOS.Version < minOS.Sdk ? minOS.Version : minOS.Sdk;
+			return min.ToString ();
 		}
 
 		public static List<string> CommonTargets (List<string> lt, List<string> commonTo)
