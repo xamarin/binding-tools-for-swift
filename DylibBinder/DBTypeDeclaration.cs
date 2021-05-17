@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using SwiftReflector.Inventory;
 using SwiftReflector.SwiftXmlReflection;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class DBTypeDeclaration {
@@ -25,6 +26,7 @@ namespace DylibBinder {
 
 		public DBTypeDeclaration (ProtocolContents protoContents)
 		{
+			Exceptions.ThrowOnNull (protoContents, nameof (protoContents));
 			Kind = TypeKind.Protocol;
 			Name = protoContents.Name.ToFullyQualifiedName ();
 			Module = protoContents.Name.Module.Name;
@@ -35,6 +37,7 @@ namespace DylibBinder {
 
 		public DBTypeDeclaration (ClassContents classContents)
 		{
+			Exceptions.ThrowOnNull (classContents, nameof (classContents));
 			Kind = classContents.Name.IsClass ? TypeKind.Class : classContents.Name.IsEnum ? TypeKind.Enum : TypeKind.Struct;
 			Name = classContents.Name.ToFullyQualifiedName (false);
 			Module = classContents.Name.Module.Name;
@@ -83,6 +86,7 @@ namespace DylibBinder {
 
 		void ApplyInouts (DBParameter parameter)
 		{
+			Exceptions.ThrowOnNull (parameter, nameof (parameter));
 			var sb = new StringBuilder ();
 			sb.Append ("inout ").Append (Module).Append ('.').Append (Name).Append (GenericParametersToString ());
 			parameter.Type = parameter.Type.Insert (0, sb.ToString ());
@@ -117,6 +121,7 @@ namespace DylibBinder {
 		public string IgnoreListPath { get; set; }
 
 		public DBTypeDeclarations (ModuleInventory mi, string ignoreListPath) {
+			Exceptions.ThrowOnNull (mi, nameof (mi));
 			IgnoreListPath = ignoreListPath;
 			var checkInventory = new CheckInventoryDictionary (mi);
 			var innerX = new InnerX ();
@@ -134,6 +139,7 @@ namespace DylibBinder {
 
 		void FilterTypeDeclarations (string module, SortedSet<ProtocolContents> protocolContentList, params SortedSet<ClassContents>[] ClassContentListArray)
 		{
+			Exceptions.ThrowOnNull (module, nameof (module));
 			if (!TypeDeclarationCollection.ContainsKey (module))
 				TypeDeclarationCollection.Add (module, new List<DBTypeDeclaration> ());
 
@@ -166,6 +172,7 @@ namespace DylibBinder {
 	internal static class DBTypeDeclarationExtensions {
 		public static List<DBGenericParameter> ParseTopLevelGenerics (this DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			var GenericParameters = new List<DBGenericParameter> ();
 			foreach (var func in typeDeclaration.Funcs.FuncCollection) {
 				GenericParameters.AddRange (GrabTopLevelGenerics (func.GenericParameters));
@@ -179,6 +186,7 @@ namespace DylibBinder {
 
 		public static List<DBGenericParameter> GrabTopLevelGenerics (DBGenericParameters GenericParameterCollection)
 		{
+			Exceptions.ThrowOnNull (GenericParameterCollection, nameof (GenericParameterCollection));
 			var genericParametersList = new List<DBGenericParameter> ();
 			foreach (var gp in GenericParameterCollection.GenericParameterCollection) {
 				if (gp.Depth == 0)

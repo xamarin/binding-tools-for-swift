@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SwiftReflector;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class DBParameter {
@@ -25,11 +26,11 @@ namespace DylibBinder {
 			IsEmptyParameter = parameterOptions.HasFlag (ParameterOptions.IsEmptyParameter);
 		}
 
-		public static DBParameter CreateInstanceParameter () => new DBParameter ("", "", "self", 0, ParameterOptions.HasInstance);
-		public static DBParameter CreateInstanceParameter (int index) => new DBParameter ("", "", "self", index, ParameterOptions.HasInstance);
-		public static DBParameter CreateConstructorParameter (int index) => new DBParameter (".Type", "", "self", index, ParameterOptions.IsConstructor);
+		public static DBParameter CreateInstanceParameter () => new DBParameter (string.Empty, string.Empty, "self", 0, ParameterOptions.HasInstance);
+		public static DBParameter CreateInstanceParameter (int index) => new DBParameter (string.Empty, string.Empty, "self", index, ParameterOptions.HasInstance);
+		public static DBParameter CreateConstructorParameter (int index) => new DBParameter (".Type", string.Empty, "self", index, ParameterOptions.IsConstructor);
 		public static DBParameter CreateGetterParameter () => new DBParameter (null, null, null, 0, ParameterOptions.IsEmptyParameter);
-		public static DBParameter CreateSetterParameter () => new DBParameter ("", "", "self", 0, ParameterOptions.HasInstance);
+		public static DBParameter CreateSetterParameter () => new DBParameter (string.Empty, string.Empty, "self", 0, ParameterOptions.HasInstance);
 	}
 
 
@@ -40,6 +41,7 @@ namespace DylibBinder {
 
 		public DBParameterList (SwiftBaseFunctionType signature, bool hasInstance, bool isConstructor, int index)
 		{
+			Exceptions.ThrowOnNull (signature, nameof (signature));
 			Index = index;
 			int parameterIndex = 0;
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (signature.GetAssociatedTypes ());
@@ -51,11 +53,8 @@ namespace DylibBinder {
 
 			foreach (var parameter in signature.EachParameter) {
 				var type = SwiftTypeToString.MapSwiftTypeToString (parameter);
-				var publicName = "_";
-				var privateName = "privateName";
-
-				if (parameter.Name != null)
-					publicName = privateName = parameter.Name.Name;
+				var publicName = parameter.Name?.Name ?? "_";
+				var privateName = parameter.Name?.Name ?? "privateName";
 
 				ParameterCollection.Add (new DBParameter (type, publicName, privateName, parameterIndex, parameter.IsVariadic ? ParameterOptions.IsVariadic : ParameterOptions.None));
 				parameterIndex++;
@@ -64,6 +63,7 @@ namespace DylibBinder {
 
 		public DBParameterList (string propertyType, bool hasInstance, int index)
 		{
+			Exceptions.ThrowOnNull (propertyType, nameof (propertyType));
 			Index = index;
 
 			if (hasInstance) {
@@ -85,6 +85,7 @@ namespace DylibBinder {
 
 		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance)
 		{
+			Exceptions.ThrowOnNull (signature, nameof (signature));
 			var parameterListIndex = 0;
 			if (hasInstance) {
 				ParameterListCollection.Add (new DBParameterList (signature, true, false, parameterListIndex));
@@ -100,6 +101,7 @@ namespace DylibBinder {
 
 		public DBParameterLists (bool hasInstance, string propertyType)
 		{
+			Exceptions.ThrowOnNull (propertyType, nameof (propertyType));
 			var parameterListIndex = 0;
 			if (hasInstance) {
 				ParameterListCollection.Add (new DBParameterList (propertyType, true, parameterListIndex));

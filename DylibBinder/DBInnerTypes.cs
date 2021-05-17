@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SwiftReflector;
 using SwiftReflector.Inventory;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class DBInnerTypes {
@@ -9,6 +10,7 @@ namespace DylibBinder {
 
 		public DBInnerTypes (SwiftClassName swiftClassName)
 		{
+			Exceptions.ThrowOnNull (swiftClassName, nameof (swiftClassName));
 			var name = swiftClassName.ToFullyQualifiedName ();
 			if (DBTypeDeclarations.InnerXDictionary.TryGetValue (name, out List<ClassContents> innerTypeList)) {
 				foreach (var innerType in innerTypeList) {

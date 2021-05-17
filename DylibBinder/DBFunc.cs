@@ -4,6 +4,7 @@ using SwiftReflector.Demangling;
 using SwiftReflector.Inventory;
 using System.Collections.Generic;
 using System.Linq;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class DBFunc : IAssociatedTypes {
@@ -33,6 +34,7 @@ namespace DylibBinder {
 
 		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false)
 		{
+			Exceptions.ThrowOnNull (tlf, nameof (tlf));
 			Name = tlf.Name.Name;
 			IsStatic = GetStaticStatus (tlf.Signature);
 			IsProperty = false;
@@ -49,8 +51,9 @@ namespace DylibBinder {
 
 		public DBFunc (DBProperty dbProperty, string propertyType, bool isMutating = false)
 		{
+			Exceptions.ThrowOnNull (dbProperty, nameof (dbProperty));
 			Name = propertyType == "Getter" ? $"get_{dbProperty.Name}" : $"set_{dbProperty.Name}";
-			PropertyType = propertyType;
+			PropertyType = Exceptions.ThrowOnNull (propertyType, nameof (propertyType));
 			IsStatic = dbProperty.IsStatic;
 			IsProperty = true;
 			HasThrows = false;
@@ -74,6 +77,7 @@ namespace DylibBinder {
 
 		public DBFuncs (ClassContents classContents)
 		{
+			Exceptions.ThrowOnNull (classContents, nameof (classContents));
 			var functions = SortedSetExtensions.Create<OverloadInventory> ();
 			functions.AddRange (classContents.Methods.Values, classContents.StaticFunctions.Values, classContents.Constructors.Values);
 
@@ -88,6 +92,7 @@ namespace DylibBinder {
 
 		public DBFuncs (ProtocolContents protocolContents)
 		{
+			Exceptions.ThrowOnNull (protocolContents, nameof (protocolContents));
 			var functions = SortedSetExtensions.Create<TLFunction> ();
 			functions.AddRange (protocolContents.FunctionsOfUnknownDestination);
 			foreach (var function in functions) {
@@ -99,8 +104,9 @@ namespace DylibBinder {
 
 		bool IsMetaClass (SwiftBaseFunctionType funcType)
 		{
+			Exceptions.ThrowOnNull (funcType, nameof (funcType));
 			return funcType.ReturnType.Type == CoreCompoundType.MetaClass ||
-				funcType.EachParameter.Any (t => t.Type == CoreCompoundType.MetaClass);
+			    funcType.EachParameter.Any (t => t.Type == CoreCompoundType.MetaClass);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-# Manual Binder Finder
+# DylibBinder
 
 ## What is DylibBinder
 

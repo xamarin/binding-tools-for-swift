@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal static class StringExtensions {
@@ -8,17 +9,20 @@ namespace DylibBinder {
 
 		internal static bool IsPublic (this string s)
 		{
+			Exceptions.ThrowOnNull (s, nameof (s));
 			return !s.Contains ("_");
 		}
 
 		internal static string PrependModule (this string s, string moduleName)
 		{
+			Exceptions.ThrowOnNull (s, nameof (s));
+			Exceptions.ThrowOnNull (moduleName, nameof (moduleName));
 			return s.Insert (0, $"{moduleName}.");
 		}
 
 		internal static string AppendModuleToBit (this string s)
 		{
-			var sb = new StringBuilder (s);
+			var sb = new StringBuilder (Exceptions.ThrowOnNull (s, nameof (s)));
 			foreach (var builtInType in BuiltInTypes) {
 				FindAndAppendModule (sb, builtInType);
 			}
@@ -27,6 +31,8 @@ namespace DylibBinder {
 
 		static void FindAndAppendModule (StringBuilder sb, string builtInType)
 		{
+			Exceptions.ThrowOnNull (sb, nameof (sb));
+			Exceptions.ThrowOnNull (builtInType, nameof (builtInType));
 			var offset = 0;
 			var sizeOfSwiftInsert = 6;
 			MatchCollection matches = Regex.Matches (sb.ToString (), builtInType);
@@ -43,6 +49,8 @@ namespace DylibBinder {
 
 		static bool IsIntMatchUInt (StringBuilder sb, Match match, int offset)
 		{
+			Exceptions.ThrowOnNull (sb, nameof (sb));
+			Exceptions.ThrowOnNull (match, nameof (match));
 			if (match.Index > 0) {
 				if (sb[match.Index - 1 + offset] == 'U') {
 					return true;
@@ -54,6 +62,8 @@ namespace DylibBinder {
 
 		static bool ContainsSwift (StringBuilder sb, Match match, int sizeOfSwiftInsert)
 		{
+			Exceptions.ThrowOnNull (sb, nameof (sb));
+			Exceptions.ThrowOnNull (match, nameof (match));
 			if (match.Index > sizeOfSwiftInsert) {
 				if (sb.ToString (match.Index - sizeOfSwiftInsert, sizeOfSwiftInsert) != "Swift.") {
 					return false;

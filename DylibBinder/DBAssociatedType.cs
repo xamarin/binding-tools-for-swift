@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SwiftReflector;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class DBAssociatedType {
@@ -9,9 +10,7 @@ namespace DylibBinder {
 
 		public DBAssociatedType (string name)
 		{
-			if (string.IsNullOrEmpty (name))
-				throw new ArgumentException ("DBAssociateType name cannot be null or empty");
-			Name = name;
+			Name = Exceptions.ThrowOnNull (name, nameof (name));
 		}
 	}
 
@@ -24,6 +23,7 @@ namespace DylibBinder {
 
 		public DBAssociatedTypes (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			AssociatedTypeCollection.UnionWith (typeDeclaration.GetAssociatedTypes ());
 		}
 	}
@@ -35,10 +35,16 @@ namespace DylibBinder {
 
 	internal static class DBAssociatedTypesExtensions {
 		public static List<DBAssociatedType> GetAssociatedTypes (this SwiftBaseFunctionType signature)
-			=> signature.EachParameter.SelectMany (t => AssociatedTypesSwitch (t)).ToList ();
+		{
+			Exceptions.ThrowOnNull (signature, nameof (signature));
+			return signature.EachParameter.SelectMany (t => AssociatedTypesSwitch (t)).ToList ();
+		}
 
 		public static List<DBAssociatedType> GetAssociatedTypes (this SwiftType swiftType)
-			=> AssociatedTypesSwitch (swiftType);
+		{
+			Exceptions.ThrowOnNull (swiftType, nameof (swiftType));
+			return AssociatedTypesSwitch (swiftType);
+		}
 
 		static List<DBAssociatedType> AssociatedTypesSwitch (object type) => type switch {
 			SwiftGenericArgReferenceType genericArgType => GetAssociatedTypes (genericArgType),
@@ -47,13 +53,22 @@ namespace DylibBinder {
 		};
 
 		static List<DBAssociatedType> GetAssociatedTypes (SwiftFunctionType funcType)
-			=> funcType.Parameters is SwiftGenericArgReferenceType genericArgType ? GetAssociatedTypes (genericArgType) : new List<DBAssociatedType> ();
+		{
+			Exceptions.ThrowOnNull (funcType, nameof (funcType));
+			return funcType.Parameters is SwiftGenericArgReferenceType genericArgType ? GetAssociatedTypes (genericArgType) : new List<DBAssociatedType> ();
+		}
 
 		static List<DBAssociatedType> GetAssociatedTypes (SwiftGenericArgReferenceType genericArgType)
-			=> genericArgType.AssociatedTypePath.Select (t => new DBAssociatedType (t)).ToList ();
+		{
+			Exceptions.ThrowOnNull (genericArgType, nameof (genericArgType));
+			return genericArgType.AssociatedTypePath.Select (t => new DBAssociatedType (t)).ToList ();
+		}
 
 		public static List<DBAssociatedType> GetChildrenAssociatedTypes<T> (this IEnumerable<T> iEnumerableInstance)
-			=> iEnumerableInstance.Where (t => t is IAssociatedTypes).Cast<IAssociatedTypes> ().SelectMany (t => t.AssociatedTypes.AssociatedTypeCollection).ToList ();
+		{
+			Exceptions.ThrowOnNull (iEnumerableInstance, nameof (iEnumerableInstance));
+			return iEnumerableInstance.Where (t => t is IAssociatedTypes).Cast<IAssociatedTypes> ().SelectMany (t => t.AssociatedTypes.AssociatedTypeCollection).ToList ();
+		}
 	}
 
 	internal class DBAssociatedTypeComparer : EqualityComparer<DBAssociatedType> {
@@ -67,6 +82,6 @@ namespace DylibBinder {
 		}
 
 		public override int GetHashCode (DBAssociatedType at)
-			=> at == null ? "null".GetHashCode () : at.Name.GetHashCode ();
+			=> at == null ? 1 : at.Name.GetHashCode ();
 	}
 }

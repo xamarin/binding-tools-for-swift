@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SwiftReflector;
 using SwiftReflector.Inventory;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class DBProperty : IAssociatedTypes {
@@ -22,6 +23,7 @@ namespace DylibBinder {
 
 		public DBProperty (PropertyContents propertyContents)
 		{
+			Exceptions.ThrowOnNull (propertyContents, nameof (propertyContents));
 			Name = propertyContents.Name.Name;
 			IsStatic = propertyContents.Getter.IsStatic;
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (propertyContents.Getter.ReturnType.GetAssociatedTypes ());
@@ -29,8 +31,7 @@ namespace DylibBinder {
 			GenericParameters = new DBGenericParameters (propertyContents.Getter.ReturnType);
 
 			Getter = new DBFunc (this, "Getter");
-			if (propertyContents.Setter != null)
-				Setter = new DBFunc (this, "Setter");
+			Setter = propertyContents.Setter != null ? new DBFunc (this, "Setter") : null;
 		}
 	}
 
@@ -40,6 +41,7 @@ namespace DylibBinder {
 
 		public DBProperties (ClassContents classContents)
 		{
+			Exceptions.ThrowOnNull (classContents, nameof (classContents));
 			var properties = SortedSetExtensions.Create<PropertyContents> ();
 			properties.AddRange (classContents.Properties.Values, classContents.StaticProperties.Values);
 			foreach (var property in properties) {
@@ -51,6 +53,7 @@ namespace DylibBinder {
 
 		bool IsMetaClass (SwiftType swiftType)
 		{
+			Exceptions.ThrowOnNull (swiftType, nameof (swiftType));
 			return swiftType.Type == CoreCompoundType.MetaClass;
 		}
 	}

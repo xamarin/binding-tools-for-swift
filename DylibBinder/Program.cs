@@ -2,6 +2,7 @@
 using SwiftReflector.Inventory;
 using SwiftReflector;
 using System.IO;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	class Program {

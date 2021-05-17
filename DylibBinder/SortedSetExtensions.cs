@@ -54,7 +54,7 @@ namespace DylibBinder {
 					return string.Compare (type1, type2);
 				}));
 			default:
-				throw new ArgumentException ("");
+				throw new ArgumentException ($"Type: {typeof (T)} is not supported");
 			}
 		}
 	}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using SwiftReflector.SwiftXmlReflection;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	sealed internal class XmlGenerator : IDisposable {
@@ -12,19 +13,20 @@ namespace DylibBinder {
 
 		public static void WriteDBToFile (DBTopLevel dBTopLevel, string outputPath)
 		{
-			var generator = new XmlGenerator (outputPath);
-			generator.WriteDBToFile (dBTopLevel);
+			var generator = new XmlGenerator (Exceptions.ThrowOnNull (outputPath, nameof (outputPath)));
+			generator.WriteDBToFile (Exceptions.ThrowOnNull (dBTopLevel, nameof (dBTopLevel)));
 		}
 
 		XmlGenerator (string outputPath)
 		{
-			OutputPath = outputPath;
+			OutputPath = Exceptions.ThrowOnNull (outputPath, nameof (outputPath));
 		}
 
 		void WriteDBToFile (DBTopLevel dBTopLevel)
 		{
+			Exceptions.ThrowOnNull (dBTopLevel, nameof (dBTopLevel));
 			using (writer = CreateWriter (OutputPath)) {
-				WriteIntro (dBTopLevel);
+				WriteIntro ();
 				WriteModules (dBTopLevel);
 				CloseWriter ();
 			}
@@ -32,13 +34,14 @@ namespace DylibBinder {
 
 		XmlWriter CreateWriter (string outputPath)
 		{
+			Exceptions.ThrowOnNull (outputPath, nameof (outputPath));
 			XmlWriterSettings settings = new XmlWriterSettings ();
 			settings.Indent = true;
 			settings.IndentChars = "   ";
 			return XmlWriter.Create (outputPath, settings);
 		}
 
-		void WriteIntro (DBTopLevel dBTopLevel) {
+		void WriteIntro () {
 			writer.WriteStartDocument ();
 			writer.WriteStartElement ("xamreflect");
 			writer.WriteAttributeString ("version", "1.0");
@@ -47,6 +50,7 @@ namespace DylibBinder {
 
 		void WriteModules (DBTopLevel dBTopLevel)
 		{
+			Exceptions.ThrowOnNull (dBTopLevel, nameof (dBTopLevel));
 			foreach (var module in dBTopLevel.DBTypeDeclarations.TypeDeclarationCollection.Keys) {
 				writer.WriteStartElement ("module");
 				writer.WriteAttributeString ("name", module);
@@ -57,6 +61,7 @@ namespace DylibBinder {
 
 		void WriteTypeDeclarations (List <DBTypeDeclaration> typeDeclarations)
 		{
+			Exceptions.ThrowOnNull (typeDeclarations, nameof (typeDeclarations));
 			foreach (var typeDeclaration in typeDeclarations) {
 
 				if (InnerX.IsInnerType (typeDeclaration))
@@ -74,6 +79,7 @@ namespace DylibBinder {
 
 		void WriteTypeDeclarationOpening (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			writer.WriteStartElement ("typedeclaration");
 			WriteAttributeStrings (("kind", typeDeclaration.Kind), ("name", typeDeclaration.Name),
 								  ("accessibility", typeDeclaration.Accessibility), ("isDeprecated", typeDeclaration.IsDeprecated),
@@ -83,6 +89,7 @@ namespace DylibBinder {
 
 		void WriteTypeDeclaration (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			WriteMembers (typeDeclaration);
 			WriteInnerTypes (typeDeclaration);
 			WriteGenericParameters (typeDeclaration);
@@ -92,11 +99,13 @@ namespace DylibBinder {
 
 		void WriteProtocolTypeDeclaration (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			WriteProtocolMembers (typeDeclaration);
 		}
 
 		void WriteMembers (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			writer.WriteStartElement ("members");
 			WriteFuncs (typeDeclaration);
 			WriteProperties (typeDeclaration);
@@ -105,6 +114,7 @@ namespace DylibBinder {
 
 		void WriteProtocolMembers (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			writer.WriteStartElement ("members");
 			WriteFuncs (typeDeclaration);
 			writer.WriteEndElement ();
@@ -112,6 +122,7 @@ namespace DylibBinder {
 
 		void WriteInnerTypes (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			foreach (var innerType in typeDeclaration.InnerTypes.InnerTypeCollection) {
 				writer.WriteStartElement ($"inner{innerType.Kind}");
 				WriteTypeDeclarationOpening (innerType);
@@ -126,6 +137,7 @@ namespace DylibBinder {
 
 		void WriteGenericParameters (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			if (typeDeclaration.GenericParameters.GenericParameterCollection.Count == 0)
 				return;
 
@@ -138,6 +150,7 @@ namespace DylibBinder {
 
 		void WriteGenericParameters (DBGenericParameters GenericParameterCollection)
 		{
+			Exceptions.ThrowOnNull (GenericParameterCollection, nameof (GenericParameterCollection));
 			var validGenericParameters = from g in GenericParameterCollection.GenericParameterCollection
 										 where g.Depth > 0
 										 select g;
@@ -154,6 +167,7 @@ namespace DylibBinder {
 
 		void WriteGenericParameter (DBGenericParameter parameter)
 		{
+			Exceptions.ThrowOnNull (parameter, nameof (parameter));
 			writer.WriteStartElement ("param");
 			writer.WriteAttributeString ("name", parameter.Name);
 			writer.WriteEndElement ();
@@ -161,6 +175,7 @@ namespace DylibBinder {
 
 		void WriteAssocTypes (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			if (typeDeclaration.AssociatedTypes.AssociatedTypeCollection.Count == 0)
 				return;
 
@@ -173,6 +188,7 @@ namespace DylibBinder {
 
 		void WriteAssocType (DBAssociatedType associatedType)
 		{
+			Exceptions.ThrowOnNull (associatedType, nameof (associatedType));
 			writer.WriteStartElement ("associatedtype");
 			writer.WriteAttributeString ("name", associatedType.Name);
 			writer.WriteEndElement ();
@@ -180,6 +196,7 @@ namespace DylibBinder {
 
 		void WriteElements (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			if (typeDeclaration.Kind != TypeKind.Enum)
 				return;
 
@@ -189,6 +206,7 @@ namespace DylibBinder {
 
 		void WriteFuncs (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			foreach (var func in typeDeclaration.Funcs.FuncCollection) {
 				WriteFunc (func);
 			}
@@ -196,6 +214,7 @@ namespace DylibBinder {
 
 		void WriteFunc (DBFunc func)
 		{
+			Exceptions.ThrowOnNull (func, nameof (func));
 			writer.WriteStartElement ("func");
 			WriteAttributeStrings (("name", func.Name), ("returnType", func.ReturnType));
 
@@ -217,6 +236,7 @@ namespace DylibBinder {
 
 		void WriteParameterLists (DBParameterLists parameterLists)
 		{
+			Exceptions.ThrowOnNull (parameterLists, nameof (parameterLists));
 			writer.WriteStartElement ("parameterlists");
 			foreach (var parameterList in parameterLists.ParameterListCollection) {
 				WriteParameterList (parameterList);
@@ -226,6 +246,7 @@ namespace DylibBinder {
 
 		void WriteParameterList (DBParameterList parameterList)
 		{
+			Exceptions.ThrowOnNull (parameterList, nameof (parameterList));
 			writer.WriteStartElement ("parameterlist");
 			WriteAttributeStrings (("index", parameterList.Index));
 			foreach (var parameter in parameterList.ParameterCollection) {
@@ -236,6 +257,7 @@ namespace DylibBinder {
 
 		void WriteParameter (DBParameter parameter)
 		{
+			Exceptions.ThrowOnNull (parameter, nameof (parameter));
 			if (parameter.IsEmptyParameter)
 				return;
 
@@ -248,6 +270,7 @@ namespace DylibBinder {
 
 		void WriteProperties (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			foreach (var property in typeDeclaration.Properties.PropertyCollection) {
 				WriteProp (property);
 				WriteFunc (property.Getter);
@@ -258,6 +281,7 @@ namespace DylibBinder {
 
 		void WriteProp (DBProperty property)
 		{
+			Exceptions.ThrowOnNull (property, nameof (property));
 			writer.WriteStartElement ("property");
 			WriteAttributeStrings (("name", property.Name), ("type", property.Type),
 			                      ("isStatic", property.IsStatic), ("accessibility", property.Accessibility),

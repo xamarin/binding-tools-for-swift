@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SwiftReflector.Inventory;
 using SwiftReflector;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class CheckInventoryValues {
@@ -16,7 +17,7 @@ namespace DylibBinder {
 
 		public CheckInventoryDictionary (ModuleInventory mi)
 		{
-			GetValues (mi);
+			GetValues (Exceptions.ThrowOnNull (mi, nameof (mi)));
 		}
 
 		void GetValues (ModuleInventory mi)
@@ -32,6 +33,8 @@ namespace DylibBinder {
 
 		void GetClassesStructsEnums (ModuleInventory mi, SwiftName module)
 		{
+			Exceptions.ThrowOnNull (mi, nameof (mi));
+			Exceptions.ThrowOnNull (module, nameof (module));
 			foreach (var elem in mi.ClassesForName (module)) {
 				if (!elem.Name.ToFullyQualifiedName ().IsPublic ())
 					continue;
@@ -46,6 +49,8 @@ namespace DylibBinder {
 
 		void GetProtocols (ModuleInventory mi, SwiftName module)
 		{
+			Exceptions.ThrowOnNull (mi, nameof (mi));
+			Exceptions.ThrowOnNull (module, nameof (module));
 			foreach (var p in mi.ProtocolsForName (module)) {
 				if (!p.Name.ToFullyQualifiedName ().Contains ("_"))
 					CheckInventoryDict [module.Name].Protocols.Add (p);

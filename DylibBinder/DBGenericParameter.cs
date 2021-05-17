@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.SwiftLang;
 using SwiftReflector;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class DBGenericParameter {
@@ -22,24 +23,42 @@ namespace DylibBinder {
 		public HashSet<DBGenericParameter> GenericParameterCollection { get; } = new HashSet<DBGenericParameter> (new DBGenericParameterComparer ());
 
 		public DBGenericParameters (SwiftBaseFunctionType signature)
-			=> GenericParameterCollection.UnionWith (signature.GetGenericParameters ());
+		{
+			Exceptions.ThrowOnNull (signature, nameof (signature));
+			GenericParameterCollection.UnionWith (signature.GetGenericParameters ());
+		}
 
 		public DBGenericParameters (SwiftType swiftType)
-			=> GenericParameterCollection.UnionWith (swiftType.GetGenericParameters ());
+		{
+			Exceptions.ThrowOnNull (swiftType, nameof (swiftType));
+			GenericParameterCollection.UnionWith (swiftType.GetGenericParameters ());
+		}
 
 		public DBGenericParameters (DBTypeDeclaration typeDeclaration)
-			=> GenericParameterCollection.UnionWith (typeDeclaration.ParseTopLevelGenerics ());
+		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
+			GenericParameterCollection.UnionWith (typeDeclaration.ParseTopLevelGenerics ());
+		}
 	}
 
 	internal static class DBGenericParameterExtensions {
 		public static List<DBGenericParameter> GetGenericParameters (this SwiftBaseFunctionType signature)
-			=> FilterGenericParameterSource (signature.Parameters, signature.ReturnType);
+		{
+			Exceptions.ThrowOnNull (signature, nameof (signature));
+			return FilterGenericParameterSource (signature.Parameters, signature.ReturnType);
+		}
 
 		public static List<DBGenericParameter> GetGenericParameters (this SwiftType swiftType)
-			=> FilterGenericParameterSource (swiftType);
+		{
+			Exceptions.ThrowOnNull (swiftType, nameof (swiftType));
+			return FilterGenericParameterSource (swiftType);
+		}
 
 		static List<DBGenericParameter> FilterGenericParameterSource (params SwiftType [] types)
-			=> types.SelectMany (t => GenericParameterSwitch (t)).ToList ();
+		{
+			Exceptions.ThrowOnNull (types, nameof (types));
+			return types.SelectMany (t => GenericParameterSwitch (t)).ToList ();
+		}
 
 		static List<DBGenericParameter> GenericParameterSwitch (object type) => type switch {
 			SwiftFunctionType funcType => GetGenericParameters (funcType),
@@ -50,16 +69,28 @@ namespace DylibBinder {
 		};
 
 		static List<DBGenericParameter> GetGenericParameters (SwiftFunctionType funcType)
-			=> GenericParameterSwitch (funcType.Parameters);
+		{
+			Exceptions.ThrowOnNull (funcType, nameof (funcType));
+			return GenericParameterSwitch (funcType.Parameters);
+		}
 
 		static List<DBGenericParameter> GetGenericParameters (SwiftBoundGenericType boundType)
-			=> boundType.BoundTypes.Where (t => t is SwiftGenericArgReferenceType).SelectMany (t => GetGenericParameters (t as SwiftGenericArgReferenceType)).ToList ();
+		{
+			Exceptions.ThrowOnNull (boundType, nameof (boundType));
+			return boundType.BoundTypes.Where (t => t is SwiftGenericArgReferenceType).SelectMany (t => GetGenericParameters (t as SwiftGenericArgReferenceType)).ToList ();
+		}
 
 		static List<DBGenericParameter> GetGenericParameters (SwiftTupleType tupleType)
-			=> tupleType.Contents.SelectMany (t => GenericParameterSwitch (t)).ToList ();
+		{
+			Exceptions.ThrowOnNull (tupleType, nameof (tupleType));
+			return tupleType.Contents.SelectMany (t => GenericParameterSwitch (t)).ToList ();
+		}
 
 		static List<DBGenericParameter> GetGenericParameters (SwiftGenericArgReferenceType refType)
-			=> new List<DBGenericParameter> () { new DBGenericParameter (refType.Depth, refType.Index) };
+		{
+			Exceptions.ThrowOnNull (refType, nameof (refType));
+			return new List<DBGenericParameter> () { new DBGenericParameter (refType.Depth, refType.Index) };
+		}
 	}
 
 	class DBGenericParameterComparer : EqualityComparer<DBGenericParameter> {
@@ -73,6 +104,6 @@ namespace DylibBinder {
 		}
 
 		public override int GetHashCode (DBGenericParameter gp)
-			=> gp == null ? "null".GetHashCode () : gp.Name.GetHashCode ();
+			=> gp == null ? 1 : gp.Name.GetHashCode ();
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using SwiftReflector.Inventory;
+using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	internal class InnerX {
@@ -24,6 +25,7 @@ namespace DylibBinder {
 
 		void AddItem (ClassContents c)
 		{
+			Exceptions.ThrowOnNull (c, nameof (c));
 			var nestingNames = c.Name.NestingNames.ToList ();
 			if (nestingNames.Count == 0)
 				return;
@@ -51,6 +53,7 @@ namespace DylibBinder {
 
 		void AddKeyIfNotPresent (string key)
 		{
+			Exceptions.ThrowOnNull (key, nameof (key));
 			if (InnerXDict.ContainsKey (key))
 				return;
 			InnerXDict.Add (key, new List<ClassContents> ());
@@ -58,6 +61,7 @@ namespace DylibBinder {
 
 		string GetParentNameString (string childName)
 		{
+			Exceptions.ThrowOnNull (childName, nameof (childName));
 			MatchCollection matches = Regex.Matches (childName, @"\.");
 			if (matches.Count == 0)
 				return null;
@@ -67,6 +71,7 @@ namespace DylibBinder {
 
 		public static bool IsInnerType (DBTypeDeclaration typeDeclaration)
 		{
+			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			return Regex.Matches (typeDeclaration.Name, @"\.").Count > 0;
 		}
 	}

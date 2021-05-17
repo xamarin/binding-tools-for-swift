@@ -1,5 +1,5 @@
 ﻿using System;
-using Dynamo;
+using SwiftRuntimeLibrary;
 using SwiftReflector.Inventory;
 
 namespace DylibBinder {
@@ -10,8 +10,8 @@ namespace DylibBinder {
 
 		public DBTopLevel (ModuleInventory moduleInventory, string ignoreListPath, string swiftVersion)
 		{
-			SwiftVersion = swiftVersion;
-			Mi = Exceptions.ThrowOnNull (moduleInventory, "moduleInventory");
+			SwiftVersion = Exceptions.ThrowOnNull (swiftVersion, nameof (swiftVersion));
+			Mi = Exceptions.ThrowOnNull (moduleInventory, nameof (moduleInventory));
 			DBTypeDeclarations = new DBTypeDeclarations (Mi, ignoreListPath);
 		}
 	}
