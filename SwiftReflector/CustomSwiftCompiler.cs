@@ -297,21 +297,43 @@ namespace SwiftReflector {
 			if (ReflectionTypeDatabase == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 72, "Parser reflector requires a TypeDatabase");
 
-			var fileName = $"{moduleNames [0]}.swiftinterface";
-
-			var paths = includeDirectories.Select (dir => Path.Combine (dir, fileName));
-
-			var path = paths.FirstOrDefault (p => File.Exists (p));
+			var path = GetSwiftInterfacePath (includeDirectories, moduleNames [0]);
 
 			if (path == null) {
 				var lookedIn = includeDirectories.InterleaveStrings (", ");
-				throw new FileNotFoundException ($"Did not find {fileName} in {lookedIn}");
+				throw new FileNotFoundException ($"Did not find {moduleNames [0]} in {lookedIn}");
 			}
 
 			var moduleLoader = new FileSystemModuleLoader (libraryDirectory);
 			var reflector = new SwiftInterfaceReflector.SwiftInterfaceReflector (ReflectionTypeDatabase, moduleLoader);
 			var xdoc = reflector.Reflect (path);
 			xdoc.Save (outputFile);
+		}
+
+		string GetSwiftInterfacePath (IEnumerable<string> includeDirectories, string moduleName)
+		{
+			var swiftModule = moduleName + ".swiftmodule";
+			// if the compiler has a target, it means that we have a framework.
+			if (CompilerInfo.HasTarget) {
+				foreach (var path in includeDirectories) {
+					if (SwiftModuleFinder.IsAppleFramework (path, swiftModule)) {
+						var ifaceDir = Path.Combine (path, $"Modules/{swiftModule}");
+						var file = Path.Combine (ifaceDir, $"{CompilerInfo.Target.ClangTargetCpu ()}.swiftinterface");
+						if (File.Exists (file))
+							return file;
+					} else {
+						var file = Path.Combine (path, $"{moduleName}.swiftinterface");
+						if (File.Exists (file))
+							return file;
+					}
+				}
+				return null;
+			} else {
+				var paths = includeDirectories.Select (dir => Path.Combine (dir, swiftModule));
+
+				var path = paths.FirstOrDefault (p => File.Exists (p));
+				return path;
+			}
 		}
 
 		public string Reflect (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectories,

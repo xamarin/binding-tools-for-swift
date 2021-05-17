@@ -93,14 +93,14 @@ namespace SwiftReflector
 			if (String.IsNullOrEmpty (givenTarget))
 				return "macosx";
 			string [] parts = givenTarget.Split ('-');
-			if (parts.Length != 3) {
+			if (parts.Length != 3 && parts.Length != 4) {
 				throw new Exception ("Expected target to be in the form cpu-apple-os");
 			}
 
 			if (parts [2].StartsWith ("macosx", StringComparison.Ordinal))
 				return "macosx";
 			if (parts [2].StartsWith ("ios", StringComparison.Ordinal)) {
-				if (IsSimulator (parts [0]))
+				if (IsSimulator (parts))
 					return "iphonesimulator";
 				return "iphoneos";
 			}
@@ -108,17 +108,20 @@ namespace SwiftReflector
 				return "appletvos";
 			}
 			if (parts [2].StartsWith ("watchos", StringComparison.Ordinal)) {
-				if (IsSimulator (parts [0]))
+				if (IsSimulator (parts))
 					return "watchsimulator";
 				return "watchos";
 			}
 			return "macosx";
 		}
 
-		static bool IsSimulator (string part)
+		static bool IsSimulator (string[] parts)
 		{
-			return part.StartsWith ("i386", StringComparison.Ordinal) ||
-				   part.StartsWith ("x86_64", StringComparison.Ordinal);
+			if (parts.Length < 4) {
+				return parts[0].StartsWith ("i386", StringComparison.Ordinal) ||
+					   parts[0].StartsWith ("x86_64", StringComparison.Ordinal);
+			}
+			return parts [3].StartsWith ("simulator");
 		}
 	}
 }

@@ -778,17 +778,20 @@ namespace Xamarin {
 				}
 			}
 			public MachO.Platform Platform;
+			public Version Sdk;
 		}
 
 		public MinOSVersion MinOS {
 			get {
 				uint? version = null;
+				uint? sdk = null;
 				MachO.Platform platform = (MachO.Platform) 0;
 				foreach (var lc in load_commands) {
 					if (lc is VersionMinOSLoadCommand min_lc) {
 						if (version.HasValue)
 							throw new NotSupportedException ("File has multiple minOS load commands.");
 						version = min_lc.version;
+						sdk = min_lc.sdk;
 
 						switch (min_lc.Command) {
 						case MachO.LoadCommands.VersionMinMacOS:
@@ -810,6 +813,7 @@ namespace Xamarin {
 						if (version.HasValue)
 							throw new NotSupportedException ("File has multiple minOS load commands.");
 						version = build_lc.minos;
+						sdk = build_lc.sdk;
 						platform = build_lc.Platform;
 					}
 				}
@@ -819,6 +823,7 @@ namespace Xamarin {
 				return new MinOSVersion {
 					Version = BuildVersionCommand.DeNibble (version.Value),
 					Platform = platform,
+					Sdk = BuildVersionCommand.DeNibble (sdk.Value)
 				};
 			}
 		}
