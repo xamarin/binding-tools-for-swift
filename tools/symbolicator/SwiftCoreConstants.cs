@@ -12,7 +12,7 @@ namespace SwiftRuntimeLibrary {
 
 	internal static class SwiftCoreConstants {
 
-		internal const string LibSwiftCore = "libswiftCore.dylib";
+		internal const string LibSwiftCore = "/usr/lib/swift/libswiftCore.dylib";
 
 		// ISwiftComparable Constants
 		internal const string ISwiftComparable_SwiftString = "$sSSSLsWP";

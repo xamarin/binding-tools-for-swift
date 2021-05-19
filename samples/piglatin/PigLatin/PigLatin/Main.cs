@@ -1,7 +1,4 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
-using UIKit;
+﻿using UIKit;
 
 namespace PigLatin
 {
