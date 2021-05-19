@@ -85,4 +85,5 @@ Instead you need to make a packaged build, from the root of binding-tools-for-sw
 
 this will leave a directory inside of the directory `Pack-Man` named `binding-tools-for-swift` which contains buildable samples.
 Most samples can be built by executing `make` in their directory. To try out a sample, do `make runit` for most of the samples.
+The piglatin sample is an iOS application. If you run `make` in its directory, it will build the binding and move the output files into the `PigLatin` directory which contains a Visual Studio Mac project that can, at that point, be opened and run.
 

@@ -5,34 +5,13 @@ In order to properly represent the Swift API in C#, it’s necessary to be able 
 2. the view of the types is limited by the target platform/OS
 3. the presence of the descriptors is controllable via a swift compiler switch which means they could be arbitrarily left out
 
-New with swift 5.1 is a means of providing the front-facing API to the user via a text-only format. This text-only format is swift with no function contents, meaning that you need almost an entire swift parser to read it in. This is a sneaky hack on Apple’s part as they already have their own swift parser. We can do this and write a parser. I’d estimate that it’s a person year to do since swift is particularly tricky in that parsing of it requires some state-smart tricks since attributes have their own grammar that is unlike everything else. In addition, care needs to be taken to ensure that identifiers work properly with the Unicode subset that is allowable in swift. For the last part, I don’t know which parser engine would be appropriate. Maybe ANTLR (there exists a Swift 3.1 parser).
-In our case, we hook into the swift compiler itself. This presents a number of benefits for us:
+New with swift 5.1 is a means of providing the front-facing API to the user via a text-only format. This text-only format is swift with no function contents, meaning that you need almost an entire swift parser to read it in. This is a clever change on Apple’s part as they already have their own swift parser. We can do this and write a full parser. I’d estimate that it’s a person year to do since swift is a complicated grammar. We can instead write a very limited subset of the full grammar that can handle the front-facing API alone.
 
-1. We end up consuming the private binary parse tree serialization present in `.swiftmodule` files
-2. We take full advantage of the compiler infrastructure for module loading and resolution
-3. We take full advantage of the compiler infrastructure for visiting the parse tree
-4. In the future, we should be able to also consume the text serialization of the data
-5. We have full access to attributes
-
-This is not without its problems:
-
-1. The build/test cycle is slow because any changes trigger a full rebuild of the compiler and all runtime libraries
-2. The deliverables are huge. They can be trimmed down since we don’t need everything that gets built, but care needs to be taken so we don’t accidentally trim out something that should get shipped
-3. This ties our builds to Apple’s builds since the compiler will hard fail on version mismatches between the compiler and `.swiftmodule` files
-
-We are now adding in a separate reflection component. This is a parser that can consume `.swiftinterface` files and will generate the corresponding XML. I chose to generate XML rather than going directly to the `*Declaration` classes because the XML isn't going away anytime soon and it honestly keeps the code cleaner.
-
-## Hooking Into the Compiler
-
-To hook into the compiler, I added some code into argument checking in `swift/tools/driver/driver.cpp` to flag for reflection and then call the reflector. For the actual reflection, there is a new class called `ReflectionPrinter` which is modeled off the built-in tool to generate ObjC and lives in `swift/tools/driver/xamarinreflect_main.cpp`.
-
-The Apple infrastructure follows a visitor pattern. To get reflection, we implement a number of methods named `visitFooDecl` where `Foo` is the particular language element that we care about. For the most part, these are all the top level declarations: class, struct, enum, protocol, extension, function, variable, name alias, bound generic types.
-
-In the infrastructure, there is code to handle output indentation. `indent` increases the indentation level. `exdent` decreases the indentation level. `indents` prints 3 spaces per indent level.
+Previously, we hooked into the swift compiler itself and generated XML reflection information. Since the `.swiftinterface` parser was implemented and tested, we removed the compiler-based reflector. This makes the build more complicated, reduces the footprint of the project, and runs much faster.
 
 ## Implementing the Parser
 
-The parser is generated from an ANTLR grammar that is based on a more-or-less complete swift language description provided in the sample grammars in ANTLR. It differs in that it corrects issues with nosebleed unicode as well as hacking out the language elements that just aren't used at all (code statements, for example). There are two passes that are made to an input file. The first is code to desugar the syntax which turns references to optional types into `Swift.Optional<>` and other similar things.
+The parser is generated from an ANTLR grammar that is based on a more-or-less complete swift language description provided in the sample grammars in ANTLR. It differs in that it corrects issues with nosebleed unicode as well as hacking out the language elements that just aren't used at all (code statements, for example). There are two passes that are made to an input file. The first is code to desugar the syntax which turns references to optional types into `Swift.Optional<>` and other similar things. Finally, there are a number of elements in `.swiftinterface` files which require a nearly complete swift grammar. For example, if a function includes a default argument which is a closure, the file will include the complete swift code for that closure. This is handled by treating these types of entities as a Dyck grammar, which is a (simpler) superset of the swift language.
 
 ## XML Layout
 
@@ -140,12 +119,14 @@ A `<parameter>` element represents a parameter in a parameter list. It contains 
 - privateName - a string representing the private facing name of the parameter
 - type - a string representing the type specification (`TypeSpec`) of the type
 - isVariadic - boolean
+
 ## Inheritance
 
 The `<inherits>` element contains 0 or more elements of type `<inherit>`. An `<inherit>` element contains the following attributes:
 
 - type - a string representing the type specification (`TypeSpec`) of the type that is being inherited from
 - inheritanceKind - one of `protocol` or `class`.
+
 ## Properties
 
 A `<property>` element contains the following attributes:
