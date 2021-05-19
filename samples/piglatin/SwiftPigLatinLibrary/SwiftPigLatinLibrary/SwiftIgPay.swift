@@ -12,7 +12,7 @@ import Foundation
 private func isSpace(_ c:Character) -> Bool
 {
     let spaces = " \t\n\r"
-    return spaces.characters.index(of: c) != nil
+    return spaces.firstIndex(of: c) != nil
 }
 
 private func wordify(s:String) ->[String]
@@ -21,7 +21,7 @@ private func wordify(s:String) ->[String]
     var inSpace = true;
     var currWord = "";
     
-    for i in s.characters.indices {
+    for i in s.indices {
         if inSpace {
             if isSpace(s[i]) {
                 continue;
@@ -50,25 +50,25 @@ private func wordify(s:String) ->[String]
 private func isVowel(_ c:Character) -> Bool
 {
     let vowels = "aeiouAEIOU"
-    return vowels.contains(String(c))
+    return vowels.contains(c)
 }
 
 private func latinfy(word:String) -> String
 {
-    let start = word.characters.startIndex
+    let start = word.startIndex
     var firstVowel = start
-    for i in word.characters.indices {
+    for i in word.indices {
         if isVowel(word[i]) {
             firstVowel = i
             break;
         }
     }
-    if firstVowel == start || firstVowel > word.characters.endIndex {
+    if firstVowel == start || firstVowel > word.endIndex {
         return word + "-way"
     }
     else {
-        let prefix = word.characters[start ..< firstVowel]
-        let stem = word.substring(from: firstVowel)
+        let prefix = word[start ..< firstVowel]
+        let stem = word.suffix(from: firstVowel)
         return stem + "-" + String(prefix) + "ay"
     }
 }
