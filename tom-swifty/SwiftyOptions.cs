@@ -101,6 +101,9 @@ namespace tomswifty {
 				{ "version", "print version information.", v => {
 					PrintVersion |=v != null;
 				}},
+				{ "dylibXmlPath=", "path to the xml when using a Dylib.", dylibXmlPath => {
+					DylibXmlPath = dylibXmlPath;
+				}},
 				{ "h|?|help", "prints this message", h => {
 					PrintHelp |=h != null;
 				}},
@@ -109,6 +112,7 @@ namespace tomswifty {
 
 		public string SwiftBinPath { get; set; }
 		public string SwiftLibPath { get; set; }
+		public string DylibXmlPath { get; set; }
 		public List<string> TypeDatabasePaths { get; private set; }
 		public string SwiftGluePath { get; set; }
 		public List<string> ModulePaths { get; private set; }
@@ -229,7 +233,15 @@ namespace tomswifty {
 
 		#endregion
 
-		public void CheckForOptionErrors (ErrorHandling errors)
+		static Dictionary<string, string> targetOSToTargetDirectory = new Dictionary<string, string> {
+			{ "macos", "mac" }, { "ios", "iphone" }, { "tvos", "appletv" }, {"watchos", "watch" }
+		};
+
+		static Dictionary<string, string> targetOSToTargetLibrary = new Dictionary<string, string> {
+			{ "macos", "macosx" }, { "ios", "iphoneos" }, { "tvos", "appletvos" }, {"watchos", "watchos" }
+		};
+
+		public void CheckForOptionErrors (ErrorHandling errors, bool isLibrary = false)
 		{
 			CheckPath (SwiftBinPath, "path to swift binaries", errors);
 			CheckPath (SwiftLibPath, "path to swift libraries", errors);
@@ -259,49 +271,53 @@ namespace tomswifty {
 
 						if (Targets.Count > 0) {
 							var targetOS = targets [0].ClangTargetOS ();
+							var targetOSAlpha = new string (targetOS.Where (Char.IsLetter).ToArray ());
+
 							if (SwiftGluePath != null) {
 								string path = null;
-								if (targetOS.StartsWith ("macos", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "mac/XamGlue.framework");
-								} else if (targetOS.StartsWith ("ios", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "iphone/XamGlue.framework");
-								} else if (targetOS.StartsWith ("tvos", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "appletv/XamGlue.framework");
-								} else if (targetOS.StartsWith ("watchos", StringComparison.Ordinal)) {
-									path = Path.Combine (SwiftGluePath, "watch/XamGlue.framework");
+								string targetOSPathPart;
+								if (!targetOSToTargetDirectory.TryGetValue (targetOSAlpha, out targetOSPathPart)) {
+									throw new ArgumentException ("Target not found", nameof (targetOSAlpha));
 								}
-								if (path != null) {
-									ModulePaths.Add (path);
-									DylibPaths.Add (path);
-								}
-							}
-							if (targetOS.StartsWith ("macos", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "macosx");
-							} else if (targetOS.StartsWith ("ios", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "iphoneos");
-							} else if (targetOS.StartsWith ("tvos", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "appletvos");
-							} else if (targetOS.StartsWith ("watchos", StringComparison.Ordinal)) {
-								SwiftLibPath = Path.Combine (SwiftLibPath, "watchos");
-							}
-						}
+								// The SwiftGluePath may have a 'FinalProduct' directory inside the path
+								path = Path.Combine (SwiftGluePath, $"{targetOSPathPart}/XamGlue.framework");
+								if (!Directory.Exists (path))
+									path = Path.Combine (SwiftGluePath, $"{targetOSPathPart}/FinalProduct/XamGlue.framework");
 
-
-						// filter the targets here
-						foreach (string target in Targets) {
-							StringBuilder sb = new StringBuilder ();
-							foreach (string s in ModulePaths.Interleave (", ")) {
-								sb.Append (s);
-							}
-							using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, ModuleName, target)) {
-								if (loc == null) {
-									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
-								}
+								ModulePaths.Add (path);
+								DylibPaths.Add (path);
 							}
 
-							using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, "XamGlue", target)) {
-								if (loc == null) {
-									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for XamGlue in target {target}. Did you forget to refer to it with -M or -C? Searched in {sb.ToString ()}.")));
+							string targetOSLibraryPathPart;
+							if (!targetOSToTargetLibrary.TryGetValue (targetOSAlpha, out targetOSLibraryPathPart)) {
+								throw new ArgumentException ("Target not found", nameof (targetOSAlpha));
+							}
+							// The SwiftLibPath may have a 'swift' directory inside the path
+							var swiftLibPath = SwiftLibPath;
+							SwiftLibPath = Path.Combine (swiftLibPath, targetOSLibraryPathPart);
+							if (!Directory.Exists (SwiftLibPath))
+								SwiftLibPath = Path.Combine (swiftLibPath, $"swift/{targetOSLibraryPathPart}");
+
+							// filter the targets here
+							foreach (string target in Targets) {
+								StringBuilder sb = new StringBuilder ();
+								foreach (string s in ModulePaths.Interleave (", ")) {
+									sb.Append (s);
+								}
+								// If we are looking at a dylib file, it will not have the swiftmodule file so skip these
+								if (isLibrary)
+									continue;
+
+								using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, ModuleName, target)) {
+									if (loc == null) {
+										errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
+									}
+								}
+
+								using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, "XamGlue", target)) {
+									if (loc == null) {
+										errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for XamGlue in target {target}. Did you forget to refer to it with -M or -C? Searched in {sb.ToString ()}.")));
+									}
 								}
 							}
 						}

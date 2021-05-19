@@ -12,9 +12,11 @@ using SwiftRuntimeLibrary;
 namespace SwiftReflector.TypeMapping {
 	public class SwiftTypeToSLType {
 		TypeMapper typeMapper;
-		public SwiftTypeToSLType (TypeMapper typeMapper)
+		bool IncludeModule { get; }
+		public SwiftTypeToSLType (TypeMapper typeMapper, bool includeModule = false)
 		{
 			this.typeMapper = Exceptions.ThrowOnNull (typeMapper, "typeMapper");
+			IncludeModule = includeModule;
 		}
 
 
@@ -113,7 +115,7 @@ namespace SwiftReflector.TypeMapping {
 
 		SLSimpleType ToClass (SLImportModules modules, SwiftClassType st)
 		{
-			return ToClass (modules, st.ClassName);
+			return ToClass (modules, st.ClassName, IncludeModule);
 		}
 
 		SLType ToClass (SLImportModules modules, SwiftBoundGenericType gt)
@@ -126,10 +128,10 @@ namespace SwiftReflector.TypeMapping {
 			return new SLBoundGenericType (baseType.Name, boundTypes);
 		}
 
-		static SLSimpleType ToClass (SLImportModules modules, SwiftClassName className)
+		static SLSimpleType ToClass (SLImportModules modules, SwiftClassName className, bool includeModule = false)
 		{
 			modules.AddIfNotPresent (className.Module.Name);
-			return new SLSimpleType (className.ToFullyQualifiedName (false));
+			return new SLSimpleType (className.ToFullyQualifiedName (includeModule));
 		}
 
 		SLSimpleType ToProtocol (SLImportModules modules, SwiftProtocolListType protocol)
@@ -142,7 +144,7 @@ namespace SwiftReflector.TypeMapping {
 
 		SLType ToGenericArgReference (SLImportModules modules, SwiftGenericArgReferenceType arg)
 		{
-			return new SLGenericReferenceType (arg.Depth, arg.Index);
+			return new SLGenericReferenceType (arg.Depth, arg.Index, associatedTypePath: arg.AssociatedTypePath);
 		}
 
 		SLType ToClosure (SLImportModules modules, SwiftFunctionType func)

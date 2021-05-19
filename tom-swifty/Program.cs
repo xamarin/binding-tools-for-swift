@@ -24,6 +24,7 @@ namespace tomswifty {
 			SwiftyOptions options = new SwiftyOptions ();
 
 			var extra = options.ParseCommandLine (args);
+			var isLibrary = false;
 
 			// deal with those options that do not care about the extra params, 
 			// then check if we have some and print.
@@ -63,7 +64,15 @@ namespace tomswifty {
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
-			options.CheckForOptionErrors (errors);
+			if (!string.IsNullOrEmpty (options.DylibXmlPath)) {
+				if (!File.Exists (options.DylibXmlPath)) {
+					Console.WriteLine ($"Unable to the find the the path to the dylib xml: {options.DylibXmlPath}");
+					return 1;
+				}
+				isLibrary = true;
+			}
+
+			options.CheckForOptionErrors (errors, isLibrary);
 			if (errors.AnyErrors)
 				return HandleErrors (options, errors);
 
@@ -81,7 +90,7 @@ namespace tomswifty {
 				unicodeMapper.AddMappingsFromFile (options.UnicodeMappingFile);
 			}
 
-			Compile (options, unicodeMapper, errors);
+			Compile (options, unicodeMapper, errors, isLibrary);
 			if (errors.AnyMessages) {
 				Console.WriteLine ("{0}{1} warnings and {2} errors{0}", Environment.NewLine, errors.WarningCount, errors.ErrorCount);
 				return HandleErrors (options, errors);
@@ -89,7 +98,7 @@ namespace tomswifty {
 			return 0;
 		}
 
-		static void Compile (SwiftyOptions options, UnicodeMapper unicodeMapper, ErrorHandling errors)
+		static void Compile (SwiftyOptions options, UnicodeMapper unicodeMapper, ErrorHandling errors, bool isLibrary = false)
 		{
 			try {
 				using (DisposableTempDirectory temp = new DisposableTempDirectory (null, true)) {
@@ -99,7 +108,7 @@ namespace tomswifty {
 
 					ClassCompilerNames compilerNames = new ClassCompilerNames (options.ModuleName, options.WrappingModuleName);
 					ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (options.ModulePaths, options.DylibPaths, options.TypeDatabasePaths);
-					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory);
+					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory, options.DylibXmlPath);
 					errors.Add (compileErrors);
 				}
 			} catch (Exception err) {

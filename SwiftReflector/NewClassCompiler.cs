@@ -164,10 +164,12 @@ namespace SwiftReflector {
 			ClassCompilerLocations classCompilerLocations,
 			ClassCompilerNames compilerNames,
 			List<string> targets,
-			string outputDirectory)
+			string outputDirectory,
+			string dylibXmlPath = null)
 		{
 			ClassCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (classCompilerLocations, nameof (classCompilerLocations));
 			CompilerNames = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (compilerNames, nameof (compilerNames));
+			var isLibrary = !string.IsNullOrEmpty (dylibXmlPath);
 
 			var errors = new ErrorHandling ();
 			CurrentPlatform = PlatformFromTargets (targets);
@@ -187,11 +189,16 @@ namespace SwiftReflector {
 			OutputIsFramework = ClassCompilerLocations.LibraryDirectories.Any (x => SwiftModuleFinder.IsAppleFramework (x, CompilerNames.ModuleName + ".swiftmodule"));
 
 			var moduleInventory = GetModuleInventories (ClassCompilerLocations.LibraryDirectories, moduleNames, errors);
+
+			// Dylibs may create extra errors when Getting Module Inventories that we will ignore
+			if (isLibrary)
+				errors = new ErrorHandling ();
+
 			if (errors.AnyErrors)
 				return errors;
 
 			var moduleDeclarations = GetModuleDeclarations (ClassCompilerLocations.ModuleDirectories, moduleNames, outputDirectory,
-			                                                Options.RetainReflectedXmlOutput, targets, errors);
+									Options.RetainReflectedXmlOutput, targets, errors, dylibXmlPath);
 			if (errors.AnyErrors)
 				return errors;
 
@@ -223,7 +230,7 @@ namespace SwiftReflector {
 					targets,
 					CompilerNames.WrappingModuleName,
 					Options.RetainSwiftWrappers,
-					errors, Verbose, OutputIsFramework);
+					errors, Verbose, OutputIsFramework, isLibrary);
 				if (result == null) {
 					var ex = ErrorHelper.CreateError (ReflectorError.kWrappingBase, $"Failed to wrap module{(moduleNames.Count > 1 ? "s" : "")} {moduleNames.InterleaveCommas ()}.");
 					errors.Add (ex); 
@@ -5302,7 +5309,7 @@ namespace SwiftReflector {
 			string wrappingModuleName,
 			bool retainSwiftWrappers,
 			ErrorHandling errors, bool verbose,
-			bool outputIsFramework)
+			bool outputIsFramework, bool isLibrary = false)
 		{
 			wrappingModuleName = wrappingModuleName ?? "XamWrapping";
 
@@ -5315,7 +5322,7 @@ namespace SwiftReflector {
 				wrapStuff = wrappingCompiler.CompileWrappers (
 					libraryPaths.ToArray (),
 					modulePaths.ToArray (),
-					moduleDecls, moduleInventory, targets, wrappingModuleName, outputIsFramework);
+					moduleDecls, moduleInventory, targets, wrappingModuleName, outputIsFramework, isLibrary);
 				noWrappersNeeded = wrapStuff.Item1 == null;
 			} catch (Exception e) {
 				errors.Add (e);
@@ -5454,38 +5461,74 @@ namespace SwiftReflector {
 
 		List<ModuleDeclaration> GetModuleDeclarations (List<string> moduleDirectories, List<string> moduleNames,
 		                                               string outputDirectory, bool retainReflectedXmlOutput,
-		                                               List<string> targets, ErrorHandling errors)
+		                                               List<string> targets, ErrorHandling errors, string dylibXmlPath = null)
 		{
 			try {
 				string bestTarget = ChooseBestTarget (targets);
 
-				using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
-					var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget);
-					using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, provider, false)) {
-						compiler.Verbose = Verbose;
-						compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
+				// If we have a dylib, we will be using our already generated xml
+				if (!string.IsNullOrEmpty (dylibXmlPath)) {
+					var typeDatabase = CreateTypeDatabase ();
+					var decls = Reflector.FromXmlFile (dylibXmlPath, typeDatabase);
+					return decls;
+				} else {
+					using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
+						var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget);
+						using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, provider, false)) {
+							compiler.Verbose = Verbose;
+							compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
 
-						var decls = compiler.ReflectToModules (
-							moduleDirectories.ToArray (), moduleDirectories.ToArray (),
-							"-framework XamGlue", moduleNames.ToArray ());
+							var decls = compiler.ReflectToModules (
+								moduleDirectories.ToArray (), moduleDirectories.ToArray (),
+								"-framework XamGlue", moduleNames.ToArray ());
 
-						foreach (var mdecl in decls) {
-							if (!mdecl.IsCompilerCompatibleWith (CompilerVersion)) {
-								throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 49, $"The module {mdecl.Name} was compiled with the swift compiler version {mdecl.SwiftCompilerVersion}. It is incompatible with the compiler in {SwiftCompilerLocations.SwiftCompilerBin} which is version {CompilerVersion}");
+							foreach (var mdecl in decls) {
+								if (!mdecl.IsCompilerCompatibleWith (CompilerVersion)) {
+									throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 49, $"The module {mdecl.Name} was compiled with the swift compiler version {mdecl.SwiftCompilerVersion}. It is incompatible with the compiler in {SwiftCompilerLocations.SwiftCompilerBin} which is version {CompilerVersion}");
+								}
 							}
-						}
 
-						if (retainReflectedXmlOutput) {
-							var files = Directory.GetFiles (provider.DirectoryPath).Where (fileName => fileName.EndsWith (".xml", StringComparison.OrdinalIgnoreCase)).ToList ();
-							CopyXmlOutput (outputDirectory, files);
+							if (retainReflectedXmlOutput) {
+								var files = Directory.GetFiles (provider.DirectoryPath).Where (fileName => fileName.EndsWith (".xml", StringComparison.OrdinalIgnoreCase)).ToList ();
+								CopyXmlOutput (outputDirectory, files);
+							}
+							return decls;
 						}
-						return decls;
 					}
 				}
 			} catch (Exception e) {
 				errors.Add (e);
 				return null;
 			}
+		}
+
+		TypeDatabase CreateTypeDatabase ()
+		{
+			var typeDatabase = new TypeDatabase ();
+			var dbPath = GetBindingsPath ();
+			if (dbPath != null) {
+				foreach (var dbFile in Directory.GetFiles (dbPath, "*.xml")) {
+					typeDatabase.Read (dbFile);
+				}
+			}
+			return typeDatabase;
+		}
+
+		static readonly string [] BindingPaths = {
+			"bindings",
+			"../bindings",
+			"../../bindings",
+			"../../../bindings"
+		};
+
+		string GetBindingsPath ()
+		{
+			foreach (var bindingPath in BindingPaths) {
+				var wholePath = Path.Combine (Directory.GetCurrentDirectory (), bindingPath);
+				if (Directory.Exists (wholePath))
+					return wholePath;
+			}
+			throw new FileNotFoundException ("bindings directory was not found");
 		}
 
 

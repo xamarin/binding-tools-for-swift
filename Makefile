@@ -1,5 +1,6 @@
 TOP=.
 GIT_DIR=$(TOP)/.git
+export BTFS_TOP=$(PWD)
 
 all: check-system
 	./devops/automation/build.sh

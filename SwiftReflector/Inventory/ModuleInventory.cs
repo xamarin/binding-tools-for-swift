@@ -92,7 +92,7 @@ namespace SwiftReflector.Inventory {
 			try {
 				stm = new FileStream (pathToDynamicLibrary, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 			} catch (Exception e) {
-				errors.Add (ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 57, e, "unable to open file {0}: {1}", pathToDynamicLibrary, e.Message));
+				errors.Add (ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 57, e, "unable to open file {0}: {1} \n{e.Message}", pathToDynamicLibrary, e.Message));
 			}
 			try {
 				return FromStream (stm, errors, pathToDynamicLibrary);
