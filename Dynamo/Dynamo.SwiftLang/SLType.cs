@@ -312,7 +312,13 @@ namespace Dynamo.SwiftLang {
 
 		protected override void LLWrite (ICodeWriter writer, object o)
 		{
-			var name = IsMetatype ? (Name + ".Type") : AssociatedTypePath.Any () ? Name + $".{AssociatedTypePath.FirstOrDefault ()}" : Name;
+			var suffix = IsMetatype ? ".Type" : "";
+			string name;
+			if (AssociatedTypePath != null && AssociatedTypePath.Any ()) {
+				name = $"{Name}.{AssociatedTypePath.First ()}{suffix}";
+			} else {
+				name = $"{Name}{suffix}";
+			}
 			writer.Write (name, true);
 		}
 
