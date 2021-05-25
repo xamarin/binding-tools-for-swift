@@ -201,6 +201,7 @@ namespace SwiftReflector.Importing {
 			"AppKit.NSStatusItemLength", // not an enum
 			"AppKit.NSSurfaceOrder", // not an enum
 			"AppKit.NSSystemDefinedEvents", // can't find it
+			"AppKit.NSTableViewAnimation",
 			"AppKit.NSTextListMarkerFormats", // can't find it
 			"AppKit.NSTextStorageEditedFlags", // can't find it
 			"AppKit.NSType", // can't find it
@@ -229,6 +230,7 @@ namespace SwiftReflector.Importing {
 			"AVFoundation.AVAudioSessionRouteSharingPolicy", // macOS 10.15+
 			"AVFoundation.AVAudioSessionSetActiveOptions", // macOS 10.15+
 			"AVFoundation.AVAudioSessionSilenceSecondaryAudioHintType", // macOS 10.15+
+			"AVFoundation.AVAudioStereoOrientation", // marked unavailable
 			"AVFoundation.AVCaptureAutoFocusRangeRestriction", // marked unavailable
 			"AVFoundation.AVCaptureAutoFocusSystem", // marked unavailable
 			"AVFoundation.AVCaptureLensStabilizationStatus", // marked unavailable
@@ -251,6 +253,7 @@ namespace SwiftReflector.Importing {
 			"CoreFoundation.OSLogLevel",
 			// CoreGraphics
 			"CoreGraphics.CGPdfTagType",
+			"CoreGraphics.CGConstantColor",
 			// CoreMedia
 			"CoreMedia.CMSampleBufferAttachmentKey",
 			// CoreServices
@@ -289,6 +292,7 @@ namespace SwiftReflector.Importing {
 			"Foundation.NSUrlErrorNetworkUnavailableReason",
 	    		"Foundation.NSUrlSessionDelayedRequestDisposition", // 10.13; swift 4.2+
 			"Foundation.NSUrlSessionWebSocketCloseCode",
+			"Foundation.NSUrlSessionTaskMetricsDomainResolutionProtocol",
 			"Foundation.NSUrlSessionTaskMetricsResourceFetchType", // 10.12; swift 4.2+
 			"Foundation.NSUrlSessionWebSocketMessageType",
 			"Foundation.NSXpcConnectionOptions",
@@ -302,6 +306,8 @@ namespace SwiftReflector.Importing {
 			"ImageCaptureCore.ICExifOrientationType",
 			"ImageCaptureCore.ICReturnCode",
 			"ImageCaptureCore.ICTransportType",
+			// ImageIO
+			"ImageIO.CGImagePropertyTgaCompression",
 			// Intents
 			"Intents.INCallCapability",
 			"Intents.INCallCapabilityOptions",
@@ -339,10 +345,15 @@ namespace SwiftReflector.Importing {
 			"MetalPerformanceShaders.MPSCnnReductionType",
 			"MetalPerformanceShaders.MPSCnnWeightsQuantizationType",
 			// Network
+			"NetworkExtension.NEDnsProtocol",
+			"NetworkExtension.NEDnsSettingsManagerError",
 			"NetworkExtension.NENetworkRuleProtocol", // !! Can't figure out how to correctly map this into swift
 			// the compiler is complaining about the name Protcol, but if you backtick quote it, you get other errors.
 			// OpenGL
 			"OpenGL.CGLErrorCode", // can't find it
+			// PencilKit
+			"PencilKit.PKEraserType",
+			"PencilKit.PKInkType",
 			// Photos
 			"Photos.FigExifCustomRenderedValue", // can't find it
 			"Photos.PHPhotosError",
@@ -361,16 +372,23 @@ namespace SwiftReflector.Importing {
 			"StoreKit.SKCloudServiceAuthorizationStatus", // not on macOS
 			"StoreKit.SKCloudServiceCapability", // not on macOS
 			// VideoToolbox
+			"VideoToolbox.HdrMetadataInsertionMode",
 			"VideoToolbox.VTAlphaChannelMode",
 			// Vision
 			"Vision.VNClassifyImageRequestRevision",
+			"Vision.VNDetectContourRequestRevision",
 			"Vision.VNDetectFaceCaptureQualityRequestRevision",
+			"Vision.VNDetectHumanBodyPoseRequestRevision",
+			"Vision.VNDetectHumanHandPoseRequestRevision",
 			"Vision.VNDetectHumanRectanglesRequestRevision",
+			"Vision.VNDetectTrajectoriesRequestRevision",
 			"Vision.VNGenerateAttentionBasedSaliencyImageRequestRevision",
 			"Vision.VNGenerateImageFeaturePrintRequestRevision",
 			"Vision.VNGenerateObjectnessBasedSaliencyImageRequestRevision",
+			"Vision.VNGenerateOpticalFlowRequestRevision",
 			"Vision.VNRecognizeAnimalsRequestRevision",
 			"Vision.VNRecognizeTextRequestRevision",
+			"Vision.VNStatefulRequestRevision",
 			// WebKit
 			"WebKit.DomCssRuleType", // no longer exists
 			"WebKit.DomCssValueType", // no longer exists
@@ -456,6 +474,7 @@ namespace SwiftReflector.Importing {
 			{ "AppKit.NSFontCollectionVisibility", "NSFontCollection.Visibility" },
 			{ "AppKit.NSFontDescriptorSystemDesign", "NSFontDescriptor.SystemDesign" },
 			{ "AppKit.NSFontPanelModeMask", "NSFontPanel.ModeMask" },
+			{ "AppKit.NSFontTextStyle", "NSFont.TextStyle" },
 			{ "AppKit.NSGestureRecognizerState", "NSGestureRecognizer.State" },
 			{ "AppKit.NSGlyphProperty", "NSLayoutManager.GlyphProperty" },
 			{ "AppKit.NSGradientDrawingOptions", "NSGradient.DrawingOptions" },
@@ -471,6 +490,7 @@ namespace SwiftReflector.Importing {
 			{ "AppKit.NSImageName", "NSImage.Name" },
 			{ "AppKit.NSImageRepLoadStatus", "NSBitmapImageRep.LoadStatus" },
 			{ "AppKit.NSImageResizingMode", "NSImage.ResizingMode" },
+			{ "AppKit.NSImageSymbolScale", "NSImage.SymbolScale" },
 			{ "AppKit.NSLayoutAttribute", "NSLayoutConstraint.Attribute" },
 			{ "AppKit.NSLayoutConstraintOrientation", "NSLayoutConstraint.Orientation" },
 			{ "AppKit.NSLayoutFormatOptions", "NSLayoutConstraint.FormatOptions" },
@@ -478,6 +498,7 @@ namespace SwiftReflector.Importing {
 			{ "AppKit.NSLayoutRelation", "NSLayoutConstraint.Relation" },
 			{ "AppKit.NSLevelIndicatorPlaceholderVisibility", "NSLevelIndicator.PlaceholderVisibility" },
 			{ "AppKit.NSLevelIndicatorStyle", "NSLevelIndicator.Style" },
+			{ "AppKit.NSLineBreakStrategy", "NSParagraphStyle.LineBreakStrategy" },
 			{ "AppKit.NSLineCapStyle", "NSBezierPath.LineCapStyle" },
 			{ "AppKit.NSLineJoinStyle", "NSBezierPath.LineJoinStyle" },
 			{ "AppKit.NSMatrixMode", "NSMatrix.Mode" },
@@ -535,7 +556,7 @@ namespace SwiftReflector.Importing {
 			{ "AppKit.NSStatusItemBehavior", "NSStatusItem.Behavior" },
 			{ "AppKit.NSTableColumnResizing", "NSTableColumn.ResizingOptions" },
 			{ "AppKit.NSTableRowActionEdge", "NSTableView.RowActionEdge" },
-			{ "AppKit.NSTableViewAnimation", "NSTableView.AnimationOptions" },
+			{ "AppKit.NSTableViewAnimationOptions", "NSTableView.AnimationOptions" },
 			{ "AppKit.NSTableViewColumnAutoresizingStyle", "NSTableView.ColumnAutoresizingStyle" },
 			{ "AppKit.NSTableViewDraggingDestinationFeedbackStyle", "NSTableView.DraggingDestinationFeedbackStyle" },
 			{ "AppKit.NSTableViewDropOperation", "NSTableView.DropOperation" },
@@ -547,6 +568,7 @@ namespace SwiftReflector.Importing {
 			{ "AppKit.NSTabState", "NSTabViewItem.State" },
 			{ "AppKit.NSTabViewBorderType", "NSTabView.TabViewBorderType" },
 			{ "AppKit.NSTabViewControllerTabStyle", "NSTabViewController.TabStyle" },
+			{ "AppKit.NSTableViewStyle", "NSTableView.Style" },
 			{ "AppKit.NSTabViewType", "NSTabView.TabType" },
 			{ "AppKit.NSTextBlockDimension", "NSTextBlock.Dimension" },
 			{ "AppKit.NSTextBlockLayer", "NSTextBlock.Layer" },
@@ -596,6 +618,7 @@ namespace SwiftReflector.Importing {
 			{ "AppKit.NSWindowStyle", "NSWindow.StyleMask" },
 			{ "AppKit.NSWindowTabbingMode", "NSWindow.TabbingMode" },
 			{ "AppKit.NSWindowTitleVisibility", "NSWindow.TitleVisibility" },
+			{ "AppKit.NSWindowToolbarStyle", "NSWindow.ToolbarStyle" },
 			{ "AppKit.NSWindowUserTabbingPreference", "NSWindow.UserTabbingPreference" },
 			{ "AppKit.NSWorkspaceAuthorizationType", "NSWorkspace.AuthorizationType" },
 			{ "AppKit.NSWorkspaceIconCreationOptions", "NSWorkspace.IconCreationOptions" },
@@ -603,13 +626,21 @@ namespace SwiftReflector.Importing {
 			// AuthenticationServices
 			{ "AuthenticationServices.ASAuthorizationScope", "ASAuthorization.Scope" },
 			// AVFoundation
+			{ "AVFoundation.AVAudioRoutingArbitrationCategory", "AVAudioRoutingArbiter.Category" },
 			{ "AVFoundation.AVSampleBufferRequestDirection", "AVSampleBufferRequest.Direction" },
 			{ "AVFoundation.AVSampleBufferRequestMode", "AVSampleBufferRequest.Mode" },
 			{ "AVFoundation.AVSemanticSegmentationMatteType", "AVSemanticSegmentationMatte.MatteType" },
 			// AVKit
 			{ "AVKit.AVRoutePickerViewButtonState", "AVRoutePickerView.ButtonState" },
+			// CoreData
+			{ "CoreData.NSPersistentCloudKitContainerEventResultType", "NSPersistentCloudKitContainerEventResult.ResultType" },
+			{ "CoreData.NSPersistentCloudKitContainerEventType", "NSPersistentCloudKitContainer.EventType" },
+			// CoreMotion
+			{ "CoreMotion.CMDeviceMotionSensorLocation", "CMDeviceMotion.SensorLocation" },
 			// CoreServices
 			{ "CoreServices.LSRoles", "LSRolesMask" },
+			// FileProvider
+			{ "FileProvider.NSFileProviderManagerDisconnectionOptions", "NSFileProviderManager.DisconnectionOptions" },
 			// Foundation
 			{ "Foundation.NSActivityOptions", "ProcessInfo.ActivityOptions" },
 			{ "Foundation.NSAppleEventSendOptions", "NSAppleEventDescriptor.SendOptions" },
@@ -706,6 +737,12 @@ namespace SwiftReflector.Importing {
 			{ "Foundation.NSQualityOfService", "QualityOfService" },
 			{ "Foundation.NSDataReadingOptions", "NSData.ReadingOptions" },
 			{ "Foundation.NSFormattingUnitStyle", "Formatter.UnitStyle" },
+			// GameControler
+			{ "GameController.GCDeviceBatteryState", "GCDeviceBattery.State" },
+			{ "GameController.GCSystemGestureState", "GCControllerElement.SystemGestureState" },
+			{ "GameController.GCTouchState", "GCControllerTouchpad.TouchState" },
+			{ "GameKit.GKAccessPointLocation", "GKAccessPoint.Location" },
+			{ "GameKit.GKLeaderboardType", "GKLeaderboard.LeaderboardType" },
 			// MapKit
 			{ "MapKit.MKLocalSearchCompleterResultType", "MKLocalSearchCompleter.ResultType" },
 			{ "MapKit.MKLocalSearchResultType", "MKLocalSearch.ResultType" },
@@ -724,6 +761,12 @@ namespace SwiftReflector.Importing {
 			{ "QuickLookThumbnailing.QLThumbnailRepresentationType", "QLThumbnailRepresentation.RepresentationType" },
 			// StoreKit
 			{ "StoreKit.SKProductDiscountType", "SKProductDiscount.Type" },
+			// Vision
+			{ "Vision.VNGenerateOpticalFlowRequestComputationAccuracy", "VNGenerateOpticalFlowRequest.ComputationAccuracy" },
+			{ "Vision.VNHumanBodyPoseObservationJointName", "VNHumanBodyPoseObservation.JointName" },
+			{ "Vision.VNHumanBodyPoseObservationJointsGroupName", "VNHumanBodyPoseObservation.JointsGroupName" },
+			{ "Vision.VNHumanHandPoseObservationJointName", "VNHumanHandPoseObservation.JointName" },
+			{ "Vision.VNHumanHandPoseObservationJointsGroupName", "VNHumanHandPoseObservation.JointsGroupName" },
 			// WebKit
 			{ "WebKit.WKContentMode", "WKWebpagePreferences.ContentMode" },
 		};

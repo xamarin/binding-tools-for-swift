@@ -108,7 +108,8 @@ namespace tomswifty {
 
 					ClassCompilerNames compilerNames = new ClassCompilerNames (options.ModuleName, options.WrappingModuleName);
 					ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (options.ModulePaths, options.DylibPaths, options.TypeDatabasePaths);
-					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory, options.DylibXmlPath);
+					var compileErrors = classCompiler.CompileToCSharp (classCompilerLocations, compilerNames, options.Targets, options.OutputDirectory,
+						minimumOSVersion: options.MinimumOSVersion, dylibXmlPath: options.DylibXmlPath);
 					errors.Add (compileErrors);
 				}
 			} catch (Exception err) {

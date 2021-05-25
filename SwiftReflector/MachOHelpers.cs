@@ -22,26 +22,28 @@ namespace SwiftReflector {
 				var osmin = file.MinOS;
 				if (osmin == null)
 					throw new NotSupportedException ("dylib files without a minimum supported operating system load command are not supported.");
-				targets.Add ($"{arch}-apple-{TripleOSName(osmin, MinOSSdk (osmin))}");
+				var isSimulator = IsSimulator (file.Architecture, osmin);
+				targets.Add ($"{arch}-apple-{TripleOSName(osmin, MinOSSdk (osmin), isSimulator)}");
 			}
 			return targets;
 		}
 
-		static string TripleOSName (MachOFile.MinOSVersion minOS, string version)
+		static string TripleOSName (MachOFile.MinOSVersion minOS, string version, bool isSimulator)
 		{
+			var simulatorSuffix = isSimulator ? "-simulator" : "";
 			switch (minOS.Platform) {
 			case MachO.Platform.IOS:
-				return $"ios{version}";
+				return $"ios{version}{simulatorSuffix}";
 			case MachO.Platform.IOSSimulator:
 				return $"ios{version}-simulator";
 			case MachO.Platform.MacOS:
 				return $"macosx{version}";
 			case MachO.Platform.TvOS:
-				return $"tvos{version}";
+				return $"tvos{version}{simulatorSuffix}";
 			case MachO.Platform.TvOSSimulator:
 				return $"tvos{version}-simulator";
 			case MachO.Platform.WatchOS:
-				return $"watchos{version}";
+				return $"watchos{version}{simulatorSuffix}";
 			case MachO.Platform.WatchOSSimulator:
 				return $"watchos{version}-simulator";
 			default:
@@ -49,10 +51,39 @@ namespace SwiftReflector {
 			}
 		}
 
+		static bool IsSimulator (MachO.Architectures arch, MachOFile.MinOSVersion minOS)
+		{
+			// rules, rules, rules.
+			// OK - if this is IOS, TvOS, or WatchOS there are two cases:
+			// either it is the "old style" which means you figure out if
+			// it's a simulator by the CPU architecture of the file. If it's i386 or
+			// x86_64, then it's a simulator.
+			// If it's a newer file, then the Platform carries the info as to
+			// whether or not it's a simulator.
+			// Why?
+			// Because there exist arm64 iphones and there exist arm64 simulators
+			// so looking at the processor architecture no longer works reliably.
+
+			switch (minOS.Platform) {
+			case MachO.Platform.MacOS:
+				return false;
+			case MachO.Platform.IOS:
+			case MachO.Platform.TvOS:
+			case MachO.Platform.WatchOS:
+				return arch == MachO.Architectures.i386 ||
+					arch == MachO.Architectures.x86_64;
+			case MachO.Platform.IOSSimulator:
+			case MachO.Platform.TvOSSimulator:
+			case MachO.Platform.WatchOSSimulator:
+				return true;
+			default:
+				throw new ArgumentOutOfRangeException (nameof (minOS));
+			}
+		}
+
 		static string MinOSSdk (MachOFile.MinOSVersion minOS)
 		{
-			var min = minOS.Version < minOS.Sdk ? minOS.Version : minOS.Sdk;
-			return min.ToString ();
+			return minOS.Version.ToString ();
 		}
 
 		public static List<string> CommonTargets (List<string> lt, List<string> commonTo)

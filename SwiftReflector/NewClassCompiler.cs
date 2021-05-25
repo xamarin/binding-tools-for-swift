@@ -165,6 +165,7 @@ namespace SwiftReflector {
 			ClassCompilerNames compilerNames,
 			List<string> targets,
 			string outputDirectory,
+			string minimumOSVersion = null,
 			string dylibXmlPath = null)
 		{
 			ClassCompilerLocations = SwiftRuntimeLibrary.Exceptions.ThrowOnNull (classCompilerLocations, nameof (classCompilerLocations));
@@ -230,7 +231,7 @@ namespace SwiftReflector {
 					targets,
 					CompilerNames.WrappingModuleName,
 					Options.RetainSwiftWrappers,
-					errors, Verbose, OutputIsFramework, isLibrary);
+					errors, Verbose, OutputIsFramework, minimumOSVersion, isLibrary);
 				if (result == null) {
 					var ex = ErrorHelper.CreateError (ReflectorError.kWrappingBase, $"Failed to wrap module{(moduleNames.Count > 1 ? "s" : "")} {moduleNames.InterleaveCommas ()}.");
 					errors.Add (ex); 
@@ -5309,7 +5310,7 @@ namespace SwiftReflector {
 			string wrappingModuleName,
 			bool retainSwiftWrappers,
 			ErrorHandling errors, bool verbose,
-			bool outputIsFramework, bool isLibrary = false)
+			bool outputIsFramework, string minimumOSVersion = null, bool isLibrary = false)
 		{
 			wrappingModuleName = wrappingModuleName ?? "XamWrapping";
 
@@ -5322,7 +5323,8 @@ namespace SwiftReflector {
 				wrapStuff = wrappingCompiler.CompileWrappers (
 					libraryPaths.ToArray (),
 					modulePaths.ToArray (),
-					moduleDecls, moduleInventory, targets, wrappingModuleName, outputIsFramework, isLibrary);
+					moduleDecls, moduleInventory, targets, wrappingModuleName, outputIsFramework,
+					minimumOSVersion, isLibrary);
 				noWrappersNeeded = wrapStuff.Item1 == null;
 			} catch (Exception e) {
 				errors.Add (e);
@@ -5745,7 +5747,7 @@ namespace SwiftReflector {
 
 		PlatformName PlatformFromTargets (IEnumerable<string> targets)
 		{
-			var osString = targets.Select (target => target.ClangTargetOS ()).Distinct ().ToList ();
+			var osString = targets.Select (target => target.ClangOSNoVersion ()).Distinct ().ToList ();
 			if (osString.Count != 1)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 53, $"Expecting a unique target but got {osString.InterleaveCommas ()}");
 			if (osString [0].StartsWith ("macos", StringComparison.OrdinalIgnoreCase))
