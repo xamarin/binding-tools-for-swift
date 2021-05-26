@@ -150,6 +150,18 @@ namespace SwiftReflector {
 			return clangTarget.InterleaveStrings ("-");
 		}
 
+		public static bool ClangTargetIsSimulator (this string s)
+		{
+			var parts = s.DecomposeClangTarget ();
+			if (parts.Length == 4 && parts [3] == "simulator")
+				return true;
+			var osNoVersion = OSNoVersion (parts [2]);
+			if (osNoVersion == "macosx")
+				return false;
+			var cpu = parts [0];
+			return cpu == "i386" || cpu == "x86-64";
+		}
+
 		public static void Merge<T> (this HashSet<T> to, IEnumerable<T> from)
 		{
 			Exceptions.ThrowOnNull (from, nameof (from));

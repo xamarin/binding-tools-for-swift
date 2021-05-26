@@ -269,6 +269,13 @@ namespace tomswifty {
 						List<string> targets = MachOHelpers.TargetsFromDylib (stm);
 
 						Targets = FilterTargetsIfNeeded (targets, libFile);
+
+						if (CheckAndRemoveArm64Simulator (libFile, errors)) {
+							if (Targets.Count == 0)
+								errors.Add (new ReflectorError (new RuntimeException (ReflectorError.kReflectionErrorBase + 13, true,
+									$"file {libFile} contained only one CPU architecture which is arm64 simulator which is not currently supported.")));
+						}
+
 						MinimumOSVersion = SwiftReflector.Extensions.MinimumClangVersion (Targets);
 
 						if (Targets.Count > 0) {
@@ -395,6 +402,26 @@ namespace tomswifty {
 				}
 				return targets;
 			}
+		}
+
+		bool CheckAndRemoveArm64Simulator (string fileName, ErrorHandling errors)
+		{
+			for (int i = 0; i < Targets.Count; i++) {
+				var target = Targets [i];
+				if (!IsArm64Simulator (target))
+					continue;
+				Targets.RemoveAt (i);
+				errors.Add (new ReflectorError (new RuntimeException (ReflectorError.kReflectionErrorBase + 14, error: false,
+					$"The file {fileName} contains an arm64 simulator target which is not currently supported - skipping.")));
+				return true;
+			}
+			return false;
+		}
+
+		static bool IsArm64Simulator (string target)
+		{
+			var cpu = target.ClangTargetCpu ();
+			return target.ClangTargetIsSimulator () && cpu == "arm64";
 		}
 	}
 }
