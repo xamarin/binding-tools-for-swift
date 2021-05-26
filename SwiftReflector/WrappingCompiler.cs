@@ -41,7 +41,8 @@ namespace SwiftReflector {
 
 		public Tuple<string, HashSet<string>> CompileWrappers (string [] inputLibraryDirectories, string [] inputModuleDirectories,
 			IEnumerable<ModuleDeclaration> modulesToCompile, ModuleInventory modInventory,
-			List<string> targets, string wrappingModuleName, bool outputIsFramework, bool isLibrary = false)
+			List<string> targets, string wrappingModuleName, bool outputIsFramework,
+			string minimumOSVersion = null, bool isLibrary = false)
 		{
 			wrappingModuleName = wrappingModuleName ?? kXamWrapPrefix;
 
@@ -79,6 +80,7 @@ namespace SwiftReflector {
 					// each file goes to a unique output directory.
 					// first compile into the fileProvider, then move to
 					// fileProvider/tar-get-arch
+					var target = minimumOSVersion != null ? targets [i].ClangSubstituteOSVersion (minimumOSVersion) : targets [i];
 					string targetoutdir = Path.Combine (fileProvider.DirectoryPath, targets [i]);
 					targetOutDirs.Add (targetoutdir);
 					Directory.CreateDirectory (targetoutdir);
@@ -87,7 +89,7 @@ namespace SwiftReflector {
 					List<ISwiftModuleLocation> locations = null;
 					if (!isLibrary)
 						locations = SwiftModuleFinder.GatherAllReferencedModules (allReferencedModules,
-												      inputModuleDirectories, targets [i]);
+												      inputModuleDirectories, target);
 
 					try {
 						// We will keep inputModDirs as null if using a dylib
@@ -96,7 +98,7 @@ namespace SwiftReflector {
 							inputModDirs = locations.Select (loc => loc.DirectoryPath).ToArray ();
 						CompileAllFiles (fileProvider, wrappingModuleName, outputLibraryName, outputLibraryPath,
 						                 inputModDirs, inputLibraryDirectories, inModuleNamesList.ToArray (),
-						                 targets [i], outputIsFramework);
+						                 target, outputIsFramework);
 					} catch (Exception e) {
 						throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 66, e, $"Failed to compile the generated swift wrapper code: {e.Message}");
 					} finally {

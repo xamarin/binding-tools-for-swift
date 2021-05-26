@@ -104,6 +104,52 @@ namespace SwiftReflector {
 			throw new ArgumentException ($"Clang target {s} should have 3 or 4 parts", nameof (s));
 		}
 
+		static int IndexOfFirstDigit (string s)
+		{
+			int index = 0;
+			foreach (char c in s) {
+				if (Char.IsDigit (c))
+					return index;
+				index++;
+			}
+			return -1;
+		}
+
+		public static string ClangOSNoVersion (this string s)
+		{
+			var clangTarget = s.DecomposeClangTarget ();
+			var os = clangTarget [2];
+			return OSNoVersion (os);
+		}
+
+		static string OSNoVersion (string s)
+		{
+			var firstNumber = IndexOfFirstDigit (s);
+			return firstNumber < 0 ? s : s.Substring (0, firstNumber);
+		}
+
+		public static string ClangOSVersion (this string s)
+		{
+			var clangTarget = s.DecomposeClangTarget ();
+			var os = clangTarget [2];
+			var firstNumber = IndexOfFirstDigit (os);
+			return os.Substring (firstNumber);
+		}
+
+		public static string MinimumClangVersion (IEnumerable<string> targets)
+		{
+			var osVersion = targets.Select (t => new Version (ClangOSVersion (t))).Min ();
+			return osVersion.ToString ();
+		}
+
+		public static string ClangSubstituteOSVersion (this string s, string replacementVersion)
+		{
+			var clangTarget = s.DecomposeClangTarget ();
+			var os = OSNoVersion (clangTarget [2]) + replacementVersion;
+			clangTarget [2] = os;
+			return clangTarget.InterleaveStrings ("-");
+		}
+
 		public static void Merge<T> (this HashSet<T> to, IEnumerable<T> from)
 		{
 			Exceptions.ThrowOnNull (from, nameof (from));

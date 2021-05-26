@@ -118,6 +118,7 @@ namespace tomswifty {
 		public List<string> ModulePaths { get; private set; }
 		public List<string> DylibPaths { get; private set; }
 		public List<string> Targets { get; private set; }
+		public string MinimumOSVersion { get; private set; }
 		public string ModuleName { get; set; }
 		public string WrappingModuleName { get; set; }
 		public string OutputDirectory { get; set; }
@@ -268,16 +269,17 @@ namespace tomswifty {
 						List<string> targets = MachOHelpers.TargetsFromDylib (stm);
 
 						Targets = FilterTargetsIfNeeded (targets, libFile);
+						MinimumOSVersion = SwiftReflector.Extensions.MinimumClangVersion (Targets);
 
 						if (Targets.Count > 0) {
 							var targetOS = targets [0].ClangTargetOS ();
-							var targetOSAlpha = new string (targetOS.Where (Char.IsLetter).ToArray ());
+							var targetOSOnly = targets [0].ClangOSNoVersion ();
 
 							if (SwiftGluePath != null) {
 								string path = null;
 								string targetOSPathPart;
-								if (!targetOSToTargetDirectory.TryGetValue (targetOSAlpha, out targetOSPathPart)) {
-									throw new ArgumentException ("Target not found", nameof (targetOSAlpha));
+								if (!targetOSToTargetDirectory.TryGetValue (targetOSOnly, out targetOSPathPart)) {
+									throw new ArgumentException ("Target not found", nameof (targetOSOnly));
 								}
 								// The SwiftGluePath may have a 'FinalProduct' directory inside the path
 								path = Path.Combine (SwiftGluePath, $"{targetOSPathPart}/XamGlue.framework");
@@ -289,8 +291,8 @@ namespace tomswifty {
 							}
 
 							string targetOSLibraryPathPart;
-							if (!targetOSToTargetLibrary.TryGetValue (targetOSAlpha, out targetOSLibraryPathPart)) {
-								throw new ArgumentException ("Target not found", nameof (targetOSAlpha));
+							if (!targetOSToTargetLibrary.TryGetValue (targetOSOnly, out targetOSLibraryPathPart)) {
+								throw new ArgumentException ("Target not found", nameof (targetOSOnly));
 							}
 							// The SwiftLibPath may have a 'swift' directory inside the path
 							var swiftLibPath = SwiftLibPath;
@@ -394,7 +396,6 @@ namespace tomswifty {
 				return targets;
 			}
 		}
-
 	}
 }
 
