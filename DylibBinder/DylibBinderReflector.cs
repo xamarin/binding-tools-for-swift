@@ -5,7 +5,7 @@ using SwiftRuntimeLibrary;
 
 namespace DylibBinder {
 	public class DylibBinderReflector {
-		public static void Reflect (string dylibPath, string outputPath, string ignoreListPath, string swiftVersion = "5.0")
+		public static void Reflect (string dylibPath, string outputPath, string ignoreListPath = null, string swiftVersion = "5.0")
 		{
 			var errors = new ErrorHandling ();
 			var mi = ModuleInventory.FromFile (Exceptions.ThrowOnNull (dylibPath, nameof (dylibPath)), errors);

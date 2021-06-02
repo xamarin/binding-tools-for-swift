@@ -28,7 +28,7 @@ namespace DylibBinder {
 		{
 			Exceptions.ThrowOnNull (protoContents, nameof (protoContents));
 			Kind = TypeKind.Protocol;
-			Name = protoContents.Name.ToFullyQualifiedName ();
+			Name = protoContents.Name.ToFullyQualifiedName (false);
 			Module = protoContents.Name.Module.Name;
 			Funcs = new DBFuncs (protoContents);
 			AssociatedTypes = new DBAssociatedTypes (this);

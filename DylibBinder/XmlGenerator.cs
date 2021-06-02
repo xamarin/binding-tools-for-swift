@@ -101,6 +101,7 @@ namespace DylibBinder {
 		{
 			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			WriteProtocolMembers (typeDeclaration);
+			WriteAssocTypes (typeDeclaration);
 		}
 
 		void WriteMembers (DBTypeDeclaration typeDeclaration)
@@ -179,7 +180,7 @@ namespace DylibBinder {
 			if (typeDeclaration.AssociatedTypes.AssociatedTypeCollection.Count == 0)
 				return;
 
-			writer.WriteStartElement ("AssociatedTypeCollection");
+			writer.WriteStartElement ("associatedtypes");
 			foreach (var associatedType in typeDeclaration.AssociatedTypes.AssociatedTypeCollection) {
 				WriteAssocType (associatedType);
 			}
