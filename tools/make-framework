@@ -41,7 +41,7 @@ usage () {
 	echo "    if present, both --simulator-archs and --device-archs must be present."
 	echo " --verbose"
 	echo "    if present, be more talky."
-	echi "    if present, more than once be super talky."
+	echo "    if present, more than once be super talky."
 	echo " --help"
 	echo "    prints this message."
         echo "This tool compiles swift files into a framework with the given"
