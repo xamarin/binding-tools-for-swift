@@ -47,6 +47,12 @@ namespace DylibBinder {
 					var type2 = y as ClassContents;
 					return string.Compare (type1?.Name.ToFullyQualifiedName (), type2?.Name.ToFullyQualifiedName ());
 				}));
+			case Type t when t == typeof (DBModule):
+				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
+					var type1 = x as DBModule;
+					var type2 = y as DBModule;
+					return string.Compare (type1?.Name, type2?.Name);
+				}));
 			case Type t when t == typeof (string):
 				return new SortedSet<T> (Comparer<T>.Create ((x, y) => {
 					var type1 = x as string;

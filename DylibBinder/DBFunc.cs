@@ -32,7 +32,7 @@ namespace DylibBinder {
 		public DBGenericParameters GenericParameters { get; }
 		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
-		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false)
+		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false, bool isGlobal = false)
 		{
 			Exceptions.ThrowOnNull (tlf, nameof (tlf));
 			Name = tlf.Name.Name;
@@ -41,9 +41,9 @@ namespace DylibBinder {
 			HasThrows = tlf.Signature.CanThrow;
 			IsMutating = isMutating;
 			OperatorKind = tlf.Operator;
-			HasInstance = !tlf.Signature.IsConstructor && !IsStatic && !isProtocol;
+			HasInstance = !tlf.Signature.IsConstructor && !IsStatic && !isProtocol && !isGlobal;
 			ReturnType = SwiftTypeToString.MapSwiftTypeToString (tlf.Signature.ReturnType, tlf.Module.Name);
-			ParameterLists = new DBParameterLists (tlf.Signature, HasInstance);
+			ParameterLists = new DBParameterLists (tlf.Signature, HasInstance, isGlobal);
 			GenericParameters = new DBGenericParameters (tlf.Signature);
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (tlf.Signature.ReturnType.GetAssociatedTypes ());
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (ParameterLists.AssociatedTypes.AssociatedTypeCollection);
@@ -98,6 +98,21 @@ namespace DylibBinder {
 			foreach (var function in functions) {
 				if (function.Name.Name.IsPublic () && !IsMetaClass (function.Signature))
 					FuncCollection.Add (new DBFunc (function, isProtocol: true));
+			}
+			AssociatedTypes.AssociatedTypeCollection.UnionWith (FuncCollection.GetChildrenAssociatedTypes ());
+		}
+
+		public DBFuncs (ModuleInventory mi, SwiftName module)
+		{
+			Exceptions.ThrowOnNull (mi, nameof (mi));
+			var functions = SortedSetExtensions.Create<OverloadInventory> ();
+			functions.AddRange (CheckInventoryDictionary.GetGlobalFunctions (mi, module));
+
+			foreach (var function in functions) {
+				foreach (var overloadFunction in function.Functions) {
+					if (overloadFunction.Name.Name.IsPublic () && !IsMetaClass (overloadFunction.Signature))
+						FuncCollection.Add (new DBFunc (overloadFunction, isGlobal: true));
+				}
 			}
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (FuncCollection.GetChildrenAssociatedTypes ());
 		}

@@ -62,6 +62,16 @@ namespace SwiftReflector.Inventory {
 			}
 		}
 
+		public IEnumerable<OverloadInventory> FunctionsForName (SwiftName modName)
+		{
+			ModuleContents modcont = null;
+			if (values.TryGetValue (modName, out modcont)) {
+				return modcont.Functions.Values;
+			} else {
+				return new OverloadInventory [0];
+			}
+		}
+
 		public ClassContents FindClass (string fullyQualifiedName)
 		{
 			string moduleName = fullyQualifiedName.Substring (0, fullyQualifiedName.IndexOf ('.'));

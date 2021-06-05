@@ -15,20 +15,18 @@ namespace DylibBinder {
 	internal class CheckInventoryDictionary {
 		public SortedDictionary<string, CheckInventoryValues> CheckInventoryDict { get; } = new SortedDictionary<string, CheckInventoryValues> ();
 
-		public CheckInventoryDictionary (ModuleInventory mi)
+		public CheckInventoryDictionary (ModuleInventory mi, SwiftName module)
 		{
-			GetValues (Exceptions.ThrowOnNull (mi, nameof (mi)));
+			GetValues (Exceptions.ThrowOnNull (mi, nameof (mi)), Exceptions.ThrowOnNull (module, nameof (module)));
 		}
 
-		void GetValues (ModuleInventory mi)
+		void GetValues (ModuleInventory mi, SwiftName module)
 		{
-			foreach (var module in mi.ModuleNames) {
-				if (!CheckInventoryDict.ContainsKey (module.Name))
-					CheckInventoryDict.Add (module.Name, new CheckInventoryValues ());
+			if (!CheckInventoryDict.ContainsKey (module.Name))
+				CheckInventoryDict.Add (module.Name, new CheckInventoryValues ());
 
-				GetClassesStructsEnums (mi, module);
-				GetProtocols (mi, module);
-			}
+			GetClassesStructsEnums (mi, module);
+			GetProtocols (mi, module);
 		}
 
 		void GetClassesStructsEnums (ModuleInventory mi, SwiftName module)
@@ -55,6 +53,20 @@ namespace DylibBinder {
 				if (!p.Name.ToFullyQualifiedName ().Contains ("_"))
 					CheckInventoryDict [module.Name].Protocols.Add (p);
 			}
+		}
+
+		public static List<OverloadInventory> GetGlobalFunctions (ModuleInventory mi, SwiftName module)
+		{
+			Exceptions.ThrowOnNull (mi, nameof (mi));
+			Exceptions.ThrowOnNull (module, nameof (module));
+			var functions = new List<OverloadInventory> ();
+
+			foreach (var f in mi.FunctionsForName (module)) {
+				if (!f.Name.Name.Contains ("_")) {
+					functions.Add (f);
+				}
+			}
+			return functions;
 		}
 	}
 }

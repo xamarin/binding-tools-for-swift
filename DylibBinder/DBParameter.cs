@@ -83,14 +83,14 @@ namespace DylibBinder {
 		public List<DBParameterList> ParameterListCollection { get; } = new List<DBParameterList> ();
 		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
-		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance)
+		public DBParameterLists (SwiftBaseFunctionType signature, bool hasInstance, bool isGlobal = false)
 		{
 			Exceptions.ThrowOnNull (signature, nameof (signature));
 			var parameterListIndex = 0;
 			if (hasInstance) {
 				ParameterListCollection.Add (new DBParameterList (signature, true, false, parameterListIndex));
 				parameterListIndex++;
-			} else if (signature.IsConstructor) {
+			} else if (signature.IsConstructor && !isGlobal) {
 				ParameterListCollection.Add (new DBParameterList (signature, false, true, parameterListIndex));
 				parameterListIndex++;
 			}

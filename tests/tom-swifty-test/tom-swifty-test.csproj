@@ -118,8 +118,6 @@
     <Compile Include="XmlReflectionTests\TypeAliasTests.cs" />
     <Compile Include="DylibBinderTests\ReferenceStructTests.cs" />
     <Compile Include="SwiftReflector\ClangTargetTests.cs" />
-    <Compile Include="DylibBinderTests\DBFuncsTests.cs" />
-    <Compile Include="DylibBinderTests\DylibBinderUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

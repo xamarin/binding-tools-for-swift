@@ -51,18 +51,20 @@ namespace DylibBinder {
 		void WriteModules (DBTopLevel dBTopLevel)
 		{
 			Exceptions.ThrowOnNull (dBTopLevel, nameof (dBTopLevel));
-			foreach (var module in dBTopLevel.DBTypeDeclarations.TypeDeclarationCollection.Keys) {
+			foreach (var module in dBTopLevel.Modules.ModuleCollection) {
 				writer.WriteStartElement ("module");
-				writer.WriteAttributeString ("name", module);
+				writer.WriteAttributeString ("name", module.Name);
 				writer.WriteAttributeString ("swiftVersion", dBTopLevel.SwiftVersion);
-				WriteTypeDeclarations (dBTopLevel.DBTypeDeclarations.TypeDeclarationCollection [module]);
+				WriteTypeDeclarations (module.TypeDeclarations);
+				WriteGlobalFuncs (module.GlobalFuncs);
 			}
 		}
 
-		void WriteTypeDeclarations (List <DBTypeDeclaration> typeDeclarations)
+		void WriteTypeDeclarations (DBTypeDeclarations typeDeclarations)
 		{
-			Exceptions.ThrowOnNull (typeDeclarations, nameof (typeDeclarations));
-			foreach (var typeDeclaration in typeDeclarations) {
+			if (typeDeclarations == null)
+				return;
+			foreach (var typeDeclaration in typeDeclarations.TypeDeclarationCollection) {
 
 				if (InnerX.IsInnerType (typeDeclaration))
 					continue;
@@ -102,6 +104,15 @@ namespace DylibBinder {
 			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
 			WriteProtocolMembers (typeDeclaration);
 			WriteAssocTypes (typeDeclaration);
+		}
+
+		void WriteGlobalFuncs (DBFuncs funcs)
+		{
+			if (funcs == null)
+				return;
+			foreach (var func in funcs.FuncCollection) {
+				WriteFunc (func);
+			}
 		}
 
 		void WriteMembers (DBTypeDeclaration typeDeclaration)

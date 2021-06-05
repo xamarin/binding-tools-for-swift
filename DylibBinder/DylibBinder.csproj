@@ -59,6 +59,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="SortedSetExtensions.cs" />
     <Compile Include="DylibBinderReflector.cs" />
+    <Compile Include="DBModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
