@@ -383,6 +383,7 @@ make_framework ()
 	if [[ -n $superverbose ]]; then
 		echo lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
 	fi
+	lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
 }
 
 compile_swift_and_c ()
