@@ -303,7 +303,7 @@ compile_c_files () {
 			echo "[Compiling C files ${targetarch}]"
 		fi
 		if [[ -n $superverbose ]]; then
-			echo clang -x c -c -target $targetarch -isysroot $sdk -std=gnu11 -fasm-blocks $extra_c_args $cfile -o $odir/$ofile &
+			echo clang -x c -c -arch $arch -target $targetarch -isysroot $sdk -std=gnu11 -fasm-blocks $extra_c_args $cfile -o $odir/${cfile%.*}.o &
 		fi
 		clang -x c -c -arch $arch -target $targetarch -isysroot $sdk -std=gnu11 -fasm-blocks $extra_c_args $cfile -o $odir/${cfile%.*}.o &
 	done
