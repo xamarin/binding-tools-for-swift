@@ -32,7 +32,7 @@ namespace DylibBinder {
 		public DBGenericParameters GenericParameters { get; }
 		public DBAssociatedTypes AssociatedTypes { get; } = new DBAssociatedTypes ();
 
-		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false, bool isGlobal = false)
+		public DBFunc (TLFunction tlf, bool isMutating = false, bool isProtocol = false)
 		{
 			Exceptions.ThrowOnNull (tlf, nameof (tlf));
 			Name = tlf.Name.Name;
@@ -111,7 +111,7 @@ namespace DylibBinder {
 			foreach (var function in functions) {
 				foreach (var overloadFunction in function.Functions) {
 					if (overloadFunction.Name.Name.IsPublic () && !IsMetaClass (overloadFunction.Signature))
-						FuncCollection.Add (new DBFunc (overloadFunction, isGlobal: true));
+						FuncCollection.Add (new DBFunc (overloadFunction));
 				}
 			}
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (FuncCollection.GetChildrenAssociatedTypes ());
