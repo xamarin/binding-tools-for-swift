@@ -213,11 +213,11 @@ fail_empty () {
 	fi
 }
 
-fail_empty "--swift-files" $swift_files
-fail_empty "--minimum-os-version" $minimum_os_version
-fail_empty "--module-name" $module_name
-fail_empty "--output-path" $output_path
-fail_empty "--target-os" $target_os
+fail_empty "--swift-files" "$swift_files"
+fail_empty "--minimum-os-version" "$minimum_os_version"
+fail_empty "--module-name" "$module_name"
+fail_empty "--output-path" "$output_path"
+fail_empty "--target-os" "$target_os"
 
 if [[ -n "$device_archs" && -n "$simulator_archs" ]]; then
 	sim_and_device=1
@@ -228,8 +228,6 @@ if [[ -n "$sim_and_device" && -z "$make_xcframework" ]]; then
 	exit 1
 fi
 
-platformroot="/Applications/Xcode.app/Contents/Developer/Platforms"
-
 get_target_arch () {
 # this should be called with: [device|simulator] arch nameofresultvar
 # this creates either a target triple or an extended target triple
@@ -238,10 +236,10 @@ get_target_arch () {
 	local arch=$2
 	local result=$3
 	local __targetarch=$arch"-apple-"$target_os$minimum_os_version
-	if [ $devicesim == "simulator" ]; then
-		__targetarch=$__targetarch"-simulator"
+	if [ "$devicesim" == "simulator" ]; then
+		__targetarch="${__targetarch}-simulator"
 	fi
-	eval $result="'$__targetarch'"
+	eval "$result='$__targetarch'"
 }
 
 get_sdk_path () {
@@ -252,21 +250,21 @@ get_sdk_path () {
 	local result=$2
 	case $target_os in
 	ios)
-		if [ $devicesim == "simulator" ]; then
+		if [ "$devicesim" == "simulator" ]; then
 			local __sdkname=iphonesimulator
 		else
 			local __sdkname=iphoneos
 		fi
 		;;
 	watchos)
-		if [ $devicesim == "simulator" ]; then
+		if [ "$devicesim" == "simulator" ]; then
 			local __sdkname=watchsimulator
 		else
 			local __sdkname=watchos
 		fi
 		;;
 	tvos)
-		if [ $devicesim == "simulator" ]; then
+		if [ "$devicesim" == "simulator" ]; then
 			local __sdkname=appletvsimulator
 		else
 			local __sdkname=appletvos
@@ -276,8 +274,8 @@ get_sdk_path () {
 		local __sdkname=macosx
 		;;
 	esac
-	local __sdk=`xcrun --sdk $__sdkname --show-sdk-path`
-	eval $result="'$__sdk'"
+	local __sdk=$(xcrun --sdk $__sdkname --show-sdk-path)
+	eval "$result='$__sdk'"
 }
 
 compile_c_files () {
@@ -289,11 +287,11 @@ compile_c_files () {
 	shift
 	local arch=$1
 	shift
-	local odir="$output_path"/build/$devicesim/$arch/ofiles
-	mkdir -p $odir
+	local odir="${output_path}/build/${devicesim}/${arch}/ofiles"
+	mkdir -p "$odir"
 
-	get_target_arch $devicesim $arch targetarch
-	get_sdk_path $devicesim sdk
+	get_target_arch "$devicesim" "$arch" targetarch
+	get_sdk_path "$devicesim" sdk
 
 	while (( "$#" )); do
 		local cfile=$1
@@ -303,9 +301,9 @@ compile_c_files () {
 			echo "[Compiling C files ${targetarch}]"
 		fi
 		if [[ -n $superverbose ]]; then
-			echo clang -x c -c -arch $arch -target $targetarch -isysroot $sdk -std=gnu11 -fasm-blocks $extra_c_args $cfile -o $odir/${cfile%.*}.o &
+			echo "clang -x c -c -arch $arch -target $targetarch -isysroot $sdk -std=gnu11 -fasm-blocks $extra_c_args $cfile -o ${ofile} &"
 		fi
-		clang -x c -c -arch $arch -target $targetarch -isysroot $sdk -std=gnu11 -fasm-blocks $extra_c_args $cfile -o $odir/${cfile%.*}.o &
+		clang -x c -c -arch $"arch" -target $"targetarch" -isysroot $"sdk" -std=gnu11 -fasm-blocks $"extra_c_args" $"cfile" -o "${ofile}" &
 	done
 	wait
 }
@@ -317,27 +315,27 @@ compile_swift_files () {
 	local arch=$1
 	shift
 	local odir="$output_path"/build/$devicesim/$arch
-	mkdir -p $odir
+	mkdir -p "$odir"
 
-	get_target_arch $devicesim $arch targetarch
-	get_sdk_path $devicesim sdk
+	get_target_arch "$devicesim" "$arch" targetarch
+	get_sdk_path "$devicesim" sdk
 
 	if [[ -n $superverbose ]]; then
 		echo "using sdk $sdk"
 	fi
 	local ofiles=""
 	if [ -d "${odir}/ofiles" ]; then
-		local ofiles=$odir/ofiles/*.o
+		local ofiles="${odir}/ofiles/*.o"
 	fi
 	
 	if [[ -n $verbose ]]; then
 		echo "[Compiling Swift $targetarch]"
 	fi
 	if [[ -n $superverbose ]]; then
-		echo swiftc -sdk $sdk -target $targetarch -emit-module-interface -enable-library-evolution -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $module_name -o "${odir}/${module_name}" $swift_files $ofiles
+		echo swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
 	fi
 
-	swiftc -sdk $sdk -target $targetarch -emit-module-interface -enable-library-evolution -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker $module_name -o "${odir}/${module_name}" $swift_files $ofiles
+	swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
 }
 
 copy_arch_files ()
@@ -373,17 +371,17 @@ make_framework ()
 	mkdir -p "$swiftmoduledir"
 	sourcemodules=""
 	if [[ -n $verbose ]]; then
-		echo "[Building framework for $@]"
+		echo "[Building framework for $*]"
 	fi
 	for arch in "$@"
 	do
-		copy_arch_files $arch "$builddir" "$swiftmoduledir"
+		copy_arch_files "$arch" "$builddir" "$swiftmoduledir"
 		sourcemodules="$sourcemodules ${builddir}/$arch/$module_name"
 	done
 	if [[ -n $superverbose ]]; then
-		echo lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
+		echo lipo -create "$sourcemodules" -output "${frameworkdir}/${module_name}"
 	fi
-	lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
+	lipo -create "$sourcemodules" -output "${frameworkdir}/${module_name}"
 }
 
 compile_swift_and_c ()
@@ -394,14 +392,14 @@ compile_swift_and_c ()
 	local devicesim=$1
 	local arch=$2
 
-	compile_c_files $devicesim $arch $c_files
-	compile_swift_files $devicesim $arch $swift_files
+	compile_c_files "$devicesim" "$arch" $c_files
+	compile_swift_files "$devicesim" "$arch" $swift_files
 }
 
 if [[ -n "$simulator_archs" ]]; then
 	for arch in $simulator_archs
 	do
-		compile_swift_and_c "simulator" $arch &
+		compile_swift_and_c "simulator" "$arch" &
 	done
 	wait
 	make_framework "${output_path}/build/simulator" $simulator_archs
@@ -410,7 +408,7 @@ fi
 if [[ -n "$device_archs" ]]; then
 	for arch in $device_archs
 	do
-		compile_swift_and_c "device" $arch &
+		compile_swift_and_c "device" "$arch" &
 	done
 	wait
 	make_framework "${output_path}/build/device" $device_archs
