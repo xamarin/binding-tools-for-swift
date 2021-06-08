@@ -124,16 +124,11 @@ namespace DylibBinder {
 		public DBTypeDeclarations (ModuleInventory mi, SwiftName module, string ignoreListPath) {
 			Exceptions.ThrowOnNull (mi, nameof (mi));
 			IgnoreListPath = ignoreListPath;
-			var checkInventory = new CheckInventoryDictionary (mi, module);
+			var checkInventory = new CheckInventory (mi, module);
 			var innerX = new InnerX ();
 
-			InnerXDictionary = innerX.AddClassContentsList (checkInventory.CheckInventoryDict[module.Name].Classes,
-				                                        checkInventory.CheckInventoryDict [module.Name].Enums,
-				                                        checkInventory.CheckInventoryDict [module.Name].Structs);
-			FilterTypeDeclarations (module.Name, checkInventory.CheckInventoryDict [module.Name].Protocols,
-				                checkInventory.CheckInventoryDict [module.Name].Classes,
-				                checkInventory.CheckInventoryDict [module.Name].Structs,
-				                checkInventory.CheckInventoryDict [module.Name].Enums);
+			InnerXDictionary = innerX.AddClassContentsList (checkInventory.Classes, checkInventory.Enums, checkInventory.Structs);
+			FilterTypeDeclarations (module.Name, checkInventory.Protocols, checkInventory.Classes, checkInventory.Structs, checkInventory.Enums);
 		}
 
 		void FilterTypeDeclarations (string module, SortedSet<ProtocolContents> protocolContentList, params SortedSet<ClassContents>[] ClassContentListArray)

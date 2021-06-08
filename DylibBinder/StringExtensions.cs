@@ -9,6 +9,7 @@ namespace DylibBinder {
 
 		internal static bool IsPublic (this string s)
 		{
+			// Need to find a better way to filter public elements. Issue https://github.com/xamarin/binding-tools-for-swift/issues/704
 			Exceptions.ThrowOnNull (s, nameof (s));
 			return !s.Contains ("_");
 		}
