@@ -301,9 +301,9 @@ compile_c_files () {
 			echo "[Compiling C files ${targetarch}]"
 		fi
 		if [[ -n $superverbose ]]; then
-			echo "clang -x c -c -arch $arch -target $targetarch -isysroot $sdk -std=gnu11 -fasm-blocks $extra_c_args $cfile -o ${ofile} &"
+			echo clang -x c -c -arch "$arch" -target "$targetarch" -isysroot "$sdk" -std=gnu11 -fasm-blocks "$extra_c_args" "$cfile" -o "${odir}/${ofile}" &
 		fi
-		clang -x c -c -arch $"arch" -target $"targetarch" -isysroot $"sdk" -std=gnu11 -fasm-blocks $"extra_c_args" $"cfile" -o "${ofile}" &
+		clang -x c -c -arch "$arch" -target "$targetarch" -isysroot "$sdk" -std=gnu11 -fasm-blocks "$extra_c_args" "$cfile" -o "${odir}/${ofile}" &
 	done
 	wait
 }
@@ -314,7 +314,7 @@ compile_swift_files () {
 	shift
 	local arch=$1
 	shift
-	local odir="$output_path"/build/$devicesim/$arch
+	local odir="${output_path}/build/$devicesim/$arch"
 	mkdir -p "$odir"
 
 	get_target_arch "$devicesim" "$arch" targetarch
@@ -325,7 +325,7 @@ compile_swift_files () {
 	fi
 	local ofiles=""
 	if [ -d "${odir}/ofiles" ]; then
-		local ofiles="${odir}/ofiles/*.o"
+		local ofiles=${odir}/ofiles/*.o
 	fi
 	
 	if [[ -n $verbose ]]; then
@@ -378,10 +378,10 @@ make_framework ()
 		copy_arch_files "$arch" "$builddir" "$swiftmoduledir"
 		sourcemodules="$sourcemodules ${builddir}/$arch/$module_name"
 	done
-	if [[ -n $superverbose ]]; then
-		echo lipo -create "$sourcemodules" -output "${frameworkdir}/${module_name}"
-	fi
-	lipo -create "$sourcemodules" -output "${frameworkdir}/${module_name}"
+	#if [[ -n $superverbose ]]; then
+		echo lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
+	#fi
+	lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
 }
 
 compile_swift_and_c ()
