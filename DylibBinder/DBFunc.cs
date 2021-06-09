@@ -41,9 +41,9 @@ namespace DylibBinder {
 			HasThrows = tlf.Signature.CanThrow;
 			IsMutating = isMutating;
 			OperatorKind = tlf.Operator;
-			HasInstance = !tlf.Signature.IsConstructor && !IsStatic && !isProtocol;
+			HasInstance = !tlf.Signature.IsConstructor && !IsStatic && !isProtocol && !tlf.IsTopLevelFunction;
 			ReturnType = SwiftTypeToString.MapSwiftTypeToString (tlf.Signature.ReturnType, tlf.Module.Name);
-			ParameterLists = new DBParameterLists (tlf.Signature, HasInstance);
+			ParameterLists = new DBParameterLists (tlf.Signature, HasInstance, tlf.IsTopLevelFunction);
 			GenericParameters = new DBGenericParameters (tlf.Signature);
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (tlf.Signature.ReturnType.GetAssociatedTypes ());
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (ParameterLists.AssociatedTypes.AssociatedTypeCollection);
@@ -102,9 +102,34 @@ namespace DylibBinder {
 			AssociatedTypes.AssociatedTypeCollection.UnionWith (FuncCollection.GetChildrenAssociatedTypes ());
 		}
 
+		public DBFuncs (ModuleInventory mi, SwiftName module)
+		{
+			Exceptions.ThrowOnNull (mi, nameof (mi));
+			var functions = SortedSetExtensions.Create<OverloadInventory> ();
+			functions.AddRange (CheckInventory.GetGlobalFunctions (mi, module));
+
+			foreach (var function in functions) {
+				foreach (var overloadFunction in function.Functions) {
+					if (overloadFunction.Name.Name.IsPublic () && !IsMetaClass (overloadFunction.Signature))
+						FuncCollection.Add (new DBFunc (overloadFunction));
+				}
+			}
+			AssociatedTypes.AssociatedTypeCollection.UnionWith (FuncCollection.GetChildrenAssociatedTypes ());
+		}
+
 		bool IsMetaClass (SwiftBaseFunctionType funcType)
 		{
 			Exceptions.ThrowOnNull (funcType, nameof (funcType));
+
+			foreach (var parameter in funcType.EachParameter) {
+				if (parameter.Type is CoreCompoundType.BoundGeneric) {
+					var boundType = parameter as SwiftBoundGenericType;
+					foreach (var b in boundType.BoundTypes) {
+						if (b.Type == CoreCompoundType.MetaClass)
+							return true;
+					}
+				}
+			}
 			return funcType.ReturnType.Type == CoreCompoundType.MetaClass ||
 			    funcType.EachParameter.Any (t => t.Type == CoreCompoundType.MetaClass);
 		}

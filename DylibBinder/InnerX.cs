@@ -72,7 +72,12 @@ namespace DylibBinder {
 		public static bool IsInnerType (DBTypeDeclaration typeDeclaration)
 		{
 			Exceptions.ThrowOnNull (typeDeclaration, nameof (typeDeclaration));
-			return Regex.Matches (typeDeclaration.Name, @"\.").Count > 0;
+			var name = typeDeclaration.Name;
+
+			// if the name begins with the module and a period, we do not take that into consideration
+			if (name.StartsWith ($"{typeDeclaration.Module}."))
+				name = typeDeclaration.Name.Substring (typeDeclaration.Module.Length + 1);
+			return Regex.Matches (name, @"\.").Count > 0;
 		}
 	}
 }

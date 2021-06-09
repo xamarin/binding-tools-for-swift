@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>tomwiftytest</RootNamespace>
     <AssemblyName>tom-swifty-test</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -148,6 +148,10 @@
     <ProjectReference Include="..\..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
       <Project>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</Project>
       <Name>SwiftRuntimeLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DylibBinder\DylibBinder.csproj">
+      <Project>{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}</Project>
+      <Name>DylibBinder</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@ using System.Linq;
 using SwiftReflector;
 using SwiftReflector.SwiftInterfaceReflector;
 using SwiftReflector.TypeMapping;
+using DylibBinder;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -22,6 +23,7 @@ namespace XmlReflectionTests {
 
 		public enum ReflectorMode {
 			Parser,
+			DylibBinder,
 		}
 		static TypeDatabase typeDatabase;
 
@@ -55,6 +57,13 @@ namespace XmlReflectionTests {
 			return Reflector.FromXml (doc, typeDatabase);
 		}
 
+		List<ModuleDeclaration> DylibBinderToModule (string directory, string moduleName)
+		{
+			var outputPath = Path.Combine (directory, "lib" + moduleName + ".xml");
+			DylibBinderReflector.Reflect (Path.Combine (directory, "lib" + moduleName + ".dylib"), outputPath);
+			return Reflector.FromXmlFile (outputPath, typeDatabase);
+		}
+
 		List<ModuleDeclaration> ReflectToModules (string code, string moduleName, ReflectorMode mode = ReflectorMode.Parser)
 		{
 			CustomSwiftCompiler compiler = Utils.CompileSwift (code, moduleName: moduleName);
@@ -63,6 +72,8 @@ namespace XmlReflectionTests {
 			switch (mode) {
 			case ReflectorMode.Parser:
 				return ParserToModule (compiler.DirectoryPath, moduleName);
+			case ReflectorMode.DylibBinder:
+				return DylibBinderToModule (compiler.DirectoryPath, moduleName);
 			default:
 				throw new ArgumentOutOfRangeException (nameof (mode));
 			}
@@ -98,42 +109,49 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestFuncReturningBool (ReflectorMode mode)
 		{
 			TestFuncReturning ("Bool", "true", "Swift.Bool", mode);
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestFuncReturningInt (ReflectorMode mode)
 		{
 			TestFuncReturning ("Int", "42", "Swift.Int", mode);
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestFuncReturningUInt (ReflectorMode mode)
 		{
 			TestFuncReturning ("UInt", "43", "Swift.UInt", mode);
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestFuncReturningFloat (ReflectorMode mode)
 		{
 			TestFuncReturning ("Float", "2.0", "Swift.Float", mode);
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestFuncReturningDouble (ReflectorMode mode)
 		{
 			TestFuncReturning ("Double", "3.0", "Swift.Double", mode);
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestFuncReturningString (ReflectorMode mode)
 		{
 			TestFuncReturning ("String", "\"nothing\"", "Swift.String", mode);
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestEmptyClass (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { } ", "SomeModule").Find (m => m.Name == "SomeModule");
@@ -144,6 +162,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestEmptyStruct (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public struct Foo { } ", "SomeModule").Find (m => m.Name == "SomeModule");
@@ -154,6 +173,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestStructLayout (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public struct Foo { public var X:Int;\n public var Y:Bool; public var Z: Float; }", "SomeModule", mode)
@@ -172,6 +192,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestClassWithConstructor (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule", mode)
@@ -188,6 +209,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Does not yet include destructors https://github.com/xamarin/binding-tools-for-swift/issues/700")]
 		public void TestClassHasDestructor (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { public var x:Int; public init(y:Int) { x = y; } }", "SomeModule", mode)
@@ -200,6 +222,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Naming convention. Tries to give the tuple names https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void FuncReturningTuple (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnTuple()->(Int,Float) { return (0, 3.0); }", "SomeModule", mode)
@@ -211,6 +234,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void FuncReturningDictionary (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnDict()->[Int:Float] { return [Int:Float](); }", "SomeModule", mode)
@@ -223,6 +247,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void FuncReturningIntThrows (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public enum MathError : Error {\ncase divZero\n}\n" +
@@ -237,6 +262,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void FuncReturningIntOption (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public func returnIntOpt()->Int? { return 3; }", "SomeModule", mode)
@@ -247,6 +273,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle global variables https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void GlobalBool (ReflectorMode mode)
 		{
 			ModuleDeclaration module = ReflectToModules ("public var aGlobal:Bool = true", "SomeModule", mode)
@@ -257,6 +284,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumSmokeTest1 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a, b, c, d }";
@@ -272,6 +300,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumSmokeTest2 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(Int), b(Int), c(Int), d(Int) }";
@@ -291,6 +320,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumSmokeTest3 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Int), d(Int) }";
@@ -310,6 +340,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumSmokeTest4 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(Int), b, c, d }";
@@ -329,6 +360,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumSmokeTest5 (ReflectorMode mode)
 		{
 			string code = "public enum foo:Int { case a=1, b, c, d }";
@@ -346,6 +378,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumSmokeTest6 (ReflectorMode mode)
 		{
 			string code = "public enum foo:Int { case a, b, c, d }";
@@ -363,6 +396,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumSmokeTest7 (ReflectorMode mode)
 		{
 			string code = "public enum foo { case a(UInt), b(Int), c(Bool), d(Float) }";
@@ -385,6 +419,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void OptionalSmokeTest1 (ReflectorMode mode)
 		{
 			string code = "public func optInt(x:Int) -> Int? { if (x >= 0) { return x; }\nreturn nil; }\n";
@@ -393,6 +428,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TypeAliasTest (ReflectorMode mode)
 		{
 			string code = "public typealias Foo = OpaquePointer\n" +
@@ -414,6 +450,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot identify deprecations https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void DeprecatedFunction (ReflectorMode mode)
 		{
 			string code =
@@ -429,6 +466,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot identify deprecations https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void DeprecatedClass (ReflectorMode mode)
 		{
 			string code =
@@ -443,6 +481,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle Deprecated and Unavailable https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObsoletedFunction (ReflectorMode mode)
 		{
 			string code =
@@ -458,6 +497,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle obsoleted or unavailable https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObsoletedClass (ReflectorMode mode)
 		{
 			string code =
@@ -473,6 +513,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle unavailable https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void UnavailableFunction (ReflectorMode mode)
 		{
 			string code =
@@ -488,6 +529,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle unavailable https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void UnavailableClass (ReflectorMode mode)
 		{
 			string code =
@@ -503,6 +545,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle deprecation https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void MethodInStruct (ReflectorMode mode)
 		{
 			string code =
@@ -525,6 +568,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle unavailable https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void UnavailableProperty (ReflectorMode mode)
 		{
 			string code =
@@ -542,6 +586,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle extensions https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ExtensionProperty (ReflectorMode mode)
 		{
 			string code =
@@ -557,6 +602,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle extensions https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ExtensionFunc (ReflectorMode mode)
 		{
 			string code =
@@ -574,6 +620,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle extensions https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ExtensionProto (ReflectorMode mode)
 		{
 			string code =
@@ -598,6 +645,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet handle objective-c selectors https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObjCOptionalMember (ReflectorMode mode)
 		{
 			string code =
@@ -624,6 +672,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet handle objective-c selectors https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObjCOptionalProp (ReflectorMode mode)
 		{
 			string code =
@@ -653,6 +702,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet handle objective-c selectors https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObjCOptionalSubsript (ReflectorMode mode)
 		{
 			string code =
@@ -682,6 +732,10 @@ namespace XmlReflectionTests {
 		[TestCase ("public", Accessibility.Public, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
 		[TestCase ("internal", Accessibility.Internal, ReflectorMode.Parser, Ignore = "Bug in swift compiler (maybe) see https://bugs.swift.org/browse/SR-14304")]
 		[TestCase ("private", Accessibility.Private, ReflectorMode.Parser, Ignore = "This is not a public interface, parser never sees it")]
+		[TestCase ("open", Accessibility.Open, ReflectorMode.DylibBinder, Ignore = "Cannot handle accessibilities other than Public https://github.com/xamarin/binding-tools-for-swift/issues/697")]
+		[TestCase ("public", Accessibility.Public, ReflectorMode.DylibBinder)]
+		[TestCase ("internal", Accessibility.Internal, ReflectorMode.DylibBinder, Ignore = "Cannot handle accessibilities other than Public https://github.com/xamarin/binding-tools-for-swift/issues/697")]
+		[TestCase ("private", Accessibility.Private, ReflectorMode.DylibBinder, Ignore = "Cannot handle accessibilities other than Public https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void PropertyVisibilityCore (string swiftVisibility, Accessibility accessibility, ReflectorMode mode)
 		{
 			string code = $@"open class Foo {{
@@ -697,6 +751,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet handle objective-c selectors https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObjCMemberSelector (ReflectorMode mode)
 		{
 			string code =
@@ -724,6 +779,7 @@ namespace XmlReflectionTests {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet handle objective-c selectors https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObjCPropSelector (ReflectorMode mode)
 		{
 			string code =
@@ -751,6 +807,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet handle objective-c selectors https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObjCPropSelectorLower (ReflectorMode mode)
 		{
 			string code =
@@ -778,6 +835,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet handle objective-c selectors https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void ObjCSubsriptSelector (ReflectorMode mode)
 		{
 			string code =
@@ -804,6 +862,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle required https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void RequiredInitTest (ReflectorMode mode)
 		{
 			string code =
@@ -834,6 +893,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void NotRequiredInitTest (ReflectorMode mode)
 		{
 			string code =
@@ -864,6 +924,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Close, but DylibBinder cannot get every private name https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void TestPublicPrivateParamNames (ReflectorMode mode)
 		{
 			string code = "public func foo(seen notseen:Int) { }\n";
@@ -879,6 +940,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestOnlyPublicParamNames (ReflectorMode mode)
 		{
 			string code = "public func foo(seen:Int) { }\n";
@@ -894,6 +956,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot always get names correct: https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void TestNotRequiredParamName (ReflectorMode mode)
 		{
 			string code = "public func foo(_ seen:Int) { }\n";
@@ -909,6 +972,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestSimpleVariadicFunc (ReflectorMode mode)
 		{
 			string code = "public func itemsAsArray (a:Int ...) -> [Int] {\n return a\n}\n";
@@ -923,6 +987,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestSimpleNotVariadicFunc (ReflectorMode mode)
 		{
 			string code = "public func itemsAsArray (a:Int) -> [Int] {\n return [a]\n}\n";
@@ -937,6 +1002,7 @@ namespace XmlReflectionTests {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestReturnsOptionalProtocol (ReflectorMode mode)
 		{
 			var code = @"
@@ -961,6 +1027,7 @@ public func itMightBeAProtocol () -> Foo? {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestPropReturnsOptionalProtocol (ReflectorMode mode)
 		{
 			var code = @"
@@ -989,6 +1056,7 @@ public class Container {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Convenience ctor marked designated https://github.com/xamarin/binding-tools-for-swift/issues/701")]
 		public void TestConvenienceCtor (ReflectorMode mode)
 		{
 			var code = @"
@@ -1017,6 +1085,7 @@ open class Foo {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Protocols not fully there yet https://github.com/xamarin/binding-tools-for-swift/issues/698")]
 		public void TestProtocolListType (ReflectorMode mode)
 		{
 			var code = @"
@@ -1041,6 +1110,7 @@ public func joe (a: FooA & FooB) {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestFuncReturningAny (ReflectorMode mode)
 		{
 			var code = @"
@@ -1058,6 +1128,7 @@ public func returnsAny() -> Any {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void AssocTypeSmoke (ReflectorMode mode)
 		{
 			var code = @"
@@ -1079,6 +1150,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Order of associated types is off https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void AssocTypeTimesTwo (ReflectorMode mode)
 		{
 			var code = @"
@@ -1103,6 +1175,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet get types for associated types https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void AssocTypeDefaultType (ReflectorMode mode)
 		{
 			var code = @"
@@ -1125,6 +1198,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser, Ignore = "Don't have IteratorProtocol in type database")]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle inheritance for associatedtype https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void AssocTypeConformance (ReflectorMode mode)
 		{
 			var code = @"
@@ -1148,6 +1222,7 @@ public protocol HoldsThing {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot yet get inheritance in associated types https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void AssocTypeSuper (ReflectorMode mode)
 		{
 			var code = @"
@@ -1174,6 +1249,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void FindsAssocTypeByName (ReflectorMode mode)
 		{
 			var code = @"
@@ -1194,6 +1270,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestTLFuncNoArgsNoReturnOutput (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc () { }";
@@ -1206,6 +1283,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestTLFuncNoArgsReturnsIntOutput (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc () -> Int { return 3; }";
@@ -1218,6 +1296,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestTLFuncNoArgsReturnsIntThrowsOutput (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc () throws -> Int { return 3; }";
@@ -1230,6 +1309,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestTLFuncOneArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (a: Int) -> Int { return a; }";
@@ -1242,6 +1322,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Public and private names are not always accurate. If they do not differ, they will be written as just one name. https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void TestTLFuncOneArgDiffPubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (b a: Int) -> Int { return a; }";
@@ -1254,6 +1335,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Public and private names are not always accurate https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void TestTLFuncOneArgNoPubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (_ a: Int) -> Int { return a; }";
@@ -1266,6 +1348,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestTLFuncTwoArgSamePubPrivReturnsInt (ReflectorMode mode)
 		{
 			var code = @"public func SomeFunc (a: Int, b: Int) -> Int { return a + b; }";
@@ -1278,6 +1361,7 @@ public protocol HoldsThing {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestPropGetFunc (ReflectorMode mode)
 		{
 			var code = @"
@@ -1297,6 +1381,7 @@ public class Foo {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void TestPropGetSet (ReflectorMode mode)
 		{
 			var code = @"
@@ -1316,6 +1401,7 @@ public class Foo {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "SomeModule.Foo.Type is 'inout SomeModule.Foo.Type' instead of 'SomeModule.Foo.Type' https://github.com/xamarin/binding-tools-for-swift/issues/699")]
 		public void TestCtorType (ReflectorMode mode)
 		{
 			var code = @"
@@ -1337,6 +1423,7 @@ public class Foo {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle subscripts https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void TestSubscriptGetSet (ReflectorMode mode)
 		{
 			var code = @"
@@ -1361,6 +1448,7 @@ public class Foo {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Issue with the generic parameters https://github.com/xamarin/binding-tools-for-swift/issues/702")]
 		public void TestGenericMethodInGenericClass (ReflectorMode mode)
 		{
 			var code = @"
@@ -1383,6 +1471,7 @@ private var x: T
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Self not yet supported in protocols https://github.com/xamarin/binding-tools-for-swift/issues/698")]
 		public void DetectsSelfEasy (ReflectorMode mode)
 		{
 			var code = @"
@@ -1398,6 +1487,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Self not yet supported in protocols https://github.com/xamarin/binding-tools-for-swift/issues/698")]
 		public void DetectsSelfEasy1 (ReflectorMode mode)
 		{
 			var code = @"
@@ -1417,6 +1507,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Self not yet supported in protocols https://github.com/xamarin/binding-tools-for-swift/issues/698")]
 		public void DetectsSelfInTuple (ReflectorMode mode)
 		{
 			var code = @"
@@ -1432,6 +1523,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Self not yet supported in protocols https://github.com/xamarin/binding-tools-for-swift/issues/698")]
 		public void DetectsSelfInOptional (ReflectorMode mode)
 		{
 			var code = @"
@@ -1447,6 +1539,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Self not yet supported in protocols https://github.com/xamarin/binding-tools-for-swift/issues/698")]
 		public void DetectsSelfInBoundGeneric (ReflectorMode mode)
 		{
 			var code = @"
@@ -1462,6 +1555,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Self not yet supported in protocols https://github.com/xamarin/binding-tools-for-swift/issues/698")]
 		public void DetectsSelfInClosure (ReflectorMode mode)
 		{
 			var code = @"
@@ -1477,6 +1571,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let - apple's bug, not mine: https://bugs.swift.org/browse/SR-13790")]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "cannot handle lets https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void TopLevelLet (ReflectorMode mode)
 		{
 			var code = "public let myVar:Int = 42";
@@ -1490,6 +1585,7 @@ public protocol Simple {
 
 
 		[TestCase (ReflectorMode.Parser, Ignore = "not coming through as a let")]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "cannot handle lets https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void TheEpsilonIssue (ReflectorMode mode)
 		{
 			string code = "public let 𝑒 = 2.718\n";
@@ -1502,6 +1598,7 @@ public protocol Simple {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle operators https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void InfixOperatorDecl (ReflectorMode mode)
 		{
 			var code = @"infix operator *^* : AdditionPrecedence
@@ -1520,6 +1617,7 @@ extension Int {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle operators https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void PrefixOperatorDecl (ReflectorMode mode)
 		{
 			var code = @"prefix operator *^^*
@@ -1538,6 +1636,7 @@ extension Int {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Cannot handle operators https://github.com/xamarin/binding-tools-for-swift/issues/697")]
 		public void PostfixOperatorDecl (ReflectorMode mode)
 		{
 			var code = @"postfix operator *^&^*
@@ -1574,6 +1673,7 @@ public func sum (a: Foo, b: Foo) -> Foo {
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void UnwrappedOptionalTest (ReflectorMode mode)
 		{
 			var code = @"
@@ -1591,6 +1691,7 @@ public func sum (a: Int!, b: Int!) -> Int! {
 
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder, Ignore = "Enum elements are not yet able to be found, https://github.com/xamarin/binding-tools-for-swift/issues/625")]
 		public void EnumProtocolConformance (ReflectorMode mode)
 		{
 			var code = @"
@@ -1607,6 +1708,7 @@ case a, b
 		}
 
 		[TestCase (ReflectorMode.Parser)]
+		[TestCase (ReflectorMode.DylibBinder)]
 		public void InlineFunction (ReflectorMode mode)
 		{
 			var code = @"

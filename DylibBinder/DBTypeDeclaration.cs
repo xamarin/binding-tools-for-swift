@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using SwiftReflector;
 using SwiftReflector.Inventory;
 using SwiftReflector.SwiftXmlReflection;
 using SwiftRuntimeLibrary;
@@ -28,7 +29,7 @@ namespace DylibBinder {
 		{
 			Exceptions.ThrowOnNull (protoContents, nameof (protoContents));
 			Kind = TypeKind.Protocol;
-			Name = protoContents.Name.ToFullyQualifiedName ();
+			Name = protoContents.Name.ToFullyQualifiedName (false);
 			Module = protoContents.Name.Module.Name;
 			Funcs = new DBFuncs (protoContents);
 			AssociatedTypes = new DBAssociatedTypes (this);
@@ -116,32 +117,23 @@ namespace DylibBinder {
 	}
 
 	internal class DBTypeDeclarations {
-		public SortedDictionary<string, List<DBTypeDeclaration>> TypeDeclarationCollection { get; } = new SortedDictionary<string, List<DBTypeDeclaration>> ();
+		public List<DBTypeDeclaration> TypeDeclarationCollection { get; } = new List<DBTypeDeclaration> ();
 		public static Dictionary<string, List<ClassContents>> InnerXDictionary { get; private set; } = new Dictionary<string, List<ClassContents>> ();
 		public string IgnoreListPath { get; set; }
 
-		public DBTypeDeclarations (ModuleInventory mi, string ignoreListPath) {
+		public DBTypeDeclarations (ModuleInventory mi, SwiftName module, string ignoreListPath) {
 			Exceptions.ThrowOnNull (mi, nameof (mi));
 			IgnoreListPath = ignoreListPath;
-			var checkInventory = new CheckInventoryDictionary (mi);
+			var checkInventory = new CheckInventory (mi, module);
 			var innerX = new InnerX ();
 
-			foreach (var module in checkInventory.CheckInventoryDict.Keys) {
-				InnerXDictionary = innerX.AddClassContentsList (checkInventory.CheckInventoryDict[module].Classes,
-				                                                checkInventory.CheckInventoryDict [module].Enums,
-				                                                checkInventory.CheckInventoryDict [module].Structs);
-				FilterTypeDeclarations (module, checkInventory.CheckInventoryDict [module].Protocols,
-				                        checkInventory.CheckInventoryDict [module].Classes,
-				                        checkInventory.CheckInventoryDict [module].Structs,
-				                        checkInventory.CheckInventoryDict [module].Enums);
-			}
+			InnerXDictionary = innerX.AddClassContentsList (checkInventory.Classes, checkInventory.Enums, checkInventory.Structs);
+			FilterTypeDeclarations (module.Name, checkInventory.Protocols, checkInventory.Classes, checkInventory.Structs, checkInventory.Enums);
 		}
 
 		void FilterTypeDeclarations (string module, SortedSet<ProtocolContents> protocolContentList, params SortedSet<ClassContents>[] ClassContentListArray)
 		{
 			Exceptions.ThrowOnNull (module, nameof (module));
-			if (!TypeDeclarationCollection.ContainsKey (module))
-				TypeDeclarationCollection.Add (module, new List<DBTypeDeclaration> ());
 
 			var ignoredTypes = GetIgnoredTypes ();
 
@@ -149,13 +141,13 @@ namespace DylibBinder {
 				foreach (var classContents in classContentsList) {
 					if (classContents.Name.ToFullyQualifiedName ().IsPublic () && InnerXDictionary.ContainsKey (classContents.Name.ToFullyQualifiedName ())
 						&& !ignoredTypes.Contains(classContents.Name.ToFullyQualifiedName ()))
-						TypeDeclarationCollection [module].Add (new DBTypeDeclaration (classContents));
+						TypeDeclarationCollection.Add (new DBTypeDeclaration (classContents));
 				}
 			}
 
 			foreach (var protocolContents in protocolContentList) {
 				if (protocolContents.Name.ToFullyQualifiedName ().IsPublic () && !ignoredTypes.Contains (protocolContents.Name.ToFullyQualifiedName ()))
-					TypeDeclarationCollection [module].Add (new DBTypeDeclaration (protocolContents));
+					TypeDeclarationCollection.Add (new DBTypeDeclaration (protocolContents));
 			}
 		}
 
