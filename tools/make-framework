@@ -24,6 +24,9 @@ usage () {
 	echo "    sets the target operating system for the build."
 	echo " --minimum-os-version version (required)"
 	echo "    sets the minimum operating system version for the compilation."
+	echo " --info-plist-file path-name"
+	echo "    sets the Info.plist file for the framework(s). If not specified,"
+	echo " the Info.plist will be generated."
 	echo " --simulator-archs arch1 arch2 ..."
 	echo "    sets the architectures for a simulator build."
 	echo " --device-archs arch1 arch2 ..."
@@ -184,7 +187,19 @@ while (( "$#" )); do
 	--make-xcframework)
 		shift
 		make_xcframework=1
+		;;
+	--info-plist-file)
 		shift
+		if [[ "$#" == 0 ]]; then
+			echo "need to specify a value for --info-plist-file"
+			exit 1
+		fi
+		info_plist_file=$1
+		shift
+		if [ ! -f "$info_plist_file" ]; then
+			echo "Info.plist file '$info_plist_file' does not exist."
+			exit 1
+		fi
 		;;
 	--help)
 		usage
@@ -378,10 +393,15 @@ make_framework ()
 		copy_arch_files "$arch" "$builddir" "$swiftmoduledir"
 		sourcemodules="$sourcemodules ${builddir}/$arch/$module_name"
 	done
-	#if [[ -n $superverbose ]]; then
+	if [[ -n $superverbose ]]; then
 		echo lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
-	#fi
+	fi
 	lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
+	if [[ -n "$info_plist_file" ]]; then
+		cp "$info_plist_file" "${frameworkdir}/Info.plist"
+	else
+		echo "TODO: call plist-swifty"
+	fi
 }
 
 compile_swift_and_c ()
