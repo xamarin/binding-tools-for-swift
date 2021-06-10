@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 COLOR_RED=$(tput setaf 1 2>/dev/null || true)
 COLOR_ORANGE=$(tput setaf 3 2>/dev/null || true)
