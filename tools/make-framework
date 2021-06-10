@@ -1,0 +1,437 @@
+#!/bin/bash -e
+
+COLOR_RED=$(tput setaf 1 2>/dev/null || true)
+COLOR_ORANGE=$(tput setaf 3 2>/dev/null || true)
+COLOR_MAGENTA=$(tput setaf 5 2>/dev/null || true)
+COLOR_BLUE=$(tput setaf 6 2>/dev/null || true)
+COLOR_CLEAR=$(tput sgr0 2>/dev/null || true)
+COLOR_RESET=uniquesearchablestring
+
+usage () {
+	echo "Compiles a set of swift files into a framework and optionally"
+	echo "groups all the frameworks into an xcframework."
+	echo
+	echo "arguments:"
+	echo "  --frameworks fw1 fw2 ..."
+	echo "    adds framework directories to swift compilation (-F) (optional)"
+	echo " --libraries lb1 lb2 ..."
+	echo "    adds library directories to swift compilation (-L) (optional)"
+	echo " --swift-files sf1 sf2 ..."
+	echo "    adds swift files to be compiled (required)"
+	echo " --c-files cf1 cf2 ..."
+	echo "    adds c files to be compiled (optional)"
+	echo " --target-os os-name, one of ios, tvos, watchos, macosx (required)"
+	echo "    sets the target operating system for the build."
+	echo " --minimum-os-version version (required)"
+	echo "    sets the minimum operating system version for the compilation."
+	echo " --info-plist-file path-name"
+	echo "    sets the Info.plist file for the framework(s). If not specified,"
+	echo " the Info.plist will be generated."
+	echo " --simulator-archs arch1 arch2 ..."
+	echo "    sets the architectures for a simulator build."
+	echo " --device-archs arch1 arch2 ..."
+	echo "    sets the architectures for a device build."
+	echo " --module-name name (required)"
+	echo "    sets the name of the output module."
+	echo " --extra-c-args arg1 arg2 ..."
+	echo "    sets extra arguments to pass to the c compiler."
+	echo " --extra-swift-args arg1 arg2 ..."
+	echo "    sets extra arguments to pass to the swift compiler."
+	echo " --output-path path (required)"
+	echo "    sets the directory where there final output will live."
+	echo " --make-xcframework (optional)"
+	echo "    if present, puts both device and simulator builds into an xcframework"
+	echo "    if present, both --simulator-archs and --device-archs must be present."
+	echo " --verbose"
+	echo "    if present, be more talky."
+	echo "    if present, more than once be super talky."
+	echo " --help"
+	echo "    prints this message."
+        echo "This tool compiles swift files into a framework with the given"
+	echo "module name. Optionally it will combine the frameworks into an"
+	echo ".xcframework directory."
+}
+
+usageexit () {
+	usage
+	exit 1
+}
+
+
+while (( "$#" )); do
+	case "$1" in
+	--frameworks)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			frameworks="$frameworks -F $1"
+			shift
+		done
+		;;
+	--libraries)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			libraries="$libraries -L $1"
+			shift
+		done
+		;;
+	--swift-files)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			swift_files="$swift_files $1"
+			shift
+		done
+		;;
+	--c-files)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			c_files="$c_files $1"
+			shift
+		done
+		;;
+	--target-os)
+		shift
+		if [[ "$#" == 0 ]]; then
+			echo "need to specify a value for --target-os"
+			exit 1
+		fi
+		target_os=$1
+		shift
+		;;
+	--minimum-os-version)
+		shift
+		if [[ "$#" == 0 ]]; then
+			echo "need to specify a value for --minimum-os-version"
+			exit 1
+		fi
+		minimum_os_version=$1
+		shift
+		;;
+	--simulator-archs)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			simulator_archs="${simulator_archs} $1"
+			shift
+		done
+		;;
+	--device-archs)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			device_archs="${device_archs} $1"
+			shift
+		done
+		;;
+	--module-name)
+		shift
+		if [[ "$#" == 0 ]]; then
+			echo "need to specify a value for --module-name"
+			exit 1
+		fi
+		module_name=$1
+		shift
+		;;
+	--extra-c-args)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			extra_c_args="$extra_c_args $1"
+			shift
+		done
+		;;
+	--extra-swift-args)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			extra_swift_args="$extra_swift_args $1"
+			shift
+		done
+		;;
+	--output-path)
+		shift
+		if [[ "$#" == 0 ]]; then
+			echo "need to specify a value for --output-path"
+			exit 1
+		fi
+		output_path=$1
+		shift
+		;;
+	--make-xcframework)
+		shift
+		make_xcframework=1
+		;;
+	--info-plist-file)
+		shift
+		if [[ "$#" == 0 ]]; then
+			echo "need to specify a value for --info-plist-file"
+			exit 1
+		fi
+		info_plist_file=$1
+		shift
+		if [ ! -f "$info_plist_file" ]; then
+			echo "Info.plist file '$info_plist_file' does not exist."
+			exit 1
+		fi
+		;;
+	--help)
+		usage
+		exit 0
+		;;
+	--verbose)
+		shift
+		if [[ -n $verbose ]]; then
+			superverbose=1
+		fi
+		verbose=1
+		;;
+
+	*)
+		echo "${COLOR_RED}Unknown argument $1${COLOR_CLEAR}"
+		usageexit
+		;;
+	esac
+done
+
+
+fail_empty () {
+	if [  -z ${2+x} ]; then
+		echo "${COLOR_RED}$1 must be set${COLOR_CLEAR}"
+		usageexit
+	fi
+}
+
+fail_empty "--swift-files" "$swift_files"
+fail_empty "--minimum-os-version" "$minimum_os_version"
+fail_empty "--module-name" "$module_name"
+fail_empty "--output-path" "$output_path"
+fail_empty "--target-os" "$target_os"
+
+if [[ -n "$device_archs" && -n "$simulator_archs" ]]; then
+	sim_and_device=1
+fi
+
+if [[ -n "$sim_and_device" && -z "$make_xcframework" ]]; then
+	echo "${COLOR_RED}You've set both simulator-archs and device-archs but haven't chosen --make-xcframework. This will fail for ios arm64. Don't do this.${COLOR_CLEAR}"
+	exit 1
+fi
+
+get_target_arch () {
+# this should be called with: [device|simulator] arch nameofresultvar
+# this creates either a target triple or an extended target triple
+# if the target is a simulator.
+	local devicesim=$1
+	local arch=$2
+	local result=$3
+	local __targetarch=$arch"-apple-"$target_os$minimum_os_version
+	if [ "$devicesim" == "simulator" ]; then
+		__targetarch="${__targetarch}-simulator"
+	fi
+	eval "$result='$__targetarch'"
+}
+
+get_sdk_path () {
+# this should be called with: [device|simulator] nameofresult
+# the variable named nameofresult will get set to the path of the
+# appropriate sdk.
+	local devicesim=$1
+	local result=$2
+	case $target_os in
+	ios)
+		if [ "$devicesim" == "simulator" ]; then
+			local __sdkname=iphonesimulator
+		else
+			local __sdkname=iphoneos
+		fi
+		;;
+	watchos)
+		if [ "$devicesim" == "simulator" ]; then
+			local __sdkname=watchsimulator
+		else
+			local __sdkname=watchos
+		fi
+		;;
+	tvos)
+		if [ "$devicesim" == "simulator" ]; then
+			local __sdkname=appletvsimulator
+		else
+			local __sdkname=appletvos
+		fi
+		;;
+	macosx)
+		local __sdkname=macosx
+		;;
+	esac
+	local __sdk=$(xcrun --sdk $__sdkname --show-sdk-path)
+	eval "$result='$__sdk'"
+}
+
+compile_c_files () {
+# this should get called with: [device|simulator] arch file1 file2...
+# this takes the given set of .c files and compiles them for the
+# appropriate target architecture and os.
+
+	local devicesim=$1
+	shift
+	local arch=$1
+	shift
+	local odir="${output_path}/build/${devicesim}/${arch}/ofiles"
+	mkdir -p "$odir"
+
+	get_target_arch "$devicesim" "$arch" targetarch
+	get_sdk_path "$devicesim" sdk
+
+	while (( "$#" )); do
+		local cfile=$1
+		local ofile=${cfile%.*}.o
+		shift
+		if [[ -n $verbose ]]; then
+			echo "[Compiling C files ${targetarch}]"
+		fi
+		if [[ -n $superverbose ]]; then
+			echo clang -x c -c -arch "$arch" -target "$targetarch" -isysroot "$sdk" -std=gnu11 -fasm-blocks "$extra_c_args" "$cfile" -o "${odir}/${ofile}" &
+		fi
+		clang -x c -c -arch "$arch" -target "$targetarch" -isysroot "$sdk" -std=gnu11 -fasm-blocks "$extra_c_args" "$cfile" -o "${odir}/${ofile}" &
+	done
+	wait
+}
+
+compile_swift_files () {
+# this should get called with: [device|simulator] arch file1 file2...
+	local devicesim=$1
+	shift
+	local arch=$1
+	shift
+	local odir="${output_path}/build/$devicesim/$arch"
+	mkdir -p "$odir"
+
+	get_target_arch "$devicesim" "$arch" targetarch
+	get_sdk_path "$devicesim" sdk
+
+	if [[ -n $superverbose ]]; then
+		echo "using sdk $sdk"
+	fi
+	local ofiles=""
+	if [ -d "${odir}/ofiles" ]; then
+		local ofiles=${odir}/ofiles/*.o
+	fi
+	
+	if [[ -n $verbose ]]; then
+		echo "[Compiling Swift $targetarch]"
+	fi
+	if [[ -n $superverbose ]]; then
+		echo swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
+	fi
+
+	swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
+}
+
+copy_arch_files ()
+{
+# this gets called with arch path-to-output-directory/build/[device|simulator] target-directory
+# this takes all the files of the form MODULE.suffix and copies them
+# into the target renamed arch.suffix
+	local arch=$1
+	local odir=$2
+	local destdir=$3
+	for suffix in swiftdoc swiftinterface siftmodule siftsourceinfo
+	do
+		local sourcefile="$odir/${arch}/${module_name}.${suffix}"
+		if [[ -f "$sourcefile" ]]; then
+			if [[ -n $superverbose ]]; then
+				echo cp "$sourcefile" "${destdir}/${arch}.${suffix}"
+			fi
+			cp "$sourcefile" "${destdir}/${arch}.${suffix}"
+		fi
+	done
+}
+
+make_framework ()
+{
+# this gets called with path-to-output-directory/build/[device|simulator] arch1 arch2...
+# it aggregates all the compiled modules for each architecture into
+# a single fat framework.
+	local builddir=$1
+	shift
+	local frameworkdir="${builddir}/${module_name}.framework"
+	mkdir -p "$frameworkdir" "$frameworkdir/Modules"
+	local swiftmoduledir="${frameworkdir}/Modules/${module_name}.swiftmodule"
+	mkdir -p "$swiftmoduledir"
+	sourcemodules=""
+	if [[ -n $verbose ]]; then
+		echo "[Building framework for $*]"
+	fi
+	for arch in "$@"
+	do
+		copy_arch_files "$arch" "$builddir" "$swiftmoduledir"
+		sourcemodules="$sourcemodules ${builddir}/$arch/$module_name"
+	done
+	if [[ -n $superverbose ]]; then
+		echo lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
+	fi
+	lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
+	if [[ -n "$info_plist_file" ]]; then
+		cp "$info_plist_file" "${frameworkdir}/Info.plist"
+	else
+		echo "TODO: call plist-swifty"
+	fi
+}
+
+compile_swift_and_c ()
+{
+# this should get called with [device|simulator] arch
+# It combines both steps into 1 so they multiple architectures can be
+# done in parallel.
+	local devicesim=$1
+	local arch=$2
+
+	compile_c_files "$devicesim" "$arch" $c_files
+	compile_swift_files "$devicesim" "$arch" $swift_files
+}
+
+if [[ -n "$simulator_archs" ]]; then
+	for arch in $simulator_archs
+	do
+		compile_swift_and_c "simulator" "$arch" &
+	done
+	wait
+	make_framework "${output_path}/build/simulator" $simulator_archs
+fi
+
+if [[ -n "$device_archs" ]]; then
+	for arch in $device_archs
+	do
+		compile_swift_and_c "device" "$arch" &
+	done
+	wait
+	make_framework "${output_path}/build/device" $device_archs
+fi
+
+echo "success"
