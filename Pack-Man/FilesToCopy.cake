@@ -22,6 +22,8 @@ void CreateFolderStructure (BuildInfo bi, bool swiftToolchainOnly = false)
 	EnsureDirectoryExists (bi.DestBaseDir.Combine ("lib/binding-tools-for-swift"));
 	EnsureDirectoryExists (bi.DestBaseDir.Combine ("lib/swift-copy-libs"));
 	EnsureDirectoryExists (bi.DestBaseDir.Combine ("lib/SwiftInterop"));
+	EnsureDirectoryExists (bi.DestBaseDir.Combine ("lib/plist-swifty"));
+	EnsureDirectoryExists (bi.DestBaseDir.Combine ("lib/make-framework"));
 	EnsureDirectoryExists (bi.DestBaseDir.Combine ("samples"));
 	EnsureDirectoryExists (bi.DestBaseDir.Combine ("bindings"));
 }
@@ -68,6 +70,16 @@ IEnumerable<(FilePath Src, FilePath Dest)> GetFilesToBundle (BuildInfo bi, bool 
 		var destDoc = bi.DestBaseDir.CombineWithFilePath ($"samples/{sampleDoc.GetFilename ()}");
 		fl.Add ((sampleDoc, destDoc));
 	}
+	var fwkFile = GetFiles ($"{bi.MakeFramework.FullPath}/make-framework").FirstOrDefault ();
+	var destFwkFile = bi.DestBaseDir.CombineWithFilePath ($"lib/make-framework/{fwkFile.GetFilename ()}");
+	fl.Add ((fwkFile, destFwkFile));
+
+	var plistPattern = $"{bi.PlistSwifty.FullPath}/*.*";
+	var plistFiles = GetFiles (plistPattern).Where (f => isValidExt (f.GetExtension ()));
+	foreach (var plistFile in plistFiles) {
+		var dest = bi.DestBaseDir.CombineWithFilePath ($"lib/plist-swifty/{plistFile.GetFilename ()}");
+		fl.Add ((plistFile, dest));
+	} 
 
 	return fl;
 
