@@ -249,7 +249,7 @@ if [[ -n "$sim_and_device" && -z "$make_xcframework" ]]; then
 fi
 
 # this one-liner is from https://stackoverflow.com/questions/59895/how-can-i-get-the-source-directory-of-a-bash-script-from-within-the-script-itsel
-# it has the caveat that it doesn't work on sylinks
+# it has the caveat that it doesn't work on symlinks
 path_to_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if [[ -z "$PLIST_SWIFTY" ]]; then
