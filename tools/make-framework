@@ -50,6 +50,11 @@ usage () {
         echo "This tool compiles swift files into a framework with the given"
 	echo "module name. Optionally it will combine the frameworks into an"
 	echo ".xcframework directory."
+	echo "\nIf you set the envonment variable PLIST_SWIFTY to the path to"
+	echo "the tool plist-swift.exe, make-framework will use it. If the variable"
+	echo "is not set, make-framework will look for the tool relative to"
+	echo "this script. If the --info-plist-file argument is set, then"
+	echo "PLIST_SWIFTY is ignored."
 }
 
 usageexit () {
@@ -243,6 +248,21 @@ if [[ -n "$sim_and_device" && -z "$make_xcframework" ]]; then
 	exit 1
 fi
 
+# this one-liner is from https://stackoverflow.com/questions/59895/how-can-i-get-the-source-directory-of-a-bash-script-from-within-the-script-itsel
+# it has the caveat that it doesn't work on symlinks
+path_to_script="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+if [[ -z "$PLIST_SWIFTY" ]]; then
+	# standard install location
+	plist_swifty="$path_to_script/../plist-swifty/plist-swifty.exe"
+	if [[ ! -f "$plist_swifty" ]]; then
+		# standard location for development
+		plist_swifty="$path_to_script/../plist-swifty/bin/Debug/plist-swifty.exe"
+	fi
+else
+	plist_swifty="$PLIST_SWIFTY"
+fi
+
 get_target_arch () {
 # this should be called with: [device|simulator] arch nameofresultvar
 # this creates either a target triple or an extended target triple
@@ -397,10 +417,24 @@ make_framework ()
 		echo lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
 	fi
 	lipo -create $sourcemodules -output "${frameworkdir}/${module_name}"
+
+	if [[ -n $verbose ]]; then
+		echo "[Creating Info.plist]"
+	fi
 	if [[ -n "$info_plist_file" ]]; then
+		if [[ -n $superverbose ]]; then
+			echo cp "$info_plist_file" "${frameworkdir}/Info.plist"
+		fi
 		cp "$info_plist_file" "${frameworkdir}/Info.plist"
 	else
-		echo "TODO: call plist-swifty"
+		if [[ ! -f "$plist_swifty" ]]; then
+			echo "plist-swifty tool not found at $plist_swifty."
+			exit 1
+		fi
+		if [[ -n $superverbose ]]; then
+			echo mono "$plist_swifty" -l "${frameworkdir}/${module_name}" -o "${frameworkdir}/Info.plist"
+		fi
+		mono "$plist_swifty" -l "${frameworkdir}/${module_name}" -o "${frameworkdir}/Info.plist"
 	fi
 }
 
@@ -416,6 +450,7 @@ compile_swift_and_c ()
 	compile_swift_files "$devicesim" "$arch" $swift_files
 }
 
+# compile the code for simulator
 if [[ -n "$simulator_archs" ]]; then
 	for arch in $simulator_archs
 	do
@@ -425,6 +460,7 @@ if [[ -n "$simulator_archs" ]]; then
 	make_framework "${output_path}/build/simulator" $simulator_archs
 fi
 
+# compile the code for the device
 if [[ -n "$device_archs" ]]; then
 	for arch in $device_archs
 	do
@@ -434,4 +470,44 @@ if [[ -n "$device_archs" ]]; then
 	make_framework "${output_path}/build/device" $device_archs
 fi
 
-echo "success"
+# make the xcframework
+if [[ -n $make_xcframework ]]; then
+	xcframeworks="-create-xcframework"
+	if [[ -n "$simulator_archs" ]]; then
+		xcframeworks="$xcframeworks -framework ${output_path}/build/simulator/${module_name}.framework"
+	fi
+	if [[ -n "$device_archs" ]]; then
+		xcframeworks="$xcframeworks -framework ${output_path}/build/device/${module_name}.framework"
+	fi
+	if [[ -n $verbose ]]; then
+		echo "[Making xcframework]"
+	fi
+	if [[ -n $superverbose ]]; then
+		echo xcodebuild $xcframeworks -output "${output_path}/${module_name}.xcframework"
+	fi
+	xcodebuild $xcframeworks -output "${output_path}/${module_name}.xcframework"
+else
+	if [[ -n $verbose ]]; then
+		echo "[Copying framework]"
+	fi
+	if [[ -n "$simulator_archs" ]]; then
+		if [[ -n $superverbose ]]; then
+			echo mv "${output_path}/build/simulator/${module_name}.framework" "${output_path}/${module_name}.framework"
+		fi
+		mv "${output_path}/build/simulator/${module_name}.framework" "${output_path}/${module_name}.framework"
+	else
+		if [[ -n $superverbose ]]; then
+			echo mv "${output_path}/build/device/${module_name}.framework" "${output_path}/${module_name}.framework"
+		fi
+		mv "${output_path}/build/device/${module_name}.framework" "${output_path}/${module_name}.framework"
+	fi
+fi
+
+if [[ -n $verbose ]]; then
+	echo "[Cleaning Up]"
+fi
+if [[ -n $superverbose ]]; then
+	echo rm -rf "${output_path}/build"
+fi
+rm -rf "${output_path}/build"
+
