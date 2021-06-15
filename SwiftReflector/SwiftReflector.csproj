@@ -185,6 +185,7 @@
     <Compile Include="SwiftInterfaceReflector\SyntaxDesugaringParser.cs" />
     <Compile Include="SwiftXmlReflection\TypeAliasDeclaration.cs" />
     <Compile Include="SwiftXmlReflection\TypeAliasFolder.cs" />
+    <Compile Include="CompilationTarget.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

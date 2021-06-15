@@ -149,5 +149,24 @@ namespace SwiftReflector {
 		Compiler,
 		Parser,
 	}
+
+	public enum TargetCpu {
+		Arm64,
+		Armv7,
+		Armv7s,
+		Arm7vk,
+		Arm64_32,
+		I386,
+		X86_64,
+	}
+
+	public enum TargetManufacturer {
+		Apple,
+	}
+
+	public enum TargetEnvironment {
+		Device,
+		Simulator,
+	}
 }
 
