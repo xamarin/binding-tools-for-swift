@@ -59,7 +59,9 @@ namespace SwiftReflector {
 		{
 			switch (Cpu) {
 			case TargetCpu.Arm64: return "arm64";
+			case TargetCpu.Arm64_32: return "arm64_32";
 			case TargetCpu.Armv7: return "armv7";
+			case TargetCpu.Arm7vk: return "armv7k";
 			case TargetCpu.Armv7s: return "armv7s";
 			case TargetCpu.I386: return "i386";
 			case TargetCpu.X86_64: return "x86_64";
