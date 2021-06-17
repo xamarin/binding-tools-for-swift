@@ -55,7 +55,13 @@ namespace SwiftReflector {
 			return $"{CpuToString ()}-{ManufacturerToString ()}-{OperatingSystemToString ()}{MinimumOSVersion}{environment}";
 		}
 
-		string CpuToString ()
+		public string EnvironmentToString ()
+		{
+			// do NOT call this in ToString - this is for displaying exceptions
+			return Environment == TargetEnvironment.Device ? "device" : "simulator";
+		}
+
+		public string CpuToString ()
 		{
 			switch (Cpu) {
 			case TargetCpu.Arm64: return "arm64";
@@ -70,7 +76,7 @@ namespace SwiftReflector {
 			}
 		}
 
-		string ManufacturerToString ()
+		public string ManufacturerToString ()
 		{
 			switch (Manufacturer) {
 			case TargetManufacturer.Apple: return "apple";
@@ -78,7 +84,7 @@ namespace SwiftReflector {
 			}
 		}
 
-		string OperatingSystemToString ()
+		public string OperatingSystemToString ()
 		{
 			switch (OperatingSystem) {
 			case PlatformName.iOS: return "ios";
@@ -87,6 +93,23 @@ namespace SwiftReflector {
 			case PlatformName.watchOS: return "watchos";
 			default:
 				throw new ArgumentOutOfRangeException (nameof (OperatingSystem));
+			}
+		}
+
+		public override int GetHashCode ()
+		{
+			// lazy, expensive, but terse.
+			return ToString ().GetHashCode ();
+		}
+
+		public override bool Equals (object obj)
+		{
+			if (obj is CompilationTarget other) {
+				return other.Cpu == Cpu && other.Manufacturer == Manufacturer &&
+					other.OperatingSystem == OperatingSystem && other.MinimumOSVersion == MinimumOSVersion &&
+					other.Environment == Environment;
+			} else {
+				return false;
 			}
 		}
 	}

@@ -28,6 +28,60 @@ namespace SwiftReflector {
 			return targets;
 		}
 
+		public static List<CompilationTarget> CompilationTargetsFromDylib (Stream stm)
+		{
+			var targets = new List<CompilationTarget> ();
+			foreach (var file in MachO.Read (stm)) {
+				try {
+					var osmin = file.MinOS;
+					if (osmin == null)
+						throw new NotSupportedException ("dylib files without a minimum supported operating system load command are not supported.");
+					var isSimulator = IsSimulator (file.Architecture, osmin);
+					var cpu = ToCpu (file.Architecture);
+					var platform = ToPlatform (osmin.Platform);
+					var environment = IsSimulator (file.Architecture, osmin) ? TargetEnvironment.Simulator : TargetEnvironment.Device;
+					targets.Add (new CompilationTarget (platform, cpu, environment, osmin.Version));
+				} catch {
+					continue;
+				}
+			}
+			return targets;
+		}
+
+		static PlatformName ToPlatform (MachO.Platform platform)
+		{
+			switch (platform) {
+			case MachO.Platform.IOS:
+			case MachO.Platform.IOSSimulator:
+				return PlatformName.iOS;
+			case MachO.Platform.MacOS:
+				return PlatformName.macOS;
+			case MachO.Platform.TvOS:
+			case MachO.Platform.TvOSSimulator:
+				return PlatformName.tvOS;
+			case MachO.Platform.WatchOS:
+			case MachO.Platform.WatchOSSimulator:
+				return PlatformName.watchOS;
+			default:
+				throw new ArgumentOutOfRangeException (nameof (platform));
+			}
+		}
+
+		static TargetCpu ToCpu (MachO.Architectures arch)
+		{
+			switch (arch) {
+			case MachO.Architectures.ARM64: return TargetCpu.Arm64;
+			case MachO.Architectures.ARMv7: return TargetCpu.Armv7;
+			case MachO.Architectures.ARMv7s: return TargetCpu.Armv7s;
+			case MachO.Architectures.i386: return TargetCpu.I386;
+			case MachO.Architectures.x86_64: return TargetCpu.X86_64;
+			case MachO.Architectures.ARM64e:
+			case MachO.Architectures.ARMv6:
+			default:
+				throw new ArgumentOutOfRangeException (nameof (arch));
+			}
+		}
+
 		static string TripleOSName (MachOFile.MinOSVersion minOS, string version, bool isSimulator)
 		{
 			var simulatorSuffix = isSimulator ? "-simulator" : "";
