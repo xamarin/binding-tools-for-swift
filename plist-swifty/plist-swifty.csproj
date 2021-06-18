@@ -61,6 +61,12 @@
     <Compile Include="..\SwiftReflector\MachOHawley.cs">
       <Link>MachOHawley.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftReflector\Enums.cs">
+      <Link>Enums.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftReflector\CompilationTarget.cs">
+      <Link>CompilationTarget.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -125,6 +125,9 @@
     <Compile Include="..\SwiftReflector\ExceptionTools\RuntimeException.cs">
       <Link>SwiftType\RuntimeException.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftReflector\CompilationTarget.cs">
+      <Link>CompilationTarget.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
