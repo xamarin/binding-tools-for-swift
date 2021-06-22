@@ -75,7 +75,8 @@ namespace SwiftReflector {
 			case MachO.Architectures.ARMv7s: return TargetCpu.Armv7s;
 			case MachO.Architectures.i386: return TargetCpu.I386;
 			case MachO.Architectures.x86_64: return TargetCpu.X86_64;
-			case MachO.Architectures.ARM64e:
+			case MachO.Architectures.ARM64_32: return TargetCpu.Arm64_32;
+			case MachO.Architectures.ARM64e: return TargetCpu.Arm64e;
 			case MachO.Architectures.ARMv6:
 			default:
 				throw new ArgumentOutOfRangeException (nameof (arch));

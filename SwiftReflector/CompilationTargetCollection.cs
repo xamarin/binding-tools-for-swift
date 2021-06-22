@@ -103,8 +103,10 @@ namespace SwiftReflector {
                 }
 
                 public PlatformName OperatingSystem { get => FirstOrFail.OperatingSystem; }
+                public string OperatingSystemString { get => FirstOrFail.OperatingSystemToString (); }
                 public TargetManufacturer Manufacturer { get => FirstOrFail.Manufacturer; }
                 public TargetEnvironment Environment { get => FirstOrFail.Environment; }
+                public Version MinimumOSVersion { get => FirstOrFail.MinimumOSVersion; }
 
                 public void AddRange (IEnumerable<CompilationTarget> fileTargets)
                 {

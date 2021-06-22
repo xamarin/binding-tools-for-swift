@@ -15,6 +15,7 @@ namespace SwiftReflector {
 
 		public CompilationTargetCollection Targets { get => compilationTargets; }
 		public PlatformName OperatingSystem { get => compilationTargets.OperatingSystem; }
+		public string OperatingSystemString { get => compilationTargets.OperatingSystemString; }
 		public TargetEnvironment Environment { get => compilationTargets.Environment; }
 		public string Path { get; private set; }
 	}
@@ -39,17 +40,17 @@ namespace SwiftReflector {
 	}
 
 	public class UniformTargetRepresentation {
-		UniformTargetRepresentation (FrameworkRepresentation framework)
+		public UniformTargetRepresentation (FrameworkRepresentation framework)
 		{
 			Framework = framework;
 		}
 
-		UniformTargetRepresentation (XCFrameworkRepresentation xCFramework)
+		public UniformTargetRepresentation (XCFrameworkRepresentation xCFramework)
 		{
 			XCFramework = xCFramework;
 		}
 
-		UniformTargetRepresentation (LibraryRepresentation library)
+		public UniformTargetRepresentation (LibraryRepresentation library)
 		{
 			Library = library;
 		}

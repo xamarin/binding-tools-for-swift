@@ -188,6 +188,8 @@
     <Compile Include="CompilationTarget.cs" />
     <Compile Include="FrameworkRepresentation.cs" />
     <Compile Include="CompilationTargetCollection.cs" />
+    <Compile Include="CompilationSettings.cs" />
+    <Compile Include="IOUtils\Directories.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

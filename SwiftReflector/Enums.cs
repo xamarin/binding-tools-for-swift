@@ -155,6 +155,7 @@ namespace SwiftReflector {
 		Armv7,
 		Armv7s,
 		Arm7vk,
+		Arm64e,
 		Arm64_32,
 		I386,
 		X86_64,
