@@ -6,6 +6,7 @@ using System.Linq;
 using SwiftReflector.IOUtils;
 using SwiftRuntimeLibrary;
 using System.Reflection;
+using Xamarin.Utils;
 
 namespace SwiftReflector {
 	public class CompilationSettings {
@@ -100,7 +101,7 @@ namespace SwiftReflector {
 			// useful for debugging:
 			// args.Append (" --verbose --verbose ");
 
-			args.Append ("--output-path ").Append (OutputDirectory);
+			args.Append ("--output-path ").Append (StringUtils.Quote (OutputDirectory));
 			args.Append (" --module-name ").Append (ModuleName);
 			if (FrameworkPaths.Count > 0)
 				AppendList (args.Append (" --frameworks"), FrameworkPaths);
@@ -163,7 +164,7 @@ namespace SwiftReflector {
 		StringBuilder AppendList (StringBuilder sb, IEnumerable<string> list)
 		{
 			foreach (var elem in list) {
-				sb.Append (" ").Append (elem);
+				sb.Append (" ").Append (StringUtils.Quote (elem));
 			}
 			return sb;
 		}
