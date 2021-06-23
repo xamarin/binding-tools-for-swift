@@ -184,7 +184,7 @@ namespace SwiftReflector {
 			if (path == null)
 				throw new FileNotFoundException ("Unable to find the make-framework script.\n");
 			if (!File.Exists (path))
-				throw new FileNotFoundException ($"The script specified script '{path}' does not exist at that location.");
+				throw new FileNotFoundException ($"The specified script '{path}' does not exist at that location.");
 			return path;
 		}
 
