@@ -104,11 +104,11 @@ namespace SwiftReflector {
 			args.Append ("--output-path ").Append (StringUtils.Quote (OutputDirectory));
 			args.Append (" --module-name ").Append (ModuleName);
 			if (FrameworkPaths.Count > 0)
-				AppendList (args.Append (" --frameworks"), FrameworkPaths);
+				AppendFileList (args.Append (" --frameworks"), FrameworkPaths);
 			if (LibraryPaths.Count > 0)
-				AppendList (args.Append (" --libraries"), LibraryPaths);
+				AppendFileList (args.Append (" --libraries"), LibraryPaths);
 			// no need to check for empty, this is mandatory
-			AppendList (args.Append (" --swift-files"), SwiftFilePaths);
+			AppendFileList (args.Append (" --swift-files"), SwiftFilePaths);
 
 			if (TargetRepresentation.Library != null)
 				BuildLibraryArgs (TargetRepresentation.Library, args);
@@ -161,7 +161,7 @@ namespace SwiftReflector {
 			}
 		}
 
-		StringBuilder AppendList (StringBuilder sb, IEnumerable<string> list)
+		StringBuilder AppendFileList (StringBuilder sb, IEnumerable<string> list)
 		{
 			foreach (var elem in list) {
 				sb.Append (" ").Append (StringUtils.Quote (elem));
