@@ -179,7 +179,7 @@ namespace SwiftReflector {
 
 		string GetScriptPath ()
 		{
-			var path = MakeFrameworkScript ?? Environment.GetEnvironmentVariable ("") ??
+			var path = MakeFrameworkScript ?? Environment.GetEnvironmentVariable ("BTFS_MAKE_FRAMEWORK") ??
 				SearchForScript ();
 			if (path == null)
 				throw new FileNotFoundException ("Unable to find the make-framework script.\n");
