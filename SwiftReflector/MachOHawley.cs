@@ -37,6 +37,7 @@ namespace Xamarin {
 			ARM64 = 16,
 			x86_64 = 32,
 			ARM64e = 64,
+			ARM64_32 = 128,
 		}
 
 		public enum LoadCommands : uint {
@@ -726,6 +727,13 @@ namespace Xamarin {
 					case 2:
 						return MachO.Architectures.ARM64e;
 					case 0:
+					default:
+						return MachO.Architectures.ARM64;
+					}
+				case 12 | 0x02000000:
+					switch (cpusubtype & ~0xff000000) {
+					case 1:
+						return MachO.Architectures.ARM64_32;
 					default:
 						return MachO.Architectures.ARM64;
 					}
