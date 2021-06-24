@@ -388,7 +388,7 @@ namespace SwiftReflector {
 
 				foreach (var target in fwk.Targets) {
 					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64, $"wrong cpu in {target}");
+					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64 || target.Cpu == TargetCpu.Armv7s, $"wrong cpu in {target}");
 				}
 			}
 		}
