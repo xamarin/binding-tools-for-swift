@@ -246,5 +246,268 @@ namespace SwiftReflector {
 				}
 			}
 		}
+
+
+		[Test]
+		public void RoundTripMacLibrary ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.macOS, "11.0",
+				null, new List<TargetCpu> () { TargetCpu.X86_64 }, true)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Library, "wasn't a library");
+				var lib = rep.Library;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "libNoNameModule.dylib"), lib.Path, "wrong lib path");
+				Assert.AreEqual (1, lib.Targets.Count, "wrong number of targets");
+				var target = lib.Targets [0];
+				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, "wrong cpu");
+				Assert.AreEqual (PlatformName.macOS, target.OperatingSystem, "wrong os");
+				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), "wrong version");
+				Assert.AreEqual (TargetEnvironment.Device, target.Environment, "wrong environment");
+			}
+		}
+
+
+		[Test]
+		public void RoundTripMacFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.macOS, "11.0",
+				null, new List<TargetCpu> () { TargetCpu.X86_64 }, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				var fwk = rep.Framework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.macOS, fwk.OperatingSystem, "wrong os");
+				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+				var target = fwk.Targets [0];
+				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, "wrong cpu");
+				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), "wrong version");
+			}
+		}
+
+
+		[Test]
+		public void RoundTripiOSDeviceFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.9",
+				null, new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.Armv7s }, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				var fwk = rep.Framework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				Assert.AreEqual (2, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
+				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+
+				foreach (var target in fwk.Targets) {
+					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.Armv7s, $"wrong cpu in {target}");
+				}
+			}
+		}
+
+
+		[Test]
+		public void RoundTripiOSSimulatorFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.9",
+				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64 }, null, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				var fwk = rep.Framework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				Assert.AreEqual (2, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
+				Assert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
+
+				foreach (var target in fwk.Targets) {
+					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64, $"wrong cpu in {target}");
+				}
+			}
+		}
+
+
+		[Test]
+		public void RoundTripiOSXCFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.9",
+				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64 },
+				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.Armv7s }, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.XCFramework, "wasn't a xcframework");
+				var xcfwk = rep.XCFramework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.xcframework"), xcfwk.Path, "wrong xcfwk path");
+				Assert.AreEqual (2, xcfwk.Frameworks.Count, "wrong number of frameworks");
+
+				var fwk = xcfwk.Frameworks.FirstOrDefault (fw => fw.Environment == TargetEnvironment.Device);
+				Assert.IsNotNull (fwk, "not a device framwwork");
+
+				Assert.AreEqual (2, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
+
+				foreach (var target in fwk.Targets) {
+					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64 || target.Cpu == TargetCpu.Armv7s, $"wrong cpu in {target}");
+				}
+			}
+		}
+
+
+		[Test]
+		public void RoundTriptvOSDeviceFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.tvOS, "11.0",
+				null, new List<TargetCpu> () { TargetCpu.Arm64 }, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				var fwk = rep.Framework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.tvOS, fwk.OperatingSystem, "wrong os");
+				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+
+				var target = fwk.Targets [0];
+				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				Assert.AreEqual (TargetCpu.Arm64, target.Cpu, $"wrong cpu in {target}");
+			}
+
+		}
+
+
+		[Test]
+		public void RoundTriptvOSSimulatorFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.tvOS, "11.0",
+				new List<TargetCpu> () { TargetCpu.X86_64 }, null, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				var fwk = rep.Framework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.tvOS, fwk.OperatingSystem, "wrong os");
+				Assert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
+
+				var target = fwk.Targets [0];
+				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, $"wrong cpu in {target}");
+			}
+
+		}
+
+
+		[Test]
+		[Ignore ("MachO isn't reading this for me.")]
+		public void RoundTripwatchOSDeviceFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.watchOS, "7.0",
+				null, new List<TargetCpu> () { TargetCpu.Arm64_32 }, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				var fwk = rep.Framework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.watchOS, fwk.OperatingSystem, "wrong os");
+				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+
+				var target = fwk.Targets [0];
+				Assert.AreEqual ("7.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				Assert.AreEqual (TargetCpu.Arm64_32, target.Cpu, $"wrong cpu in {target}");
+			}
+
+		}
+
+
+		[Test]
+		public void RoundTripwatchOSSimulatorFramework ()
+		{
+			var swiftCode = @"public func diff (a: Int, b: Int) -> Int {
+    return a - b
+}";
+			using (var output = CompileStringToResult (swiftCode, PlatformName.watchOS, "7.0",
+				new List<TargetCpu> () { TargetCpu.X86_64 }, null, false)) {
+
+				var errors = new ErrorHandling ();
+				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
+				Assert.IsNotNull (rep, "no representation");
+				Assert.IsFalse (errors.AnyErrors, "had errors");
+				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				var fwk = rep.Framework;
+
+				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (PlatformName.watchOS, fwk.OperatingSystem, "wrong os");
+				Assert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
+
+				var target = fwk.Targets [0];
+				Assert.AreEqual ("7.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, $"wrong cpu in {target}");
+			}
+
+		}
 	}
 }

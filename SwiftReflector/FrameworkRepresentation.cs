@@ -126,8 +126,39 @@ namespace SwiftReflector {
 		{
 			using (FileStream stm = new FileStream (libFile, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 				var fileTargets = MachOHelpers.CompilationTargetsFromDylib (stm);
+				FixMinOSIssue (fileTargets);
 				targets.AddRange (fileTargets);
 			}
+		}
+
+		static void FixMinOSIssue (List<CompilationTarget> targets)
+		{
+			// We know that in some targets that there might be an Arm64 CPU which
+			// has an OS MinVersion that doesn't match any of the others. This is something
+			// that gets changed by the linker when you compile for Arm64 on some platforms.
+			// This code makes sure that any Arm64 platform has a version number that matches
+			// all the rest.
+			// There is probably a better algorithm for this, but let's be honest, we're looking
+			// at no more than 5 or 6 targets, so if we can't do this task in a microsecond with
+			// this code, we've got much bigger issues.
+			for (int i = 0; i < targets.Count; i++) {
+				if (IsArm64 (targets [i])) {
+					for (int j = 0; j < targets.Count; j++) {
+						if (IsArm64 (targets [j]))
+							continue;
+						if (targets [j].MinimumOSVersion != targets [i].MinimumOSVersion) {
+							targets [i] = targets [i].WithMinimumOSVersion (targets [j].MinimumOSVersion);
+							break;
+						}
+					}
+				}
+			}
+
+		}
+
+		static bool IsArm64 (CompilationTarget t)
+		{
+			return t.Cpu == TargetCpu.Arm64 || t.Cpu == TargetCpu.Arm64e || t.Cpu == TargetCpu.Arm64_32;
 		}
 
 		static UniformTargetRepresentation FrameworkFromPath (string moduleName, string frameworkPath, ErrorHandling errors)
