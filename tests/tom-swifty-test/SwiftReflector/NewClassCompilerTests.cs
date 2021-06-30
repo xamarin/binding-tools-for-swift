@@ -1143,7 +1143,11 @@ public enum Position {
 
 					consumerCompiler.CompileString (options, consumerCode);
 
-					NewClassCompiler ncc = Utils.DefaultCSharpCompiler ();
+					var localErrors = new ErrorHandling ();
+					var inputTarget = UniformTargetRepresentation.FromPath ("Consumer", new List<string> () { consumerProvider.DirectoryPath }, localErrors);
+					Assert.IsNotNull (inputTarget, "Didn't get an input target");
+
+					NewClassCompiler ncc = Utils.DefaultCSharpCompiler (inputTarget);
 
 					var searchPath = new List<string> { consumerCompiler.DirectoryPath, libProvider.DirectoryPath, Compiler.kSwiftRuntimeGlueDirectory };
 					List<String> typeDataBasePaths = new List<String> { Path.Combine (libProvider.DirectoryPath, "bindings/Lib") };

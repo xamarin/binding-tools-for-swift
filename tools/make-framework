@@ -16,6 +16,10 @@ usage () {
 	echo "    adds framework directories to swift compilation (-F) (optional)"
 	echo " --libraries lb1 lb2 ..."
 	echo "    adds library directories to swift compilation (-L) (optional)"
+	echo " --swift-library-references lib1 lib2 ..."
+	echo "    adds references to the libraries (-llib1 -llib2 ...)"
+	echo " --swift-framework-references fm1 fm1 ..."
+	echo "    adds references to the frameworks (-framework fm1 -framework -fm2"
 	echo " --swift-files sf1 sf2 ..."
 	echo "    adds swift files to be compiled (required)"
 	echo " --c-files cf1 cf2 ..."
@@ -62,7 +66,6 @@ usageexit () {
 	exit 1
 }
 
-
 while (( "$#" )); do
 	case "$1" in
 	--frameworks)
@@ -83,7 +86,30 @@ while (( "$#" )); do
 			then
 				break
 			fi
+			includes="$includes -I $1"
 			libraries="$libraries -L $1"
+			shift
+		done
+		;;
+	--swift-library-references)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			libreferences="$libreferences -l$1"
+			shift
+		done
+		;;
+	--swift-framework-references)
+		shift
+		while (( "$#" )); do
+			if [[ $1 == "--"* ]]
+			then
+				break
+			fi
+			frameworkreferences="$frameworkreferences -framework $1"
 			shift
 		done
 		;;
@@ -369,10 +395,10 @@ compile_swift_files () {
 		echo "[Compiling Swift $targetarch]"
 	fi
 	if [[ -n $superverbose ]]; then
-		echo swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library $extra_swift_args -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
+	echo swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library $extra_swift_args $includes $libraries $frameworks $libreferences $frameworkreferences -module-name $module_name -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
 	fi
 
-	swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library $extra_swift_args -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
+	swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library $extra_swift_args $includes $libraries $frameworks $libreferences $frameworkreferences -module-name $module_name -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
 }
 
 copy_arch_files ()
@@ -383,7 +409,7 @@ copy_arch_files ()
 	local arch=$1
 	local odir=$2
 	local destdir=$3
-	for suffix in swiftdoc swiftinterface siftmodule siftsourceinfo
+	for suffix in swiftdoc swiftinterface swiftmodule swiftsourceinfo
 	do
 		local sourcefile="$odir/${arch}/${module_name}.${suffix}"
 		if [[ -f "$sourcefile" ]]; then

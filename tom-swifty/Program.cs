@@ -103,7 +103,8 @@ namespace tomswifty {
 			try {
 				using (DisposableTempDirectory temp = new DisposableTempDirectory (null, true)) {
 					SwiftCompilerLocation compilerLocation = new SwiftCompilerLocation (options.SwiftBinPath, options.SwiftLibPath);
-					ClassCompilerOptions compilerOptions = new ClassCompilerOptions (options.TargetPlatformIs64Bit, options.Verbose, options.RetainXmlReflection, options.RetainSwiftWrappingCode);
+					ClassCompilerOptions compilerOptions = new ClassCompilerOptions (options.TargetPlatformIs64Bit, options.Verbose, options.RetainXmlReflection, options.RetainSwiftWrappingCode,
+						options.InputTargetRepresentation);
 					NewClassCompiler classCompiler = new NewClassCompiler (compilerLocation, compilerOptions, unicodeMapper);
 
 					ClassCompilerNames compilerNames = new ClassCompilerNames (options.ModuleName, options.WrappingModuleName);
