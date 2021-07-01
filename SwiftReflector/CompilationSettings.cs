@@ -13,7 +13,7 @@ namespace SwiftReflector {
 		public CompilationSettings (string outputDirectory, string moduleName, UniformTargetRepresentation targetRepresentation,
 			IEnumerable<string> frameworkPaths = null, IEnumerable<string> libraryPaths = null,
 			IEnumerable<string> swiftFilePaths = null, string makeFrameworkScript = null,
-			string workingDirectory = null)
+			string workingDirectory = null, IEnumerable<string> referencedModules = null)
 		{
 			OutputDirectory = Exceptions.ThrowOnNull (outputDirectory, nameof (outputDirectory));
 			ModuleName = Exceptions.ThrowOnNull (moduleName, nameof (moduleName));
@@ -33,6 +33,10 @@ namespace SwiftReflector {
 			MakeFrameworkScript = makeFrameworkScript;
 			WorkingDirectory = workingDirectory;
 			TargetRepresentation = Exceptions.ThrowOnNull (targetRepresentation, nameof (targetRepresentation));
+
+			SwiftModuleReferences = new List<string> ();
+			if (referencedModules != null)
+				SwiftModuleReferences.AddRange (referencedModules);
 		}
 
 		public string OutputDirectory { get; private set; }
@@ -40,20 +44,38 @@ namespace SwiftReflector {
 		public List<string> FrameworkPaths { get; private set; }
 		public List<string> LibraryPaths { get; private set; }
 		public List<string> SwiftFilePaths { get; private set; }
+		public List<string> SwiftModuleReferences { get; private set; }
 		public UniformTargetRepresentation TargetRepresentation { get; private set; }
 		public string MakeFrameworkScript { get; private set; }
 		public string WorkingDirectory { get; private set; }
+		public bool Verbose { get; set; }
+		public bool SuperVerbose { get; set; }
 
+
+		static string [] handySwiftModuleExtensions = new string [] {
+			"swiftdoc", "swiftinterface", "swiftmodule", "swiftsourceinfo"
+		};
 
 		public string CompileTarget ()
 		{
 			var scriptPath = GetScriptPath ();
 			var args = BuildCommandArgs ();
+			WorkingDirectory = WorkingDirectory ?? Path.GetDirectoryName (SwiftFilePaths [0]);
 			var output = ExecAndCollect.Run (scriptPath, args, WorkingDirectory);
 			if (TargetRepresentation.Library != null) {
+				if (TargetRepresentation.Library.Targets.Count > 1)
+					throw new NotSupportedException ("fat libraries are not supported");
 				var frameworkDir = Path.Combine (OutputDirectory, $"{ModuleName}.framework");
 				var libraryPath = Path.Combine (OutputDirectory, $"lib{ModuleName}.dylib");
 				File.Copy (Path.Combine (frameworkDir, ModuleName), libraryPath);
+				var arch = TargetRepresentation.Library.Targets [0].CpuToString ();
+
+				var swiftModuleSource = Path.Combine (frameworkDir, "Modules", $"{ModuleName}.swiftmodule");
+				foreach (var extension in handySwiftModuleExtensions) {
+					var handyFile = Path.Combine (swiftModuleSource, $"{arch}.{extension}");
+					if (File.Exists (handyFile))
+						File.Copy (handyFile, Path.Combine (OutputDirectory, $"{ModuleName}.{extension}"));
+				}
 				Directories.DeleteContentsAndSelf (frameworkDir);
 				ChangeInstallName (libraryPath);
 			}
@@ -73,6 +95,10 @@ namespace SwiftReflector {
 			//   adds framework directories to swift compilation (-F) (optional)
 			//--libraries lb1 lb2...
 			//   adds library directories to swift compilation (-L) (optional)
+			//--swift-library-references lib1 lib2 ...
+			//   adds references to the libraries (-llib1 -llib2 ...)
+			//--swift-framework-references fm1 fm1 ...
+			//   adds references to the frameworks (-framework fm1 -framework -fm2
 			//--swift-files sf1 sf2 ...
 			//   adds swift files to be compiled (required)
 			//--target-os os - name, one of ios, tvos, watchos, macosx (required)
@@ -92,23 +118,31 @@ namespace SwiftReflector {
 			//--make-xcframework (optional)
 			//   if present, puts both device and simulator builds into an xcframework
 			//   if present, both--simulator - archs and--device - archs must be present.
+			// 
 
 			if (SwiftFilePaths.Count == 0)
 				throw new Exception ("No files provided to compile.");
 			CheckAllFilesExist ();
 			var args = new StringBuilder ();
 
-			// useful for debugging:
-			// args.Append (" --verbose --verbose ");
-
 			args.Append ("--output-path ").Append (StringUtils.Quote (OutputDirectory));
 			args.Append (" --module-name ").Append (ModuleName);
-			if (FrameworkPaths.Count > 0)
-				AppendFileList (args.Append (" --frameworks"), FrameworkPaths);
+			if (FrameworkPaths.Count > 0) {
+				// for framework paths, drop the end directory if it ends with .framework or .xcframework
+				var framePaths = FrameworkPaths.Select (p => p.EndsWith (".framework") || p.EndsWith (".xcframework") ? Directory.GetParent (p).ToString () : p);
+				AppendFileList (args.Append (" --frameworks"), framePaths);
+			}
 			if (LibraryPaths.Count > 0)
 				AppendFileList (args.Append (" --libraries"), LibraryPaths);
+
+			var combinedDirectories = new List<string> (FrameworkPaths.Count + LibraryPaths.Count);
+			combinedDirectories.AddRange (FrameworkPaths);
+			combinedDirectories.AddRange (LibraryPaths);
+
+			BuildLibraryAndFrameworkReferences (args, combinedDirectories);
+
 			// no need to check for empty, this is mandatory
-			AppendFileList (args.Append (" --swift-files"), SwiftFilePaths);
+			AppendFileList (args.Append (" --swift-files"), SwiftFilePaths.Select (Path.GetFileName));
 
 			if (TargetRepresentation.Library != null)
 				BuildLibraryArgs (TargetRepresentation.Library, args);
@@ -117,7 +151,37 @@ namespace SwiftReflector {
 			else if (TargetRepresentation.XCFramework != null)
 				BuildFrameworkArgs (TargetRepresentation.XCFramework, args);
 			else throw new Exception ("TargetRepresentation has none of Library/Framework/XCFramework in it.");
+			if (Verbose) {
+				args.Append (" --verbose");
+			} else if (SuperVerbose) {
+				args.Append (" --verbose --verbose");
+			}
+			if (TargetRepresentation.Library != null) {
+				args.Append (" --extra-swift-args -Xlinker -install_name -Xlinker @rpath/lib")
+					.Append (ModuleName).Append (".dylib");
+			}
 			return args.ToString ();
+		}
+
+		void BuildLibraryAndFrameworkReferences (StringBuilder args, List<string> directoryPaths)
+		{
+			foreach (var moduleName in SwiftModuleReferences) {
+				string path;
+				var kind = UniformTargetRepresentation.TargetRepresentationKindFromPath (moduleName, directoryPaths, out path);
+				if (path != null)
+					path = Directory.GetParent (path).ToString ();
+				switch (kind) {
+				case TargetRepresentationKind.Framework:
+				case TargetRepresentationKind.XCFramework:
+					args.Append (" --swift-framework-references ").Append (moduleName);
+					break;
+				case TargetRepresentationKind.Library:
+					args.Append (" --swift-library-references ").Append (moduleName);
+					break;
+				default:
+					break;
+				}
+			}
 		}
 
 		void BuildLibraryArgs (LibraryRepresentation library, StringBuilder args)

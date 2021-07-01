@@ -99,13 +99,16 @@ namespace SwiftReflector {
 		public bool Verbose { get; }
 		public bool RetainReflectedXmlOutput { get; }
 		public bool RetainSwiftWrappers { get; }
+		public UniformTargetRepresentation TargetRepresentation { get; }
 
-		public ClassCompilerOptions (bool targetPlatformIs64Bit, bool verbose, bool retainReflectedXmlOutput, bool retainSwiftWrappers)
+		public ClassCompilerOptions (bool targetPlatformIs64Bit, bool verbose, bool retainReflectedXmlOutput, bool retainSwiftWrappers,
+			UniformTargetRepresentation targetRepresentation)
 		{
 			TargetPlatformIs64Bit = targetPlatformIs64Bit;
 			Verbose = verbose;
 			RetainReflectedXmlOutput = retainReflectedXmlOutput;
 			RetainSwiftWrappers = retainSwiftWrappers;
+			TargetRepresentation = targetRepresentation;
 		}
 	}
 
@@ -5315,7 +5318,7 @@ namespace SwiftReflector {
 			wrappingModuleName = wrappingModuleName ?? "XamWrapping";
 
 			var wrappingCompiler = new WrappingCompiler (outputDirectory, SwiftCompilerLocations, retainSwiftWrappers,
-			                                             TypeMapper, verbose, errors);
+			                                             TypeMapper, verbose, errors, Options.TargetRepresentation);
 
 			bool noWrappersNeeded = false;
 			Tuple<string, HashSet<string>> wrapStuff = null;

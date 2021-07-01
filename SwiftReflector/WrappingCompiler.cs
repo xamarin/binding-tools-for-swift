@@ -25,11 +25,13 @@ namespace SwiftReflector {
 		TypeMapper typeMapper;
 		bool verbose;
 		ErrorHandling errors;
+		UniformTargetRepresentation inputTarget;
 
 		Dictionary<string, Dictionary<string, List<string>>> wrappers = new Dictionary<string, Dictionary<string, List<string>>> ();
 
 		public WrappingCompiler (string outputDirectory, SwiftCompilerLocation compilerLocation,
-		                         bool retainSwiftFiles, TypeMapper typeMapper, bool verbose, ErrorHandling errors)
+			bool retainSwiftFiles, TypeMapper typeMapper, bool verbose, ErrorHandling errors,
+			UniformTargetRepresentation inputTarget)
 		{
 			this.outputDirectory = Exceptions.ThrowOnNull (outputDirectory, "outputDirectory");
 			CompilerLocation = Exceptions.ThrowOnNull (compilerLocation, "compilerLocation");
@@ -37,6 +39,7 @@ namespace SwiftReflector {
 			this.typeMapper = Exceptions.ThrowOnNull (typeMapper, "typeMapper");
 			this.verbose = verbose;
 			this.errors = errors;
+			this.inputTarget = Exceptions.ThrowOnNull (inputTarget, nameof (inputTarget));
 		}
 
 		public Tuple<string, HashSet<string>> CompileWrappers (string [] inputLibraryDirectories, string [] inputModuleDirectories,
@@ -75,108 +78,26 @@ namespace SwiftReflector {
 					return new Tuple<string, HashSet<string>> (null, null);
 				}
 
-				var targetOutDirs = new List<string> ();
-				for (int i = 0; i < targets.Count; i++) {
-					// each file goes to a unique output directory.
-					// first compile into the fileProvider, then move to
-					// fileProvider/tar-get-arch
-					var target = minimumOSVersion != null ? targets [i].ClangSubstituteOSVersion (minimumOSVersion) : targets [i];
-					string targetoutdir = Path.Combine (fileProvider.DirectoryPath, targets [i]);
-					targetOutDirs.Add (targetoutdir);
-					Directory.CreateDirectory (targetoutdir);
+				var filesToCompile = fileProvider.CompletedFileNames.Select (file => Path.Combine (fileProvider.DirectoryPath, file)).ToList ();
 
-					// If we are using a dylib, we will not have a module location
-					List<ISwiftModuleLocation> locations = null;
-					if (!isLibrary)
-						locations = SwiftModuleFinder.GatherAllReferencedModules (allReferencedModules,
-												      inputModuleDirectories, target);
+				var targetCompiler = new CompilationSettings (outputDirectory, wrappingModuleName, inputTarget,
+					inputModuleDirectories, inputLibraryDirectories, filesToCompile, referencedModules: inModuleNamesList);
 
-					try {
-						// We will keep inputModDirs as null if using a dylib
-						string [] inputModDirs = null;
-						if (!isLibrary)
-							inputModDirs = locations.Select (loc => loc.DirectoryPath).ToArray ();
-						CompileAllFiles (fileProvider, wrappingModuleName, outputLibraryName, outputLibraryPath,
-						                 inputModDirs, inputLibraryDirectories, inModuleNamesList.ToArray (),
-						                 target, outputIsFramework);
-					} catch (Exception e) {
-						throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 66, e, $"Failed to compile the generated swift wrapper code: {e.Message}");
-					} finally {
-						if (!isLibrary)
-							locations.DisposeAll ();
-					}
+				// useful for debugging a build
+				targetCompiler.SuperVerbose = true;
 
-					// move to arch directory
-					File.Copy (Path.Combine (fileProvider.DirectoryPath, outputLibraryName),
-							  Path.Combine (targetoutdir, outputLibraryName), true);
-					File.Delete (Path.Combine (fileProvider.DirectoryPath, outputLibraryName));
-
-					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftmodule");
-					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftdoc");
-					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftinterface");
-					CopyThenDelete (fileProvider.DirectoryPath, targetoutdir, wrappingModuleName + ".swiftsourceinfo");
+				try {
+					targetCompiler.CompileTarget ();
+				} catch (Exception e) {
+					throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 66, e, $"Failed to compile the generated swift wrapper code: {e.Message}");
 				}
-				if (targets.Count > 1) {
-					// lipo all the outputs back into the fileProvider
-					Lipo (targetOutDirs, fileProvider.DirectoryPath, outputLibraryName);
-					File.Copy (Path.Combine (fileProvider.DirectoryPath, outputLibraryName),
-							  outputLibraryPath, true);
-					if (!IsMacOSLib (outputLibraryPath)) {
-						if (!Directory.Exists (outputFrameworkPath))
-							Directory.CreateDirectory (outputFrameworkPath);
-						File.Copy (outputLibraryPath, outputFrameworkLibPath, true);
-						InfoPList.MakeInfoPList (outputFrameworkLibPath, Path.Combine (outputFrameworkPath, "Info.plist"));
-					}
-				} else {
-					File.Copy (Path.Combine (targetOutDirs [0], outputLibraryName),
-										  outputLibraryPath, true);
-					if (!IsMacOSLib(outputLibraryPath)) {
-						if (!Directory.Exists (outputFrameworkPath))
-							Directory.CreateDirectory (outputFrameworkPath);
-						File.Copy (outputLibraryPath, outputFrameworkLibPath, true);
-						InfoPList.MakeInfoPList (outputFrameworkLibPath, Path.Combine (outputFrameworkPath, "Info.plist"));
-					}
-				}
-				for (int i = 0; i < targets.Count; i++) {
-					string arch = targets [i].ClangTargetCpu ();
-					string targetDir = Path.Combine (outputDirectory, arch);
-					Directory.CreateDirectory (targetDir);
 
-					File.Copy (Path.Combine (targetOutDirs [i], wrappingModuleName + ".swiftmodule"),
-							  Path.Combine (targetDir, wrappingModuleName + ".swiftmodule"), true);
-					File.Copy (Path.Combine (targetOutDirs [i], wrappingModuleName + ".swiftdoc"),
-										  Path.Combine (targetDir, wrappingModuleName + ".swiftdoc"), true);
-					File.Copy (Path.Combine (targetOutDirs [i], wrappingModuleName + ".swiftinterface"),
-										  Path.Combine (targetDir, wrappingModuleName + ".swiftinterface"), true);
-					File.Copy (Path.Combine (targetOutDirs [i], wrappingModuleName + ".swiftsourceinfo"),
-										  Path.Combine (targetDir, wrappingModuleName + ".swiftsourceinfo"), true);
-				}
-				foreach (string dirname in targetOutDirs) {
-					Directory.Delete (dirname, true);
-				}
 				if (retainSwiftFiles) {
 					CopySwiftFiles (fileProvider, Path.Combine (outputDirectory, wrappingModuleName + "Source"));
 				}
 				return new Tuple<string, HashSet<string>> (outputLibraryPath, allReferencedModules);
 			}
 		}
-
-		void CopyThenDelete (string sourceDirectory, string targetDirectory, string fileName)
-		{
-			var sourceFile = Path.Combine (sourceDirectory, fileName);
-			File.Copy (sourceFile, Path.Combine (targetDirectory, fileName));
-			File.Delete (sourceFile);
-		}
-
-		void Lipo (List<string> sourcePaths, string outputPath, string libraryName)
-		{
-			var sb = new StringBuilder ();
-			foreach (string s in sourcePaths) {
-				sb.Append ($" {Path.Combine (s, libraryName)}");
-			}
-			ExecAndCollect.Run ("/usr/bin/lipo", $"-create {sb.ToString ()} -output {Path.Combine (outputPath, libraryName)}", verbose: verbose);
-		}
-
 
 		void CopySwiftFiles (TempDirectorySwiftClassFileProvider provider, string outputDirectory)
 		{
@@ -192,19 +113,6 @@ namespace SwiftReflector {
 		public bool TryGetClassesForModule (string module, out Dictionary<string, List<string>> classes)
 		{
 			return wrappers.TryGetValue (module, out classes);
-		}
-
-		void CompileAllFiles (TempDirectorySwiftClassFileProvider fileProvider, string moduleName, string outputLibraryName,
-			string outputLibraryPath, string [] inputModulePaths, string [] inputLibraryPaths, string [] inputModuleNames, string target,
-				    bool outputIsFramework)
-		{
-			SwiftTargetCompilerInfo compilerInfo = CompilerLocation.GetTargetInfo (target);
-			using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (compilerInfo, fileProvider, false)) {
-				compiler.Verbose = verbose;
-				string [] sourceFiles = fileProvider.CompletedFileNames.ToArray ();
-				SwiftCompilerOptions options = new SwiftCompilerOptions (moduleName, inputModulePaths, inputLibraryPaths, inputModuleNames);
-				compiler.Compile (options, outputIsFramework, sourceFiles);
-			}
 		}
 
 		Dictionary<string, List<string>> Wrap (ModuleDeclaration module,

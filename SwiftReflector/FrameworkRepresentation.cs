@@ -77,6 +77,23 @@ namespace SwiftReflector {
 			}
 		}
 
+		public static TargetRepresentationKind TargetRepresentationKindFromPath (string moduleName, List<string> directoriesToSearch, out string path)
+		{
+			path = null;
+			try {
+				if (TryGetFrameworkPath (moduleName, directoriesToSearch, out path)) {
+					return TargetRepresentationKind.Framework;
+				} else if (TryGetXCFrameworkPath (moduleName, directoriesToSearch, out path)) {
+					return TargetRepresentationKind.XCFramework;
+				} else if (TryGetLibraryPath (moduleName, directoriesToSearch, out path)) {
+					return TargetRepresentationKind.Library;
+				}
+				return TargetRepresentationKind.None;
+			} catch {
+				return TargetRepresentationKind.None;
+			}
+		}
+
 		static bool TryGetAnyDirectory (string targetFrameworkName, List<string> directories, out string path)
 		{
 			path = directories.FirstOrDefault (d => d.EndsWith (targetFrameworkName) && Directory.Exists (d));

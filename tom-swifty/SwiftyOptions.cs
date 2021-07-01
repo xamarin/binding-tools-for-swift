@@ -134,6 +134,7 @@ namespace tomswifty {
 		public int Verbosity { get; set; }
 		public bool PrintHelp { get; set; }
 		public bool Demangle { get; set; }
+		public UniformTargetRepresentation InputTargetRepresentation { get; private set; }
 
 		#region Parsing Command Line
 
@@ -252,6 +253,13 @@ namespace tomswifty {
 			EnsureFileExists ("swift", new string [] { SwiftBinPath }, errors);
 			ModulePaths.ForEach (path => CheckPath (path, "module path", errors));
 			DylibPaths.ForEach (path => CheckPath (path, "library path", errors));
+
+			if (ModuleName != null) {
+				InputTargetRepresentation = UniformTargetRepresentation.FromPath (ModuleName, DylibPaths, errors);
+				if (InputTargetRepresentation == null)
+					return;
+			}
+
 			if (ModuleName != null) {
 				string wholeModule = "lib" + ModuleName + ".dylib";
 				string libDir = DylibPaths.FirstOrDefault (path => File.Exists (Path.Combine (path, wholeModule)));

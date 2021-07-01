@@ -74,24 +74,35 @@ namespace SwiftReflector {
 		}
 
 
-		public static NewClassCompiler DefaultCSharpCompiler (UnicodeMapper unicodeMapper = null)
+		public static NewClassCompiler DefaultCSharpCompiler (UniformTargetRepresentation inputTarget, UnicodeMapper unicodeMapper = null)
 		{
-			ClassCompilerOptions compilerOptions = new ClassCompilerOptions (targetPlatformIs64Bit : true, verbose : false, retainReflectedXmlOutput : true, retainSwiftWrappers : true);
+			Exceptions.ThrowOnNull (inputTarget, nameof (inputTarget));
+			ClassCompilerOptions compilerOptions = new ClassCompilerOptions (targetPlatformIs64Bit : true, verbose : false, retainReflectedXmlOutput : true, retainSwiftWrappers : true, inputTarget);
 			return new NewClassCompiler (Compiler.SystemCompilerLocation, compilerOptions, unicodeMapper ?? UnicodeMapper.Default);
 		}
 
 		public static string CompileToCSharp (DisposableTempDirectory provider, string outputDirectory = null, string moduleName = "Xython", string target = "x86_64-apple-macosx10.9", IEnumerable<string> additionalTypeDatabases = null, bool separateProcess = false, UnicodeMapper unicodeMapper = null, int expectedErrorCount = -1)
 		{
-			NewClassCompiler ncc = DefaultCSharpCompiler (unicodeMapper);
-
 			List<string> typeDatabases = Compiler.kTypeDatabases;
 			if (additionalTypeDatabases != null)
 				typeDatabases.AddRange (additionalTypeDatabases);
+
 
 			ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (new List<string> { provider.DirectoryPath, Compiler.kSwiftRuntimeGlueDirectory },
 												    new List<string> { provider.DirectoryPath, Compiler.kSwiftRuntimeGlueDirectory },
 												    typeDatabases);
 			ClassCompilerNames compilerNames = new ClassCompilerNames (moduleName, null);
+			var localErrors = new ErrorHandling ();
+			var inputTarget = UniformTargetRepresentation.FromPath (moduleName, classCompilerLocations.LibraryDirectories, localErrors);
+			if (inputTarget == null)
+				inputTarget = UniformTargetRepresentation.FromPath (moduleName, classCompilerLocations.ModuleDirectories, localErrors);
+			if (inputTarget == null) {
+				CheckErrors (localErrors, 0);
+				return null;
+			}
+
+			NewClassCompiler ncc = DefaultCSharpCompiler (inputTarget, unicodeMapper);
+
 			if (separateProcess) {
 				var args = new StringBuilder ();
 				args.Append ($"--debug ");

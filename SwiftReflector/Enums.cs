@@ -169,5 +169,12 @@ namespace SwiftReflector {
 		Device,
 		Simulator,
 	}
+
+	public enum TargetRepresentationKind {
+		None,
+		Library,
+		Framework,
+		XCFramework,
+	}
 }
 
