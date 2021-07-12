@@ -102,8 +102,15 @@ IEnumerable<(DirectoryPath Src, DirectoryPath Dest)> GetDirectoriesToBundle (Bui
 
 	// Get 'XamGlue' folders to copy
 	var glues = new [] { "appletv", "iphone", "mac", "watch" };
-	foreach (var glue in glues)
-		dl.Add (GetInfo (bi.XamGlue, $"{glue}/FinalProduct/XamGlue.framework", $"lib/SwiftInterop/{glue}/XamGlue.framework"));
+	foreach (var glue in glues) {
+		var sourceFramework = $"{glue}/FinalProduct/XamGlue.framework";
+		var sourceXCFramework = $"{glue}/FinalProduct/XamGlue.xcframework";
+		if (System.IO.Directory.Exists (System.IO.Path.Combine (bi.XamGlue.ToString (), sourceFramework))) {
+			dl.Add (GetInfo (bi.XamGlue, sourceFramework, $"lib/SwiftInterop/{glue}/XamGlue.framework"));
+		} else if (System.IO.Directory.Exists (System.IO.Path.Combine (bi.XamGlue.ToString (), sourceXCFramework))) {
+			dl.Add (GetInfo (bi.XamGlue, sourceXCFramework, $"lib/SwiftInterop/{glue}/XamGlue.xcframework"));
+		}
+	}
 
 	// Get 'Sample' folders to copy
 	var samples = new [] { "helloswift", "piglatin", "propertybag", "sampler", "sandwiches" };
