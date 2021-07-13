@@ -59,6 +59,19 @@ namespace SwiftReflector {
 		public FrameworkRepresentation Framework { get; private set; }
 		public LibraryRepresentation Library { get; private set; }
 
+		public string Path {
+			get {
+				return Library?.Path ?? Framework?.Path ?? XCFramework.Path;
+			}
+		}
+
+		public string ParentPath {
+			get {
+				var path = Path;
+				return path != null ? Directory.GetParent (path).ToString () : null;
+			}
+		}
+
 		public static UniformTargetRepresentation FromPath (string moduleName, List<string> directoriesToSearch, ErrorHandling errors)
 		{
 			string path = null;
@@ -99,9 +112,9 @@ namespace SwiftReflector {
 			path = directories.FirstOrDefault (d => d.EndsWith (targetFrameworkName) && Directory.Exists (d));
 			if (path != null)
 				return true;
-			path = directories.FirstOrDefault (d => Directory.Exists (Path.Combine (d, targetFrameworkName)));
+			path = directories.FirstOrDefault (d => Directory.Exists (System.IO.Path.Combine (d, targetFrameworkName)));
 			if (path != null) {
-				path = Path.Combine (path, targetFrameworkName);
+				path = System.IO.Path.Combine (path, targetFrameworkName);
 				return true;
 			}
 			return false;
@@ -122,8 +135,8 @@ namespace SwiftReflector {
 		static bool TryGetLibraryPath (string moduleName, List<string> directories, out string path)
 		{
 			var targetLibrary = $"lib{moduleName}.dylib";
-			path = directories.FirstOrDefault (d => File.Exists (Path.Combine (d, targetLibrary)));
-			if (path != null) path = Path.Combine (path, targetLibrary);
+			path = directories.FirstOrDefault (d => File.Exists (System.IO.Path.Combine (d, targetLibrary)));
+			if (path != null) path = System.IO.Path.Combine (path, targetLibrary);
 			return path != null;
 		}
 
@@ -182,7 +195,7 @@ namespace SwiftReflector {
 		{
 			var frameworkRep = new FrameworkRepresentation (frameworkPath);
 			try {
-				var libraryPath = Path.Combine (frameworkPath, moduleName);
+				var libraryPath = System.IO.Path.Combine (frameworkPath, moduleName);
 				if (!File.Exists (libraryPath)) {
 					errors.Add (new FileNotFoundException (libraryPath));
 					return null;
@@ -213,8 +226,8 @@ namespace SwiftReflector {
 		{
 			foreach (var path in Directory.GetDirectories (pathToXCFramework))
 			{
-				var candidate = Path.Combine (path, $"{moduleName}.framework");
-				var candidateModule = Path.Combine (candidate, moduleName);
+				var candidate = System.IO.Path.Combine (path, $"{moduleName}.framework");
+				var candidateModule = System.IO.Path.Combine (candidate, moduleName);
 				if (Directory.Exists (candidate) && File.Exists (candidateModule))
 					yield return candidate;
 			}

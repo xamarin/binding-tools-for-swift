@@ -200,6 +200,8 @@ namespace SwiftReflector.IOUtils {
 			string moduleFileName = moduleName + ".swiftmodule";
 
 			if (IsAppleFramework (targetDir, moduleFileName)) {
+				if (!targetDir.EndsWith (".framework"))
+					targetDir = Path.Combine (targetDir, moduleName + ".framework");
 				return new AppleFrameworkModule (targetDir, moduleFileName, target);
 			}
 
@@ -273,7 +275,15 @@ namespace SwiftReflector.IOUtils {
 		{
 			string modulesDir = Path.Combine (dir, "Modules");
 			string swiftModuleDir = Path.Combine (modulesDir, modfileName);
-			return Directory.Exists (modulesDir) && Directory.Exists (swiftModuleDir);
+			if (!(Directory.Exists (modulesDir) && Directory.Exists (swiftModuleDir))) {
+				if (!dir.EndsWith (".framework")) {
+					modulesDir = Path.Combine (dir, Path.GetFileNameWithoutExtension (modfileName) + ".framework", "Modules");
+					swiftModuleDir = Path.Combine (modulesDir, modfileName);
+					return Directory.Exists (modulesDir) && Directory.Exists (swiftModuleDir);
+				}
+				return false;
+			}
+			return true;
 		}
 
 		public static bool IsXamarinLayout (string dir, string moduleFileName, string target)

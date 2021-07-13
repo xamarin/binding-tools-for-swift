@@ -1,5 +1,5 @@
 SWIFT_BIN = /usr/bin
-SWIFT_LIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0
+SWIFT_LIB = /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift
 
 SWIFTC = $(SWIFT_BIN)/swiftc
 SWIFTARGS = -sdk `xcrun --show-sdk-path` -emit-module -emit-library -enable-library-evolution -emit-module-interface

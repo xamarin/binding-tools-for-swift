@@ -1,6 +1,6 @@
 SWIFT_BIN = /usr/bin
 XCODE_DEV = /Applications/Xcode.app/Contents/Developer
-SWIFT_LIB = $(XCODE_DEV)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0
+SWIFT_LIB = $(XCODE_DEV)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift
 
 SWIFTC = $(SWIFT_BIN)/swiftc
 SWIFTARGS = -emit-library -enable-library-evolution -emit-module -emit-module-interface \
