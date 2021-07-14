@@ -20,6 +20,7 @@ namespace SwiftReflector.TypeMapping {
 		TypeSpecToSLType specMapper, overrideSpecMapper;
 		SwiftTypeToSLType swiftTypeMapper;
 		UnicodeMapper unicodeMapper;
+		HashSet<string> loadedFiles = new HashSet<string> ();
 
 		public TypeMapper (List<string> typeDatabasePaths, UnicodeMapper unicodeMapper)
 		{
@@ -43,6 +44,9 @@ namespace SwiftReflector.TypeMapping {
 
 		public void AddTypeDatabase (string fileName)
 		{
+			if (loadedFiles.Contains (fileName))
+				return;
+			loadedFiles.Add (fileName);
 			var errors = TypeDatabase.Read (fileName);
 			if (errors.AnyErrors)
 				throw new AggregateException (errors.Errors.Select ((v) => v.Exception));

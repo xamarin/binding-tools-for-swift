@@ -19,14 +19,14 @@ swift_pig_latin: swiftPigLatinLibrary/SwiftPigLatinLibrary/SwiftIgPay.swift
 	# copy the swift framework locally
 	cp -r derived_data/Build/Products/Debug-iphonesimulator/SwiftPigLatinLibrary.framework frameworks
 	rm -rf derived_data
+	cp -r ../../lib/SwiftInterop/iphone/XamGlue.xcframework/ios-i386_x86_64-simulator/XamGlue.framework frameworks
 
 	# build the C# binding
 	mkdir -p bindingtoolsoutput
-	$(BINDINGTOOLSFORSWIFT) --type-database-path=../../bindings --retain-swift-wrappers --swift-bin-path $(SWIFT_BIN) --swift-lib-path $(SWIFT_LIB) -o bindingtoolsoutput -C . -C frameworks/SwiftPigLatinLibrary.framework -module-name SwiftPigLatinLibrary
+	$(BINDINGTOOLSFORSWIFT) --type-database-path=../../bindings --retain-swift-wrappers --swift-bin-path $(SWIFT_BIN) --swift-lib-path $(SWIFT_LIB) -o bindingtoolsoutput -C . -C frameworks/SwiftPigLatinLibrary.framework -C frameworks/XamGlue.framework -C frameworks -module-name SwiftPigLatinLibrary
 	
 	# copy all the needed frameworks
 	cp -r bindingtoolsoutput/XamWrapping.framework frameworks
-	cp -r ../../lib/SwiftInterop/iphone/XamGlue.framework frameworks
 	cp -r frameworks PigLatin/PigLatin
 
 	# copy the C# binding

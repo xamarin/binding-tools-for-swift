@@ -236,11 +236,11 @@ namespace tomswifty {
 		#endregion
 
 		static Dictionary<string, string> targetOSToTargetDirectory = new Dictionary<string, string> {
-			{ "macos", "mac" }, { "ios", "iphone" }, { "tvos", "appletv" }, {"watchos", "watch" }
+			{ "macosx", "mac" }, { "macos", "mac" }, { "ios", "iphone" }, { "tvos", "appletv" }, {"watchos", "watch" }
 		};
 
 		static Dictionary<string, string> targetOSToTargetLibrary = new Dictionary<string, string> {
-			{ "macos", "macosx" }, { "ios", "iphoneos" }, { "tvos", "appletvos" }, {"watchos", "watchos" }
+			{ "macosx", "macosx" }, { "macos", "macosx" }, { "ios", "iphoneos" }, { "tvos", "appletvos" }, {"watchos", "watchos" }
 		};
 
 		public void CheckForOptionErrors (ErrorHandling errors, bool isLibrary = false)
@@ -248,6 +248,9 @@ namespace tomswifty {
 			CheckPath (SwiftBinPath, "path to swift binaries", errors);
 			CheckPath (SwiftLibPath, "path to swift libraries", errors);
 			TypeDatabasePaths.ForEach (path => CheckPath (path, "path to type database files", errors));
+			var swiftTypeDatabase = FindSwiftTypeDatabase (errors);
+			if (swiftTypeDatabase != null)
+				TypeDatabasePaths.Add (swiftTypeDatabase);
 
 			EnsureFileExists ("swiftc", new string [] { SwiftBinPath }, errors);
 			EnsureFileExists ("swift", new string [] { SwiftBinPath }, errors);
@@ -290,20 +293,12 @@ namespace tomswifty {
 							var targetOS = targets [0].ClangTargetOS ();
 							var targetOSOnly = targets [0].ClangOSNoVersion ();
 
-							if (SwiftGluePath != null) {
-								string path = null;
-								string targetOSPathPart;
-								if (!targetOSToTargetDirectory.TryGetValue (targetOSOnly, out targetOSPathPart)) {
-									throw new ArgumentException ("Target not found", nameof (targetOSOnly));
-								}
-								// The SwiftGluePath may have a 'FinalProduct' directory inside the path
-								path = Path.Combine (SwiftGluePath, $"{targetOSPathPart}/XamGlue.framework");
-								if (!Directory.Exists (path))
-									path = Path.Combine (SwiftGluePath, $"{targetOSPathPart}/FinalProduct/XamGlue.framework");
-
-								ModulePaths.Add (path);
-								DylibPaths.Add (path);
+							var targetXamGluePath = FindXamGluePathForOS (targetOSOnly, errors);
+							if (targetXamGluePath == null) {
+								throw new ArgumentException ($"Unable to find XamGlue for target operating system {targetOSOnly}");
 							}
+							ModulePaths.Add (targetXamGluePath);
+							DylibPaths.Add (targetXamGluePath);
 
 							string targetOSLibraryPathPart;
 							if (!targetOSToTargetLibrary.TryGetValue (targetOSOnly, out targetOSLibraryPathPart)) {
@@ -330,12 +325,6 @@ namespace tomswifty {
 										errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
 									}
 								}
-
-								using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, "XamGlue", target)) {
-									if (loc == null) {
-										errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for XamGlue in target {target}. Did you forget to refer to it with -M or -C? Searched in {sb.ToString ()}.")));
-									}
-								}
 							}
 						}
 					} catch (Exception err) {
@@ -354,6 +343,85 @@ namespace tomswifty {
 				if (!Directory.Exists (OutputDirectory))
 					Directory.CreateDirectory (OutputDirectory);
 			}
+		}
+
+		string FindSwiftTypeDatabase (ErrorHandling errors)
+		{
+			// where to look:
+			// we run in two basic configurations: development and release
+			// In development, the path to the executable is:
+			// /path/to/binding-tools-for-swift/tom-swifty/bin/[Debug,Release]/tom-swifty.exe
+			// The path to the typedatabase is
+			// /path/to/binding-tools-for-swift/bindings
+			// So this directory is
+			// ../../../bindings
+			// In release, the path to the executable is:
+			// /path/to/lib/binding-tools-for-swift/tom-swifty.exe
+			// so the path to the library is going to be:
+			// ../../bindings
+			var tomSwiftyPath = CompilationSettings.AssemblyLocation ();
+
+			var devPathRoot = Parentize (tomSwiftyPath, 3);
+			var releasePathRoot = Parentize (tomSwiftyPath, 2);
+
+			var devPath = Path.Combine (devPathRoot, "bindings");
+			if (Directory.Exists (devPath))
+				return devPath;
+
+			var releasePath = Path.Combine (releasePathRoot, "bindings");
+			if (Directory.Exists (releasePath))
+				return releasePath;
+			errors.Add (new FileNotFoundException ($"Unable to find bindings for system types. Looked in {devPath} and {releasePath}"));
+			return null;
+		}
+
+		string FindXamGluePathForOS (string targetOS, ErrorHandling errors)
+		{
+			// where to look:
+			// we run in two basic configurations: development and release
+			// In development, the path to the executable is:
+			// /path/to/binding-tools-for-swift/tom-swifty/bin/[Debug,Release]/tom-swifty.exe
+			// the path to the XamGlue is:
+			// /path/to/binding-tools-for-swift/swiftglue/bin/[Debug,Release]/<targetOSDirectory>/FinalProduct/XamGlue.[framework,xcframework]
+			// so the path to the library is going to be:
+			// ../../../swiftglue/bin/[Debug,Relase]/<targetOSDirectory>/FinalProduct/XamGlue.[framework,xcframework]
+			// In release:
+			// /path/to/lib/binding-tools-for-swift/tom-swifty.exe
+			// the path to XamGlue is going to be:
+			// /path/to/lib/SwiftInterop/<targetOSDirectory>/XamGlue.[framework,xcframework]
+			// so the path to the library is going to be:
+			// ../SwiftInterop/<targetOSDirectory>/XamGlue.[framework,xcframework]
+
+			// So to do this, we're going to get the path to the assembly and modify it to be
+			// either of the two cases then let UniformTargetRepresentation do the hard work
+			var tomSwiftyPath = CompilationSettings.AssemblyLocation ();
+
+			var devPathRoot = Parentize (tomSwiftyPath, 3);
+			var releasePathRoot = Parentize (tomSwiftyPath, 1);
+
+			string targetOSDirectory;
+			if (!targetOSToTargetDirectory.TryGetValue (targetOS, out targetOSDirectory)) {
+				errors.Add (new FileNotFoundException ($"In looking for XamGlue, asked to look for target operating system {targetOS} but I don't know about it"));
+			}
+
+			var devDebug = Path.Combine (devPathRoot, "swiftglue/bin/Debug", targetOSDirectory, "FinalProduct");
+			var devRelease = Path.Combine (devPathRoot, "swiftglue/bin/Release", targetOSDirectory, "FinalProduct");
+			var release = Path.Combine (releasePathRoot, "SwiftInterop", targetOSDirectory);
+			var searchPaths = new List<string> () { devDebug, devRelease, release };
+			if (SwiftGluePath != null) {
+				searchPaths.Insert (0, SwiftGluePath); // give it priority at 0
+			}
+			var uniformTargetRep = UniformTargetRepresentation.FromPath ("XamGlue", searchPaths, errors);
+
+			return uniformTargetRep?.ParentPath;
+		}
+
+		static string Parentize (string path, int numberOfParents)
+		{
+			while (numberOfParents-- > 0) {
+				path = Directory.GetParent (path).ToString ();
+			}
+			return path;
 		}
 
 		void CheckPath (string path, string identifier, ErrorHandling errors)

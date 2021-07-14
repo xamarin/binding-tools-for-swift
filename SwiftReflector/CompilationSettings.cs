@@ -264,7 +264,7 @@ namespace SwiftReflector {
 
 			var assemblyPath = AssemblyLocation ();
 			var parent = Directory.GetParent (assemblyPath).ToString ();
-			var pacMacPath = Path.Combine (parent, "make-framework/make-framwork");
+			var pacMacPath = Path.Combine (parent, "make-framework/make-framework");
 			if (File.Exists (pacMacPath))
 				return pacMacPath;
 			var grandParent = Directory.GetParent (parent).ToString ();
@@ -272,12 +272,15 @@ namespace SwiftReflector {
 			if (File.Exists (idePath))
 				return idePath;
 			var greatGrandParent = Directory.GetParent (grandParent).ToString ();
+			var backupIDEPath = Path.Combine (greatGrandParent, "tools/make-framework");
+			if (File.Exists (backupIDEPath))
+				return backupIDEPath;
 			var greatGreatGrandParent = Directory.GetParent (greatGrandParent).ToString ();
 			var unitTestsPath = Path.Combine (greatGreatGrandParent, "tools/make-framework");
 			return File.Exists (unitTestsPath) ? unitTestsPath : null;
 		}
 
-		string AssemblyLocation ()
+		public static string AssemblyLocation ()
 		{
 			// reference code: https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in
 			var codeBase = Assembly.GetExecutingAssembly ().CodeBase;
