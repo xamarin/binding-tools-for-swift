@@ -146,36 +146,20 @@ namespace SwiftReflector.IOUtils {
 			return modules.Contains (module);
 		}
 
-		public static List<ISwiftModuleLocation> GatherAllReferencedModules (IEnumerable<string> allReferencedModules,
-										    IEnumerable<string> inputModuleDirectories,
-										    string target)
+		public static List<UniformTargetRepresentation> GatherAllReferencedModules (IEnumerable<string> allReferencedModules,
+			List<string> inputModuleDirectories, string target)
 		{
-			var locations = new List<ISwiftModuleLocation> ();
-			var locationErrors = new List<string> ();
-
-			try {
-				foreach (string moduleName in allReferencedModules) {
-					if (moduleName == "Swift" || moduleName == "Self")
-						continue;
-					ISwiftModuleLocation loc = SwiftModuleFinder.Find (inputModuleDirectories, moduleName, target);
-					if (loc == null) {
-						if (IsSystemModule (target, moduleName))
-							continue;
-						locationErrors.Add (moduleName);
-						continue;
-					}
-					locations.Add (loc);
+			var errors = new ErrorHandling ();
+			var targets = new List<UniformTargetRepresentation> ();
+			foreach (var moduleName in allReferencedModules) {
+				if (moduleName == "Swift" || moduleName == "Self")
+					continue;
+				var targetRep = UniformTargetRepresentation.FromPath (moduleName, inputModuleDirectories, errors);
+				if (targetRep != null) {
+					targets.Add (targetRep);
 				}
-			} catch {
-				locations.DisposeAll ();
-				throw;
 			}
-			if (locationErrors.Count > 0) {
-				if (locationErrors.Count == 1)
-					throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 6, $"Unable to find swiftmodule file for {locationErrors [0]} for target {target}.");
-				throw ErrorHelper.CreateError (ReflectorError.kCompilerBase + 7, $"Unable to find swiftmodules for {locationErrors.InterleaveCommas ()} for target {target}.");
-			}
-			return locations;
+			return targets;
 		}
 
 		public static ISwiftModuleLocation Find (IEnumerable<string> searchPaths, string moduleName, string target)
@@ -276,7 +260,7 @@ namespace SwiftReflector.IOUtils {
 			string modulesDir = Path.Combine (dir, "Modules");
 			string swiftModuleDir = Path.Combine (modulesDir, modfileName);
 			if (!(Directory.Exists (modulesDir) && Directory.Exists (swiftModuleDir))) {
-				if (!dir.EndsWith (".framework")) {
+				if (dir.EndsWith (".framework")) {
 					modulesDir = Path.Combine (dir, Path.GetFileNameWithoutExtension (modfileName) + ".framework", "Modules");
 					swiftModuleDir = Path.Combine (modulesDir, modfileName);
 					return Directory.Exists (modulesDir) && Directory.Exists (swiftModuleDir);

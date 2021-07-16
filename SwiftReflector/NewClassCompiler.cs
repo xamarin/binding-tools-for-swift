@@ -5339,8 +5339,10 @@ namespace SwiftReflector {
 			}
 
 
-			string wrapperLibraryPath = Path.Combine (outputDirectory, outputIsFramework ? wrappingModuleName : string.Format ("lib{0}.dylib", wrappingModuleName));
-			string wrapperModulePath = Path.Combine (outputDirectory, wrappingModuleName + ".swiftmodule");
+			var targetRepresentation = UniformTargetRepresentation.FromPath (wrappingModuleName, new List<string> () { outputDirectory }, errors);
+
+			string wrapperLibraryPath = targetRepresentation.PathToDylib (targets [0]);
+			var wrapperModulePath = targetRepresentation.PathToSwiftModule (targets [0]);
 
 			var wrapperModuleInventory = ModuleInventory.FromFile (wrapperLibraryPath, errors);
 			if (errors.AnyErrors) {
@@ -5356,28 +5358,25 @@ namespace SwiftReflector {
 			                                                  new ModuleContents (new SwiftName (wrappingModuleName, false), wrapperModuleInventory.SizeofMachinePointer);
 
 			var mods = new List<string> (modulePaths);
-			mods.Add (outputDirectory);
+			mods.Add (targetRepresentation.Path);
 			wrapStuff.Item2.Add (wrappingModuleName);
-			var locations = SwiftModuleFinder.GatherAllReferencedModules (wrapStuff.Item2, mods, targets [0]);
 
-			try {
-				mods.Clear ();
-				mods.AddRange (locations.Select (loc => loc.DirectoryPath));
+			var targetRepresentations = SwiftModuleFinder.GatherAllReferencedModules (wrapStuff.Item2, mods, targets [0]);
 
-				var targetInfo = ReflectorLocations.GetTargetInfo (targets [0]);
-				using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, null, true)) {
-					compiler.Verbose = verbose;
-					compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
-					var libs = new List<string> (libraryPaths);
-					libs.Add (outputDirectory);
-					using (DisposableTempDirectory dir = new DisposableTempDirectory ("wrapreflect", true)) {
-						string outputPath = dir.UniquePath (wrappingModuleName, "reflect", "xml");
-						var mdecl = compiler.ReflectToModules (mods, libs, "", wrappingModuleName).FirstOrDefault ();
-						return new WrappingResult (wrapperModulePath, wrapperLibraryPath, wrapperModuleContents, mdecl, wrappingCompiler.FunctionReferenceCodeMap);
-					}
+			mods.Clear ();
+			mods.AddRange (targetRepresentations.Select (tar => tar.ParentPath));
+
+			var targetInfo = ReflectorLocations.GetTargetInfo (targets [0]);
+			using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, null, true)) {
+				compiler.Verbose = verbose;
+				compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
+				var libs = new List<string> (libraryPaths);
+				libs.Add (outputDirectory);
+				using (DisposableTempDirectory dir = new DisposableTempDirectory ("wrapreflect", true)) {
+					string outputPath = dir.UniquePath (wrappingModuleName, "reflect", "xml");
+					var mdecl = compiler.ReflectToModules (mods, libs, "", wrappingModuleName).FirstOrDefault ();
+					return new WrappingResult (wrapperModulePath, wrapperLibraryPath, wrapperModuleContents, mdecl, wrappingCompiler.FunctionReferenceCodeMap);
 				}
-			} finally {
-				locations.DisposeAll ();
 			}
 		}
 

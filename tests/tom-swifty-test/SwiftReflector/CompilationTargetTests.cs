@@ -81,6 +81,7 @@ namespace SwiftReflector {
 			List<TargetCpu> simArchs, List<TargetCpu> deviceArchs, string minVersion, string outputDirectory,
 			bool isLibrary)
 		{
+			var moduleName = "NoNameModule";
 			CompilationTargetCollection simTargets = null;
 			CompilationTargetCollection devTargets = null;
 			UniformTargetRepresentation targetRepresentation = null;
@@ -92,26 +93,26 @@ namespace SwiftReflector {
 			}
 
 			if (isLibrary) {
-				var library = new LibraryRepresentation ("");
+				var library = new LibraryRepresentation (outputDirectory, moduleName);
 				library.Targets.AddRange (simTargets ?? devTargets);
 				targetRepresentation = new UniformTargetRepresentation (library);
 			} else {
 				if (simTargets != null && devTargets != null) {
-					var devFm = new FrameworkRepresentation ("");
+					var devFm = new FrameworkRepresentation (outputDirectory, moduleName);
 					devFm.Targets.AddRange (devTargets);
-					var simFm = new FrameworkRepresentation ("");
+					var simFm = new FrameworkRepresentation (outputDirectory, moduleName);
 					simFm.Targets.AddRange (simTargets);
-					var xcFramework = new XCFrameworkRepresentation ("");
+					var xcFramework = new XCFrameworkRepresentation (outputDirectory, moduleName);
 					xcFramework.Frameworks.Add (devFm);
 					xcFramework.Frameworks.Add (simFm);
 					targetRepresentation = new UniformTargetRepresentation (xcFramework);
 				} else {
-					var framework = new FrameworkRepresentation ("");
+					var framework = new FrameworkRepresentation ("/path/to/nowhere", moduleName);
 					framework.Targets.AddRange (simTargets ?? devTargets);
 					targetRepresentation = new UniformTargetRepresentation (framework);
 				}
 			}
-			var compilationSettings = new CompilationSettings (outputDirectory, "NoNameModule", targetRepresentation);
+			var compilationSettings = new CompilationSettings (outputDirectory, moduleName, targetRepresentation);
 			compilationSettings.SwiftFilePaths.AddRange (swiftFiles);
 			return compilationSettings;
 		}
@@ -508,6 +509,59 @@ namespace SwiftReflector {
 				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, $"wrong cpu in {target}");
 			}
 
+		}
+
+		[TestCase ("ios", PlatformName.iOS)]
+		[TestCase ("macosx", PlatformName.macOS)]
+		[TestCase ("watchos", PlatformName.watchOS)]
+		[TestCase ("tvos", PlatformName.tvOS)]
+		public void FromStringOSSuccess (string os, PlatformName platform)
+		{
+			var testString = $"i386-apple-{os}10.1";
+			var compilationTarget = new CompilationTarget (testString);
+			Assert.AreEqual (platform, compilationTarget.OperatingSystem, $"wrong os {os}");
+			Assert.AreEqual (new Version ("10.1"), compilationTarget.MinimumOSVersion, $"wrong version");
+		}
+
+		[Test]
+		public void FromStringOSFail ()
+		{
+			var testString = $"i386-apple-steveos3.7";
+			Assert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget (testString));
+		}
+
+		[Test]
+		public void FromStringManufacturerSuccess ()
+		{
+			var compilationTarget = new CompilationTarget ("i386-apple-ios10.1");
+			Assert.AreEqual (TargetManufacturer.Apple, compilationTarget.Manufacturer);
+		}
+
+		[Test]
+		public void FromStringManufacturerFail ()
+		{
+			Assert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget ("i386-banana-ios10.1"));
+		}
+
+		[TestCase ("i386", TargetCpu.I386)]
+		[TestCase ("arm64", TargetCpu.Arm64)]
+		[TestCase ("armv7k", TargetCpu.Arm7vk)]
+		[TestCase ("armv7s", TargetCpu.Armv7s)]
+		[TestCase ("armv7", TargetCpu.Armv7)]
+		[TestCase ("x86_64", TargetCpu.X86_64)]
+		[TestCase ("arm64_32", TargetCpu.Arm64_32)]
+		public void FromStringCpuSuccess (string cpu, TargetCpu targetCpu)
+		{
+			var testString = $"{cpu}-apple-ios10.1";
+			var compilationTarget = new CompilationTarget (testString);
+			Assert.AreEqual (targetCpu, compilationTarget.Cpu);
+		}
+
+		[Test]
+		public void FromStringCpuFail ()
+		{
+			var testString = $"blah-apple-ios10.1";
+			Assert.Throws(typeof (ArgumentOutOfRangeException), () => new CompilationTarget (testString));
 		}
 	}
 }
