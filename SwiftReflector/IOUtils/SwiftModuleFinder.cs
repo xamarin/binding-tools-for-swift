@@ -157,6 +157,8 @@ namespace SwiftReflector.IOUtils {
 				var targetRep = UniformTargetRepresentation.FromPath (moduleName, inputModuleDirectories, errors);
 				if (targetRep != null) {
 					targets.Add (targetRep);
+				} else {
+					throw errors.Errors.First ().Exception;
 				}
 			}
 			return targets;
