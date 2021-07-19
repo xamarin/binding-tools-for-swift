@@ -219,14 +219,10 @@ namespace SwiftReflector {
 
 			var modulesInLibraries = SwiftModuleFinder.FindModuleNames (libraryDirectories, CompilerInfo.Target);
 
-			List<ISwiftModuleLocation> locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries,
-													     includeDirectories, CompilerInfo.Target);
-			string output = "";
-			try {
-				output = Reflect (locations.Select (loc => loc.DirectoryPath), libraryDirectories, pathName, extraArgs, moduleNames);
-			} finally {
-				locations.DisposeAll ();
-			}
+			var locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries,
+													     includeDirectories.ToList (), CompilerInfo.Target);
+			var output = Reflect (locations.Select (loc => loc.ParentPath), libraryDirectories, pathName, extraArgs, moduleNames);
+
 			ThrowOnCompilerVersionMismatch (output, moduleNames);
 			using (var stm = new FileStream (pathName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
 				return XDocument.Load (stm);
@@ -246,8 +242,8 @@ namespace SwiftReflector {
 
 			var modulesInLibraries = SwiftModuleFinder.FindModuleNames (libraryDirectories, CompilerInfo.Target);
 
-			var locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries, includeDirectories, CompilerInfo.Target)
-				.Select (loc => loc.DirectoryPath).ToList ();
+			var locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries, includeDirectories.ToList (), CompilerInfo.Target)
+				.Select (loc => loc.ParentPath).ToList ();
 			locations.AddRange (includeDirectories);
 
 			ReflectWithStrategies (locations, libraryDirectories, pathName, extraArgs, moduleNames);
@@ -297,10 +293,11 @@ namespace SwiftReflector {
 			if (ReflectionTypeDatabase == null)
 				throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 72, "Parser reflector requires a TypeDatabase");
 
-			var path = GetSwiftInterfacePath (includeDirectories, moduleNames [0]);
+			var searchPaths = includeDirectories.Union (libraryDirectory);
+			var path = GetSwiftInterfacePath (searchPaths, moduleNames [0]);
 
 			if (path == null) {
-				var lookedIn = includeDirectories.InterleaveStrings (", ");
+				var lookedIn = searchPaths.InterleaveStrings (", ");
 				throw new FileNotFoundException ($"Did not find {moduleNames [0]} in {lookedIn}");
 			}
 
@@ -312,28 +309,10 @@ namespace SwiftReflector {
 
 		string GetSwiftInterfacePath (IEnumerable<string> includeDirectories, string moduleName)
 		{
-			var swiftModule = moduleName + ".swiftmodule";
-			// if the compiler has a target, it means that we have a framework.
-			if (CompilerInfo.HasTarget) {
-				foreach (var path in includeDirectories) {
-					if (SwiftModuleFinder.IsAppleFramework (path, swiftModule)) {
-						var ifaceDir = Path.Combine (path, $"Modules/{swiftModule}");
-						var file = Path.Combine (ifaceDir, $"{CompilerInfo.Target.ClangTargetCpu ()}.swiftinterface");
-						if (File.Exists (file))
-							return file;
-					} else {
-						var file = Path.Combine (path, $"{moduleName}.swiftinterface");
-						if (File.Exists (file))
-							return file;
-					}
-				}
-				return null;
-			} else {
-				var paths = includeDirectories.Select (dir => Path.Combine (dir, swiftModule));
-
-				var path = paths.FirstOrDefault (p => File.Exists (p));
-				return path;
-			}
+			var errors = new ErrorHandling ();
+			var targetRepresentation = UniformTargetRepresentation.FromPath (moduleName, includeDirectories.ToList (), errors);
+			// ignore the errors - if we found something we're good. If we didn't we'll get an error upstream.
+			return targetRepresentation?.PathToSwiftInterface (targetRepresentation.Targets.First ());
 		}
 
 		public string Reflect (IEnumerable<string> includeDirectories, IEnumerable<string> libraryDirectories,
