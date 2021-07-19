@@ -320,6 +320,8 @@ namespace tomwiftytest {
 				File.Copy (Path.Combine (compiler.DirectoryPath, libName), Path.Combine (tempDirectoryPath, libName));
 
 				Utils.CompileToCSharp (provider, tempDirectoryPath, nameSpace, unicodeMapper: unicodeMapper, expectedErrorCount: expectedErrorCount);
+				if (platform == PlatformName.macOS)
+					AdjustXamGlueRPaths (Path.Combine (tempDirectoryPath, libName));
 				if (postCompileCheck != null)
 					postCompileCheck (tempDirectoryPath);
 
@@ -415,6 +417,24 @@ namespace tomwiftytest {
 						Assert.IsTrue (output.Contains (s), $"Expected to find string {s} in {output}");
 					}
 				}
+			}
+		}
+
+		static void AdjustXamGlueRPaths (string pathToLib)
+		{
+			var output = new StringBuilder ();
+			var install_name_tool = new StringBuilder ();
+			install_name_tool.Append ($"install_name_tool ");
+			install_name_tool.Append ($"-add_rpath @executable_path/../Frameworks ");
+			install_name_tool.Append ($"-add_rpath @executable_path/../Frameworks/XamGlue.framework ");
+			install_name_tool.Append ($"-add_rpath @executable_path/../MonoBundle ");
+			install_name_tool.Append ($"-change XamGlue @rpath/XamGlue ");
+			install_name_tool.Append ($"{StringUtils.Quote (pathToLib)} ");
+			output.Clear ();
+			var rv = ExecAndCollect.RunCommand ("xcrun", install_name_tool.ToString (), output: output, verbose: true);
+			if (rv != 0) {
+				Console.WriteLine (output);
+				throw new Exception ($"Failed to run install_name_tool, exit code: {rv}\n{output}\n");
 			}
 		}
 
@@ -729,7 +749,9 @@ public static class Console {
 					var install_name_tool = new StringBuilder ();
 					install_name_tool.Append ($"install_name_tool ");
 					install_name_tool.Append ($"-add_rpath @executable_path/../Frameworks ");
+					install_name_tool.Append ($"-add_rpath @executable_path/../Frameworks/XamGlue.framework ");
 					install_name_tool.Append ($"-add_rpath @executable_path/../MonoBundle ");
+					install_name_tool.Append ($"-change XamGlue @rpath/XamGlue ");
 					install_name_tool.Append ($"{StringUtils.Quote (Path.Combine (appPath, "Contents", "MacOS", name))} ");
 					output.Clear ();
 					rv = ExecAndCollect.RunCommand ("xcrun", install_name_tool.ToString (), output: output, verbose: true);

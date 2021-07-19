@@ -46,6 +46,8 @@ usage () {
 	echo " --make-xcframework (optional)"
 	echo "    if present, puts both device and simulator builds into an xcframework"
 	echo "    if present, both --simulator-archs and --device-archs must be present."
+	echo " --install-name-tool arg1 arg2 ..."
+	echo "    if preset, runs the install-name-tool command as part of the swift compilation."
 	echo " --verbose"
 	echo "    if present, be more talky."
 	echo "    if present, more than once be super talky."
@@ -243,6 +245,17 @@ while (( "$#" )); do
 		fi
 		verbose=1
 		;;
+	--install-name-tool)
+		shift
+		while (( "$#" )); do
+                        if [[ $1 == "--"* ]]
+                        then
+                                break
+                        fi
+                        install_name_tool_args="${install_name_tool_args} $1"
+                        shift
+                done
+		;;
 
 	*)
 		echo "${COLOR_RED}Unknown argument $1${COLOR_CLEAR}"
@@ -399,6 +412,15 @@ compile_swift_files () {
 	fi
 
 	swiftc -sdk "$sdk" -target "$targetarch" -emit-module-interface -enable-library-evolution -emit-module -emit-library $extra_swift_args $includes $libraries $frameworks $libreferences $frameworkreferences -module-name $module_name -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker '@executable_path/Frameworks' -Xlinker -rpath -Xlinker '@loader_path' -Xlinker -rpath -Xlinker '@loader_path/Frameworks' -Xlinker -rpath -Xlinker @executable_path -Xlinker -final_output -Xlinker "$module_name" -o "${odir}/${module_name}" $swift_files $ofiles
+	if [[ -n $install_name_tool_args ]]; then
+		if [[ -n $verbose ]]; then
+			echo "[Running install-name-tool]"
+		fi
+		if [[ -n $superverbose ]]; then
+			echo install_name_tool $install_name_tool_args "${odir}/${module_name}"
+		fi
+		install_name_tool $install_name_tool_args "${odir}/${module_name}"
+	fi
 }
 
 copy_arch_files ()

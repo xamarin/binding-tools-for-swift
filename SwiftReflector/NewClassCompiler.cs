@@ -5359,6 +5359,7 @@ namespace SwiftReflector {
 
 			var mods = new List<string> (modulePaths);
 			mods.Add (targetRepresentation.Path);
+			mods.Add (targetRepresentation.ParentPath);
 			wrapStuff.Item2.Add (wrappingModuleName);
 
 			var targetRepresentations = SwiftModuleFinder.GatherAllReferencedModules (wrapStuff.Item2, mods, targets [0]);

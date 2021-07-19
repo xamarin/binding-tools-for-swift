@@ -118,7 +118,8 @@ namespace SwiftReflector {
 			//--make-xcframework (optional)
 			//   if present, puts both device and simulator builds into an xcframework
 			//   if present, both--simulator - archs and--device - archs must be present.
-			// 
+			//--install-name-tool args
+                        //   if present, runs the install-name-tool command as part of the swift compilation
 
 			if (SwiftFilePaths.Count == 0)
 				throw new Exception ("No files provided to compile.");
@@ -160,6 +161,7 @@ namespace SwiftReflector {
 				args.Append (" --extra-swift-args -Xlinker -install_name -Xlinker @rpath/lib")
 					.Append (ModuleName).Append (".dylib");
 			}
+			args.Append (" --install-name-tool -change XamGlue @rpath/XamGlue");
 			return args.ToString ();
 		}
 

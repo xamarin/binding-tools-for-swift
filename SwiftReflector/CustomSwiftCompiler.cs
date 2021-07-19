@@ -315,9 +315,7 @@ namespace SwiftReflector {
 		{
 			var errors = new ErrorHandling ();
 			var targetRepresentation = UniformTargetRepresentation.FromPath (moduleName, includeDirectories.ToList (), errors);
-			if (errors.AnyErrors) {
-				throw errors.Errors.First ().Exception;
-			}
+			// ignore the errors - if we found something we're good. If we didn't we'll get an error upstream.
 			return targetRepresentation?.PathToSwiftInterface (targetRepresentation.Targets.First ());
 		}
 
