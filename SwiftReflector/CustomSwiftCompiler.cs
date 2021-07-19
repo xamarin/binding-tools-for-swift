@@ -221,12 +221,8 @@ namespace SwiftReflector {
 
 			var locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries,
 													     includeDirectories.ToList (), CompilerInfo.Target);
-			string output = "";
-			try {
-				output = Reflect (locations.Select (loc => loc.ParentPath), libraryDirectories, pathName, extraArgs, moduleNames);
-			} finally {
-				//locations.DisposeAll ();
-			}
+			var output = Reflect (locations.Select (loc => loc.ParentPath), libraryDirectories, pathName, extraArgs, moduleNames);
+
 			ThrowOnCompilerVersionMismatch (output, moduleNames);
 			using (var stm = new FileStream (pathName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
 				return XDocument.Load (stm);
