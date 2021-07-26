@@ -320,11 +320,11 @@ namespace tomswifty {
 								if (isLibrary)
 									continue;
 
-								using (ISwiftModuleLocation loc = SwiftModuleFinder.Find (ModulePaths, ModuleName, target)) {
-									if (loc == null) {
-										errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
-									}
-								}
+								var targetRep = UniformTargetRepresentation.FromPath (ModuleName, ModulePaths, errors);
+								if (targetRep == null)
+									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName}. Searched in {sb.ToString ()}.")));
+								if (targetRep.HasTarget (new CompilationTarget (target)))
+									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
 							}
 						}
 					} catch (Exception err) {

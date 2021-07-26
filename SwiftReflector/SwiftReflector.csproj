@@ -133,7 +133,6 @@
     <Compile Include="SwiftXmlReflection\BaseConstraint.cs" />
     <Compile Include="SwiftXmlReflection\GenericDeclarationCollection.cs" />
     <Compile Include="MachOHelpers.cs" />
-    <Compile Include="IOUtils\SwiftModuleFinder.cs" />
     <Compile Include="IOUtils\PLItems.cs" />
     <Compile Include="IOUtils\PLItemEnums.cs" />
     <Compile Include="IOUtils\ExecAndCollect.cs" />
@@ -156,7 +155,6 @@
     <Compile Include="IOUtils\PosixHelpers.cs" />
     <Compile Include="FunctionReferenceCodeMap.cs" />
     <Compile Include="ObjCProtocolCompiler.cs" />
-    <Compile Include="IOUtils\SwiftModuleList.g.cs" />
     <Compile Include="SwiftCompilerLocation.cs" />
     <Compile Include="Importing\BindingImporter.cs" />
     <Compile Include="Importing\PatternMatch.cs" />
