@@ -5341,8 +5341,9 @@ namespace SwiftReflector {
 
 			var targetRepresentation = UniformTargetRepresentation.FromPath (wrappingModuleName, new List<string> () { outputDirectory }, errors);
 
-			string wrapperLibraryPath = targetRepresentation.PathToDylib (targets [0]);
-			var wrapperModulePath = targetRepresentation.PathToSwiftModule (targets [0]);
+			var compilationTarget = new CompilationTarget (targets [0]);
+			string wrapperLibraryPath = targetRepresentation.PathToDylib (compilationTarget);
+			var wrapperModulePath = targetRepresentation.PathToSwiftModule (compilationTarget);
 
 			var wrapperModuleInventory = ModuleInventory.FromFile (wrapperLibraryPath, errors);
 			if (errors.AnyErrors) {
