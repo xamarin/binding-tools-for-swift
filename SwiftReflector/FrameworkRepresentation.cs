@@ -5,7 +5,36 @@ using System.Linq;
 using System.IO;
 
 namespace SwiftReflector {
-	public class FrameworkRepresentation {
+	public interface ICompiledCodeRepresentation {
+		string Path { get; }
+		string ParentPath { get; }
+		CompilationTargetCollection Targets { get; }
+		string PathToDylib (CompilationTarget target);
+		string PathToSwiftModule (CompilationTarget target);
+		string PathToSwiftInterface (CompilationTarget target);
+	}
+
+	public static class CompiledCodeRepresentationExtensions {
+		public static string PathToDylib (this ICompiledCodeRepresentation rep, string target)
+		{
+			var compTarget = new CompilationTarget (target);
+			return rep.PathToDylib (compTarget);
+		}
+
+		public static string PathToSwiftModule (this ICompiledCodeRepresentation rep, string target)
+		{
+			var compTarget = new CompilationTarget (target);
+			return rep.PathToSwiftModule (compTarget);
+		}
+		public static string PathToSwiftInterface (this ICompiledCodeRepresentation rep, string target)
+		{
+			var compTarget = new CompilationTarget (target);
+			return rep.PathToSwiftInterface (compTarget);
+		}
+	}
+
+
+	public class FrameworkRepresentation : ICompiledCodeRepresentation {
 		CompilationTargetCollection compilationTargets = new CompilationTargetCollection ();
 		protected string pathToDylib, pathToSwiftModules, pathToSwiftInterface;
 		string moduleName;
@@ -13,26 +42,29 @@ namespace SwiftReflector {
 		public FrameworkRepresentation (string pathToFramework, string moduleName)
 		{
 			Path = Exceptions.ThrowOnNull (pathToFramework, nameof (pathToFramework));
+			ParentPath = Directory.GetParent (Path).ToString ();
 			pathToDylib = System.IO.Path.Combine (Path, moduleName);
 			this.moduleName = Exceptions.ThrowOnNull (moduleName, nameof (moduleName));
 			pathToSwiftModules = System.IO.Path.Combine (Path, "Modules", $"{moduleName}.swiftmodule");
 			pathToSwiftInterface = System.IO.Path.Combine (Path, "Modules", $"{moduleName}.swiftmodule");
 		}
 
+		public string Path { get; private set; }
+		public string ParentPath { get; private set; }
 		public CompilationTargetCollection Targets { get => compilationTargets; }
+
 		public PlatformName OperatingSystem { get => compilationTargets.OperatingSystem; }
 		public string OperatingSystemString { get => compilationTargets.OperatingSystemString; }
 		public TargetEnvironment Environment { get => compilationTargets.Environment; }
-		public string Path { get; private set; }
-		public virtual string PathToDylib (string target)
+
+		public virtual string PathToDylib (CompilationTarget target)
 		{
 			return pathToDylib;
 		}
 
-		public virtual string PathToSwiftModule (string target)
+		public virtual string PathToSwiftModule (CompilationTarget target)
 		{
-			var compilationTarget = new CompilationTarget (target);
-			var filePath = System.IO.Path.Combine (pathToSwiftModules, $"{compilationTarget.CpuToString ()}.swiftmodule");
+			var filePath = System.IO.Path.Combine (pathToSwiftModules, $"{target.CpuToString ()}.swiftmodule");
 			return filePath;
 		}
 
@@ -43,28 +75,41 @@ namespace SwiftReflector {
 		}
 	}
 
-	public class XCFrameworkRepresentation {
+	public class XCFrameworkRepresentation : ICompiledCodeRepresentation {
 		List<FrameworkRepresentation> frameworks = new List<FrameworkRepresentation> ();
 
 		public XCFrameworkRepresentation (string pathToXCFramework, string moduleName)
 		{
 			Path = Exceptions.ThrowOnNull (pathToXCFramework, nameof (pathToXCFramework));
+			ParentPath = Directory.GetParent (Path).ToString ();
 		}
 
 		public List<FrameworkRepresentation> Frameworks { get => frameworks; }
-		public string Path { get; private set; }
 
-		public string PathToDylib (string target)
+		public string Path { get; private set; }
+		public string ParentPath { get; private set; }
+		public CompilationTargetCollection Targets {
+			get {
+				// we could cache this, but the interfacing for the cache is
+				// uncomfortable since Frameworks could change at any time.
+				var targets = new CompilationTargetCollection ();
+				foreach (var framework in Frameworks) {
+					foreach (var target in framework.Targets)
+						targets.Add (target);
+				}
+				return targets;
+			}
+		}
+
+		public string PathToDylib (CompilationTarget target)
 		{
-			var compilationTarget = new CompilationTarget (target);
-			var framework = Frameworks.First (fm => fm.Targets.First (compilationTarget.Equals) != null);
+			var framework = Frameworks.First (fm => fm.Targets.First (target.Equals) != null);
 			return framework.PathToDylib (target);
 		}
 
-		public string PathToSwiftModule (string target)
+		public string PathToSwiftModule (CompilationTarget target)
 		{
-			var compilationTarget = new CompilationTarget (target);
-			var framework = Frameworks.First (fm => fm.Targets.First (compilationTarget.Equals) != null);
+			var framework = Frameworks.First (fm => fm.Targets.First (target.Equals) != null);
 			return framework.PathToSwiftModule (target);
 		}
 
@@ -84,14 +129,6 @@ namespace SwiftReflector {
 			return null;
 		}
 
-		public IEnumerable<CompilationTarget> Targets {
-			get {
-				foreach (var framework in Frameworks) {
-					foreach (var target in framework.Targets)
-						yield return target;
-				}
-			}
-		}
 	}
 
 	public class LibraryRepresentation : FrameworkRepresentation {
@@ -104,7 +141,7 @@ namespace SwiftReflector {
 			pathToSwiftInterface = System.IO.Path.Combine (parent, $"{moduleName}.swiftinterface");
 		}
 
-		public override string PathToSwiftModule (string target)
+		public override string PathToSwiftModule (CompilationTarget target)
 		{
 			return pathToSwiftModules;
 		}
@@ -115,7 +152,7 @@ namespace SwiftReflector {
 		}
 	}
 
-	public class UniformTargetRepresentation {
+	public class UniformTargetRepresentation : ICompiledCodeRepresentation {
 		public UniformTargetRepresentation (FrameworkRepresentation framework)
 		{
 			Framework = framework;
@@ -131,15 +168,23 @@ namespace SwiftReflector {
 			Library = library;
 		}
 
-		public IEnumerable<CompilationTarget> Targets {
+		ICompiledCodeRepresentation CompiledCodeRepresentationAdapter {
 			get {
-				if (Library != null)
-					return Library.Targets;
-				else if (Framework != null)
-					return Framework.Targets;
-				else
-					return XCFramework.Targets;
+				return (ICompiledCodeRepresentation)Library ??
+					(ICompiledCodeRepresentation)Framework ??
+					XCFramework;
+			}
+		}
 
+		public string Path {
+			get { return CompiledCodeRepresentationAdapter?.Path; }
+		}
+		public string ParentPath {
+			get { return CompiledCodeRepresentationAdapter?.ParentPath; }
+		}
+		public CompilationTargetCollection Targets {
+			get {
+				return CompiledCodeRepresentationAdapter?.Targets;
 			}
 		}
 
@@ -147,38 +192,19 @@ namespace SwiftReflector {
 		public FrameworkRepresentation Framework { get; private set; }
 		public LibraryRepresentation Library { get; private set; }
 
-		public string Path {
-			get {
-				return Library?.Path ?? Framework?.Path ?? XCFramework.Path;
-			}
-		}
-
-		public string ParentPath {
-			get {
-				var path = Path;
-				return path != null ? Directory.GetParent (path).ToString () : null;
-			}
-		}
-
-		public string PathToDylib (string target)
+		public string PathToDylib (CompilationTarget target)
 		{
-			return Library?.PathToDylib (target) ??
-				Framework?.PathToDylib (target) ??
-				XCFramework?.PathToDylib (target);
+			return CompiledCodeRepresentationAdapter?.PathToDylib (target);
 		}
 
-		public string PathToSwiftModule (string target)
+		public string PathToSwiftModule (CompilationTarget target)
 		{
-			return Library?.PathToSwiftModule (target) ??
-				Framework?.PathToSwiftModule (target) ??
-				XCFramework?.PathToSwiftModule (target);
+			return CompiledCodeRepresentationAdapter?.PathToSwiftModule (target);
 		}
 
 		public string PathToSwiftInterface (CompilationTarget target)
 		{
-			return Library?.PathToSwiftInterface (target) ??
-				Framework?.PathToSwiftInterface (target) ??
-				XCFramework.PathToSwiftInterface (target);
+			return CompiledCodeRepresentationAdapter?.PathToSwiftInterface (target);
 		}
 
 		public static UniformTargetRepresentation FromPath (string moduleName, List<string> directoriesToSearch, ErrorHandling errors)
