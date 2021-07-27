@@ -190,7 +190,7 @@ namespace SwiftReflector {
 			if (Verbose)
 				Console.WriteLine ("Aggregating swift types");
 
-			OutputIsFramework = ClassCompilerLocations.LibraryDirectories.Any (x => SwiftModuleFinder.IsAppleFramework (x, CompilerNames.ModuleName + ".swiftmodule"));
+			OutputIsFramework = UniformTargetRepresentation.ModuleIsFramework (CompilerNames.ModuleName, ClassCompilerLocations.LibraryDirectories);
 
 			var moduleInventory = GetModuleInventories (ClassCompilerLocations.LibraryDirectories, moduleNames, errors);
 
@@ -3135,9 +3135,9 @@ namespace SwiftReflector {
 			if (originalLibrary != null) {
 				string directory = Path.GetDirectoryName (originalLibrary);
 				string file = Path.GetFileName (originalLibrary);
-				if (SwiftModuleFinder.IsAppleFramework (directory, file + ".swiftmodule")) {
+				if (UniformTargetRepresentation.ModuleIsFramework (file, new List<string> { directory })) {
 					file = Path.GetFileName (libFullPath);
-					return $"@rpath/{file}.framework/{file}"; //$"{file}.framework/{file}";
+					return $"@rpath/{file}.framework/{file}";
 				}
 				return LibOrFrameworkFromPath (libFullPath);
 			} else {
@@ -3149,22 +3149,9 @@ namespace SwiftReflector {
 		{
 			string directory = Path.GetDirectoryName (libFullPath);
 			string file = Path.GetFileName (libFullPath);
-			if (SwiftModuleFinder.IsAppleFramework (directory, file + ".swiftmodule")) {
+			if (UniformTargetRepresentation.ModuleIsFramework (file, new List<string> { directory })) {
 				string parent = Path.GetFileName (directory);
 				return $"@rpath/{file}.framework/{file}";
-			} else
-				return file;
-		}
-
-		static string xxPathTrim (bool useFullPath, string fullPath)
-		{
-			if (useFullPath)
-				return fullPath;
-			string directory = Path.GetDirectoryName (fullPath);
-			string file = Path.GetFileName (fullPath);
-			if (SwiftModuleFinder.IsAppleFramework (directory, file + ".swiftmodule")) {
-				string parent = Path.GetFileName (directory);
-				return $"{parent}/{file}";
 			} else
 				return file;
 		}
@@ -5363,7 +5350,7 @@ namespace SwiftReflector {
 			mods.Add (targetRepresentation.ParentPath);
 			wrapStuff.Item2.Add (wrappingModuleName);
 
-			var targetRepresentations = SwiftModuleFinder.GatherAllReferencedModules (wrapStuff.Item2, mods, targets [0]);
+			var targetRepresentations = UniformTargetRepresentation.GatherAllReferencedModules (wrapStuff.Item2, mods, targets [0]);
 
 			mods.Clear ();
 			mods.AddRange (targetRepresentations.Select (tar => tar.ParentPath));
@@ -5453,16 +5440,22 @@ namespace SwiftReflector {
 
 		static string LocateFile (IEnumerable<string> paths, string modName)
 		{
-			string dylibFile = $"lib{modName}.dylib";
-			foreach (string dir in paths) {
-				string dylib = Path.Combine (dir, dylibFile);
-				if (File.Exists (dylib))
-					return dylib;
-				if (SwiftModuleFinder.IsAppleFramework (dir, modName + ".swiftmodule")) {
-					return Path.Combine (dir, modName);
-				}
-			}
-			return null;
+			var errors = new ErrorHandling ();
+			var rep = UniformTargetRepresentation.FromPath (modName, paths.ToList (), errors);
+			if (rep == null)
+				return null;
+			return rep.Path;
+
+			//string dylibFile = $"lib{modName}.dylib";
+			//foreach (string dir in paths) {
+			//	string dylib = Path.Combine (dir, dylibFile);
+			//	if (File.Exists (dylib))
+			//		return dylib;
+			//	if (SwiftModuleFinder.IsAppleFramework (dir, modName + ".swiftmodule")) {
+			//		return Path.Combine (dir, modName);
+			//	}
+			//}
+			//return null;
 		}
 
 		List<ModuleDeclaration> GetModuleDeclarations (List<string> moduleDirectories, List<string> moduleNames,
@@ -5634,17 +5627,11 @@ namespace SwiftReflector {
 
 		static string FindFileForModule (string modName, IEnumerable<string> paths)
 		{
-			string dylibName = $"lib{modName}.dylib";
-
-			foreach (string path in paths) {
-				string dylibPath = Path.Combine (path, dylibName);
-				if (File.Exists (dylibPath))
-					return dylibPath;
-				if (SwiftModuleFinder.IsAppleFramework (path, modName + ".swiftmodule")) {
-					return Path.Combine (path, modName);
-				}
-			}
-			return null;
+			var errors = new ErrorHandling ();
+			var rep = UniformTargetRepresentation.FromPath (modName, paths.ToList (), errors);
+			if (rep == null)
+				return null;
+			return rep.Path;
 		}
 
 		static string GetClassName (SwiftType st)

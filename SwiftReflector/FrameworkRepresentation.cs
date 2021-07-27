@@ -12,6 +12,7 @@ namespace SwiftReflector {
 		string PathToDylib (CompilationTarget target);
 		string PathToSwiftModule (CompilationTarget target);
 		string PathToSwiftInterface (CompilationTarget target);
+		bool IsFramework { get; }
 	}
 
 	public static class CompiledCodeRepresentationExtensions {
@@ -30,6 +31,16 @@ namespace SwiftReflector {
 		{
 			var compTarget = new CompilationTarget (target);
 			return rep.PathToSwiftInterface (compTarget);
+		}
+
+		public static bool HasTarget (this ICompiledCodeRepresentation rep, CompilationTarget target)
+		{
+			return rep.Targets.Contains (target);
+		}
+
+		public static bool HasTarget (this ICompiledCodeRepresentation rep, string target)
+		{
+			return rep.HasTarget (new CompilationTarget (Exceptions.ThrowOnNull (target, nameof (target))));
 		}
 	}
 
@@ -73,6 +84,8 @@ namespace SwiftReflector {
 			var filePath = System.IO.Path.Combine (pathToSwiftInterface, $"{target.CpuToString ()}.swiftinterface");
 			return filePath;
 		}
+
+		public virtual bool IsFramework => true;
 	}
 
 	public class XCFrameworkRepresentation : ICompiledCodeRepresentation {
@@ -129,6 +142,7 @@ namespace SwiftReflector {
 			return null;
 		}
 
+		public bool IsFramework => true;
 	}
 
 	public class LibraryRepresentation : FrameworkRepresentation {
@@ -150,7 +164,9 @@ namespace SwiftReflector {
 		{
 			return pathToSwiftInterface;
 		}
-	}
+
+		public override bool IsFramework => false;
+    }
 
 	public class UniformTargetRepresentation : ICompiledCodeRepresentation {
 		public UniformTargetRepresentation (FrameworkRepresentation framework)
@@ -187,6 +203,8 @@ namespace SwiftReflector {
 				return CompiledCodeRepresentationAdapter?.Targets;
 			}
 		}
+
+		public bool IsFramework => CompiledCodeRepresentationAdapter.IsFramework;
 
 		public XCFrameworkRepresentation XCFramework { get; private set; }
 		public FrameworkRepresentation Framework { get; private set; }
@@ -367,5 +385,86 @@ namespace SwiftReflector {
 					yield return candidate;
 			}
 		}
+
+		public static bool ModuleIsFramework (string moduleName, List<string> paths)
+		{
+			var errors = new ErrorHandling ();
+			var rep = FromPath (moduleName, paths, errors);
+			if (rep == null)
+				return false;
+			return rep.IsFramework;
+		}
+
+		public static IEnumerable<string> FindModuleNames (IEnumerable<string> paths, string target)
+		{
+			foreach (var path in paths)
+				foreach (var item in FindModuleNames (path, target))
+					yield return item;
+		}
+
+		public static IEnumerable<string> FindModuleNames (string path, string target)
+		{
+			foreach (string dir in Directory.EnumerateDirectories (path)) {
+				string appleName = GetAppleModuleName (dir);
+				if (appleName != null)
+					yield return appleName;
+				string xamarinModuleName = GetXamarinModuleName (path, target);
+				if (xamarinModuleName != null)
+					yield return xamarinModuleName;
+			}
+			foreach (string file in Directory.EnumerateFiles (path)) {
+				string directName = GetDirectLayoutModuleName (file);
+				if (directName != null)
+					yield return directName;
+			}
+		}
+
+		public static string GetAppleModuleName (string dir)
+		{
+			if (dir.EndsWith (".framework", StringComparison.Ordinal) && Directory.Exists (System.IO.Path.Combine (dir, "Modules"))) {
+				string name = (new DirectoryInfo (dir)).Name;
+				name = name.Substring (0, name.Length - ".framework".Length);
+				if (name.Length > 0 && File.Exists (System.IO.Path.Combine (dir, "Modules", name + ".swiftmodule")))
+					return name;
+			}
+
+			return null;
+		}
+
+		public static string GetXamarinModuleName (string dir, string target)
+		{
+			string name = (new DirectoryInfo (dir)).Name;
+			if (File.Exists (System.IO.Path.Combine (dir, target, name + ".swiftmodule")))
+				return name;
+			return null;
+		}
+
+		public static string GetDirectLayoutModuleName (string file)
+		{
+			if (File.Exists (file) && file.EndsWith (".swiftmodule", StringComparison.Ordinal)) {
+				string name = (new DirectoryInfo (file)).Name;
+				return name.Substring (0, name.Length - ".swiftmodule".Length);
+			}
+			return null;
+		}
+
+		public static List<UniformTargetRepresentation> GatherAllReferencedModules (IEnumerable<string> allReferencedModules,
+			List<string> inputModuleDirectories, string target)
+		{
+			var errors = new ErrorHandling ();
+			var targets = new List<UniformTargetRepresentation> ();
+			foreach (var moduleName in allReferencedModules) {
+				if (moduleName == "Swift" || moduleName == "Self")
+					continue;
+				var targetRep = FromPath (moduleName, inputModuleDirectories, errors);
+				if (targetRep != null) {
+					targets.Add (targetRep);
+				} else if (errors.AnyErrors) {
+					throw errors.Errors.First ().Exception;
+				}
+			}
+			return targets;
+		}
+
 	}
 }

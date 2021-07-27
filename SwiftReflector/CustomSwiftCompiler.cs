@@ -217,9 +217,9 @@ namespace SwiftReflector {
 			includeDirectories = includeDirectories ?? new string [] { tempDirectory.DirectoryPath };
 			libraryDirectories = libraryDirectories ?? new string [] { tempDirectory.DirectoryPath };
 
-			var modulesInLibraries = SwiftModuleFinder.FindModuleNames (libraryDirectories, CompilerInfo.Target);
+			var modulesInLibraries = UniformTargetRepresentation.FindModuleNames (libraryDirectories, CompilerInfo.Target);
 
-			var locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries,
+			var locations = UniformTargetRepresentation.GatherAllReferencedModules (modulesInLibraries,
 													     includeDirectories.ToList (), CompilerInfo.Target);
 			var output = Reflect (locations.Select (loc => loc.ParentPath), libraryDirectories, pathName, extraArgs, moduleNames);
 
@@ -240,9 +240,9 @@ namespace SwiftReflector {
 			includeDirectories = includeDirectories ?? new string [] { tempDirectory.DirectoryPath };
 			libraryDirectories = libraryDirectories ?? new string [] { tempDirectory.DirectoryPath };
 
-			var modulesInLibraries = SwiftModuleFinder.FindModuleNames (libraryDirectories, CompilerInfo.Target);
+			var modulesInLibraries = UniformTargetRepresentation.FindModuleNames (libraryDirectories, CompilerInfo.Target);
 
-			var locations = SwiftModuleFinder.GatherAllReferencedModules (modulesInLibraries, includeDirectories.ToList (), CompilerInfo.Target)
+			var locations = UniformTargetRepresentation.GatherAllReferencedModules (modulesInLibraries, includeDirectories.ToList (), CompilerInfo.Target)
 				.Select (loc => loc.ParentPath).ToList ();
 			locations.AddRange (includeDirectories);
 
@@ -371,13 +371,13 @@ namespace SwiftReflector {
 			List<string> fwks = new List<string> ();
 
 			foreach (string moduleName in modNames) {
-				string swiftModule = moduleName + ".swiftmodule";
 				bool addedFwk = false;
+				var errors = new ErrorHandling ();
 				for (int i = 0; i < candidates.Count (); i++) {
 					// if it's a framework, there will be a one-to-one mapping of module names -> framework directories
 					// remove the path from the candidate and move it to fwkDirectories
 					// and add the name to fwks
-					if (SwiftModuleFinder.IsAppleFramework (candidates [i], swiftModule)) {
+					if (UniformTargetRepresentation.ModuleIsFramework (moduleName, new List<string> { candidates [i] })) {
 						fwks.Add (moduleName);
 						fwkDirectories.Add (candidates [i]);
 						candidates.RemoveAt (i);
