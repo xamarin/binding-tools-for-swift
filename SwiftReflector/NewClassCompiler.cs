@@ -166,7 +166,7 @@ namespace SwiftReflector {
 		public ErrorHandling CompileToCSharp (
 			ClassCompilerLocations classCompilerLocations,
 			ClassCompilerNames compilerNames,
-			List<string> targets,
+			CompilationTargetCollection targets,
 			string outputDirectory,
 			string minimumOSVersion = null,
 			string dylibXmlPath = null)
@@ -176,7 +176,7 @@ namespace SwiftReflector {
 			var isLibrary = !string.IsNullOrEmpty (dylibXmlPath);
 
 			var errors = new ErrorHandling ();
-			CurrentPlatform = PlatformFromTargets (targets);
+			CurrentPlatform = targets.OperatingSystem;
 
 			TypeMapper = new TypeMapper (classCompilerLocations.TypeDatabasePaths, UnicodeMapper);
 			BindingImporter.ImportAndMerge (CurrentPlatform, TypeMapper.TypeDatabase, errors);
@@ -5296,7 +5296,7 @@ namespace SwiftReflector {
 			List<string> modulePaths,
 			List<string> moduleNames,
 			string outputDirectory,
-			List<string> targets,
+			CompilationTargetCollection targets,
 			string wrappingModuleName,
 			bool retainSwiftWrappers,
 			ErrorHandling errors, bool verbose,
@@ -5328,7 +5328,7 @@ namespace SwiftReflector {
 
 			var targetRepresentation = UniformTargetRepresentation.FromPath (wrappingModuleName, new List<string> () { outputDirectory }, errors);
 
-			var compilationTarget = new CompilationTarget (targets [0]);
+			var compilationTarget = targets [0];
 			string wrapperLibraryPath = targetRepresentation.PathToDylib (compilationTarget);
 			var wrapperModulePath = targetRepresentation.PathToSwiftModule (compilationTarget);
 
@@ -5350,12 +5350,12 @@ namespace SwiftReflector {
 			mods.Add (targetRepresentation.ParentPath);
 			wrapStuff.Item2.Add (wrappingModuleName);
 
-			var targetRepresentations = UniformTargetRepresentation.GatherAllReferencedModules (wrapStuff.Item2, mods, targets [0]);
+			var targetRepresentations = UniformTargetRepresentation.GatherAllReferencedModules (wrapStuff.Item2, mods);
 
 			mods.Clear ();
 			mods.AddRange (targetRepresentations.Select (tar => tar.ParentPath));
 
-			var targetInfo = ReflectorLocations.GetTargetInfo (targets [0]);
+			var targetInfo = ReflectorLocations.GetTargetInfo (targets [0].ToString ());
 			using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, null, true)) {
 				compiler.Verbose = verbose;
 				compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
@@ -5460,10 +5460,10 @@ namespace SwiftReflector {
 
 		List<ModuleDeclaration> GetModuleDeclarations (List<string> moduleDirectories, List<string> moduleNames,
 		                                               string outputDirectory, bool retainReflectedXmlOutput,
-		                                               List<string> targets, ErrorHandling errors, string dylibXmlPath = null)
+		                                               CompilationTargetCollection targets, ErrorHandling errors, string dylibXmlPath = null)
 		{
 			try {
-				string bestTarget = ChooseBestTarget (targets);
+				var bestTarget = ChooseBestTarget (targets);
 
 				// If we have a dylib, we will be using our already generated xml
 				if (!string.IsNullOrEmpty (dylibXmlPath)) {
@@ -5472,7 +5472,7 @@ namespace SwiftReflector {
 					return decls;
 				} else {
 					using (TempDirectoryFilenameProvider provider = new TempDirectoryFilenameProvider (null, true)) {
-						var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget);
+						var targetInfo = ReflectorLocations.GetTargetInfo (bestTarget.ToString ());
 						using (CustomSwiftCompiler compiler = new CustomSwiftCompiler (targetInfo, provider, false)) {
 							compiler.Verbose = Verbose;
 							compiler.ReflectionTypeDatabase = TypeMapper.TypeDatabase;
@@ -5531,13 +5531,13 @@ namespace SwiftReflector {
 		}
 
 
-		string ChooseBestTarget (List<string> targets)
+		CompilationTarget ChooseBestTarget (CompilationTargetCollection targets)
 		{
 			if (targets.Count == 1)
 				return targets [0];
-			foreach (string target in targets) {
+			foreach (var target in targets) {
 				if (IsDeviceTarget (target)) {
-					if (target.StartsWith ("x86_64"))
+					if (target.Cpu == TargetCpu.X86_64)
 						continue;
 					return target;
 				} else {
@@ -5545,14 +5545,15 @@ namespace SwiftReflector {
 				}
 			}
 			throw ErrorHelper.CreateError (ReflectorError.kCantHappenBase + 50, "Can't find a decent architecture to reflect on among " +
-						    targets.InterleaveCommas ());
+						    targets.Select (t => t.ToString ()).InterleaveCommas ());
 		}
 
 
-		static bool IsDeviceTarget (string target)
+		static bool IsDeviceTarget (CompilationTarget target)
 		{
-			string os = target.Split ('-').Last ();
-			return os.Contains ("ios") || os.Contains ("tvos") || os.Contains ("watchos");
+			var os = target.OperatingSystem;
+			return target.Environment == TargetEnvironment.Device &&
+				(os == PlatformName.iOS || os == PlatformName.tvOS || os == PlatformName.watchOS);
 		}
 
 		ModuleDeclaration GetModuleDeclaration (string moduleName, List<string> moduleSeachPaths, string outputDirectory, bool retainReflectedOutput, List<ReflectorError> errors)

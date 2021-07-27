@@ -1156,7 +1156,7 @@ public enum Position {
 					ClassCompilerLocations classCompilerLocations = new ClassCompilerLocations (searchPath, searchPath, typeDataBasePaths);
 					ClassCompilerNames compilerNames = new ClassCompilerNames ("Consumer", null);
 
-					ErrorHandling errors = ncc.CompileToCSharp (classCompilerLocations, compilerNames, new List<string> { "x86_64-apple-macosx10.9" }, consumerCompiler.DirectoryPath);
+					ErrorHandling errors = ncc.CompileToCSharp (classCompilerLocations, compilerNames, new CompilationTargetCollection { new CompilationTarget ("x86_64-apple-macosx10.9") }, consumerCompiler.DirectoryPath);
 
 					Utils.CheckErrors (errors);
 

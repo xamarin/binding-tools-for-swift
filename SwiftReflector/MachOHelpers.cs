@@ -141,12 +141,12 @@ namespace SwiftReflector {
 			return minOS.Version.ToString ();
 		}
 
-		public static List<string> CommonTargets (List<string> lt, List<string> commonTo)
+		public static List<CompilationTarget> CommonTargets (List<CompilationTarget> lt, List<CompilationTarget> commonTo)
 		{
-			List<string> isec = new List<string> ();
-			foreach (string s in lt) {
-				if (commonTo.Contains (s))
-					isec.Add (s);
+			var isec = new List<CompilationTarget> ();
+			foreach (var ct in lt) {
+				if (commonTo.Contains (ct))
+					isec.Add (ct);
 			}
 			return isec;
 		}
