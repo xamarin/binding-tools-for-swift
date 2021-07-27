@@ -829,6 +829,10 @@ namespace SwiftReflector.Demangling {
 				return ConvertBaseConformanceDescriptor (node);
 			case NodeKind.AssociatedTypeDescriptor:
 				return ConvertAssocatedTypeDescriptor (node);
+			case NodeKind.ClassMetadataBaseOffset:
+				return ConvertMetadataBaseOffset (node);
+			case NodeKind.MethodLookupFunction:
+				return ConvertMethodLookupFunction (node);
 			default:
 				return null;
 			}
@@ -848,6 +852,7 @@ namespace SwiftReflector.Demangling {
 			case NodeKind.Static:
 				return ConvertStaticDispatchThunk (node);
 			case NodeKind.Function:
+			case NodeKind.Allocator:
 				return ConvertFunction (node, false);
 			default:
 				return null;
@@ -1200,6 +1205,22 @@ namespace SwiftReflector.Demangling {
 			if (protocol == null)
 				return null;
 			return new TLAssociatedTypeDescriptor (mangledName, protocol.ClassName.Module, protocol, name, offset);
+		}
+
+		TLMetadataBaseOffset ConvertMetadataBaseOffset (Node node)
+		{
+			var type = ConvertToSwiftType (node.Children [0], false, null) as SwiftClassType;
+			if (type == null)
+				return null;
+			return new TLMetadataBaseOffset (mangledName, type.ClassName.Module, type, offset);
+		}
+
+		TLMethodLookupFunction ConvertMethodLookupFunction (Node node)
+		{
+			var type = ConvertToSwiftType (node.Children [0], false, null) as SwiftClassType;
+			if (type == null)
+				return null;
+			return new TLMethodLookupFunction (mangledName, type.ClassName.Module, type, offset);
 		}
 
 

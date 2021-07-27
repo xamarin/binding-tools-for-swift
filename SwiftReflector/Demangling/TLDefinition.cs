@@ -242,5 +242,20 @@ namespace SwiftReflector.Demangling {
 
 		public SwiftName AssociatedTypeName { get; private set; }
 	}
+
+	public class TLMetadataBaseOffset : TLClassElem {
+		public TLMetadataBaseOffset (string mangledName, SwiftName module, SwiftClassType classType, ulong offset)
+			: base (CoreCompoundType.MetadataOffset, mangledName, module, classType, offset)
+		{
+		}
+	}
+
+	public class TLMethodLookupFunction : TLClassElem {
+		public TLMethodLookupFunction (string mangledName, SwiftName module, SwiftClassType classType, ulong offset)
+			: base (CoreCompoundType.MethodLookupFunction, mangledName, module, classType, offset)
+		{
+
+		}
+	}
 }
 

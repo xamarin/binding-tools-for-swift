@@ -34,6 +34,8 @@ namespace SwiftReflector {
 		ProtocolRequirementsBaseDescriptor,
 		BaseConformanceDescriptor,
 		AssociatedTypeDescriptor,
+		MetadataOffset,
+		MethodLookupFunction,
 	}
 
 	public enum CoreBuiltInType {

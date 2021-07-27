@@ -1758,5 +1758,37 @@ namespace SwiftReflector.Demangling {
 			Assert.IsNotNull (ret, "wrong return type");
 			Assert.AreEqual (CoreBuiltInType.Bool, ret.BuiltInType, "not a bool");
 		}
+
+		[Test]
+		public void TestAllocatorMethodDispatchThunk ()
+		{
+			var tld = Decomposer.Decompose ("_$s8HelloMod0A0CACycfCTj", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLFunction;
+			Assert.IsNotNull (tlf, "null function");
+			var func = tlf.Signature as SwiftConstructorThunkType;
+			Assert.IsNotNull (func, "not a thunk type");
+			var ret = func.ReturnType as SwiftClassType;
+			Assert.IsNotNull (ret, "not a class type");
+			Assert.AreEqual ("HelloMod.Hello", ret.ClassName.ToFullyQualifiedName (), "wrong class name");
+			Assert.AreEqual (0, func.ParameterCount, "parameters?");
+		}
+
+		[Test]
+		public void TestClassMetadataOffset ()
+		{
+			var tld = Decomposer.Decompose ("_$s8HelloMod0A0CMo", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLMetadataBaseOffset;
+			Assert.IsNotNull (tlf, "not a metadata offset");
+			Assert.AreEqual ("HelloMod.Hello", tlf.Class.ClassName.ToFullyQualifiedName (), "wrong class name");
+		}
+
+		[Test]
+		public void TestMethodLookupFunction ()
+		{
+			var tld = Decomposer.Decompose ("_$s8HelloMod0A0CMu", false);
+			Assert.NotNull (tld, "failed decomposition");
+		}
 	}
 }
