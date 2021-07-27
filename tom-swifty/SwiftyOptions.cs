@@ -26,7 +26,7 @@ namespace tomswifty {
 			TypeDatabasePaths = new List<string> ();
 			DylibPaths = new List<string> ();
 			ModulePaths = new List<string> ();
-			Targets = new List<string> ();
+			Targets = new CompilationTargetCollection ();
 
 			// create an option set that will be used to parse the different
 			// options of the command line.
@@ -117,7 +117,7 @@ namespace tomswifty {
 		public string SwiftGluePath { get; set; }
 		public List<string> ModulePaths { get; private set; }
 		public List<string> DylibPaths { get; private set; }
-		public List<string> Targets { get; private set; }
+		public CompilationTargetCollection Targets { get; private set; }
 		public string MinimumOSVersion { get; private set; }
 		public string ModuleName { get; set; }
 		public string WrappingModuleName { get; set; }
@@ -277,21 +277,14 @@ namespace tomswifty {
 				string libFile = Path.Combine (libDir, wholeModule);
 				using (FileStream stm = new FileStream (libFile, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 					try {
-						List<string> targets = MachOHelpers.TargetsFromDylib (stm);
+						var targets = MachOHelpers.CompilationTargetsFromDylib (stm);
 
 						Targets = FilterTargetsIfNeeded (targets, libFile);
 
-						if (CheckAndRemoveArm64Simulator (libFile, errors)) {
-							if (Targets.Count == 0)
-								errors.Add (new ReflectorError (new RuntimeException (ReflectorError.kReflectionErrorBase + 13, true,
-									$"file {libFile} contained only one CPU architecture which is arm64 simulator which is not currently supported.")));
-						}
-
-						MinimumOSVersion = SwiftReflector.Extensions.MinimumClangVersion (Targets);
+						MinimumOSVersion = Targets.MinimumOSVersion.ToString ();
 
 						if (Targets.Count > 0) {
-							var targetOS = targets [0].ClangTargetOS ();
-							var targetOSOnly = targets [0].ClangOSNoVersion ();
+							var targetOSOnly = Targets.OperatingSystemString;
 
 							var targetXamGluePath = FindXamGluePathForOS (targetOSOnly, errors);
 							if (targetXamGluePath == null) {
@@ -311,7 +304,7 @@ namespace tomswifty {
 								SwiftLibPath = Path.Combine (swiftLibPath, $"swift/{targetOSLibraryPathPart}");
 
 							// filter the targets here
-							foreach (string target in Targets) {
+							foreach (var target in Targets) {
 								StringBuilder sb = new StringBuilder ();
 								foreach (string s in ModulePaths.Interleave (", ")) {
 									sb.Append (s);
@@ -323,7 +316,7 @@ namespace tomswifty {
 								var targetRep = UniformTargetRepresentation.FromPath (ModuleName, ModulePaths, errors);
 								if (targetRep == null)
 									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName}. Searched in {sb.ToString ()}.")));
-								if (targetRep.HasTarget (new CompilationTarget (target)))
+								if (targetRep.HasTarget (target))
 									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
 							}
 						}
@@ -450,24 +443,24 @@ namespace tomswifty {
 			return true;
 		}
 
-		static List<string> FilterTargetsIfNeeded (List<string> targets, string lib)
+		static CompilationTargetCollection FilterTargetsIfNeeded (List<CompilationTarget> targets, string lib)
 		{
 			using (FileStream stm = new FileStream (lib, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-				List<string> availableTargets = MachOHelpers.TargetsFromDylib (stm);
+				var availableTargets = MachOHelpers.CompilationTargetsFromDylib (stm);
 				if (availableTargets.Count == 0) {
 					throw new RuntimeException (ReflectorError.kCantHappenBase + 55, $"library {lib} contains no target architectures.");
 				} else {
 					if (targets == null || targets.Count == 0) {
 						targets = availableTargets;
 					} else {
-						List<string> sectionalTargets = MachOHelpers.CommonTargets (targets, availableTargets);
+						var sectionalTargets = MachOHelpers.CommonTargets (targets, availableTargets);
 						if (sectionalTargets.Count == 0) {
 							StringBuilder sbsrc = new StringBuilder ();
-							foreach (var s in targets.Interleave (", ")) {
+							foreach (var s in targets.Select (t => t.ToString ()).Interleave (", ")) {
 								sbsrc.Append (s);
 							}
 							StringBuilder sbdst = new StringBuilder ();
-							foreach (var s in availableTargets.Interleave (", ")) {
+							foreach (var s in availableTargets.Select (t => t.ToString ()).Interleave (", ")) {
 								sbdst.Append (s);
 							}
 							throw new RuntimeException (ReflectorError.kCantHappenBase + 56, $"No specified target ({sbsrc.ToString ()}) was found in the available targets for {lib} ({sbdst.ToString ()}).");
@@ -476,28 +469,10 @@ namespace tomswifty {
 						}
 					}
 				}
-				return targets;
+				var result = new CompilationTargetCollection ();
+				result.AddRange (targets);
+				return result;
 			}
-		}
-
-		bool CheckAndRemoveArm64Simulator (string fileName, ErrorHandling errors)
-		{
-			for (int i = 0; i < Targets.Count; i++) {
-				var target = Targets [i];
-				if (!IsArm64Simulator (target))
-					continue;
-				Targets.RemoveAt (i);
-				errors.Add (new ReflectorError (new RuntimeException (ReflectorError.kReflectionErrorBase + 14, error: false,
-					$"The file {fileName} contains an arm64 simulator target which is not currently supported - skipping.")));
-				return true;
-			}
-			return false;
-		}
-
-		static bool IsArm64Simulator (string target)
-		{
-			var cpu = target.ClangTargetCpu ();
-			return target.ClangTargetIsSimulator () && cpu == "arm64";
 		}
 	}
 }

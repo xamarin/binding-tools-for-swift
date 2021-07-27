@@ -122,7 +122,7 @@ namespace SwiftReflector {
 				args.Append ($"--module-name={StringUtils.Quote (moduleName)} ");
 				return ExecAndCollect.Run ("mono", args.ToString ());
 			} else {
-				ErrorHandling errors = ncc.CompileToCSharp (classCompilerLocations, compilerNames, new List<string> { target }, outputDirectory ?? provider.DirectoryPath);
+				ErrorHandling errors = ncc.CompileToCSharp (classCompilerLocations, compilerNames, new CompilationTargetCollection { new CompilationTarget (target) }, outputDirectory ?? provider.DirectoryPath);
 				CheckErrors (errors, expectedErrorCount);
 				return null;
 			}

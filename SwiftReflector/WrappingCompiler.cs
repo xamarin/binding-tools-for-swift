@@ -44,7 +44,7 @@ namespace SwiftReflector {
 
 		public Tuple<string, HashSet<string>> CompileWrappers (string [] inputLibraryDirectories, string [] inputModuleDirectories,
 			IEnumerable<ModuleDeclaration> modulesToCompile, ModuleInventory modInventory,
-			List<string> targets, string wrappingModuleName, bool outputIsFramework,
+			CompilationTargetCollection targets, string wrappingModuleName, bool outputIsFramework,
 			string minimumOSVersion = null, bool isLibrary = false)
 		{
 			wrappingModuleName = wrappingModuleName ?? kXamWrapPrefix;

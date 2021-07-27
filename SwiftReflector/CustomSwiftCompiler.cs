@@ -219,8 +219,7 @@ namespace SwiftReflector {
 
 			var modulesInLibraries = UniformTargetRepresentation.FindModuleNames (libraryDirectories, CompilerInfo.Target);
 
-			var locations = UniformTargetRepresentation.GatherAllReferencedModules (modulesInLibraries,
-													     includeDirectories.ToList (), CompilerInfo.Target);
+			var locations = UniformTargetRepresentation.GatherAllReferencedModules (modulesInLibraries, includeDirectories.ToList ());
 			var output = Reflect (locations.Select (loc => loc.ParentPath), libraryDirectories, pathName, extraArgs, moduleNames);
 
 			ThrowOnCompilerVersionMismatch (output, moduleNames);
@@ -242,7 +241,7 @@ namespace SwiftReflector {
 
 			var modulesInLibraries = UniformTargetRepresentation.FindModuleNames (libraryDirectories, CompilerInfo.Target);
 
-			var locations = UniformTargetRepresentation.GatherAllReferencedModules (modulesInLibraries, includeDirectories.ToList (), CompilerInfo.Target)
+			var locations = UniformTargetRepresentation.GatherAllReferencedModules (modulesInLibraries, includeDirectories.ToList ())
 				.Select (loc => loc.ParentPath).ToList ();
 			locations.AddRange (includeDirectories);
 

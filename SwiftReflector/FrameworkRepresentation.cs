@@ -449,7 +449,7 @@ namespace SwiftReflector {
 		}
 
 		public static List<UniformTargetRepresentation> GatherAllReferencedModules (IEnumerable<string> allReferencedModules,
-			List<string> inputModuleDirectories, string target)
+			List<string> inputModuleDirectories)
 		{
 			var errors = new ErrorHandling ();
 			var targets = new List<UniformTargetRepresentation> ();
