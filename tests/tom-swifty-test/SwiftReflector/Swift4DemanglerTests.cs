@@ -1790,5 +1790,33 @@ namespace SwiftReflector.Demangling {
 			var tld = Decomposer.Decompose ("_$s8HelloMod0A0CMu", false);
 			Assert.NotNull (tld, "failed decomposition");
 		}
+
+		[Test]
+		public void TestUnusualEnumCase0 ()
+		{
+			var tld = Decomposer.Decompose ("_$s7Sampler6NumberO4RealyACSdcACmFWC", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLEnumCase;
+			Assert.IsNotNull (tlf, "not an enum case");
+			var func = tlf.Signature as SwiftUncurriedFunctionType;
+			Assert.IsNotNull (func);
+			var instanceType = func.UncurriedParameter as SwiftClassType;
+			Assert.IsNotNull (instanceType, "not a class in uncurried parameter");
+			Assert.AreEqual ("Sampler.Number", instanceType.ClassName.ToFullyQualifiedName (), "wrong class name");
+		}
+
+		[Test]
+		public void TestUnusualEnumCase1 ()
+		{
+			var tld = Decomposer.Decompose ("_$s7Sampler6NumberO7IntegeryACSicACmFWC", false);
+			Assert.IsNotNull (tld, "failed decomposition");
+			var tlf = tld as TLEnumCase;
+			Assert.IsNotNull (tlf, "not an enum case");
+			var func = tlf.Signature as SwiftUncurriedFunctionType;
+			Assert.IsNotNull (func);
+			var instanceType = func.UncurriedParameter as SwiftClassType;
+			Assert.IsNotNull (instanceType, "not a class in uncurried parameter");
+			Assert.AreEqual ("Sampler.Number", instanceType.ClassName.ToFullyQualifiedName (), "wrong class name");
+		}
 	}
 }

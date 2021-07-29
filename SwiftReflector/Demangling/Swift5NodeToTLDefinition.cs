@@ -763,9 +763,11 @@ namespace SwiftReflector.Demangling {
 			case NodeKind.Static:
 				return ConvertStatic (node);
 			case NodeKind.Function:
-				return ConvertFunction (node, false);
+				return ConvertFunction (node, isMethodDescriptor: false, isEnumCase: false);
 			case NodeKind.MethodDescriptor:
-				return ConvertFunction (node.Children [0], true);
+				return ConvertFunction (node.Children [0], isMethodDescriptor: true, isEnumCase: false);
+			case NodeKind.EnumCase:
+				return ConvertFunction (node.Children [0], isMethodDescriptor: false, isEnumCase: true);
 			case NodeKind.Constructor:
 			case NodeKind.Allocator:
 				return ConvertFunctionConstructor (node);
@@ -853,7 +855,7 @@ namespace SwiftReflector.Demangling {
 				return ConvertStaticDispatchThunk (node);
 			case NodeKind.Function:
 			case NodeKind.Allocator:
-				return ConvertFunction (node, false);
+				return ConvertFunction (node, isMethodDescriptor: false, isEnumCase: false);
 			default:
 				return null;
 			}
@@ -875,7 +877,7 @@ namespace SwiftReflector.Demangling {
 		}
 
 
-		TLFunction ConvertFunction (Node node, bool isMethodDescriptor)
+		TLFunction ConvertFunction (Node node, bool isMethodDescriptor, bool isEnumCase)
 		{
 			var swiftType = ConvertToSwiftType (node, false, null);
 			var uncurriedFunction = swiftType as SwiftUncurriedFunctionType;
@@ -886,6 +888,9 @@ namespace SwiftReflector.Demangling {
 				var functionName = new SwiftName (context.Last (), false);
 				return isMethodDescriptor ?
 					new TLMethodDescriptor (mangledName, module, functionName, uncurriedFunction.UncurriedParameter as SwiftClassType,
+						      uncurriedFunction, offset) :
+					isEnumCase ?
+					new TLEnumCase (mangledName, module, functionName, uncurriedFunction.UncurriedParameter as SwiftClassType,
 						      uncurriedFunction, offset) :
 					new TLFunction (mangledName, module, functionName, uncurriedFunction.UncurriedParameter as SwiftClassType,
 						      uncurriedFunction, offset);
@@ -992,7 +997,7 @@ namespace SwiftReflector.Demangling {
 					node.Children [3].Children [0].Kind == NodeKind.FunctionType) {
 				var functionNode = new Node (NodeKind.Function);
 				functionNode.Children.AddRange (node.Children);
-				var function = ConvertFunction (functionNode, false);
+				var function = ConvertFunction (functionNode, isMethodDescriptor: false, isEnumCase: false);
 				SwiftClassType classOn = null;
 				if (function.Signature is SwiftUncurriedFunctionType ucf) {
 					classOn = ucf.UncurriedParameter as SwiftClassType;
@@ -1159,7 +1164,7 @@ namespace SwiftReflector.Demangling {
 
 		TLThunk ConvertCurryThunk (Node node)
 		{
-			TLFunction func = ConvertFunction (node.Children [0], false);
+			TLFunction func = ConvertFunction (node.Children [0], isMethodDescriptor: false, isEnumCase: false);
 			return new TLThunk (ThunkType.Curry, func.MangledName, func.Module, func.Class, func.Offset);
 		}
 

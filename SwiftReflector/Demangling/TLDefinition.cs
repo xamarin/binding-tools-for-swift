@@ -151,6 +151,14 @@ namespace SwiftReflector.Demangling {
 		}
 	}
 
+	public class TLEnumCase : TLFunction {
+		public TLEnumCase (string mangledName, SwiftName module, SwiftName functionName,
+			SwiftClassType classType, SwiftBaseFunctionType signature, ulong offset, OperatorType oper = OperatorType.None)
+			: base (mangledName, module, functionName, classType, signature, offset, oper, CoreCompoundType.MethodDescriptor)
+		{
+		}
+	}
+
 	public class TLDefaultArgumentInitializer : TLDefinition {
 		public TLDefaultArgumentInitializer(string mangledName, SwiftName module, SwiftBaseFunctionType function, int index, ulong offset)
 			: base(CoreCompoundType.ArgumentInitializer, mangledName, module, offset)
