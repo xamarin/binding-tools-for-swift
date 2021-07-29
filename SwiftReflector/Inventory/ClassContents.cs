@@ -26,6 +26,7 @@ namespace SwiftReflector.Inventory {
 			PrivateSubscripts = new List<TLFunction> (sizeofMachinePointer);
 			StaticFunctions = new FunctionInventory (sizeofMachinePointer);
 			Destructors = new FunctionInventory (sizeofMachinePointer);
+			EnumCases = new FunctionInventory (sizeofMachiinePointer);
 			WitnessTable = new WitnessInventory (sizeofMachinePointer);
 			FunctionsOfUnknownDestination = new List<TLFunction> ();
 			DefinitionsOfUnknownDestination = new List<TLDefinition> ();
@@ -50,6 +51,8 @@ namespace SwiftReflector.Inventory {
 						throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 12, $"multiple type metadata accessors for {tlf.Class.ClassName.ToFullyQualifiedName ()}");
 				} else if (IsDestructor (tlf.Signature, tlf.Class)) {
 					AddOrChainInNewThunk (Destructors, tlf, srcStm);
+				} else if (tlf is TLEnumCase) {
+					AddOrChainInNewThunk (EnumCases, tlf, srcStm);
 				} else if (IsProperty (tlf.Signature, tlf.Class)) {
 					if (IsSubscript (tlf.Signature, tlf.Class)) {
 						if (IsPrivateProperty (tlf.Signature, tlf.Class))
@@ -265,6 +268,7 @@ namespace SwiftReflector.Inventory {
 		public FunctionInventory Constructors { get; private set; }
 		public FunctionInventory ClassConstructor { get; private set; }
 		public FunctionInventory Destructors { get; private set; }
+		public FunctionInventory EnumCases { get; private set; }
 		public PropertyInventory Properties { get; private set; }
 		public PropertyInventory StaticProperties { get; private set; }
 		public PropertyInventory PrivateProperties { get; private set; }
