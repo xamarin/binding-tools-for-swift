@@ -316,7 +316,7 @@ namespace tomswifty {
 								var targetRep = UniformTargetRepresentation.FromPath (ModuleName, ModulePaths, errors);
 								if (targetRep == null)
 									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName}. Searched in {sb.ToString ()}.")));
-								if (targetRep.HasTarget (target))
+								else if (!targetRep.HasTarget (target))
 									errors.Add (new ReflectorError (new FileNotFoundException ($"Unable to find swift module file for {ModuleName} in target {target}. Searched in {sb.ToString ()}.")));
 							}
 						}
