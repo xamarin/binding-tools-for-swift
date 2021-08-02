@@ -30,7 +30,7 @@ namespace XmlReflectionTests {
 				}
 			}
 		}
-			
+
 
 		void CompileStringToModule (string code, string moduleName)
 		{
@@ -656,6 +656,113 @@ public func foo () -> [Int] {
 			Assert.IsNotNull (fn, "no function");
 			var retType = fn.ReturnTypeName;
 			Assert.AreEqual ("Swift.Array<Swift.Int>", retType, "wrong return");
+		}
+
+		[Test]
+		[Ignore ("not until we update to 5.5")]
+		public void TestAsyncBasic ()
+		{
+			var code = @"
+public func foo () async -> Int {
+	return 5
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsTrue (fn.IsAsync, "not async");
+		}
+
+		[Test]
+		public void TestAsyncBasicNotPresent ()
+		{
+			var code = @"
+public func foo () -> Int {
+	return 5
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsFalse (fn.IsAsync, "not async");
+		}
+
+		[Test]
+		[Ignore ("not until we update to 5.5")]
+		public void TestAsyncMethod ()
+		{
+			var code = @"
+public class bar {
+	public init () { }
+	public func foo () async -> Int {
+		return 5
+	}
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsTrue (fn.IsAsync, "not async");
+		}
+
+		[Test]
+		public void TestAsyncMethodNotPresent ()
+		{
+			var code = @"
+public class bar {
+	public init () { }
+	public func foo () -> Int {
+		return 5
+	}
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsFalse (fn.IsAsync, "not async");
+		}
+
+		[Test]
+		[Ignore ("not until we update to 5.5")]
+		public void TestAsyncProtocolMethod ()
+		{
+			var code = @"
+public protocol bar {
+	func foo () async -> Int
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsTrue (fn.IsAsync, "not async");
+		}
+
+		[Test]
+		public void TestAsyncProtocolMethodNotPresent ()
+		{
+			var code = @"
+public protocol bar {
+	func foo () -> Int
+}";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsFalse (fn.IsAsync, "not async");
 		}
 	}
 }

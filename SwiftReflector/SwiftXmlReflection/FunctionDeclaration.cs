@@ -53,6 +53,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			ObjCSelector = other.ObjCSelector;
 			IsRequired = other.IsRequired;
 			IsConvenienceInit = other.IsConvenienceInit;
+			IsAsync = other.IsAsync;
 			foreach (var genDecl in other.Generics) {
 				Generics.Add (new GenericDeclaration (genDecl));
 			}
@@ -83,6 +84,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public string ObjCSelector { get; set; }
 		public bool IsOptional { get; set; }
 		public bool HasThrows { get; set; }
+		public bool IsAsync { get; set; }
 		public bool IsProperty { get; set; }
 		public string PropertyName { get { return Name.Substring (kPropertyGetterPrefix.Length); } }
 		public bool IsStatic { get; set; }
@@ -229,6 +231,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				Parent = parent,
 				Access = TypeDeclaration.AccessibilityFromString ((string)elem.Attribute ("accessibility")),
 				ReturnTypeName = Exceptions.ThrowOnNull ((string)elem.Attribute ("returnType"), "returnType"),
+				IsAsync = elem.BoolAttribute ("isAsync"),
 				IsProperty = elem.BoolAttribute ("isProperty"),
 				IsStatic = elem.BoolAttribute ("isStatic"),
 				IsFinal = elem.BoolAttribute ("isFinal"),
@@ -276,6 +279,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			                                 new XAttribute ("name", Name),
 			                                 new XAttribute ("accessibility", TypeDeclaration.ToString (Access)),
 			                                 new XAttribute ("returnType", ReturnTypeName),
+							 new XAttribute ("isAsync", BoolString (IsAsync)),
 			                                 new XAttribute ("isProperty", BoolString (IsProperty)),
 			                                 new XAttribute ("isStatic", BoolString (IsStatic)),
 			                                 new XAttribute ("isFinal", BoolString (IsFinal)),

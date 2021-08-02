@@ -232,10 +232,11 @@ function_body : OpLBrace dyckSubExpression* OpRBrace ;
 
 operator_name : operator ;
 
-function_signature : parameter_clause throws_clause? function_result?
-	| parameter_clause rethrows_clause function_result?
+function_signature : parameter_clause async_clause? throws_clause? function_result?
+	| parameter_clause async_clause? rethrows_clause function_result?
 	;
 
+async_clause : 'async' ;
 throws_clause : 'throws' ;
 rethrows_clause : 'rethrows' ;
 
