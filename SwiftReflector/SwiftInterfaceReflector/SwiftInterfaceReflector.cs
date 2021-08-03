@@ -96,6 +96,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		internal const string kAccessibility = "accessibility";
 		internal const string kIsVariadic = "isVariadic";
 		internal const string kTypeDeclaration = "typedeclaration";
+		internal const string kIsAsync = "isAsync";
 		internal const string kProperty = "property";
 		internal const string kIsProperty = "isProperty";
 		internal const string kStorage = "storage";
@@ -560,9 +561,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var attributes = GatherAttributes (head.attributes ());
 			var isDeprecated = CheckForDeprecated (attributes);
 			var isUnavailable = CheckForUnavailable (attributes);
+			var isAsync = signature.async_clause () != null;
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, isAsync, attributes);
 			var generics = HandleGenerics (context.generic_parameter_clause (), context.generic_where_clause (), true);
 			if (generics != null)
 				functionDecl.Add (generics);
@@ -658,7 +660,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
 				isDeprecated, isUnavailable, isMutating, isRequired, isProperty,
-				attributes);
+				isAsync: false, attributes);
 			currentElement.Push (functionDecl);
 		}
 
@@ -688,7 +690,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isProperty = false;
 			var functionDecl = ToFunctionDeclaration (name, returnType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit, objCSelector: null, operatorKind,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, isAsync: false, attributes);
 
 			// always has two parameter lists: (instance)()
 			currentElement.Push (functionDecl);
@@ -733,7 +735,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var getParamList = MakeParameterList (head.parameter_clause ().parameter_list (), 1, true);
 			var getFunc = ToFunctionDeclaration (kGetSubscript, resultType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, isAsync:false, attributes);
 
 			currentElement.Push (getFunc);
 			var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
@@ -759,7 +761,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				var setFunc = ToFunctionDeclaration (kSetSubscript, "()", accessibility, isStatic, hasThrows,
 					isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
-					isDeprecated, isUnavailable, isMutating, isRequired, isProperty, attributes);
+					isDeprecated, isUnavailable, isMutating, isRequired, isProperty, isAsync: false, attributes);
 
 				currentElement.Push (setFunc);
 				var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
@@ -804,7 +806,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var getFunc = ToFunctionDeclaration ("get_" + name,
 					resultType, accessibility, isStatic, hasThrows, isFinal, isOptional,
 					isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
-					isUnavailable, isMutating, isRequired, isProperty, attributes);
+					isUnavailable, isMutating, isRequired, isProperty, isAsync: false, attributes);
 
 				currentElement.Push (getFunc);
 				var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
@@ -827,7 +829,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					var setFunc = ToFunctionDeclaration ("set_" + name,
 						"()", accessibility, isStatic, hasThrows, isFinal, isOptional,
 						isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
-						isUnavailable, isMutating, isRequired, isProperty, attributes);
+						isUnavailable, isMutating, isRequired, isProperty, isAsync: false, attributes);
 
 					currentElement.Push (setFunc);
 					var setParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), setParamList);
@@ -1354,7 +1356,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		XElement ToFunctionDeclaration (string name, string returnType, string accessibility,
 			bool isStatic, bool hasThrows, bool isFinal, bool isOptional, bool isConvenienceInit,
 			string objCSelector, string operatorKind, bool isDeprecated, bool isUnavailable,
-			bool isMutating, bool isRequired, bool isProperty, XElement attributes)
+			bool isMutating, bool isRequired, bool isProperty, bool isAsync, XElement attributes)
 		{
 			var decl = new XElement (kFunc, new XAttribute (nameof (name), name), new XAttribute (nameof (returnType), returnType),
 				new XAttribute (nameof (accessibility), accessibility), new XAttribute (nameof (isStatic), XmlBool (isStatic)),
@@ -1364,6 +1366,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				new XAttribute (nameof (isDeprecated), XmlBool (isDeprecated)),
 				new XAttribute (nameof (isUnavailable), XmlBool (isUnavailable)),
 				new XAttribute (nameof (isRequired), XmlBool (isRequired)),
+				new XAttribute (kIsAsync, XmlBool (isAsync)),
 				new XAttribute (kIsProperty, XmlBool (isProperty)),
 				new XAttribute (nameof (isMutating), XmlBool (isMutating)));
 

@@ -90,6 +90,7 @@ A `<func>` element represents a method or a top-level function. It contains the 
 - name - a string representing the function’s name
 - accessibility - one of `Public`, `Private`, `Internal`, `Open`
 - returnType - a string which is a type specification (`TypeSpec`) that represents a type
+- isAsync = boolen
 - isProperty - boolean
 - isStatic - boolean
 - isFinal - boolean
