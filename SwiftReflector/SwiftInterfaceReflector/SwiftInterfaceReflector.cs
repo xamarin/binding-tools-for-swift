@@ -726,6 +726,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isUnavailable = CheckForUnavailable (attributes);
 			var isStatic = false;
 			var hasThrows = false;
+			var isAsync = HasAsync (context.getter_setter_keyword_block ()?.getter_keyword_clause ());
 			var isFinal = ModifiersContains (head.declaration_modifiers (), kFinal);
 			var isOptional = ModifiersContains (head.declaration_modifiers (), kOptional);
 			var isMutating = ModifiersContains (head.declaration_modifiers (), kMutating);
@@ -735,7 +736,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var getParamList = MakeParameterList (head.parameter_clause ().parameter_list (), 1, true);
 			var getFunc = ToFunctionDeclaration (kGetSubscript, resultType, accessibility, isStatic, hasThrows,
 				isFinal, isOptional, isConvenienceInit: false, objCSelector: null, kNone,
-				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, isAsync:false, attributes);
+				isDeprecated, isUnavailable, isMutating, isRequired, isProperty, isAsync: isAsync, attributes);
 
 			currentElement.Push (getFunc);
 			var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
@@ -801,12 +802,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var name = UnTick (tail.variable_name ().GetText ());
 				var resultType = TrimColon (tail.type_annotation ().GetText ());
 				var hasThrows = false;
+				var isAsync = HasAsync (tail.getter_setter_keyword_block ()?.getter_keyword_clause ());
 
 				var getParamList = new XElement (kParameterList, new XAttribute (kIndex, "1"));
 				var getFunc = ToFunctionDeclaration ("get_" + name,
 					resultType, accessibility, isStatic, hasThrows, isFinal, isOptional,
 					isConvenienceInit: false, objCSelector: null, operatorKind: kNone, isDeprecated,
-					isUnavailable, isMutating, isRequired, isProperty, isAsync: false, attributes);
+					isUnavailable, isMutating, isRequired, isProperty, isAsync: isAsync, attributes);
 
 				currentElement.Push (getFunc);
 				var getParamLists = new XElement (kParameterLists, MakeInstanceParameterList (), getParamList);
@@ -2001,6 +2003,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					return result;
 			}
 			return kInternalCap;
+		}
+
+		static bool HasAsync (Getter_keyword_clauseContext context)
+		{
+			return context == null ? false : context.async_clause () != null;
 		}
 
 		static bool ModifiersContains (Declaration_modifiersContext context, string match)

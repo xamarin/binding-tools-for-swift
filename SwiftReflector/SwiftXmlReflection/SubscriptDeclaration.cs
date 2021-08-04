@@ -14,6 +14,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public FunctionDeclaration Getter { get; set; }
 		public FunctionDeclaration Setter { get; set; }
 		public FunctionDeclaration Materializer { get; set; }
+		public bool IsAsync => Getter.IsAsync;
 	}
 }
 

@@ -764,5 +764,207 @@ public protocol bar {
 			Assert.IsNotNull (fn, "no function");
 			Assert.IsFalse (fn.IsAsync, "not async");
 		}
+
+		[Test]
+		[Ignore ("not until we update to 5.5")]
+		public void TestAsyncPropertyPresent ()
+		{
+			var code = @"
+public class bar {
+	public init () { }
+	var _x = 4
+	public var x:Int {
+		get async {
+			return _x
+		}
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.GetGetter ();
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsTrue (fn.IsAsync, "not async");
+			Assert.IsTrue (prop.IsAsync, "prop not async");
+		}
+
+		[Test]
+		public void TestAsyncPropertyNotPresent ()
+		{
+			var code = @"
+public class bar {
+	public init () { }
+	var _x = 4
+	public var x:Int {
+		get {
+			return _x
+		}
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.GetGetter ();
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsFalse (fn.IsAsync, "not async");
+			Assert.IsFalse (prop.IsAsync, "prop not async");
+		}
+
+		[Test]
+		[Ignore ("not until we update to 5.5")]
+		public void TestAsyncSubscriptPresent ()
+		{
+			var code = @"
+public class bar {
+	public init () { }
+	public subscript(a: Int) -> Int {
+		get async {
+			return a * 2;
+		}
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllSubscripts ().FirstOrDefault ();
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.Getter;
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsTrue (fn.IsAsync, "not async");
+			Assert.IsTrue (prop.IsAsync, "prop not async");
+		}
+
+		[Test]
+		public void TestAsyncSubscriptNotPresent ()
+		{
+			var code = @"
+public class bar {
+	public init () { }
+	public subscript(a: Int) -> Int {
+		get {
+			return a * 2;
+		}
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllSubscripts ().FirstOrDefault ();
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.Getter;
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsFalse (fn.IsAsync, "not async");
+			Assert.IsFalse (prop.IsAsync, "prop not async");
+		}
+
+		[Test]
+		[Ignore ("not until we update to 5.5")]
+		public void TestProtocolPropertyAsyncPresent ()
+		{
+			var code = @"
+public protocol bar {
+	var x:Int {
+		get async
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.GetGetter ();
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsTrue (fn.IsAsync, "not async");
+			Assert.IsTrue (prop.IsAsync, "prop not async");
+		}
+
+		[Test]
+		public void TestProtocolPropertyAsyncNotPresent ()
+		{
+			var code = @"
+public protocol bar {
+	var x:Int {
+		get
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.GetGetter ();
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsFalse (fn.IsAsync, "not async");
+			Assert.IsFalse (prop.IsAsync, "prop not async");
+		}
+
+		[Test]
+		[Ignore ("not until we update to 5.5")]
+		public void TestProtocolAsyncSubscriptPresent ()
+		{
+			var code = @"
+public protocol bar {
+	subscript(a: Int) -> Int {
+		get async
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllSubscripts ().FirstOrDefault ();
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.Getter;
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsTrue (fn.IsAsync, "not async");
+			Assert.IsTrue (prop.IsAsync, "prop not async");
+		}
+
+		[Test]
+		public void TestProtocolAsyncSubscriptNotPresent ()
+		{
+			var code = @"
+public protocol bar {
+	subscript(a: Int) -> Int {
+		get
+	}
+}
+";
+			SwiftInterfaceReflector reflector;
+			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "not a module");
+			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
+			Assert.IsNotNull (cl, "no class");
+			var prop = cl.AllSubscripts ().FirstOrDefault ();
+			Assert.IsNotNull (prop, "no property");
+			var fn = prop.Getter;
+			Assert.IsNotNull (fn, "no function");
+			Assert.IsFalse (fn.IsAsync, "not async");
+			Assert.IsFalse (prop.IsAsync, "prop not async");
+		}
 	}
 }
