@@ -68,7 +68,7 @@ getter_setter_keyword_block :
 	;
 
 
-getter_keyword_clause : attributes? mutation_modifier? 'get' ;
+getter_keyword_clause : attributes? mutation_modifier? 'get' async_clause? ;
 setter_keyword_clause : attributes? mutation_modifier? 'set' |
 	attributes? mutation_modifier? 'set' OpLParen new_value_name OpRParen ;
 

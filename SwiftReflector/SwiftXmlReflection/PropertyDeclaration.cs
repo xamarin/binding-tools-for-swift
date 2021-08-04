@@ -49,6 +49,12 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public bool IsDeprecated { get; set; }
 		public bool IsUnavailable { get; set; }
 		public bool IsOptional { get; set; }
+		public bool IsAsync {
+			get {
+				var getter = GetGetter ();
+				return getter == null ? false : getter.IsAsync;
+			}
+		}
 
 		public FunctionDeclaration GetGetter ()
 		{
