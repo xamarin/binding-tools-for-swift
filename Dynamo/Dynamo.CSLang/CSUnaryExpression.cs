@@ -40,6 +40,8 @@ namespace Dynamo.CSLang {
 				return "&";
 			case CSUnaryOperator.Indirection:
 				return "*";
+			case CSUnaryOperator.Await:
+				return "await ";
 			default:
 				throw new ArgumentOutOfRangeException (nameof(op));
 			}
@@ -65,7 +67,10 @@ namespace Dynamo.CSLang {
 			return Ref (new CSIdentifier (id));
 		}
 
-
+		public static CSUnaryExpression Await (ICSExpression expr)
+		{
+			return new CSUnaryExpression (CSUnaryOperator.Await, expr);
+		}
 	}
 }
 

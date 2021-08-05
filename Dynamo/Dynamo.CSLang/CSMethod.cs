@@ -14,7 +14,8 @@ namespace Dynamo.CSLang {
 
 		}
 		public CSMethod (CSVisibility vis, CSMethodKind kind, CSType type, CSIdentifier name,
-				 CSParameterList parms, CSBaseExpression [] baseOrThisCallParms, bool callsBase, CSCodeBlock body, bool isSealed = false)
+				 CSParameterList parms, CSBaseExpression [] baseOrThisCallParms, bool callsBase, CSCodeBlock body, bool isSealed = false,
+				 bool isAsync = false)
 		{
 			GenericParameters = new CSGenericTypeDeclarationCollection ();
 			GenericConstraints = new CSGenericConstraintCollection ();
@@ -28,6 +29,7 @@ namespace Dynamo.CSLang {
 
 			Body = body; // can be null
 			IsSealed = isSealed;
+			IsAsync = isAsync;
 
 			LineCodeElementCollection<ICodeElement> lc = new LineCodeElementCollection<ICodeElement> (new ICodeElement [0], false, true);
 			if (vis != CSVisibility.None) {
@@ -36,6 +38,10 @@ namespace Dynamo.CSLang {
 
 			if (isSealed) {
 				lc.And (new SimpleElement ("sealed")).And (SimpleElement.Spacer);
+			}
+
+			if (isAsync) {
+				lc.And (new SimpleElement ("async")).And (SimpleElement.Spacer);
 			}
 
 			lc.And (new SimpleElement (MethodKindToString (kind))).And (SimpleElement.Spacer);
@@ -70,6 +76,7 @@ namespace Dynamo.CSLang {
 		public CSGenericTypeDeclarationCollection GenericParameters { get; private set; }
 		public CSGenericConstraintCollection GenericConstraints { get; private set; }
 		public bool IsSealed { get; private set; }
+		public bool IsAsync { get; private set; }
 
 		public CSMethod AsSealed ()
 		{
