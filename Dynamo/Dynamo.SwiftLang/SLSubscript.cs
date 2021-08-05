@@ -15,8 +15,10 @@ namespace Dynamo.SwiftLang {
 		// get is mandatory, set is optional
 
 		public SLSubscript (Visibility vis, FunctionKind funcKind, SLType type,
-		                    SLParameterList parms, SLCodeBlock getter, SLCodeBlock setter)
+		                    SLParameterList parms, SLCodeBlock getter, SLCodeBlock setter,
+				    bool isAsync = false)
 		{
+			IsAsync = isAsync;
 			Visibility = vis;
 			Type = Exceptions.ThrowOnNull (type, nameof(type));
 			Parameters = Exceptions.ThrowOnNull (parms, nameof(parms));
@@ -47,6 +49,10 @@ namespace Dynamo.SwiftLang {
 			SLCodeBlock block = new SLCodeBlock (null);
 			block.Add (new SimpleElement ("get"));
 			block.Add (SimpleElement.Spacer);
+			if (isAsync) {
+				block.Add (new SimpleElement ("async"));
+				block.Add (SimpleElement.Spacer);
+			}
 			block.Add (GetterBody);
 			if (SetterBody != null) {
 				block.Add (new SimpleElement ("set"));
@@ -61,6 +67,7 @@ namespace Dynamo.SwiftLang {
 		public SLParameterList Parameters { get; private set; }
 		public SLCodeBlock GetterBody { get; private set; }
 		public SLCodeBlock SetterBody { get; private set; }
+		public bool IsAsync { get; private set; }
 	}
 }
 

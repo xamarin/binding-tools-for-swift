@@ -129,6 +129,11 @@ namespace Dynamo.SwiftLang {
 				yield return GenericParams;
 				yield return Parameters;
 
+				if ((FuncKind & FunctionKind.Async) != 0) {
+					yield return SimpleElement.Spacer;
+					yield return new SimpleElement ("async");
+					yield return SimpleElement.Spacer;
+				}
 				if ((FuncKind & FunctionKind.Throws) != 0) {
 					yield return SimpleElement.Spacer;
 					yield return new SimpleElement ("throws");
