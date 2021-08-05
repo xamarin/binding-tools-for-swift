@@ -76,12 +76,14 @@ namespace Dynamo.SwiftLang {
 		Class = 1 << 5,
 		Rethrows = 1 << 6,
 		Required = 1 << 7,
+		Async = 1 << 8,
 	}
 
 	public enum NamedType {
 		Class = 0,
 		Struct,
 		Extension,
+		Actor,
 	}
 }
 

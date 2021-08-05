@@ -7,13 +7,14 @@ using System.Linq;
 namespace Dynamo.SwiftLang {
 	public class SLProperty : CodeElementCollection<ICodeElement> {
 		public SLProperty (Visibility vis, FunctionKind funcKind, SLType type, SLIdentifier name,
-			SLCodeBlock getter, SLCodeBlock setter)
+			SLCodeBlock getter, SLCodeBlock setter, bool isAsync = false)
 		{
 			Visibility = vis;
 			Type = Exceptions.ThrowOnNull (type, nameof(type));
 			Name = Exceptions.ThrowOnNull (name, nameof(name));
 			GetterBody = Exceptions.ThrowOnNull (getter, nameof(getter));
 			SetterBody = setter;
+			IsAsync = isAsync;
 
 			List<string> elems = new List<string> ();
 			if (vis != Visibility.None)
@@ -38,6 +39,10 @@ namespace Dynamo.SwiftLang {
 			SLCodeBlock block = new SLCodeBlock (null);
 			block.Add (new SimpleElement ("get"));
 			block.Add (SimpleElement.Spacer);
+			if (isAsync) {
+				block.Add (new SimpleElement ("async"));
+				block.Add (SimpleElement.Spacer);
+			}
 			block.Add (GetterBody);
 			if (SetterBody != null) {
 				block.Add (new SimpleElement ("set"));
@@ -52,6 +57,7 @@ namespace Dynamo.SwiftLang {
 		public SLTupleType Parameters { get; private set; }
 		public SLCodeBlock GetterBody { get; private set; }
 		public SLCodeBlock SetterBody { get; private set; }
+		public bool IsAsync { get; private set; }
 	}
 }
 

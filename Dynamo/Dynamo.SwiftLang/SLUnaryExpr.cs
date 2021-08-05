@@ -27,5 +27,10 @@ namespace Dynamo.SwiftLang {
 		public bool IsPrefix { get; private set; }
 		public string Operation { get; private set; }
 		public ISLExpr Expr { get; private set; }
+
+		public static SLUnaryExpr Await (ISLExpr expr)
+		{
+			return new SLUnaryExpr ("await ", expr, true);
+		}
 	}
 }

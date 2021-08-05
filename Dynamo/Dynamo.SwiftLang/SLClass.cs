@@ -93,6 +93,7 @@ namespace Dynamo.SwiftLang {
 			case NamedType.Class: return new SLIdentifier ("class");
 			case NamedType.Struct: return new SLIdentifier ("struct");
 			case NamedType.Extension: return new SLIdentifier ("extension");
+			case NamedType.Actor: return new SLIdentifier ("actor");
 			default:
 				throw new ArgumentOutOfRangeException ($"Unknown named type {nt}", nameof (nt));
 			}
