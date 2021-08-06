@@ -67,8 +67,11 @@ public func hello ()
 			var modules = ReflectToXDocument (swiftCode, "SomethingSomething", out reflector);
 
 			var importModules = reflector.ImportModules;
-			Assert.AreEqual (1, importModules.Count, "not 1 import module");
-			Assert.AreEqual ("Swift", importModules [0], "not swift import module");
+			if (importModules.Count == 2)
+				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no swift modules");
+			else if (importModules.Count > 2)
+				Assert.Fail ("wrong number of expected swift modules");
+			Assert.IsTrue (importModules.Contains ("Swift"), "no swift module");
 		}
 
 		[Test]
@@ -87,9 +90,12 @@ public func hello ()
 			var modules = ReflectToXDocument (swiftCode, "SomethingSomething", out reflector);
 
 			var importModules = reflector.ImportModules;
-			Assert.AreEqual (2, importModules.Count, "not 2 import modules");
-			Assert.IsNotNull (importModules.FirstOrDefault (s => s == "Swift"), "no Swift import module");
-			Assert.IsNotNull (importModules.FirstOrDefault (s => s == "Foundation"), "no Foundation import module");
+			if (importModules.Count == 3)
+				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no swift modules");
+			else if (importModules.Count > 3)
+				Assert.Fail ("wrong number of expected swift modules");
+			Assert.IsTrue (importModules.Contains ("Swift"), "no swift module");
+			Assert.IsTrue (importModules.Contains ("Foundation"), "no swift module");
 		}
 
 		[Test]

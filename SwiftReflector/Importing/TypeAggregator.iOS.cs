@@ -33,7 +33,13 @@ namespace SwiftReflector.Importing {
 			result = iOSAvailableMap;
 		}
 
+		static string iOS12_00 = "iOS 12.00, *";
+		static string iOS13_00 = "iOS 13.00, *";
 		static Dictionary<string, String> iOSAvailableMap = new Dictionary<string, string> () {
+			// iAd
+			{ "iAd.ADClientError", iOS12_00 },
+			// Network
+			{ "Network.NWConnection", iOS12_00 },
 		};
 
 		static partial void TypesToSkipIOS (ref HashSet<string> result) { result = iOSTypesToSkip; }

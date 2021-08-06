@@ -18,6 +18,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public bool Load (string moduleName, TypeDatabase into)
 		{
+			if (moduleName == "_Concurrency")
+				return true;
 			// only returns true is the module is already loaded
 			return into.ModuleNames.Contains (moduleName);			
 		}

@@ -51,6 +51,7 @@ namespace SwiftReflector.Importing {
 		static string macos10_13 = "macOS 10.13, *";
 		static string macos10_14 = "macOS 10.14, *";
 		static string macos10_15 = "macOS 10.15, *";
+		static string macos11_00 = "macOS 11.00, *";
 		static Dictionary<string, string> MacOSAvailableMap = new Dictionary<string, string> () {
 			// AppKit
 			{ "AppKit.NSDirectionalEdgeInsets", macos10_15 },
@@ -77,6 +78,8 @@ namespace SwiftReflector.Importing {
 			// CoreLocation
 			{ "CoreLocation.CLRegionState", macos10_10 },
 			{ "CoreLocation.CLProximity", macos10_15 },
+			// FileProvider
+			{ "FileProvider.NSFileProviderItemCapabilities", macos11_00 },
 			// Foundation
 			{ "Foundation.NSItemProviderErrorCode", macos10_10 },
 			{ "Foundation.NSLengthFormatterUnit", macos10_10 },
@@ -632,6 +635,12 @@ namespace SwiftReflector.Importing {
 			{ "AVFoundation.AVSemanticSegmentationMatteType", "AVSemanticSegmentationMatte.MatteType" },
 			// AVKit
 			{ "AVKit.AVRoutePickerViewButtonState", "AVRoutePickerView.ButtonState" },
+			// CloudKit
+			{ "CloudKit.CKContainer_Application_Permissions", "CKContainer.ApplicationPermisions" },
+			{ "CloudKit.CKContainer_Application_PermissionStatus", "CKContainer.ApplicationPermissionStatus" },
+			{ "CloudKit.CKShare_Participant_AcceptanceStatus", "CKShare.ParticipantAcceptanceStatus" },
+			{ "CloudKit.CKShare_Participant_Permission", "CKShare.ParticipantPermission"},
+			{ "CloudKit.CKShare_Participant_ParticipantType", "CKShare.ParticipantType" },
 			// CoreData
 			{ "CoreData.NSPersistentCloudKitContainerEventResultType", "NSPersistentCloudKitContainerEventResult.ResultType" },
 			{ "CoreData.NSPersistentCloudKitContainerEventType", "NSPersistentCloudKitContainer.EventType" },

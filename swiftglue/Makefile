@@ -30,8 +30,8 @@ build-all-iphone-debug: *.c *.swift
 	$(call Q_2,MAKE-FRAMEWORK [iOS/Debug]) $(MAKE_FRAMEWORK) $(ALL_FILES) \
 		--target-os ios \
 		--output-path bin/Debug/iphone/FinalProduct \
-		--device-archs arm64 armv7 armv7s --simulator-archs i386 x86_64 \
-		--module-name XamGlue --minimum-os-version 10.2 \
+		--device-archs arm64 --simulator-archs x86_64 \
+		--module-name XamGlue --minimum-os-version 12.0 \
 		--extra-swift-args -g --extra-c-args -g \
 		--make-xcframework
 build-all-iphone-release: *.c *.swift
@@ -39,8 +39,8 @@ build-all-iphone-release: *.c *.swift
 	$(call Q_2,MAKE-FRAMEWORK [iOS/Release]) $(MAKE_FRAMEWORK) $(ALL_FILES) \
 		--target-os ios \
 		--output-path bin/Release/iphone/FinalProduct \
-		--device-archs arm64 armv7 armv7s --simulator-archs i386 x86_64 \
-		--module-name XamGlue --minimum-os-version 10.2 \
+		--device-archs arm64 --simulator-archs x86_64 \
+		--module-name XamGlue --minimum-os-version 12.0 \
 		--extra-swift-args -O --extra-c-args -O \
 		--make-xcframework
 
