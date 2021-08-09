@@ -44,6 +44,8 @@ namespace SwiftReflector {
 
 		public bool Load (string moduleName, TypeDatabase into)
 		{
+			if (moduleName == "_Concurrency")
+				return true;
 			if (moduleName == "Cocoa")
 				moduleName = "AppKit";
 			if (into.ModuleNames.Contains (moduleName))

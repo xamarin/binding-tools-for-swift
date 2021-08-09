@@ -6,7 +6,7 @@ configuration ?= debug
 BINDING_METADATA_IOS = SwiftRuntimeLibrary.iOS/GeneratedCode/BindingMetadata.iOS.cs
 BINDING_METADATA_MAC = SwiftRuntimeLibrary.Mac/GeneratedCode/BindingMetadata.MacOS.cs
 TYPE_O_MATIC_EXE = $(TOP)/type-o-matic/bin/Debug/type-o-matic.exe
-XAMGLUE_IOS = $(TOP)/swiftglue/bin/$(configuration)/iphone/FinalProduct/XamGlue.xcframework/ios-i386_x86_64-simulator/XamGlue.framework
+XAMGLUE_IOS = $(TOP)/swiftglue/bin/$(configuration)/iphone/FinalProduct/XamGlue.xcframework/ios-x86_64-simulator/XamGlue.framework
 XAMGLUE_MAC = $(TOP)/swiftglue/bin/$(configuration)/mac/FinalProduct/XamGlue.framework
 SWIFT_LIB_PATH = $(XCODE_DEVELOPER_ROOT)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0
 
