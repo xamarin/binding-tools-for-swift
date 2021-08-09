@@ -375,7 +375,7 @@ namespace SwiftReflector {
 
 
 		[Test]
-		[Ignore ("")]
+		[Ignore ("failing in Xcode 13 https://github.com/xamarin/binding-tools-for-swift/issues/739")]
 		public void NSImageViewSmokeTest4 ()
 		{
 			string swiftCode =
