@@ -366,6 +366,19 @@ namespace XmlReflectionTests {
 			var same = inType.ReplaceName ("Blah", "Slarty.Bartfast") as ProtocolListTypeSpec;
 			Assert.AreEqual (same, inType, "changed?!");
 		}
+
+		[Test]
+		public void TestWeirdClosureIssue ()
+		{
+			var inType = TypeSpecParser.Parse ("@escaping[] (_onAnimation:Swift.Bool)->Swift.Void");
+			Assert.IsTrue (inType is ClosureTypeSpec, "not closure");
+			var closSpec = inType as ClosureTypeSpec;
+			Assert.IsTrue (closSpec.IsEscaping, "not escaping");
+			var textRep = closSpec.ToString ();
+			var firstIndex = textRep.IndexOf ("_onAnimation");
+			var lastIndex = textRep.LastIndexOf ("_onAnimation");
+			Assert.IsTrue (firstIndex == lastIndex);
+		}
 	}
 }
 

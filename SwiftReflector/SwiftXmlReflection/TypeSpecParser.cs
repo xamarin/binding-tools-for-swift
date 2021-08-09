@@ -57,11 +57,15 @@ namespace SwiftReflector.SwiftXmlReflection {
 				TupleTypeSpec tuple = ParseTuple ();
 				type = tuple.Elements.Count == 1 ? tuple.Elements [0] : tuple;
 				typeLabel = type.TypeLabel;
+				type.TypeLabel = null;
 			} else if (token.Kind == TypeTokenKind.TypeName) { // name
 				tokenizer.Next ();
 				var tokenValue = token.Value.StartsWith ("ObjectiveC.", StringComparison.Ordinal) ?
 						      "Foundation" + token.Value.Substring ("ObjectiveC".Length) : token.Value;
-				type = new NamedTypeSpec (tokenValue);
+				if (tokenValue == "Swift.Void")
+					type = TupleTypeSpec.Empty;
+				else
+					type = new NamedTypeSpec (tokenValue);
 			} else if (token.Kind == TypeTokenKind.LeftBracket) { // array
 				tokenizer.Next ();
 				type = ParseArray ();
