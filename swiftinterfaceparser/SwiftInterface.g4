@@ -25,6 +25,23 @@ declaration:
 	| struct_declaration
 	| class_declaration
 	| protocol_declaration
+	| extension_declaration
+// technically wrong since this can't be at top level
+// but the swift compiler will never generate a top-level subscript
+// so...
+	| subscript_declaration
+	| operator_declaration
+	| precedence_group_declaration
+	;
+
+nominal_declaration :
+	 variable_declaration
+	| typealias_declaration
+	| function_declaration
+	| enum_declaration
+	| struct_declaration
+	| class_declaration
+	| protocol_declaration
 	| initializer_declaration
 	| deinitializer_declaration
 	| extension_declaration
@@ -35,7 +52,6 @@ declaration:
 	| operator_declaration
 	| precedence_group_declaration
 	;
-
 
 
 import_statement: attributes? 'import' import_kind? import_path ;
@@ -89,7 +105,7 @@ union_style_enum : 'indirect'? 'enum' enum_name generic_parameter_clause? type_i
 union_style_enum_members : union_style_enum_member union_style_enum_members? ;
 
 union_style_enum_member :
-	declaration
+	nominal_declaration
 	| union_style_enum_case_clause 
 	;
 
@@ -111,7 +127,7 @@ raw_value_style_enum : 'enum' enum_name generic_parameter_clause? type_inheritan
 raw_value_style_enum_members : raw_value_style_enum_member raw_value_style_enum_members? ;
 
 raw_value_style_enum_member : 
-	declaration
+	nominal_declaration
 	| raw_value_style_enum_case_clause
 	;
 
@@ -132,7 +148,7 @@ struct_declaration : attributes? access_level_modifier? 'struct' struct_name gen
 struct_name : declaration_identifier  ;
 struct_body : OpLBrace struct_member* OpRBrace  ;
 
-struct_member : declaration ;
+struct_member : nominal_declaration ;
 
 // class
 
@@ -143,7 +159,7 @@ class_declaration :
 
 class_name : declaration_identifier ;
 class_body : OpLBrace class_member* OpRBrace ;
-class_member : declaration ;
+class_member : nominal_declaration ;
 final_clause : 'final' ;
 
 protocol_declaration : attributes? access_level_modifier? 'protocol' protocol_name type_inheritance_clause? protocol_body ;
@@ -303,7 +319,7 @@ class_requirement : 'class' ;
 
 
 attribute : OpAt attribute_name attribute_argument_clause? ;
-attribute_name : declaration_identifier ;
+attribute_name : declaration_identifier | attribute_name OpDot declaration_identifier ;
 attribute_argument_clause : OpLParen balanced_tokens OpRParen;
 attributes : attribute+ ;
 

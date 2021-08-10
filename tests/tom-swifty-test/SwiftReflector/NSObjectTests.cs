@@ -306,7 +306,6 @@ namespace SwiftReflector {
 
 
 		[Test]
-		[Ignore ("getting a conflict in the C# wrapping (check signature?) ")]
 		public void NSImageViewSmokeTest1 ()
 		{
 			string swiftCode =
@@ -375,7 +374,6 @@ namespace SwiftReflector {
 
 
 		[Test]
-		[Ignore ("failing in Xcode 13 https://github.com/xamarin/binding-tools-for-swift/issues/739")]
 		public void NSImageViewSmokeTest4 ()
 		{
 			string swiftCode =

@@ -346,8 +346,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			while (members != null) {
 				if (members.union_style_enum_member () != null) {
 					var member = members.union_style_enum_member ();
-					if (member.declaration ()?.typealias_declaration () != null)
-						yield return member.declaration ().typealias_declaration ();
+					if (member.nominal_declaration ()?.typealias_declaration () != null)
+						yield return member.nominal_declaration ().typealias_declaration ();
 				}
 				members = members.union_style_enum_members ();
 			}
