@@ -791,7 +791,6 @@ open class SecondClass : FirstClass {
 		}
 
 		[Test]
-		[Ignore ("failing in Xcode 13 https://github.com/xamarin/binding-tools-for-swift/issues/737")]
 		public void TestClosureProp ()
 		{
 			var swiftCode = @"
