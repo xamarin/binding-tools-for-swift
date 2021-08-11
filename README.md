@@ -14,11 +14,11 @@ The packaging of BTFS is still evolving, and we expect to provide a binding proj
 
 ## Caution ❗
 
-In order to contribute to Binding-Tools-For-Swift, you will need Xcode 12!
+In order to contribute to Binding-Tools-For-Swift, you will need Xcode 12 or Xcode 13!
 
-❗❗❗
-Binding Tools for Swift is currently in the process of moving to Swift 5.3. The tests are (temporarily) disabled until issues can be addressed.
-❗❗❗
+Binding Tools for Swift is currently in the process of moving to Swift 5.5.
+At present, the code and tests appear to run correctly with either Swift 5.3 or Swift 5.5, however the new concurrency model (async/await/actor) is not yet supported.
+Continuous integration is being done with Xcode 12.
 
 ## Current Status
 
@@ -41,6 +41,8 @@ Binding Tools for Swift is currently in the process of moving to Swift 5.3. The 
 - Protocols with associated types
 - Bound generic types with closures
 - Non-escaping closures
+- Async function/methods/properties
+- Actors
 
 ### What Else Can I Expect?
 
