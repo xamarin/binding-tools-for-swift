@@ -379,6 +379,23 @@ namespace XmlReflectionTests {
 			var lastIndex = textRep.LastIndexOf ("_onAnimation");
 			Assert.IsTrue (firstIndex == lastIndex);
 		}
+
+		[Test]
+		public void TestAttributeParsing ()
+		{
+			var inAttributeType = "Foo.Bar<Baz<Frobozz>>";
+			var attribute = new AttributeDeclaration (inAttributeType);
+			var attrType = attribute.AttributeType;
+			Assert.AreEqual ("Foo.Bar", attrType.Name, "wrong type name");
+			Assert.IsTrue (attrType.GenericParameters.Count == 1, "no first generic");
+			var inner = attrType.GenericParameters [0] as NamedTypeSpec;
+			Assert.IsNotNull (inner, "first is not a named type spec");
+			Assert.AreEqual ("Baz<Frobozz>", inner.ToString (), "wrong first type spec");
+			Assert.IsTrue (inner.GenericParameters.Count == 1, "no second generic");
+			inner = inner.GenericParameters [0] as NamedTypeSpec;
+			Assert.IsNotNull (inner, "second is not a named type spec");
+			Assert.AreEqual ("Frobozz", inner.ToString (), "wrong second type spec");
+		}
 	}
 }
 

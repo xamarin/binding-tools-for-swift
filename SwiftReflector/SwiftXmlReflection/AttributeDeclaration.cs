@@ -9,9 +9,9 @@ using System.Linq;
 
 namespace SwiftReflector.SwiftXmlReflection {
 	public class AttributeDeclaration {
-		public AttributeDeclaration (string name)
+		public AttributeDeclaration (string typeName)
 		{
-			Name = Exceptions.ThrowOnNull (name, nameof (name));
+			Name = Exceptions.ThrowOnNull (typeName, nameof (typeName));
 			Parameters = new List<AttributeParameter> ();
 		}
 
@@ -56,7 +56,20 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
-		public string Name { get; private set; }
+		public NamedTypeSpec AttributeType { get; private set; }
+		public string Name {
+			get {
+				return AttributeType.ToString (true);
+			}
+			private set {
+				Exceptions.ThrowOnNull (value, nameof (value));
+				var ts = TypeSpecParser.Parse (value);
+				if (ts is NamedTypeSpec named)
+					AttributeType = named;
+				else
+					throw new ArgumentOutOfRangeException ($"TypeSpec for {value} is a {ts.Kind} and not a named type spec");
+			}
+		}
 		public List<AttributeParameter> Parameters { get; private set; }
 	}
 
