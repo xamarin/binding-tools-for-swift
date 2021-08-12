@@ -319,7 +319,7 @@ class_requirement : 'class' ;
 
 
 attribute : OpAt attribute_name attribute_argument_clause? ;
-attribute_name : declaration_identifier | attribute_name OpDot declaration_identifier ;
+attribute_name : type_identifier ;
 attribute_argument_clause : OpLParen balanced_tokens OpRParen;
 attributes : attribute+ ;
 
