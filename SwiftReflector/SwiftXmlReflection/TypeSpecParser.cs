@@ -95,7 +95,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 				throwsClosure = false;
 				asyncClosure = false;
 			} else if (expectClosure) {
-				throw ErrorHelper.CreateError (ReflectorError.kTypeParseBase + 1, $"Unexpected token {tokenizer.Peek ().Value} after a 'throws' in a closure.");
+				var errorCase = asyncClosure && throwsClosure ? "'async throws'" : asyncClosure ? 'async' : 'throws';
+				throw ErrorHelper.CreateError (ReflectorError.kTypeParseBase + 1, $"Unexpected token {tokenizer.Peek ().Value} after {errorCase} in a closure.");
 			} else if (tokenizer.Peek ().Kind == TypeTokenKind.LeftAngle) {
 				tokenizer.Next ();
 				type = Genericize (type);
