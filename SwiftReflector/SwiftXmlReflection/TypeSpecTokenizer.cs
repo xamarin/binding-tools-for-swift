@@ -85,6 +85,11 @@ namespace SwiftReflector.SwiftXmlReflection {
 			return token;
 		}
 
+		public bool NextIs (string name)
+		{
+			return Peek ().Kind == TypeTokenKind.TypeName && Peek ().Value == name;
+		}
+
 		TypeSpecToken DoName ()
 		{
 			int curr = reader.Peek ();

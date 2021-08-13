@@ -396,6 +396,33 @@ namespace XmlReflectionTests {
 			Assert.IsNotNull (inner, "second is not a named type spec");
 			Assert.AreEqual ("Frobozz", inner.ToString (), "wrong second type spec");
 		}
+
+		[Test]
+		public void TestAsyncClosure ()
+		{
+			var inType = TypeSpecParser.Parse ("() async -> ()") as ClosureTypeSpec;
+			Assert.IsNotNull (inType, "not a closure");
+			Assert.IsTrue (inType.IsAsync, "not async");
+			Assert.IsFalse (inType.Throws, "doesn't throw");
+		}
+
+		[Test]
+		public void TestAsyncThrowsClosure ()
+		{
+			var inType = TypeSpecParser.Parse ("() async throws -> ()") as ClosureTypeSpec;
+			Assert.IsNotNull (inType, "not a closure");
+			Assert.IsTrue (inType.IsAsync, "not async");
+			Assert.IsTrue (inType.Throws, "doesn't throw");
+		}
+
+		[Test]
+		public void TestThrowsClosure ()
+		{
+			var inType = TypeSpecParser.Parse ("() throws -> ()") as ClosureTypeSpec;
+			Assert.IsNotNull (inType, "not a closure");
+			Assert.IsFalse (inType.IsAsync, "not async");
+			Assert.IsTrue (inType.Throws, "doesn't throw");
+		}
 	}
 }
 
