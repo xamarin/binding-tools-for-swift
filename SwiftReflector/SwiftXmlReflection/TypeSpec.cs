@@ -615,6 +615,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public TypeSpec Arguments { get; set; }
 		public TypeSpec ReturnType { get; set; }
 		public bool Throws { get; set; }
+		public bool IsAsync { get; set; }
 
 		public bool HasReturn ()
 		{

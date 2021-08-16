@@ -26,6 +26,9 @@ namespace SwiftReflector.SwiftXmlReflection {
 			List<TypeSpecAttribute> attrs = null;
 			var inout = false;
 			string typeLabel = null;
+			var throwsClosure = false;
+			var asyncClosure = false;
+			var expectClosure = false;
 
 			// Prefix
 
@@ -73,18 +76,27 @@ namespace SwiftReflector.SwiftXmlReflection {
 				throw ErrorHelper.CreateError (ReflectorError.kTypeParseBase + 0, $"Unexpected token {token.Value}.");
 			}
 
-			// look-ahead for closure
-			if (tokenizer.Peek ().Kind == TypeTokenKind.TypeName && tokenizer.Peek ().Value == "throws") {
+			if (tokenizer.NextIs ("async")) {
 				tokenizer.Next ();
-				if (tokenizer.Peek ().Kind != TypeTokenKind.Arrow)
-					throw ErrorHelper.CreateError (ReflectorError.kTypeParseBase + 1, $"Unexpected token {tokenizer.Peek ().Value} after a 'throws' in a closure.");
+				asyncClosure = true;
+				expectClosure = true;
+			}
+
+			if (tokenizer.NextIs ("throws")) {
 				tokenizer.Next ();
-				type = ParseClosure (type, true);
+				throwsClosure = true;
+				expectClosure = true;
 			}
 
 			if (tokenizer.Peek ().Kind == TypeTokenKind.Arrow) {
 				tokenizer.Next ();
-				type = ParseClosure (type, false);
+				type = ParseClosure (type, throwsClosure, asyncClosure);
+				expectClosure = false;
+				throwsClosure = false;
+				asyncClosure = false;
+			} else if (expectClosure) {
+				var errorCase = asyncClosure && throwsClosure ? "'async throws'" : asyncClosure ? "'async'" : "'throws'";
+				throw ErrorHelper.CreateError (ReflectorError.kTypeParseBase + 1, $"Unexpected token {tokenizer.Peek ().Value} after {errorCase} in a closure.");
 			} else if (tokenizer.Peek ().Kind == TypeTokenKind.LeftAngle) {
 				tokenizer.Next ();
 				type = Genericize (type);
@@ -260,7 +272,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 		}
 
-		ClosureTypeSpec ParseClosure (TypeSpec arg, bool throws)
+		ClosureTypeSpec ParseClosure (TypeSpec arg, bool throws, bool isAsync)
 		{
 			TypeSpec returnType = Parse ();
 			if (returnType == null)
@@ -269,6 +281,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			closure.Arguments = arg;
 			closure.ReturnType = returnType;
 			closure.Throws = throws;
+			closure.IsAsync = isAsync;
 			return closure;
 		}
 
