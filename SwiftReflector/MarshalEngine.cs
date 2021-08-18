@@ -97,11 +97,6 @@ namespace SwiftReflector {
 				callParameters.Add (Marshal (classDecl, wrapperFunc, parms [i], filteredTypes [i], false, false, originalParamType));
 			}
 
-			//var callParameters = parms.Select ((p, i) => {
-			//	skipThisParameterPremarshal = skipThisParam && i == 0;
-			//	return Marshal (classDecl, wrapperFunc, p, filteredTypes [i], false, false, null);
-			//}).ToList ();
-
 			// class objects need a class constructor parameter, not so structs.
 			if (entity.EntityType != EntityType.Struct) {
 				callParameters.Add (new CSFunctionCall ($"{cl.ToCSType ().ToString ()}.GetSwiftMetatype", false));
@@ -398,10 +393,6 @@ namespace SwiftReflector {
 				callParameters.Add (Marshal (typeContext, wrapperFuncDecl, p, filteredTypeSpec [i], instanceIsSwiftProtocol && i == indexOfInstance,
 							 indexOfReturn >= 0 && i == indexOfReturn, originalParm));
 			}
-
-			//var callParameters = parms.Select ((p, i) => Marshal (typeContext, wrapperFuncDecl, p, filteredTypeSpec [i], instanceIsSwiftProtocol && i == indexOfInstance,
-			//                             indexOfReturn >= 0 && i == indexOfReturn)).ToList ();
-
 
 			if (wrapperFuncDecl.ContainsGenericParameters) {
 				AddExtraGenericParameters (wrapperFuncDecl, callParameters);
