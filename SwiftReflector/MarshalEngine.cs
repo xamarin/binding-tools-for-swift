@@ -305,6 +305,7 @@ namespace SwiftReflector {
 
 						RequiredUnsafeCode = true;
 						indexOfReturn = 0;
+						indexOfInstance = 1;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
 					} else if (returnEntity != null && returnEntity.EntityType == EntityType.Struct) {
 						// if the struct is non blitable, we need to do something like this:
@@ -318,6 +319,7 @@ namespace SwiftReflector {
 						absolutelyMustBeFirst.Add (CreateNominalCall (returnType, returnIdent, returnType, returnEntity));
 
 						indexOfReturn = 0;
+						indexOfInstance = 1;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
 					} else if (returnEntity != null && (returnEntity.EntityType == EntityType.Class || returnEntity.IsObjCProtocol)) {
 						returnIntPtr = new CSIdentifier (Uniqueify ("retvalIntPtr", identifiersUsed));
@@ -344,6 +346,7 @@ namespace SwiftReflector {
 						}
 						preMarshalCode.Insert (0, CSVariableDeclaration.VarLine (returnType, returnIdent, initialValue));
 						indexOfReturn = 0;
+						indexOfInstance = 1;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
 					} else if (swiftReturnType is TupleTypeSpec) {
 						RequiredUnsafeCode = true;
@@ -356,15 +359,18 @@ namespace SwiftReflector {
 
 						preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, ctorCall));
 						indexOfReturn = 0;
+						indexOfInstance = 1;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
 					} else if (returnIsGeneric || returnIsProtocolList || returnIsAssocPath) {
 						use.AddIfNotPresent (typeof (StructMarshal));
 						preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, returnType.Default ()));
 						indexOfReturn = 0;
+						indexOfInstance = 1;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.None));
 					} else if (returnIsTrivialEnum) {
 						absolutelyMustBeFirst.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, CSFunctionCall.Default ((CSSimpleType)returnType)));
 						indexOfReturn = 0;
+						indexOfInstance = 1;
 						parms.Insert (0, new CSParameter (returnType, returnIdent, CSParameterKind.Out));
 					}
 				}
