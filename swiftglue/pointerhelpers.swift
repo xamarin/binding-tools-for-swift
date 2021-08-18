@@ -70,7 +70,7 @@ private func getExceptionBool<T>(retval: UnsafeMutablePointer<(T, Error, Bool)>)
 
 public func setExceptionThrown<T>(err: Error, retval: UnsafeMutablePointer<(T, Error, Bool)>)
 {
-	let alignment = MemoryLayout<T>.alignment;
+	let alignment = MemoryLayout<Error>.alignment;
 	let errOffset = roundUpToAlignment(value: MemoryLayout<T>.size, align:alignment);
 	let rawPointer = UnsafeMutableRawPointer(retval).bindMemory(to: Int8.self,
 		capacity: errOffset + MemoryLayout<Error>.stride) + errOffset;
@@ -97,12 +97,17 @@ public func isExceptionThrown<T>(retval: UnsafeMutablePointer<(T, Error, Bool)>)
 
 public func getExceptionThrown<T>(retval: UnsafeMutablePointer<(T, Error, Bool)>) -> Error?
 {
+//	print ("memory dump of exception pointer")
+//	dumpMemory(ptr: retval, count: 4)
 	var result:Error? = nil;
 	if getExceptionBool(retval:retval) {
-		let alignment = MemoryLayout<T>.alignment;
+		let alignment = MemoryLayout<Error>.alignment;
 		let errOffset = roundUpToAlignment(value: MemoryLayout<T>.size, align:alignment);
+//		print("errOffset: \(errOffset)")
 		let rawPointer = UnsafeMutableRawPointer(retval).bindMemory(to: Int8.self,
 			capacity: errOffset + MemoryLayout<Error>.stride) + errOffset;
+//	print ("memory dump of exception pointer offset")
+//	dumpMemory(ptr: rawPointer, count: 4)
 		rawPointer.withMemoryRebound(to: Error.self, capacity: 1) {
 			result = $0.pointee;
 		}
@@ -191,10 +196,34 @@ public func alignmentof<T> (_ ignored: T) -> Int
 //print("0x", hexString(x: p[0]))
 //}
 //
+//public func printHexInt(ptr: UnsafeMutableRawPointer)
+//{
+//let p = ptr.assumingMemoryBound(to:UInt64.self)
+//print("Data:") 
+//print("0x", hexString(x: p[0]))
+//}
+//
+//
 //public func printHexInt<T>(ptr: UnsafeMutablePointer<T>)
 //{
 //printHexInt(ptr: UnsafeRawPointer(ptr))
 //}
+//
+//public func dumpMemory<T> (ptr: UnsafeMutablePointer<T>, count: Int)
+//{
+//	dumpMemory (ptr: UnsafeRawPointer (ptr), count: count)
+//}
+//
+//public func dumpMemory (ptr: UnsafeRawPointer, count: Int)
+//{
+//	let addr = unsafeBitCast(ptr, to: UInt64.self)
+//	print ("address \(hexString(x: addr))")
+//	let p = ptr.assumingMemoryBound(to: UInt64.self)
+//	for i in 0...count {
+//		print (hexString(x: p [i]))
+//	}
+//}
+
 
 //public func printProtocol(ptr: UnsafeRawPointer)
 //{

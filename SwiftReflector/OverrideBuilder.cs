@@ -1102,7 +1102,7 @@ namespace SwiftReflector {
 				usedIds.Add (varId.Name);
 				var varDecl = SLDeclaration.LetLine (varId, null, variadicAdapter, Visibility.None);
 				body.Add (varDecl);
-				call = new SLFunctionCall (varId.Name, false, parameters.Select (p => new SLArgument (null, p.PrivateName, false)).ToArray ());
+				call = new SLFunctionCall (varId.Name, false, parameters.Select (p => new SLArgument ("", p.PrivateName, false)).ToArray ());
 			} else {
 				call = new SLFunctionCall ("super." + func.Name, false, parameters.Select ((p, i) => {
 					var arg = func.ParameterLists.Last () [i];
@@ -1263,7 +1263,7 @@ namespace SwiftReflector {
 				var adapterID = new SLIdentifier (MarshalEngine.Uniqueify ("variadicAdapter", idents));
 				idents.Add (adapterID.Name);
 				body.Add (SLDeclaration.LetLine (adapterID, null, variadicAdapter, Visibility.None));
-				funcCall = new SLFunctionCall (adapterID.Name, false, parameters.Select (parm => new SLArgument (null, parm.PrivateName, false)).ToArray ());
+				funcCall = new SLFunctionCall (adapterID.Name, false, parameters.Select (parm => new SLArgument ("", parm.PrivateName, false)).ToArray ());
 			} else {
 				funcCall = new SLFunctionCall (callSite, false,
 				                               parameters.Select ((p, i) =>

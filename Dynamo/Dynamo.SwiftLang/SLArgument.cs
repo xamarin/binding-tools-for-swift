@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
+using System;
 
 namespace Dynamo.SwiftLang {
 	public class SLArgument : DelegatedSimpleElement {
@@ -8,6 +9,11 @@ namespace Dynamo.SwiftLang {
 			Identifier = identifierIsRequired ? Exceptions.ThrowOnNull (ident, nameof(ident)) : ident;
 			Expr = Exceptions.ThrowOnNull (expr, nameof(expr));
 			IdentifierIsRequired = identifierIsRequired;
+		}
+
+		public SLArgument (string ident, SLBaseExpr expr, bool identifierIsRequired = false)
+			: this (!String.IsNullOrEmpty (ident) ? new SLIdentifier (ident) : null, expr, identifierIsRequired)
+		{
 		}
 
 		protected override void LLWrite (ICodeWriter writer, object o)

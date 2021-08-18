@@ -88,10 +88,19 @@ namespace SwiftReflector {
 
 			var filteredTypes = FilterParams (parms, wrapperFunc, originalFunc.HasThrows);
 
-			var callParameters = parms.Select ((p, i) => {
+
+			var callParameters = new List<CSBaseExpression> (parms.Count);
+			for (int i = 0; i < parms.Count; i++) {
+				var originalParamType = i == 0 ? (TypeSpec)TupleTypeSpec.Empty :
+					originalFunc.ParameterLists.Last () [i - 1].TypeSpec;
 				skipThisParameterPremarshal = skipThisParam && i == 0;
-				return Marshal (classDecl, wrapperFunc, p, filteredTypes [i], false, false);
-			}).ToList ();
+				callParameters.Add (Marshal (classDecl, wrapperFunc, parms [i], filteredTypes [i], false, false, originalParamType));
+			}
+
+			//var callParameters = parms.Select ((p, i) => {
+			//	skipThisParameterPremarshal = skipThisParam && i == 0;
+			//	return Marshal (classDecl, wrapperFunc, p, filteredTypes [i], false, false, null);
+			//}).ToList ();
 
 			// class objects need a class constructor parameter, not so structs.
 			if (entity.EntityType != EntityType.Struct) {
@@ -170,7 +179,7 @@ namespace SwiftReflector {
 								      TypeSpec swiftInstanceType,
 								      CSType instanceType,
 								      bool includeCastToReturnType,
-								      WrappingResult wrapper,
+								      FunctionDeclaration originalFunction,
 								      bool includeIntermediateCastToLong = false,
 								      int passedInIndexOfReturn = -1,
 								      bool originalThrows = false,
@@ -210,7 +219,7 @@ namespace SwiftReflector {
 				instanceIsSwiftProtocol = entity.EntityType == EntityType.Protocol;
 				instanceIsObjC = entity.Type.IsObjC;
 				var thisIdentifier = isExtension ? new CSIdentifier ("self") : CSIdentifier.This;
-				parms.Insert (0, new CSParameter (instanceType, thisIdentifier, wrapperFuncDecl.ParameterLists.Last() [indexOfInstance].IsInOut ?
+				parms.Insert (0, new CSParameter (instanceType, thisIdentifier, wrapperFuncDecl.ParameterLists.Last () [indexOfInstance].IsInOut ?
 				    CSParameterKind.Ref : CSParameterKind.None));
 			}
 
@@ -220,7 +229,7 @@ namespace SwiftReflector {
 				returnType = ReworkTypeWithNamer (returnType);
 
 			var returnIsScalar = returnType != null && TypeMapper.IsScalar (swiftReturnType);
-			var returnEntity = hasReturn && !typeContext.IsTypeSpecGenericReference(swiftReturnType) ? typeMapper.GetEntityForTypeSpec (swiftReturnType) : null;
+			var returnEntity = hasReturn && !typeContext.IsTypeSpecGenericReference (swiftReturnType) ? typeMapper.GetEntityForTypeSpec (swiftReturnType) : null;
 			var returnIsTrivialEnum = hasReturn && returnEntity != null && returnEntity.EntityType == EntityType.TrivialEnum;
 			var returnIsGenericClass = hasReturn && returnEntity != null && returnEntity.EntityType == EntityType.Class && swiftReturnType.ContainsGenericParameters;
 			var returnIsClass = hasReturn && returnEntity != null && returnEntity.EntityType == EntityType.Class;
@@ -368,8 +377,30 @@ namespace SwiftReflector {
 
 
 			var filteredTypeSpec = FilterParams (parms, wrapperFuncDecl, originalThrows);
-			var callParameters = parms.Select ((p, i) => Marshal (typeContext, wrapperFuncDecl, p, filteredTypeSpec [i], instanceIsSwiftProtocol && i == indexOfInstance,
-									     indexOfReturn >= 0 && i == indexOfReturn)).ToList ();
+
+			var callParameters = new List<CSBaseExpression> (parms.Count);
+
+			for (int i = 0; i < parms.Count; i++) {
+				var offsetToOriginalArgs = (hasReturn && indexOfReturn >= 0 ? 1 : 0) + (swiftInstanceType != null ? 1 : 0);
+				var p = parms [i];
+				// if it's the instance, pass that
+				// if it's the return, pass that
+				// otherwise take it from the original functions primary parameter list
+				TypeSpec originalParm = null;
+
+				if (i == indexOfInstance && swiftInstanceType != null) {
+					originalParm = swiftInstanceType;
+				} else if (hasReturn && i == indexOfReturn) {
+					originalParm = swiftReturnType;
+				} else {
+					originalParm = originalFunction.ParameterLists.Last () [i - offsetToOriginalArgs].TypeSpec;
+				}
+				callParameters.Add (Marshal (typeContext, wrapperFuncDecl, p, filteredTypeSpec [i], instanceIsSwiftProtocol && i == indexOfInstance,
+							 indexOfReturn >= 0 && i == indexOfReturn, originalParm));
+			}
+
+			//var callParameters = parms.Select ((p, i) => Marshal (typeContext, wrapperFuncDecl, p, filteredTypeSpec [i], instanceIsSwiftProtocol && i == indexOfInstance,
+			//                             indexOfReturn >= 0 && i == indexOfReturn)).ToList ();
 
 
 			if (wrapperFuncDecl.ContainsGenericParameters) {
@@ -415,7 +446,7 @@ namespace SwiftReflector {
 						elseBlock.Add (CSVariableDeclaration.VarLine (CSSimpleType.Var, containerID,
 							new CSFunctionCall ($"StructMarshal.Marshaler.GetErrorReturnValue<{exceptionContainerType.ToString ()}>", false, returnIntPtr)));
 						elseBlock.Add (CSReturn.ReturnLine (new CSFunctionCall ($"StructMarshal.Marshaler.ExistentialPayload<{returnType.ToString ()}>", false, containerID)));
-																		
+
 					} else {
 						elseBlock.Add (CSReturn.ReturnLine (new CSFunctionCall ($"StructMarshal.Marshaler.GetErrorReturnValue<{returnType.ToString ()}>",
 							false, returnIntPtr)));
@@ -667,7 +698,8 @@ namespace SwiftReflector {
 			}
 		}
 
-		CSBaseExpression Marshal (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p, TypeSpec swiftType, bool marshalProtocolAsValueType, bool isReturnVariable)
+		CSBaseExpression Marshal (BaseDeclaration typeContext, FunctionDeclaration funcDecl, CSParameter p, TypeSpec swiftType,
+			bool marshalProtocolAsValueType, bool isReturnVariable, TypeSpec originalType)
 		{
 			p = ReworkParameterWithNamer (p);
 
@@ -700,7 +732,7 @@ namespace SwiftReflector {
 			case EntityType.TrivialEnum:
 				return MarshalTrivialEnumAsPointer (p, isReturnVariable);
 			case EntityType.Closure:
-				return MarshalClosure (p);
+				return MarshalClosure (p, swiftType as ClosureTypeSpec, originalType as ClosureTypeSpec);
 			case EntityType.ProtocolList:
 				return MarshalProtocolList (typeContext, p, swiftType as ProtocolListTypeSpec, marshalProtocolAsValueType);
 			case EntityType.Tuple:
@@ -729,7 +761,7 @@ namespace SwiftReflector {
 			return MarshalAsPointer (typeContext, funcDecl, p, swiftType, marshalProtocolAsValueType, isReturnValue);
 		}
 
-		CSBaseExpression MarshalClosure (CSParameter p)
+		CSBaseExpression MarshalClosure (CSParameter p, ClosureTypeSpec closure, ClosureTypeSpec originalClosure)
 		{
 			var csSimp = p.CSType as CSSimpleType;
 			if (csSimp == null) {
@@ -749,12 +781,35 @@ namespace SwiftReflector {
 			} else {  // func
 				var typeArr = new CSArray1DInitialized ("Type",
 									csSimp.GenericTypes.Take (csSimp.GenericTypes.Length - 1).Select (ct => ct.Typeof ()));
-				string funcCallName = csSimp.GenericTypes.Count () == 1 ?
-							      "SwiftClosureRepresentation.FuncCallbackVoid" :
-							      "SwiftClosureRepresentation.FuncCallback";
-				var retType = csSimp.GenericTypes.Last ().Typeof ();
+				string funcCallName = CallbackNameForFuncClosure (csSimp.GenericTypes.Count (), originalClosure);
+				var retType = TypeOfFuncClosureReturnType (csSimp.GenericTypes.Last (), originalClosure);
 				return new CSFunctionCall ("SwiftObjectRegistry.Registry.SwiftClosureForDelegate",
 							false, p.Name, new CSIdentifier (funcCallName), typeArr, retType);
+			}
+		}
+
+		static CSBaseExpression TypeOfFuncClosureReturnType (CSType returnType, ClosureTypeSpec closure)
+		{
+			if (closure.Throws && !closure.IsAsync) {
+				var newType = new CSSimpleType ("Tuple", false, new CSType [] { returnType, new CSSimpleType ("SwiftError"), CSSimpleType.Bool });
+				return newType.Typeof ();
+			} else if (closure.IsAsync) {
+				throw new NotImplementedException ("Async closures not supported yet.");
+			} else {
+				return returnType.Typeof ();
+			}
+		}
+
+		static string CallbackNameForFuncClosure (int argumentCount, ClosureTypeSpec closure)
+		{
+			if (closure.Throws && !closure.IsAsync) {
+				return argumentCount == 1 ? "SwiftClosureRepresentation.FuncCallbackVoidMaybeThrows" :
+					"SwiftClosureRepresentation.FuncCallbackMaybeThrows";
+			} else if (closure.IsAsync) {
+				throw new NotImplementedException ("Need to implement async closures");
+			} else {
+				return argumentCount == 1 ? "SwiftClosureRepresentation.FuncCallbackVoid" :
+							      "SwiftClosureRepresentation.FuncCallback";
 			}
 		}
 

@@ -85,8 +85,6 @@ namespace SwiftReflector.TypeMapping {
 
 		SLType MapType (BaseDeclaration declContext, SLImportModules modules, ClosureTypeSpec spec, bool isForReturn)
 		{
-			if (spec.Throws)
-				throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 16, $"In {declContext.ToFullyQualifiedName ()}, closure type {spec.ToString ()} throws, which is not supported yet.");
 			var argumentTypes = new List<SLType> ();
 			if (spec.Arguments is TupleTypeSpec) {
 				argumentTypes.AddRange (((TupleTypeSpec)spec.Arguments).Elements.Select (arg => MapType (declContext, modules, arg, false)));
@@ -100,11 +98,11 @@ namespace SwiftReflector.TypeMapping {
 				var arguments = new SLTupleType (argumentTypes.Select (at => new SLNameTypePair ((string)null, at)).ToList ());
 				if (spec.ReturnType.IsEmptyTuple) {
 					// Action ->
-					funcType = new SLFuncType (arguments ?? new SLTupleType (), new SLTupleType ());
+					funcType = new SLFuncType (arguments ?? new SLTupleType (), new SLTupleType (), hasThrows: spec.Throws);
 				} else {
 					// Func
 					SLType slRetType = MapType (declContext, modules, spec.ReturnType, true);
-					funcType = new SLFuncType (arguments ?? new SLTupleType (), slRetType);
+					funcType = new SLFuncType (arguments ?? new SLTupleType (), slRetType, hasThrows: spec.Throws);
 				}
 				if (spec.IsEscaping) {
 					SLAttribute.Escaping ().AttachBefore (funcType);
@@ -164,13 +162,14 @@ namespace SwiftReflector.TypeMapping {
 					var pointerToArgTuple = arguments.Count != 0 ?
 									 new SLBoundGenericType ("UnsafeMutablePointer", new SLTupleType (arguments))
 									 : null;
+					var slReturnTypePtr = MethodWrapping.ClosureReturnType (slRetType, spec);
 					if (pointerToArgTuple != null) {
-						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", new SLBoundGenericType ("UnsafeMutablePointer", slRetType)),
+						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", slReturnTypePtr),
 						                                            new SLNameTypePair ("_", pointerToArgTuple),
 											    opaquePointerArg),
 									   new SLTupleType ());
 					} else {
-						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", new SLBoundGenericType ("UnsafeMutablePointer", slRetType)),
+						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", slReturnTypePtr),
 											    opaquePointerArg),
 									   new SLTupleType ());
 					}

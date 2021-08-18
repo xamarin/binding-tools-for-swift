@@ -41,7 +41,6 @@ namespace SwiftRuntimeLibrary {
 			StructMarshal.ReleaseSwiftObject (capsule);
 		}
 
-
 		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr, IntPtr>))]
 		public static void FuncCallback (IntPtr retValPtr, IntPtr args, IntPtr refPtr)
 		{
@@ -71,6 +70,71 @@ namespace SwiftRuntimeLibrary {
 			var argumentValues = StructMarshal.Marshaler.MarshalSwiftTupleMemoryToNet (args, delInfo.Item2);
 			var retval = delInfo.Item1.DynamicInvoke (argumentValues);
 			StructMarshal.Marshaler.ToSwift (delInfo.Item3, retval, retValPtr);
+			StructMarshal.ReleaseSwiftObject (capsule);
+		}
+
+		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr>))]
+		public static void FuncCallbackVoidMaybeThrows (IntPtr retValPtr, IntPtr refPtr)
+		{
+			FuncCallbackMaybeThrows (retValPtr, IntPtr.Zero, refPtr);
+		}
+
+		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr, IntPtr>))]
+		public static void FuncCallbackMaybeThrows (IntPtr retValPtr, IntPtr args, IntPtr refPtr)
+		{
+			// instead of a pointer to a return value, this is a pointer to a Medusa tuple of the form:
+			// (T, SwiftError, bool)
+			// T is the return value if and only if the bool is false and in that case
+			// SwiftError will be invalid.
+			// SwiftError is the exception thrown if and only if the bool is true and in that case
+			// T will be invalid.
+#if DEBUG
+			//Console.WriteLine ($"FuncCallback: refPtr initially {refPtr.ToString ("X8")}");
+			//Console.WriteLine ("dereferencing refPtr ");
+#endif
+			refPtr = LocateRefPtrFromPartialApplicationForwarder (refPtr);
+#if DEBUG
+			//Console.WriteLine($"FuncCallbackMaybeThrows: retValPtr {retValPtr.ToString("X8")} args {args.ToString("X8")} refPtr {refPtr.ToString("X8")}");
+			//Console.WriteLine ("retValPtr: ");
+			//Memory.Dump (retValPtr, 128);
+			//Console.WriteLine ("args: ");
+			//Memory.Dump (args, 128);
+			//Console.WriteLine ("refPtr: ");
+			//Memory.DumpPtrs (refPtr, 8);
+#endif
+			var capsule = SwiftObjectRegistry.Registry.ExistingCSObjectForSwiftObject<SwiftDotNetCapsule> (refPtr);
+			var delInfo = SwiftObjectRegistry.Registry.ClosureForCapsule (capsule);
+#if DEBUG
+			//if (delInfo == null) {
+			//	Console.WriteLine ("delInfo is null.");
+			//}
+#endif
+			var argumentValues = args != IntPtr.Zero ? StructMarshal.Marshaler.MarshalSwiftTupleMemoryToNet (args, delInfo.Item2) : null;
+
+			object retval = null;
+			Exception thrownException = null;
+
+			try {
+				retval = delInfo.Item1.DynamicInvoke (argumentValues);
+			} catch (Exception e) {
+				thrownException = e;
+			}
+
+			if (thrownException != null) {
+#if DEBUG
+				//Console.WriteLine ($"FuncCallbackMaybeThrows: retValPtr {retValPtr.ToString ("X8")} args {args.ToString ("X8")} refPtr {refPtr.ToString ("X8")}");
+				//Console.WriteLine ("before set error throws retValPtr: ");
+				//Memory.Dump (retValPtr, 128);
+#endif
+		                StructMarshal.Marshaler.SetErrorThrown (retValPtr, SwiftError.FromException (thrownException), delInfo.Item3);
+#if DEBUG
+				//Console.WriteLine ($"FuncCallbackMaybeThrows: retValPtr {retValPtr.ToString ("X8")} args {args.ToString ("X8")} refPtr {refPtr.ToString ("X8")}");
+				//Console.WriteLine ("after set error throws retValPtr: ");
+				//Memory.Dump (retValPtr, 128);
+#endif
+            } else {
+				StructMarshal.Marshaler.SetErrorNotThrownWithValue (retValPtr, delInfo.Item3, retval);
+			}
 			StructMarshal.ReleaseSwiftObject (capsule);
 		}
 

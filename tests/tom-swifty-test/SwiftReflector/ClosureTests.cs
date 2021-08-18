@@ -175,6 +175,54 @@ namespace SwiftReflector {
 			ClosureIdentityFunc ("String", "String", "SwiftString.FromString(\"hi mom\")", "hi mom\n", escaping);
 		}
 
+		void ClosureIdentityFuncThrows (string appendage, string swiftType, string csVal, string output, bool escaping, bool throwIt)
+		{
+			appendage += escaping.ToString ();
+			string escapingAttribute = escaping ? "@escaping" : "";
+			string swiftCode =
+				$"public func callClosureCIFT{appendage}(a:{swiftType}, f:{escapingAttribute}({swiftType}, Bool) throws ->{swiftType}, b: Bool) throws -> {swiftType} {{\n" +
+				"    return try f(a, b)\n" +
+				"}";
+
+			CodeElementCollection<ICodeElement> callingCode = new CodeElementCollection<ICodeElement> ();
+			CSCodeBlock body = new CSCodeBlock ();
+			var ifClause = new CSCodeBlock ();
+			ifClause.Add (CSThrow.ThrowLine (new Exception(), "thrown"));
+			body.Add (new CSIfElse (new CSIdentifier ("throwIt"), ifClause));
+			body.Add (CSReturn.ReturnLine (new CSIdentifier ("val")));
+			CSLine invoker = CSFunctionCall.ConsoleWriteLine (CSFunctionCall.Function ($"TopLevelEntities.CallClosureCIFT{appendage}", (CSIdentifier)csVal,
+												   new CSLambda (body, "val", "throwIt"), CSConstant.Val (throwIt)));
+			var tryBlock = new CSCodeBlock ();
+			tryBlock.Add (invoker);
+			var catchBody = new CSCodeBlock ();
+			catchBody.Add (CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Exception thrown")));
+			var catchBlock = new CSCatch (catchBody);
+
+			var tryCatch = new CSTryCatch (tryBlock, catchBlock);
+			callingCode.Add (tryCatch);
+			TestRunning.TestAndExecute (swiftCode, callingCode, output, testName: $"ClosureIdentityFuncThrows{appendage}");
+		}
+
+		[TestCase ("BoolThrowsNoThrow", false, "True\n")]
+		[TestCase ("BoolThrowsThrow", true, "Exception thrown\n")]
+		public void BoolIdentFuncThrowsNoThrow (string name, bool throwIt, string result)
+		{
+			ClosureIdentityFuncThrows (name, "Bool", "true", result, true, throwIt);
+		}
+
+		[TestCase ("IntThrowsNoThrow", false, "42\n")]
+		[TestCase ("IntThrowsThrow", true, "Exception thrown\n")]
+		public void IntIdentFuncThrowsNoThrow (string name, bool throwIt, string result)
+		{
+			ClosureIdentityFuncThrows (name, "Int", "42", result, true, throwIt);
+		}
+
+		[TestCase ("StringThrowsNoThrow", false, "hi mom\n")]
+		[TestCase ("StringThrowsThrow", true, "Exception thrown\n")]
+		public void StringIdentFuncThrowsNoThrow (string name, bool throwIt, string result)
+		{
+			ClosureIdentityFuncThrows (name, "String", "SwiftString.FromString(\"hi mom\")", result, true, throwIt);
+		}
 
 		void ClosureConstantFunc (string appendage, string swiftType, string csVal, string output, bool escaping)
 		{
