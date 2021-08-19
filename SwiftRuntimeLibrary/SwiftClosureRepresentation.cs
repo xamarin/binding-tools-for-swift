@@ -132,7 +132,7 @@ namespace SwiftRuntimeLibrary {
 				//Console.WriteLine ("after set error throws retValPtr: ");
 				//Memory.Dump (retValPtr, 128);
 #endif
-            } else {
+			} else {
 				StructMarshal.Marshaler.SetErrorNotThrownWithValue (retValPtr, delInfo.Item3, retval);
 			}
 			StructMarshal.ReleaseSwiftObject (capsule);

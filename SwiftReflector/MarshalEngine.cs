@@ -223,6 +223,7 @@ namespace SwiftReflector {
 			if (hasReturn)
 				returnType = ReworkTypeWithNamer (returnType);
 
+			var isExtensionMethod = pl.Count () > 0 && pl [0].ParameterKind == CSParameterKind.This;
 			var returnIsScalar = returnType != null && TypeMapper.IsScalar (swiftReturnType);
 			var returnEntity = hasReturn && !typeContext.IsTypeSpecGenericReference (swiftReturnType) ? typeMapper.GetEntityForTypeSpec (swiftReturnType) : null;
 			var returnIsTrivialEnum = hasReturn && returnEntity != null && returnEntity.EntityType == EntityType.TrivialEnum;
@@ -282,6 +283,7 @@ namespace SwiftReflector {
 					preMarshalCode.Add (CSVariableDeclaration.VarLine (CSSimpleType.IntPtr, returnIntPtr,
 						new CSFunctionCall ("IntPtr", true, returnPtr)));
 					indexOfReturn = 0;
+					indexOfInstance = 1;
 					parms.Insert (0, new CSParameter (CSSimpleType.IntPtr, returnIntPtr, CSParameterKind.None));
 				} else {
 					bool returnsIntPtrForReal = returnEntity != null && returnEntity.IsStructClassOrEnum &&
@@ -381,8 +383,15 @@ namespace SwiftReflector {
 
 			var callParameters = new List<CSBaseExpression> (parms.Count);
 
+			var offsetToOriginalArgs = 0;
+			if ((hasReturn && indexOfReturn >= 0) || originalThrows)
+				offsetToOriginalArgs++;
+			if (swiftInstanceType != null)
+				offsetToOriginalArgs++;
+			if (isExtensionMethod && swiftInstanceType == null)
+				offsetToOriginalArgs++;
+
 			for (int i = 0; i < parms.Count; i++) {
-				var offsetToOriginalArgs = (hasReturn && indexOfReturn >= 0 ? 1 : 0) + (swiftInstanceType != null ? 1 : 0);
 				var p = parms [i];
 				// if it's the instance, pass that
 				// if it's the return, pass that
@@ -391,9 +400,13 @@ namespace SwiftReflector {
 
 				if (i == indexOfInstance && swiftInstanceType != null) {
 					originalParm = swiftInstanceType;
-				} else if (hasReturn && i == indexOfReturn) {
+				} else if ((hasReturn && i == indexOfReturn) || (originalThrows && i == indexOfReturn)) {
 					originalParm = swiftReturnType;
+				} else if (isExtensionMethod && p.ParameterKind == CSParameterKind.This) {
+					originalParm = originalFunction.IsExtension ? originalFunction.ParentExtension.ExtensionOnType :
+						new NamedTypeSpec (originalFunction.Parent.ToFullyQualifiedNameWithGenerics ());				
 				} else {
+					var index = i - offsetToOriginalArgs;
 					originalParm = originalFunction.ParameterLists.Last () [i - offsetToOriginalArgs].TypeSpec;
 				}
 				callParameters.Add (Marshal (typeContext, wrapperFuncDecl, p, filteredTypeSpec [i], instanceIsSwiftProtocol && i == indexOfInstance,
