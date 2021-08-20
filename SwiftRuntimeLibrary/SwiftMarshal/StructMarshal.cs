@@ -1419,6 +1419,15 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			Write ((byte)0, boolPtr);
 		}
 
+		public void SetErrorNotThrownWithValue (IntPtr swiftMedusaTuple, Type t, object value)
+		{
+			var tMap = TupleMapForException (t);
+			var boolPtr = swiftMedusaTuple + tMap.Offsets [tMap.Offsets.Length - 1];
+			Write ((byte)0, boolPtr);
+			ToSwift (tMap.Types [0], value, swiftMedusaTuple);
+		}
+
+
 		public SwiftException GetExceptionThrown (IntPtr swiftMeduaTuple, Type t)
 		{
 			var error = GetErrorThrown (swiftMeduaTuple, t);

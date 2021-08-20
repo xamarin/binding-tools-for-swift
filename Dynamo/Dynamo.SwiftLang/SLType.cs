@@ -223,12 +223,13 @@ namespace Dynamo.SwiftLang {
 
 
 	public class SLFuncType : SLType {
-		public SLFuncType (SLType argType, SLType retType)
-			: this (retType, ConvertSLTypeToParameters (argType))
+		public SLFuncType (SLType argType, SLType retType, bool hasThrows = false, bool isAsync = false)
+			: this (retType, ConvertSLTypeToParameters (argType), hasThrows, isAsync)
 		{
 		}
 
-		public SLFuncType (SLType retType, IEnumerable<SLUnnamedParameter> parameters)
+		public SLFuncType (SLType retType, IEnumerable<SLUnnamedParameter> parameters,
+			bool hasThrows = false, bool isAsync = false)
 		{
 			Exceptions.ThrowOnNull (parameters, nameof (parameters));
 			Attributes = new List<SLAttribute> ();
@@ -236,11 +237,15 @@ namespace Dynamo.SwiftLang {
 			if (parameters != null)
 				Parameters.AddRange (parameters);
 			ReturnType = Exceptions.ThrowOnNull (retType, nameof (retType));
+			Throws = hasThrows;
+			IsAsync = isAsync;
 		}
 
 		public List<SLUnnamedParameter> Parameters { get; private set; }
 		public SLType ReturnType { get; private set; }
 		public List<SLAttribute> Attributes { get; private set; }
+		public bool Throws { get; private set; }
+		public bool IsAsync { get; private set; }
 
 		protected override void LLWrite (ICodeWriter writer, object o)
 		{
@@ -254,7 +259,14 @@ namespace Dynamo.SwiftLang {
 					writer.Write (", ", true);
 				Parameters [i].WriteAll (writer);
 			}
-			writer.Write (") -> ", true);
+			writer.Write (") ", true);
+			if (IsAsync) {
+				writer.Write ("async ", true);
+			}
+			if (Throws) {
+				writer.Write ("throws", true);
+			}
+			writer.Write ("-> ", true);
 			ReturnType.WriteAll (writer);
 		}
 

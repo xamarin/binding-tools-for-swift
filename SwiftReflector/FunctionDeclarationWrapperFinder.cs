@@ -165,19 +165,47 @@ namespace SwiftReflector {
 				if (!argsMatch)
 					return false;
 			}
-			var emptyWrapReturn = toWrapFunc.ArgumentCount () > 0 ? wrapperFunc.ArgumentCount () == 2 : wrapperFunc.ArgumentCount () == 1;
-			var emptyReturn = TypeSpec.IsNullOrEmptyTuple (toWrapFunc.ReturnType);
-			if (emptyReturn && emptyWrapReturn)
-				return true;
-			if (emptyReturn && !emptyWrapReturn)
-				return false;
-			var wrapperReturn = wrapperFunc.GetArgument (0);
-			var returnNamedTypeSpec = wrapperReturn as NamedTypeSpec;
-			if (!IsUnsafeMutablePointer (returnNamedTypeSpec))
-				return false;
-			var actualReturn = returnNamedTypeSpec.GenericParameters [0];
-			var toWrapReturn = toWrapFunc.ReturnType;
-			return TypeListMatches (wrapper, new List<TypeSpec> () { actualReturn }, toWrap, new List<TypeSpec> () { toWrapReturn });
+			if (toWrapFunc.Throws && !toWrapFunc.IsAsync) {
+				var emptyReturn = TypeSpec.IsNullOrEmptyTuple (toWrapFunc.ReturnType);
+				if (emptyReturn) {
+					throw new NotSupportedException ("action closures are not supported yet");
+				}
+
+				var wrapperReturn = wrapperFunc.GetArgument (0);
+				var returnNamedTypeSpec = wrapperReturn as NamedTypeSpec;
+				if (!IsUnsafeMutablePointer (returnNamedTypeSpec))
+					return false;
+				if (!(returnNamedTypeSpec.GenericParameters [0] is TupleTypeSpec))
+					return false;
+				// return type will be:
+				// UnsafeMutablePointer<(returnType, Error, Bool)>
+				var returnTupleParts = UndoATuple (returnNamedTypeSpec.GenericParameters);
+				if (returnTupleParts.Count != 3)
+					return false;
+				if (!returnTupleParts [1].Equals (new NamedTypeSpec ("Swift.Error")))
+					return false;
+				if (!returnTupleParts [2].Equals (new NamedTypeSpec ("Swift.Bool")))
+					return false;
+				var actualReturn = returnTupleParts [0];
+				var toWrapReturn = toWrapFunc.ReturnType;
+				return TypeListMatches (wrapper, new List<TypeSpec> () { actualReturn }, toWrap, new List<TypeSpec> () { toWrapReturn });
+			} else if (toWrapFunc.IsAsync) {
+				throw new NotSupportedException ("async closures not supported (yet)");
+			} else {
+				var emptyWrapReturn = toWrapFunc.ArgumentCount () > 0 ? wrapperFunc.ArgumentCount () == 2 : wrapperFunc.ArgumentCount () == 1;
+				var emptyReturn = TypeSpec.IsNullOrEmptyTuple (toWrapFunc.ReturnType);
+				if (emptyReturn && emptyWrapReturn)
+					return true;
+				if (emptyReturn && !emptyWrapReturn)
+					return false;
+				var wrapperReturn = wrapperFunc.GetArgument (0);
+				var returnNamedTypeSpec = wrapperReturn as NamedTypeSpec;
+				if (!IsUnsafeMutablePointer (returnNamedTypeSpec))
+					return false;
+				var actualReturn = returnNamedTypeSpec.GenericParameters [0];
+				var toWrapReturn = toWrapFunc.ReturnType;
+				return TypeListMatches (wrapper, new List<TypeSpec> () { actualReturn }, toWrap, new List<TypeSpec> () { toWrapReturn });
+			}
 		}
 
 		static List<TypeSpec> UndoATuple (List<TypeSpec> spec)

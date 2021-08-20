@@ -2120,6 +2120,8 @@ namespace SwiftReflector {
 				var originalTypeSpec = original [i].TypeSpec.ReplaceName ("Self", substituteForSelf);
 				if (originalTypeSpec is ClosureTypeSpec) {
 					var ct = (ClosureTypeSpec)originalTypeSpec;
+					var closureThrows = ct.Throws;
+					var closureIsAsync = ct.IsAsync;
 					var closureName = new SLIdentifier (GetUniqueNameForFoo ("clos", usedNames));
 					usedNames.Add (closureName.Name);
 
@@ -2160,7 +2162,7 @@ namespace SwiftReflector {
 					closureBody.Add (SLFunctionCall.FunctionCallLine (new SLIdentifier ($"{funcPtrId.Name}.initialize"),
 											  new SLArgument (new SLIdentifier ("to"),
 													  nt.PrivateName, true)));
-					var funcPtrAsOpaquePtr = new SLArgument (null, new SLFunctionCall ("OpaquePointer", true, new SLArgument (null, funcPtrId)));
+					var funcPtrAsOpaquePtr = new SLArgument ("", new SLFunctionCall ("OpaquePointer", true, new SLArgument ("", funcPtrId)));
 
 					SLIdentifier retvalPtrId = null;
 					SLIdentifier retvalId = null;
@@ -2170,9 +2172,10 @@ namespace SwiftReflector {
 						usedNames.Add (retvalPtrId.Name);
 						retvalId = new SLIdentifier (GetUniqueNameForFoo ("retval", usedNames));
 						usedNames.Add (retvalId.Name);
+						var returnSLType = ClosureReturnType (clretType, ct);
 						var retvalBinding = new SLBinding (retvalPtrId,
 										   new SLFunctionCall (
-											   $"UnsafeMutablePointer<{clretType.ToString ()}>.allocate",
+											   $"{returnSLType.ToString ()}.allocate",
 											   false,
 											   new SLArgument (new SLIdentifier ("capacity"),
 													   SLConstant.Val (1), true)));
@@ -2197,22 +2200,46 @@ namespace SwiftReflector {
 					if (hasReturn) {
 						if (hasArgs) {
 							closureBody.Add (new SLLine (new SLFunctionCall (nt.PrivateName.Name, false,
-													 new SLArgument (null, retvalPtrId, false),
-													 new SLArgument (null, argsPtrId, false),
+													 new SLArgument ("", retvalPtrId, false),
+													 new SLArgument ("", argsPtrId, false),
 													 funcPtrAsOpaquePtr)));
 						} else {
 							closureBody.Add (new SLLine (new SLFunctionCall (nt.PrivateName.Name, false,
-													 new SLArgument (null, retvalPtrId, false),
+													 new SLArgument ("", retvalPtrId, false),
 													 funcPtrAsOpaquePtr)));
 						}
-						SLBinding retvalbinding = new SLBinding (retvalId,
-											 new SLFunctionCall ($"{retvalPtrId.Name}.move", false));
-						closureBody.Add (new SLLine (new SLDeclaration (true, retvalbinding, Visibility.None)));
-						closureBody.Add (new SLLine (new SLFunctionCall ($"{retvalPtrId.Name}.deallocate", false)));
+
+						if (closureThrows && !closureIsAsync) {
+							// import XamGlue;
+							// if isExceptionThrown (retval: retvalPtrId) {
+							//     throw getExceptionThrown (retval: retvalPtrId)!;
+							// }
+							// let retval = getExceptionNotThrown (retval: retvalPtrId);
+							// retvalPtrId.deallocate ()
+							modules.AddIfNotPresent ("XamGlue");
+							var checkException = new SLFunctionCall ("isExceptionThrown", false, new SLArgument (new SLIdentifier ("retval"), retvalPtrId, true));
+							var throwExpr = new SLThrow (new SLUnaryExpr ("!", new SLFunctionCall ("getExceptionThrown", false, new SLArgument (new SLIdentifier ("retval"), retvalPtrId, true)), false));
+							var ifBody = new SLCodeBlock (null);
+							ifBody.Add (new SLLine (throwExpr));
+							var exceptionIf = new SLIfElse (checkException, ifBody);
+							closureBody.Add (exceptionIf);
+							var getExceptionNotThrown = new SLUnaryExpr ("!",  new SLFunctionCall ("getExceptionNotThrown", false,
+								new SLArgument (new SLIdentifier ("retval"), retvalPtrId, true)), false);
+							var retvalbinding = new SLBinding (retvalId, getExceptionNotThrown);
+							closureBody.Add (new SLLine (new SLDeclaration (true, retvalbinding, Visibility.None)));
+							closureBody.Add (new SLLine (new SLFunctionCall ($"{retvalPtrId.Name}.deallocate", false)));
+						} else if (closureIsAsync) {
+							throw new NotImplementedException ("async closures not supported (yet)");
+						} else {
+							SLBinding retvalbinding = new SLBinding (retvalId,
+												 new SLFunctionCall ($"{retvalPtrId.Name}.move", false));
+							closureBody.Add (new SLLine (new SLDeclaration (true, retvalbinding, Visibility.None)));
+							closureBody.Add (new SLLine (new SLFunctionCall ($"{retvalPtrId.Name}.deallocate", false)));
+						}
 					} else {
 						if (hasArgs) {
 							closureBody.Add (new SLLine (new SLFunctionCall (nt.PrivateName.Name, false,
-													 new SLArgument (null, argsPtrId, false),
+													 new SLArgument ("", argsPtrId, false),
 													 funcPtrAsOpaquePtr)));
 						} else {
 							closureBody.Add (new SLLine (new SLFunctionCall (nt.PrivateName.Name, false, funcPtrAsOpaquePtr)));
@@ -2236,7 +2263,7 @@ namespace SwiftReflector {
 						closureBody.Add (SLReturn.ReturnLine (retvalId));
 					}
 
-					var funcType = new SLFuncType (clargTypes, clretType);
+					var funcType = new SLFuncType (clargTypes, clretType, closureThrows, closureIsAsync);
 					var closure = new SLClosure (null, clparms, closureBody, false);
 					var clBinding = new SLBinding (closureName, closure, funcType);
 					preMarshalCode.Add (new SLDeclaration (true, clBinding, Visibility.None));
@@ -2261,6 +2288,22 @@ namespace SwiftReflector {
 			}));
 
 			return retval;
+		}
+
+		public static SLType ClosureReturnType (SLType closureReturnType, ClosureTypeSpec cl)
+		{
+			if (cl.Throws && !cl.IsAsync) {
+				// UnsafeMutablePointer<(T, Swift.Error, Bool)>
+				return new SLBoundGenericType ("UnsafeMutablePointer",
+					new SLTupleType (
+					new SLNameTypePair ((string)null, closureReturnType),
+					new SLNameTypePair ((string)null, new SLSimpleType ("Swift.Error")),
+					new SLNameTypePair ((string)null, SLSimpleType.Bool)));
+			} else if (cl.IsAsync) {
+				throw new NotImplementedException ("async closures not implemented (yet)");
+			} else {
+				return new SLBoundGenericType ("UnsafeMutablePointer", closureReturnType);
+			}
 		}
 
 		void GatherFunctionDeclarationGenerics (FunctionDeclaration funcDecl, SLGenericTypeDeclarationCollection slGenerics)
@@ -2298,7 +2341,7 @@ namespace SwiftReflector {
 			var closureType = new SLFuncType (slreturn, parameters);
 			var fakeID = new SLIdentifier (closureType.ToString ());
 			var typeExpr = new SLParenthesisExpression (fakeID).Dot (new SLIdentifier ("self"));
-			var unsafeCast = new SLFunctionCall ("unsafeBitCast", false, new SLArgument (null, callSite, false),
+			var unsafeCast = new SLFunctionCall ("unsafeBitCast", false, new SLArgument ("", callSite, false),
 							     new SLArgument (new SLIdentifier ("to"), typeExpr, true));
 			return unsafeCast;
 		}
@@ -2440,7 +2483,7 @@ namespace SwiftReflector {
 		static DelegatedCommaListElemCollection<SLArgument> StripArgumentLabels (DelegatedCommaListElemCollection<SLArgument> args)
 		{
 			var result = new DelegatedCommaListElemCollection<SLArgument> (SLFunctionCall.WriteElement);
-			result.AddRange (args.Select (arg => new SLArgument (null, arg.Expr, false)));
+			result.AddRange (args.Select (arg => new SLArgument ("", arg.Expr, false)));
 			return result;
 		}
 
@@ -2448,7 +2491,7 @@ namespace SwiftReflector {
 		{
 			var result = new SLArgument [args.Length];
 			for (int i = 0; i < args.Length; i++) {
-				result [i] = new SLArgument (null, args [i].Expr, false);
+				result [i] = new SLArgument ("", args [i].Expr, false);
 			}
 			return result;
 		}

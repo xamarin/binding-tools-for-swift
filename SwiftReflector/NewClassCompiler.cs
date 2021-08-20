@@ -504,7 +504,7 @@ namespace SwiftReflector {
 				var codeBlock = wrapperProp != null ? wrapperProp.Getter : wrapperGetter.Body;
 				codeBlock.AddRange (marshaler.MarshalFunctionCall (getterWrapperFunc, false,
 					piGetterRef, new CSParameterList (), getterWrapperFunc, prop.TypeSpec, 
-					wrapperProp?.PropType ?? wrapperGetter.Type, null, new CSSimpleType (cl.Name.Name), false, wrapper));
+					wrapperProp?.PropType ?? wrapperGetter.Type, null, new CSSimpleType (cl.Name.Name), false, getter));
 
 
 																			
@@ -523,7 +523,7 @@ namespace SwiftReflector {
 				var codeBlock = wrapperProp != null ? wrapperProp.Setter : wrapperSetter.Body;
 				codeBlock.AddRange (marshaler.MarshalFunctionCall (setterWrapperFunc, false,
 					piSetterRef, new CSParameterList (valParm), getterWrapperFunc, null, CSSimpleType.Void,
-					null, new CSSimpleType (cl.Name.Name), false, wrapper));
+					null, new CSSimpleType (cl.Name.Name), false, setter));
 
 			}
 
@@ -649,7 +649,7 @@ namespace SwiftReflector {
 
 			var lines = marshaler.MarshalFunctionCall (wrapperFunc, false, pinvokeMethodRef,
 				publicMethod.Parameters, func, func.ReturnTypeSpec, publicMethod.Type,
-				null, null, false, wrapper, false, -1, func.HasThrows);
+				null, null, false, func, false, -1, func.HasThrows);
 
 			publicMethod.Body.AddRange (lines);
 			methods.Add (publicMethod);
@@ -706,7 +706,7 @@ namespace SwiftReflector {
 
 			var marshaler = new MarshalEngine (use, localIdents, TypeMapper, wrapper.Module.SwiftCompilerVersion);
 			var lines = marshaler.MarshalFunctionCall (func, false, pinvokeMethodRef, publicMethod.Parameters,
-				func, func.ReturnTypeSpec, publicMethod.Type, null, null, false, wrapper,
+				func, func.ReturnTypeSpec, publicMethod.Type, null, null, false, func,
 				false, -1, func.HasThrows);
 			publicMethod.Body.AddRange (lines);
 			methods.Add (publicMethod);
@@ -938,7 +938,7 @@ namespace SwiftReflector {
 
 			var callingCode1 = marshal1.MarshalFunctionCall (caseFinderWrapperFunc, false, caseFinderRef,
 				new CSParameterList (), enumDecl, caseFinderWrapperFunc.ReturnTypeSpec, new CSSimpleType (enumCaseName),
-				caseFinderWrapperFunc.ParameterLists.Last () [0].TypeSpec, enumClass.ToCSType (), true, wrapper, true).ToList ();
+				caseFinderWrapperFunc.ParameterLists.Last () [0].TypeSpec, enumClass.ToCSType (), true, caseFinderWrapperFunc, true).ToList ();
 
 			var caseProp = new CSProperty (new CSSimpleType (enumCaseName), CSMethodKind.None, new CSIdentifier (finderMethodName),
 						    CSVisibility.Public, callingCode1, CSVisibility.Public, null);
@@ -1021,7 +1021,7 @@ namespace SwiftReflector {
 
 			var marshal = new MarshalEngine (use, localUsedNames, TypeMapper, wrapper.Module.SwiftCompilerVersion);
 			var callingCode = marshal.MarshalFunctionCall (wrappingFunc, false, pinvokeRef, factoryMethod.Parameters, factoryDecl,
-			                                               returnTypeSpec, csEnumType, null, null, false, wrapper, false,
+			                                               returnTypeSpec, csEnumType, null, null, false, factoryDecl, false,
 			                                              -1, false);
 			factoryMethod.Body.AddRange (callingCode);
 			return factoryMethod;
@@ -1092,7 +1092,7 @@ namespace SwiftReflector {
 			var callingCode = marshal.MarshalFunctionCall (wrappingFunc, false, pinvokeRef, new CSParameterList (),
 								       enumDecl, element.TypeSpec, payloadFunc.Type,
 								       new NamedTypeSpec (enumDecl.ToFullyQualifiedName (true)),
-								       csEnumType, false, wrapper, false);
+								       csEnumType, false, payloadDecl, false);
 			payloadFunc.Body.AddRange (callingCode);
 			cl.Methods.Add (payloadFunc);
 
@@ -2321,7 +2321,7 @@ namespace SwiftReflector {
 				pl.AddRange (wrapperProp.IndexerParameters);
 				pl.Insert (0, new CSParameter (wrapperProp.PropType, new CSIdentifier ("value")));
 				elseBlock.AddRange (marshal.MarshalFunctionCall (etterWrapperFunc, false, piEtterRef, pl,
-				                                                          etterFunc, null, CSSimpleType.Void, etterFunc.ParameterLists [0] [0].TypeSpec, iface.ToCSType (), false, wrapper,
+				                                                          etterFunc, null, CSSimpleType.Void, etterFunc.ParameterLists [0] [0].TypeSpec, iface.ToCSType (), false, etterFunc,
 											  etterFunc.HasThrows));
 			} else {
 				ifBlock.Add (CSReturn.ReturnLine (indexerExpr));
@@ -2329,7 +2329,7 @@ namespace SwiftReflector {
 				elseBlock.AddRange (marshal.MarshalFunctionCall (etterWrapperFunc, false, piEtterRef, wrapperProp.IndexerParameters,
 				                                                          etterFunc, etterFunc.ReturnTypeSpec, wrapperProp.PropType,
 				                                                          etterFunc.ParameterLists [0] [0].TypeSpec,
-				                                                          iface.ToCSType (), false, wrapper,
+				                                                          iface.ToCSType (), false, etterFunc,
 											  etterFunc.HasThrows));
 			}
 
@@ -2604,13 +2604,13 @@ namespace SwiftReflector {
 				var p = new CSParameter (wrapperProp.PropType, new CSIdentifier ("value"));
 				var pl = new CSParameterList (p);
 				elseBlock.AddRange (marshal.MarshalFunctionCall (etterWrapperFunc, false, piEtterRef, pl,
-											  etterFunc, null, CSSimpleType.Void, etterFunc.ParameterLists [0] [0].TypeSpec, proxyClass.ToCSType (), false, wrapper, etterFunc.HasThrows,
+											  etterFunc, null, CSSimpleType.Void, etterFunc.ParameterLists [0] [0].TypeSpec, proxyClass.ToCSType (), false, etterFunc, etterFunc.HasThrows,
 											  restoreDynamicSelf: !protocolDecl.IsExistential));
 			} else {
 				ifBlock.Add (CSReturn.ReturnLine (kInterfaceImpl.Dot (wrapperProp.Name)));
 				target = wrapperProp.Getter;
 				elseBlock.AddRange (marshal.MarshalFunctionCall (etterWrapperFunc, false, piEtterRef, new CSParameterList (),
-											  etterFunc, etterFunc.ReturnTypeSpec, wrapperProp.PropType, etterFunc.ParameterLists [0] [0].TypeSpec, proxyClass.ToCSType (), false, wrapper, etterFunc.HasThrows,
+											  etterFunc, etterFunc.ReturnTypeSpec, wrapperProp.PropType, etterFunc.ParameterLists [0] [0].TypeSpec, proxyClass.ToCSType (), false, etterFunc, etterFunc.HasThrows,
 											  restoreDynamicSelf: !protocolDecl.IsExistential));
 			}
 
@@ -3935,7 +3935,7 @@ namespace SwiftReflector {
 				engine.GenericReferenceNamer = genericNamer;
 
 				privateConsImpl.Body.AddRange(engine.MarshalFunctionCall (wrapperFunc, false, pictorRef,
-					publicCons.Parameters, funcDecl, funcDecl.ReturnTypeSpec, CSSimpleType.IntPtr, null, null, false, wrapper));
+					publicCons.Parameters, funcDecl, funcDecl.ReturnTypeSpec, CSSimpleType.IntPtr, null, null, false, funcDecl));
 					
 				var privateConsImplID = $"{cl.ToCSType ().ToString ()}.{privateConsImpl.Name.Name}";
 
@@ -4252,7 +4252,7 @@ namespace SwiftReflector {
 
 					publicCons.Body.AddRange (engine.MarshalFunctionCall (wrapperFunc, false, pinvokeConsRef,
 						publicCons.Parameters, enumDecl, funcDecl.ReturnTypeSpec, csReturnType, swiftInstanceType: null,
-						instanceType: null, includeCastToReturnType: true, wrapper, includeIntermediateCastToLong: true));
+						instanceType: null, includeCastToReturnType: true, funcDecl, includeIntermediateCastToLong: true));
 
 					en.Methods.Add (publicCons);
 					picl.Methods.Add (piConstructor);
@@ -4717,7 +4717,7 @@ namespace SwiftReflector {
 				getter.Parameters.Add (new CSParameter (thisCSType, new CSIdentifier ("this0"), propDecl.Parent.IsNested ? CSParameterKind.None : CSParameterKind.This));
 
 				getter.Body.AddRange (marshaler.MarshalFunctionCall (getterWrapperFunc, false, piGetterRef, getter.Parameters,
-					propDecl.GetGetter (), propDecl.GetGetter ().ReturnTypeSpec, getter.Type, null, null, false, wrapper));
+					propDecl.GetGetter (), propDecl.GetGetter ().ReturnTypeSpec, getter.Type, null, null, false, propGetter));
 
 				cl.Methods.Add (getter);
 
@@ -4910,7 +4910,7 @@ namespace SwiftReflector {
 			var methodContents = marshaler.MarshalFunctionCall (wrapperFunctionDecl, methodToWrap.IsExtension, pinvokeMethodRef, publicMethod.Parameters,
 										   methodToWrap, methodToWrap.ReturnTypeSpec, publicMethod.Type,
 										   instanceTypeSpec, csInstanceType,
-										   false, wrapper, methodToWrap.HasThrows, restoreDynamicSelf: restoreDynamicSelf);
+										   false, methodToWrap, methodToWrap.HasThrows, restoreDynamicSelf: restoreDynamicSelf);
 
 			if (methodToWrap.IsProtocolMember || genericReferenceNamer != null) {
 				var ifRedirect = InterfaceMethodRedirect (publicMethod, methodContents);
@@ -5017,7 +5017,7 @@ namespace SwiftReflector {
 
 			publicMethod.Body.AddRange (marshaler.MarshalFunctionCall (wrapperFuncDecl, false, pinvokeMethodRef,
 				publicMethod.Parameters, funcToWrap, funcToWrap.ReturnTypeSpec, publicMethod.Type, instanceTypeSpec, cl.ToCSType (),
-				false, wrapper, false, -1, funcToWrap.HasThrows));
+				false, funcToWrap, false, -1, funcToWrap.HasThrows));
 
 
 			picl.Methods.Add (piMethod);
