@@ -1106,6 +1106,404 @@ public func swiftClosureToFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12
 }
 
 
+// func conversions for throwing closures
+
+
+public func allocSwiftClosureToFuncThrows_0<TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<TR>(a1: @escaping () throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>)->() = { rv in
+		do {
+			let r = try a1 ()
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>)->()> = allocSwiftClosureToFuncThrows_0()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_1<T1, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<T1>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<T1>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, TR>(a1: @escaping (T1) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<T1>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<T1>)->() = { (rv, p) in
+		do {
+			let r = try a1 (p.pointee)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<T1>)->()> = allocSwiftClosureToFuncThrows_1 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_2<T1, T2, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, TR>(a1: @escaping (T1, T2) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->() = { (rv, p) in
+		let (b1, b2) = p.pointee
+		do {
+			let r = try a1 (b1, b2)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->()> = allocSwiftClosureToFuncThrows_2 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_3<T1, T2, T3, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, TR>(a1: @escaping (T1, T2, T3) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->() = { (rv, p) in
+		let (b1, b2, b3) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->()> = allocSwiftClosureToFuncThrows_3 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_4<T1, T2, T3, T4, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, TR>(a1: @escaping (T1, T2, T3, T4) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->()> = allocSwiftClosureToFuncThrows_4 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_5<T1, T2, T3, T4, T5, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, TR>(a1: @escaping (T1, T2, T3, T4, T5) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->()> = allocSwiftClosureToFuncThrows_5 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_6<T1, T2, T3, T4, T5, T6, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->()> = allocSwiftClosureToFuncThrows_6 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_7<T1, T2, T3, T4, T5, T6, T7, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->()> = allocSwiftClosureToFuncThrows_7 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_8<T1, T2, T3, T4, T5, T6, T7, T8, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->()> = allocSwiftClosureToFuncThrows_8 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_9<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->()> = allocSwiftClosureToFuncThrows_9 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->()> = allocSwiftClosureToFuncThrows_10 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->()> = allocSwiftClosureToFuncThrows_11 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->()> = allocSwiftClosureToFuncThrows_12 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->()> = allocSwiftClosureToFuncThrows_13 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->()> = allocSwiftClosureToFuncThrows_14 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->()> = allocSwiftClosureToFuncThrows_15 ()
+	p.initialize(to:f)
+	return p
+}
+
+public func allocSwiftClosureToFuncThrows_16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR>() ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->()>
+{
+	return UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->()>.allocate(capacity:1)
+}
+
+public func swiftClosureToFuncThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR>(a1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) throws ->TR) ->
+	UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->()>
+{
+	let f:(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->() = { (rv, p) in
+		let (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16) = p.pointee
+		do {
+			let r = try a1 (b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16)
+			setExceptionNotThrown(value: r, retval: rv)
+		} catch let err {
+			setExceptionThrown (err: err, retval: rv);
+		}
+	}
+	let p:UnsafeMutablePointer<(UnsafeMutablePointer<(TR, Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->()> = allocSwiftClosureToFuncThrows_16 ()
+	p.initialize(to:f)
+	return p
+}
+
+// end throwing closures
+
+
+
+
+
 
 // wrap actions for return values
 

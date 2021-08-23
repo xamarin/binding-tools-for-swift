@@ -235,5 +235,69 @@ namespace SwiftReflector {
 			VirtualMethodException ("true", "Swift exception thrown: gotcha.");
 		}
 
+
+		[Test]
+		public void MethodWithThrowClosure ()
+		{
+			var swiftCode = @"
+public class ThrowingMethod {
+	public init () { }
+	public func ShouldThrow (shouldThrow: Bool, worker: @escaping (Bool) throws -> Int) -> Bool {
+		if let _ = try? worker (shouldThrow) {
+			return true
+		} else {
+			return false
+		}
+	}
+}
+";
+
+			var inst = new CSIdentifier ("thrower");
+			var instDecl = CSVariableDeclaration.VarLine (inst, new CSFunctionCall ("ThrowingMethod", true));
+			// b => { if (b) throw new Exception (); return 42; }
+			var lambdaBody = new CSCodeBlock ();
+			var bId = new CSIdentifier ("b");
+			var ifBlock = new CSCodeBlock ();
+			ifBlock.And (new CSLine (new CSThrow (new CSFunctionCall ("Exception", true))));
+			var ifTest = new CSIfElse (bId, ifBlock);
+			lambdaBody.And (ifTest).And (CSReturn.ReturnLine (new CSCastExpression (new CSSimpleType ("nint"), CSConstant.Val (42))));
+			var clos = new CSLambda (lambdaBody, bId.Name);
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{inst.Name}.ShouldThrow", false, CSConstant.Val (true), clos));
+			var callingCode = new CSCodeBlock () { instDecl, printer };
+			TestRunning.TestAndExecute (swiftCode, callingCode, "False\n");
+		}
+
+
+		[Test]
+		[Ignore ("Not ready yet")]
+		public void OverideableMethodWithThrowClosure ()
+		{
+			var swiftCode = @"
+open class ThrowingOpenMethod {
+	public init () { }
+	open func ShouldThrow (shouldThrow: Bool, worker: @escaping (Bool) throws -> Int) -> Bool {
+		if let _ = try? worker (shouldThrow) {
+			return true
+		} else {
+			return false
+		}
+	}
+}
+";
+
+			var inst = new CSIdentifier ("thrower");
+			var instDecl = CSVariableDeclaration.VarLine (inst, new CSFunctionCall ("ThrowingOpenMethod", true));
+			// b => { if (b) throw new Exception (); return 42; }
+			var lambdaBody = new CSCodeBlock ();
+			var bId = new CSIdentifier ("b");
+			var ifBlock = new CSCodeBlock ();
+			ifBlock.And (new CSLine (new CSThrow (new CSFunctionCall ("Exception", true))));
+			var ifTest = new CSIfElse (bId, ifBlock);
+			lambdaBody.And (ifTest).And (CSReturn.ReturnLine (new CSCastExpression (new CSSimpleType ("nint"), CSConstant.Val (42))));
+			var clos = new CSLambda (lambdaBody, bId.Name);
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{inst.Name}.ShouldThrow", false, CSConstant.Val (true), clos));
+			var callingCode = new CSCodeBlock () { instDecl, printer };
+			TestRunning.TestAndExecute (swiftCode, callingCode, "False\n");
+		}
 	}
 }
