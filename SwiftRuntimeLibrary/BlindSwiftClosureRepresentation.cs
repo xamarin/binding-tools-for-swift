@@ -181,12 +181,73 @@ namespace SwiftRuntimeLibrary {
 		                                            SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11, SwiftMetatype t12,
 							    SwiftMetatype t13, SwiftMetatype t14, SwiftMetatype t15, SwiftMetatype t16, SwiftMetatype tr);
 
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows1)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype tr);
+
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows2)]
 		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype tr);
 
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows2)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype tr);
 
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows4)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype tr);
 
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows5)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows6)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows7)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows8)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows9)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows10)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows11)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows12)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows13)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11,
+			SwiftMetatype t12, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows14)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11,
+			SwiftMetatype t12, SwiftMetatype t13, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows15)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11,
+			SwiftMetatype t12, SwiftMetatype t13, SwiftMetatype t14, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows16)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11,
+			SwiftMetatype t12, SwiftMetatype t13, SwiftMetatype t14, SwiftMetatype t15, SwiftMetatype tr);
+
+		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows17)]
+		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
+			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11,
+			SwiftMetatype t12, SwiftMetatype t13, SwiftMetatype t14, SwiftMetatype t15, SwiftMetatype t17, SwiftMetatype tr);
 	}
-
-
 }

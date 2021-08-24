@@ -1974,7 +1974,70 @@ public func invokeFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
 }
 
 // throws
+public func invokeFunctionThrows<TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>) {
+	f(retval)
+}
 
 public func invokeFunctionThrows<T1, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<T1>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<T1>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>) {
+	f(retval, a)
+}
+
+public func invokeFunctionThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR>(f:(UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->(), retval: UnsafeMutablePointer<(TR, Swift.Error, Bool)>, a: UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>) {
 	f(retval, a)
 }
