@@ -248,6 +248,6 @@ namespace SwiftRuntimeLibrary {
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.BlindSwiftClosureRepresentation_InvokeFunctionThrows17)]
 		internal static extern void InvokeFunctionThrows (BlindSwiftClosureRepresentation clos, IntPtr retval, IntPtr args, SwiftMetatype t1, SwiftMetatype t2, SwiftMetatype t3, SwiftMetatype t4,
 			SwiftMetatype t5, SwiftMetatype t6, SwiftMetatype t7, SwiftMetatype t8, SwiftMetatype t9, SwiftMetatype t10, SwiftMetatype t11,
-			SwiftMetatype t12, SwiftMetatype t13, SwiftMetatype t14, SwiftMetatype t15, SwiftMetatype t17, SwiftMetatype tr);
+			SwiftMetatype t12, SwiftMetatype t13, SwiftMetatype t14, SwiftMetatype t15, SwiftMetatype t16, SwiftMetatype tr);
 	}
 }
