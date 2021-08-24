@@ -268,25 +268,25 @@ public class ThrowingMethod {
 		}
 
 
-		[Test]
-		[Ignore ("Not ready yet")]
-		public void OverideableMethodWithThrowClosure ()
+		[TestCase ("Throws", true, "true", "True\n")]
+		[TestCase ("NoThrows", false, "false", "False\n")]
+		public void OverideableMethodWithThrowClosure (string addendum, bool throwItVar, string throwIt, string result)
 		{
-			var swiftCode = @"
-open class ThrowingOpenMethod {
-	public init () { }
+			var swiftCode =
+$"open class ThrowingOpenMethod{addendum} {{" +
+	@"public init () { }
 	open func ShouldThrow (shouldThrow: Bool, worker: @escaping (Bool) throws -> Int) -> Bool {
 		if let _ = try? worker (shouldThrow) {
-			return true
-		} else {
 			return false
+		} else {
+			return true
 		}
 	}
 }
 ";
 
 			var inst = new CSIdentifier ("thrower");
-			var instDecl = CSVariableDeclaration.VarLine (inst, new CSFunctionCall ("ThrowingOpenMethod", true));
+			var instDecl = CSVariableDeclaration.VarLine (inst, new CSFunctionCall ($"ThrowingOpenMethod{addendum}", true));
 			// b => { if (b) throw new Exception (); return 42; }
 			var lambdaBody = new CSCodeBlock ();
 			var bId = new CSIdentifier ("b");
@@ -295,9 +295,71 @@ open class ThrowingOpenMethod {
 			var ifTest = new CSIfElse (bId, ifBlock);
 			lambdaBody.And (ifTest).And (CSReturn.ReturnLine (new CSCastExpression (new CSSimpleType ("nint"), CSConstant.Val (42))));
 			var clos = new CSLambda (lambdaBody, bId.Name);
-			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{inst.Name}.ShouldThrow", false, CSConstant.Val (true), clos));
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{inst.Name}.ShouldThrow", false, new CSIdentifier (throwIt), clos));
 			var callingCode = new CSCodeBlock () { instDecl, printer };
-			TestRunning.TestAndExecute (swiftCode, callingCode, "False\n");
+			TestRunning.TestAndExecute (swiftCode, callingCode, result, testName: $"OveridableMethodWithClosure{addendum}");
+		}
+
+
+		[TestCase ("Throws", true, "true", "True\n")]
+		[TestCase ("NoThrows", false, "false", "False\n")]
+		public void OveriddenMethodWithThrowClosure (string addendum, bool throwItVar, string throwIt, string result)
+		{
+			var swiftCode =
+$"open class MoreThrowingOpenMethod{addendum} {{" +
+	@"public init () { }
+	open func ShouldThrow (shouldThrow: Bool, worker: @escaping (Bool) throws -> Int) -> Bool {
+		if let _ = try? worker (shouldThrow) {
+			return false
+		} else {
+			return true
+		}
+	}
+}
+";
+
+			var overClass = new CSClass (CSVisibility.Public, $"OverClass{addendum}");
+			overClass.Inheritance.Add (new CSIdentifier ($"MoreThrowingOpenMethod{addendum}"));
+
+			var parameters = new CSParameterList (new CSParameter (CSSimpleType.Bool, new CSIdentifier ("shouldThrow")),
+				new CSParameter (new CSSimpleType ("Func", false, CSSimpleType.Bool, new CSSimpleType ("nint")), new CSIdentifier ("worker")));
+			// body of func
+			// try {
+			//   worker (shouldThrow)
+			// catch {
+			//    return true;
+			// }
+			// return false;
+
+			var tryBlock = new CSCodeBlock ();
+			tryBlock.Add (CSFunctionCall.FunctionCallLine ("worker", false, new CSIdentifier ("shouldThrow")));
+			var catchBody = new CSCodeBlock ();
+			catchBody.Add (CSReturn.ReturnLine (CSConstant.Val (true)));
+			var catchBlock = new CSCatch (catchBody);
+			var trycatch = new CSTryCatch (tryBlock, catchBlock);
+			var body = new CSCodeBlock ();
+			body.Add (trycatch);
+			body.Add (CSReturn.ReturnLine (CSConstant.Val (false)));
+
+
+			var method = new CSMethod (CSVisibility.Public, CSMethodKind.Override, CSSimpleType.Bool, new CSIdentifier ("ShouldThrow"),
+				parameters, body);
+			overClass.Methods.Add (method);
+
+
+			var inst = new CSIdentifier ("thrower");
+			var instDecl = CSVariableDeclaration.VarLine (inst, new CSFunctionCall ($"OverClass{addendum}", true));
+			// b => { if (b) throw new Exception (); return 42; }
+			var lambdaBody = new CSCodeBlock ();
+			var bId = new CSIdentifier ("b");
+			var ifBlock = new CSCodeBlock ();
+			ifBlock.And (new CSLine (new CSThrow (new CSFunctionCall ("Exception", true))));
+			var ifTest = new CSIfElse (bId, ifBlock);
+			lambdaBody.And (ifTest).And (CSReturn.ReturnLine (new CSCastExpression (new CSSimpleType ("nint"), CSConstant.Val (42))));
+			var clos = new CSLambda (lambdaBody, bId.Name);
+			var printer = CSFunctionCall.ConsoleWriteLine (new CSFunctionCall ($"{inst.Name}.ShouldThrow", false, new CSIdentifier (throwIt), clos));
+			var callingCode = new CSCodeBlock () { instDecl, printer };
+			TestRunning.TestAndExecute (swiftCode, callingCode, result, testName: $"OveridableMethodWithClosure{addendum}", otherClass: overClass);
 		}
 	}
 }

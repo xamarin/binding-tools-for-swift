@@ -222,9 +222,15 @@ namespace SwiftReflector {
 						argTypes [idx] = parmType.GenericTypes [idx].Typeof ();
 					}
 					var typeArr = new CSArray1DInitialized (CSSimpleType.Type, argTypes);
+					CSBaseExpression flags = new CSIdentifier ("ClosureFlags.None");
+					var closure = swiftParm.TypeSpec as ClosureTypeSpec;
+					if (closure.Throws)
+						flags = new CSBinaryExpression(CSBinaryOperator.BitOr, flags, new CSIdentifier ("ClosureFlags.Throws"));
+					if (closure.IsAsync)
+						flags = new CSBinaryExpression (CSBinaryOperator.BitOr, flags, new CSIdentifier ("ClosureFlags.Async"));
 
 					var closureExpr = new CSFunctionCall ("StructMarshal.Marshaler.MakeDelegateFromBlindClosure", false, delegateParams [i].Name,
-									      typeArr, returnType);
+									      typeArr, returnType, flags);
 					var castTo = new CSCastExpression (csParm.CSType, closureExpr);
 					callParams.Add (castTo);
 				} else if (entityType == EntityType.ProtocolList) {
