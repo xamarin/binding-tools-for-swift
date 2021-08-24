@@ -845,7 +845,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			Console.WriteLine ("calling this method " + methodName);
 			var mi = typeof (SwiftObjectRegistry).GetMethod (methodName);
 			if (mi == null)
-				throw new SwiftRuntimeException ($"Making a closure, unable to fine method {methodName}");
+				throw new SwiftRuntimeException ($"Making a closure, unable to find method {methodName}");
 			var genCall = mi.MakeGenericMethod (argTypes);
 			return (Delegate)genCall.Invoke (SwiftObjectRegistry.Registry, new object [] { blindClosure });
 		}
