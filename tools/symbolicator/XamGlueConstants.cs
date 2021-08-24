@@ -252,6 +252,7 @@ namespace SwiftRuntimeLibrary {
 		internal const string BlindSwiftClosureRepresentation_InvokeFunction16 = "$s7XamGlue14invokeFunction1f6retval1ayySpyq13_G_Spyx_q_q0_q1_q2_q3_q4_q5_q6_q7_q8_q9_q10_q11_q12_tGtXE_AfGtr14_lF";
 		internal const string BlindSwiftClosureRepresentation_InvokeFunction17 = "$s7XamGlue14invokeFunction1f6retval1ayySpyq14_G_Spyx_q_q0_q1_q2_q3_q4_q5_q6_q7_q8_q9_q10_q11_q12_q13_tGtXE_AfGtr15_lF";
 
+		internal const string BlindSwiftClosureRepresentation_InvokeFunctionThrows2 = "_$s7XamGlue20invokeFunctionThrows1f6retval1ayySpyq__s5Error_pSbtG_SpyxGtXE_AgHtr0_lF";
 		// UnsafeRawBufferPointer
 		[SymbolicatorInfo (Skip = true)]
 		internal const string UnsafeRawBufferPointerNew = "$s7XamGlue25unsafeRawBufferPointerNew6retval5start5countySpySWG_SVSitF";

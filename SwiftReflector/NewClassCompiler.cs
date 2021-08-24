@@ -1255,28 +1255,55 @@ namespace SwiftReflector {
 
 		ClosureTypeSpec MarshaledClosureType (ClosureTypeSpec clos, bool addOpaque = true)
 		{
+			// non-throwing
 			// ()->()  => (Swift.OpaquePointer)->()
 			// (args)->() => (Swift.UnsafeMutablePointer<(args, Swift.OpaquePointer)>) -> ()
 			// (args)->return => (Swift.UnsafeMutablePointer<(Swift.UnsafeMutablePointer<return>, Swift.UnsafeMutablePointer<(args)>, Swift.OpaquePointer)>)->()
-			if (!addOpaque && clos.Arguments.IsEmptyTuple && clos.ReturnType.IsEmptyTuple)
+
+			// throwing
+			// () throws ->() => (Swift.UnsafeMutablePointer<(Swift.Error, Bool)>, Swift.OpaquePointer) -> null
+			// (args) throws -> () => (Swift.UnsafeMutablePointer<(Swift.Error, Bool)>, Swift.UnsafeMutablePointer<(args, Swift.OpaquePointer)>) -> ()
+			// (args) throws -> return => (Swift.UnsafeMutablePointer<(Swift.UnsafeMutablePointer<return>, Swift.UnsafeMutablePointer<(args)>, Swift.OpaquePointer)>)->()
+
+
+			if (!addOpaque && clos.Arguments.IsEmptyTuple && clos.ReturnType.IsEmptyTuple && !clos.Throws)
 				return clos;
 
-			var args = new TupleTypeSpec ();
-			if (clos.HasArguments ())
-				args.Elements.Add (new NamedTypeSpec ("Swift.UnsafeMutablePointer", clos.Arguments));
-			if (addOpaque)
-				args.Elements.Add (new NamedTypeSpec ("Swift.OpaquePointer"));
-
-			ClosureTypeSpec retval = null;
-			if (clos.ReturnType.IsEmptyTuple) {
-				retval = new ClosureTypeSpec (args, clos.ReturnType);
+			if (clos.Throws && !clos.IsAsync) {
+				var medusaTuple = new TupleTypeSpec ();
+				if (clos.HasReturn ())
+					medusaTuple.Elements.Add (clos.ReturnType);
+				medusaTuple.Elements.Add (new NamedTypeSpec ("Swift.Error"));
+				medusaTuple.Elements.Add (new NamedTypeSpec ("Swift.Bool"));
+				var args = new TupleTypeSpec ();
+				if (clos.HasArguments ())
+					args.Elements.Add (new NamedTypeSpec ("Swift.UnsafeMutablePointer", clos.Arguments));
+				if (addOpaque)
+					args.Elements.Add (new NamedTypeSpec ("Swift.OpaquePointer"));
+				args.Elements.Insert (0, new NamedTypeSpec ("Swift.UnsafeMutablePointer", medusaTuple));
+				var retval = new ClosureTypeSpec (args, TupleTypeSpec.Empty);
+				retval.Attributes.AddRange (clos.Attributes);
+				return retval;
+			} else if (clos.IsAsync) {
+				throw new NotImplementedException ("matching on async closure not supported (yet)");
 			} else {
-				var returnType = new NamedTypeSpec ("Swift.UnsafeMutablePointer", clos.ReturnType);
-				args.Elements.Insert (0, returnType);
-				retval = new ClosureTypeSpec (args, TupleTypeSpec.Empty);
+				var args = new TupleTypeSpec ();
+				if (clos.HasArguments ())
+					args.Elements.Add (new NamedTypeSpec ("Swift.UnsafeMutablePointer", clos.Arguments));
+				if (addOpaque)
+					args.Elements.Add (new NamedTypeSpec ("Swift.OpaquePointer"));
+
+				ClosureTypeSpec retval = null;
+				if (clos.ReturnType.IsEmptyTuple) {
+					retval = new ClosureTypeSpec (args, clos.ReturnType);
+				} else {
+					var returnType = new NamedTypeSpec ("Swift.UnsafeMutablePointer", clos.ReturnType);
+					args.Elements.Insert (0, returnType);
+					retval = new ClosureTypeSpec (args, TupleTypeSpec.Empty);
+				}
+				retval.Attributes.AddRange (clos.Attributes);
+				return retval;
 			}
-			retval.Attributes.AddRange (clos.Attributes);
-			return retval;
 		}
 
 		CSEnum CompileEnumCases (EnumDeclaration enumDecl, string enumCaseName)

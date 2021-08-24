@@ -822,16 +822,29 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			return new SwiftClosureRepresentation (delegateObj, blindClosure.Data);
 		}
 
-		public Delegate MakeDelegateFromBlindClosure (BlindSwiftClosureRepresentation blindClosure, Type [] argTypes, Type returnType)
+		public Delegate MakeDelegateFromBlindClosure (BlindSwiftClosureRepresentation blindClosure, Type [] argTypes, Type returnType, ClosureFlags flags = ClosureFlags.None)
 		{
-			if (argTypes.Length == 0)
+			if (argTypes.Length == 0 && flags == ClosureFlags.None)
 				return SwiftObjectRegistry.Registry.ActionForSwiftClosure (blindClosure);
 
 			if (returnType != null) {
 				Array.Resize (ref argTypes, argTypes.Length + 1);
 				argTypes [argTypes.Length - 1] = returnType;
 			}
-			var mi = typeof (SwiftObjectRegistry).GetMethod (returnType == null ? "ActionForSwiftClosure" : "FuncForSwiftClosure");
+
+			var methodName = "";
+			if (flags == ClosureFlags.Throws) {
+				if (returnType == null)
+					throw new SwiftRuntimeException ("Need to handle Action closures that throw.");
+				methodName = returnType == null ? "ActionForSwiftClosureThrows" : "FuncForSwiftClosureThrows";
+			} else if ((flags & ClosureFlags.Async) == ClosureFlags.Async) {
+				throw new SwiftRuntimeException ("Marshaling async closures isn't supported (yet).");
+			} else {
+				methodName = returnType == null ? "ActionForSwiftClosure" : "FuncForSwiftClosure";
+			}
+			var mi = typeof (SwiftObjectRegistry).GetMethod (methodName);
+			if (mi == null)
+				throw new SwiftRuntimeException ($"Making a closure, unable to find method {methodName}");
 			var genCall = mi.MakeGenericMethod (argTypes);
 			return (Delegate)genCall.Invoke (SwiftObjectRegistry.Registry, new object [] { blindClosure });
 		}

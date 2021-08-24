@@ -121,5 +121,12 @@ namespace SwiftRuntimeLibrary {
 		DirectObjCClassName,
 		IndirectObjCClass,
 	}
+
+	[Flags]
+	public enum ClosureFlags {
+		None = 0,
+		Throws = 1 << 0,
+		Async = 1 << 1,
+	}
 }
 

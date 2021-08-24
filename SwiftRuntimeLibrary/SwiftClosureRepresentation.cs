@@ -94,7 +94,7 @@ namespace SwiftRuntimeLibrary {
 #endif
 			refPtr = LocateRefPtrFromPartialApplicationForwarder (refPtr);
 #if DEBUG
-			//Console.WriteLine($"FuncCallbackMaybeThrows: retValPtr {retValPtr.ToString("X8")} args {args.ToString("X8")} refPtr {refPtr.ToString("X8")}");
+			//Console.WriteLine($"Before call FuncCallbackMaybeThrows: retValPtr {retValPtr.ToString("X8")} args {args.ToString("X8")} refPtr {refPtr.ToString("X8")}");
 			//Console.WriteLine ("retValPtr: ");
 			//Memory.Dump (retValPtr, 128);
 			//Console.WriteLine ("args: ");
@@ -110,6 +110,11 @@ namespace SwiftRuntimeLibrary {
 			//}
 #endif
 			var argumentValues = args != IntPtr.Zero ? StructMarshal.Marshaler.MarshalSwiftTupleMemoryToNet (args, delInfo.Item2) : null;
+#if DEBUG
+			//foreach (var arg in argumentValues) {
+			//	Console.WriteLine ($"arg: {arg} type: {arg.GetType ().Name}");
+			//}
+#endif
 
 			object retval = null;
 			Exception thrownException = null;
@@ -134,6 +139,15 @@ namespace SwiftRuntimeLibrary {
 #endif
 			} else {
 				StructMarshal.Marshaler.SetErrorNotThrownWithValue (retValPtr, delInfo.Item3, retval);
+#if DEBUG
+				//Console.WriteLine ($"After call FuncCallbackMaybeThrows: retValPtr {retValPtr.ToString ("X8")} args {args.ToString ("X8")} refPtr {refPtr.ToString ("X8")}");
+				//Console.WriteLine ("retValPtr: ");
+				//Memory.Dump (retValPtr, 128);
+				//Console.WriteLine ("args: ");
+				//Memory.Dump (args, 128);
+				//Console.WriteLine ("refPtr: ");
+				//Memory.DumpPtrs (refPtr, 8);
+#endif
 			}
 			StructMarshal.ReleaseSwiftObject (capsule);
 		}

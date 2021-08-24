@@ -402,17 +402,27 @@ namespace SwiftReflector {
 
 			Exceptions.ThrowOnNull (closure, "closure");
 			imports.AddIfNotPresent ("XamGlue");
-			var funcToCall = closure.HasReturn () ? "swiftClosureToFunc" : "swiftClosureToAction";
-			var localPtr = new SLIdentifier (MarshalEngine.Uniqueify ("ptr", identifiersUsed));
-			var ptrAlloc = new SLFunctionCall (funcToCall, false, true,
-			                                   new SLArgument (new SLIdentifier ("a1"), new SLIdentifier (name), true));
-			var decl = new SLLine(new SLDeclaration (true, localPtr.Name, null, ptrAlloc, Visibility.None));
-			preMarshalCode.Add (decl);
 
-			var ptrDealloc = SLFunctionCall.FunctionCallLine ($"{localPtr.Name}.deallocate");
-			postMarshalCode.Add (ptrDealloc);
-			return new SLFunctionCall ("toIntPtr", false, true,
-						   new SLArgument (new SLIdentifier ("value"), localPtr, true));
+			if (closure.IsAsync) {
+				throw new NotImplementedException ("async closures in virtual methods not supported (yet).");
+			} else {
+				var funcToCall = "";
+				if (closure.Throws) {
+					funcToCall = closure.HasReturn () ? "swiftClosureToFuncThrows" : "swiftClosureToActionThrows";
+				} else {
+					funcToCall = closure.HasReturn () ? "swiftClosureToFunc" : "swiftClosureToAction";
+				}
+				var localPtr = new SLIdentifier (MarshalEngine.Uniqueify ("ptr", identifiersUsed));
+				var ptrAlloc = new SLFunctionCall (funcToCall, false, true,
+								   new SLArgument (new SLIdentifier ("a1"), new SLIdentifier (name), true));
+				var decl = new SLLine (new SLDeclaration (true, localPtr.Name, null, ptrAlloc, Visibility.None));
+				preMarshalCode.Add (decl);
+
+				var ptrDealloc = SLFunctionCall.FunctionCallLine ($"{localPtr.Name}.deallocate");
+				postMarshalCode.Add (ptrDealloc);
+				return new SLFunctionCall ("toIntPtr", false, true,
+							   new SLArgument (new SLIdentifier ("value"), localPtr, true));
+			}
 		}
 
 		SLBaseExpr MarshalDynamicSelf (BaseDeclaration declContext, string name)

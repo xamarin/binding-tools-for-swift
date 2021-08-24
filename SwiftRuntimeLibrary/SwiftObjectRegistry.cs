@@ -1259,6 +1259,39 @@ namespace SwiftRuntimeLibrary {
 							      });
 		}
 
+		public Func<T1, TR> FuncForSwiftClosureThrows<T1, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, TR>> (rep, (bc) =>
+							      (arg1) => {
+								      unsafe {
+#if DEBUG_SPEW
+									      //Console.WriteLine ("In memoized closure for blind closure, rep.Data: " + rep.Data.ToString ("X8"));
+									      //Console.WriteLine ("Arg is {0}", arg1);
+#endif
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      Console.WriteLine ("before call return block");
+									      Memory.Dump (returnPtr, StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>)));
+									      var types = new Type [] { typeof (T1) };
+									      var args = new object [] { arg1 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunction (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+															      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+									      Console.WriteLine ("before call return block");
+									      Memory.Dump (returnPtr, StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
 
 		public static SwiftObjectRegistry Registry {
 			get {
