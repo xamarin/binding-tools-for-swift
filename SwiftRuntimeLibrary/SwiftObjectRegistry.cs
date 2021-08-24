@@ -1265,8 +1265,8 @@ namespace SwiftRuntimeLibrary {
 							      (arg1) => {
 								      unsafe {
 //#if DEBUG_SPEW
-									      Console.WriteLine ("In memoized closure for blind closure, rep.Data: " + rep.Data.ToString ("X8"));
-									      Console.WriteLine ("Arg is {0}", arg1);
+									      //Console.WriteLine ("In memoized closure for blind closure, rep.Data: " + rep.Data.ToString ("X8"));
+									      //Console.WriteLine ("Arg is {0}", arg1);
 //#endif
 									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
 									      var returnPtr = new IntPtr (returnMemory);
