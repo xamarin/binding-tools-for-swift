@@ -1264,10 +1264,10 @@ namespace SwiftRuntimeLibrary {
 			return MemoizedClosure<Func<T1, TR>> (rep, (bc) =>
 							      (arg1) => {
 								      unsafe {
-//#if DEBUG_SPEW
+#if DEBUG_SPEW
 									      //Console.WriteLine ("In memoized closure for blind closure, rep.Data: " + rep.Data.ToString ("X8"));
 									      //Console.WriteLine ("Arg is {0}", arg1);
-//#endif
+#endif
 									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
 									      var returnPtr = new IntPtr (returnMemory);
 									      Console.WriteLine ("before call return block");
