@@ -1259,28 +1259,20 @@ namespace SwiftRuntimeLibrary {
 							      });
 		}
 
-		public Func<T1, TR> FuncForSwiftClosureThrows<T1, TR> (BlindSwiftClosureRepresentation rep)
+		public Func<TR> FuncForSwiftClosureThrows<TR> (BlindSwiftClosureRepresentation rep)
 		{
-			return MemoizedClosure<Func<T1, TR>> (rep, (bc) =>
-							      (arg1) => {
+			return MemoizedClosure<Func<TR>> (rep, (bc) =>
+							      () => {
 								      unsafe {
-#if DEBUG_SPEW
-									      //Console.WriteLine ("In memoized closure for blind closure, rep.Data: " + rep.Data.ToString ("X8"));
-									      //Console.WriteLine ("Arg is {0}", arg1);
-#endif
 									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
 									      var returnPtr = new IntPtr (returnMemory);
-									      Console.WriteLine ("before call return block");
-									      Memory.Dump (returnPtr, StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>)));
-									      var types = new Type [] { typeof (T1) };
-									      var args = new object [] { arg1 };
+									      var types = new Type [0];
+									      var args = new object [0];
 									      var tupleMap = SwiftTupleMap.FromTypes (types);
 									      var argMemory = stackalloc byte [tupleMap.Stride];
 									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
-									      BlindSwiftClosureRepresentation.InvokeFunction (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr,
 															      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
-									      Console.WriteLine ("before call return block");
-									      Memory.Dump (returnPtr, StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>)));
 
 									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
 									      if (ex != null) {
@@ -1292,6 +1284,463 @@ namespace SwiftRuntimeLibrary {
 							      });
 		}
 
+		public Func<T1, TR> FuncForSwiftClosureThrows<T1, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, TR>> (rep, (bc) =>
+							      (arg1) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1) };
+									      var args = new object [] { arg1 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+															      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, TR> FuncForSwiftClosureThrows<T1, T2, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, TR>> (rep, (bc) =>
+							      (arg1, arg2) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2) };
+									      var args = new object [] { arg1, arg2 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, TR> FuncForSwiftClosureThrows<T1, T2, T3, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3) };
+									      var args = new object [] { arg1, arg2, arg3 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4) };
+									      var args = new object [] { arg1, arg2, arg3, arg4 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5) };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6) };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9), typeof (T10)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.SwiftObjectMetatype (typeof (T10)),
+										      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9), typeof (T10), typeof (T11)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.SwiftObjectMetatype (typeof (T10)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T11)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9), typeof (T10), typeof (T11), typeof (T12)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.SwiftObjectMetatype (typeof (T10)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T11)), StructMarshal.SwiftObjectMetatype (typeof (T12)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9), typeof (T10), typeof (T11), typeof (T12), typeof (T13)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.SwiftObjectMetatype (typeof (T10)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T11)), StructMarshal.SwiftObjectMetatype (typeof (T12)), StructMarshal.SwiftObjectMetatype (typeof (T13)),
+										      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9), typeof (T10), typeof (T11), typeof (T12), typeof (T13),
+										      typeof (T14)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.SwiftObjectMetatype (typeof (T10)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T11)), StructMarshal.SwiftObjectMetatype (typeof (T12)), StructMarshal.SwiftObjectMetatype (typeof (T13)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T14)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9), typeof (T10), typeof (T11), typeof (T12), typeof (T13),
+										      typeof (T14), typeof (T15)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.SwiftObjectMetatype (typeof (T10)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T11)), StructMarshal.SwiftObjectMetatype (typeof (T12)), StructMarshal.SwiftObjectMetatype (typeof (T13)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T14)), StructMarshal.SwiftObjectMetatype (typeof (T15)), StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
+
+		public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR> FuncForSwiftClosureThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR> (BlindSwiftClosureRepresentation rep)
+		{
+			return MemoizedClosure<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR>> (rep, (bc) =>
+							      (arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16) => {
+								      unsafe {
+									      var returnMemory = stackalloc byte [StructMarshal.Marshaler.Strideof (typeof (Tuple<TR, SwiftError, bool>))];
+									      var returnPtr = new IntPtr (returnMemory);
+									      var types = new Type [] { typeof (T1), typeof (T2), typeof (T3), typeof (T4), typeof (T5), typeof (T6),
+										      typeof (T7), typeof (T8), typeof (T9), typeof (T10), typeof (T11), typeof (T12), typeof (T13),
+										      typeof (T14), typeof (T15), typeof (T16)
+									      };
+									      var args = new object [] { arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16 };
+									      var tupleMap = SwiftTupleMap.FromTypes (types);
+									      var argMemory = stackalloc byte [tupleMap.Stride];
+									      var argPtr = StructMarshal.Marshaler.MarshalObjectsAsTuple (args, tupleMap, new IntPtr (argMemory));
+									      BlindSwiftClosureRepresentation.InvokeFunctionThrows (bc, returnPtr, argPtr, StructMarshal.Marshaler.Metatypeof (typeof (T1)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T2)), StructMarshal.SwiftObjectMetatype (typeof (T3)), StructMarshal.SwiftObjectMetatype (typeof (T4)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T5)), StructMarshal.SwiftObjectMetatype (typeof (T6)), StructMarshal.SwiftObjectMetatype (typeof (T7)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T8)), StructMarshal.SwiftObjectMetatype (typeof (T9)), StructMarshal.SwiftObjectMetatype (typeof (T10)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T11)), StructMarshal.SwiftObjectMetatype (typeof (T12)), StructMarshal.SwiftObjectMetatype (typeof (T13)),
+										      StructMarshal.SwiftObjectMetatype (typeof (T14)), StructMarshal.SwiftObjectMetatype (typeof (T15)), StructMarshal.SwiftObjectMetatype (typeof (T16)),
+										      StructMarshal.Marshaler.Metatypeof (typeof (TR)));
+
+									      var ex = StructMarshal.Marshaler.GetExceptionThrown (returnPtr, typeof (TR));
+									      if (ex != null) {
+										      throw ex;
+									      }
+
+									      return StructMarshal.Marshaler.GetErrorReturnValue<TR> (returnPtr);
+								      }
+							      });
+		}
 
 		public static SwiftObjectRegistry Registry {
 			get {
