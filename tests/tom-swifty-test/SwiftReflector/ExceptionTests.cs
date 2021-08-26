@@ -361,5 +361,97 @@ $"open class MoreThrowingOpenMethod{addendum} {{" +
 			var callingCode = new CSCodeBlock () { instDecl, printer };
 			TestRunning.TestAndExecute (swiftCode, callingCode, result, testName: $"OveridableMethodWithClosure{addendum}", otherClass: overClass);
 		}
+
+		[TestCase ("False", false, "False\n")]
+		[TestCase ("True", true, "True\n")]
+		public void FuncThatReturnsThrowingClosure (string addendum, bool shouldThrow, string expectedResult)
+		{
+			var swiftCode = 
+$"public struct MyErrorFTRTC{addendum}" +
+@": Error {
+	public init () { }
+}
+" + $"public func getClosure{addendum} ()" +
+@" -> (Bool) throws -> Int {
+	return { b in
+		if b {" +
+
+			$"throw MyErrorFTRTC{addendum}()" +
+@"		}
+		return 42
+	}
+}
+";
+
+			var workerID = new CSIdentifier ("worker");
+			var workerDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, workerID, new CSFunctionCall ($"TopLevelEntities.GetClosure{addendum}", false));
+			// body of func
+			// try {
+			//   worker (shouldThrow)
+			//   Console.WriteLine (false);
+			// catch {
+			//    Console.WriteLine (true);
+			// }
+			
+
+			var tryBlock = new CSCodeBlock ();
+			tryBlock.Add (CSFunctionCall.FunctionCallLine (workerID, false, CSConstant.Val (shouldThrow)));
+			tryBlock.Add (CSFunctionCall.ConsoleWriteLine (CSConstant.Val (false)));
+			var catchBody = new CSCodeBlock ();
+			catchBody.Add (CSFunctionCall.ConsoleWriteLine (CSConstant.Val (true)));
+			var catchBlock = new CSCatch (catchBody);
+			var trycatch = new CSTryCatch (tryBlock, catchBlock);
+
+			var callingCode = new CSCodeBlock () { workerDecl, trycatch };
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, expectedResult, testName: $"FuncThatReturnsThrowingClosure{addendum}");
+		}
+
+		[TestCase ("False", false, "False\n")]
+		[TestCase ("True", true, "True\n")]
+		public void PropThatReturnsThrowingClosure (string addendum, bool shouldThrow, string expectedResult)
+		{
+			var swiftCode =
+$"public struct MyErrorPRTC{addendum}" +
+@": Error {
+	public init () { }
+}
+" + $"public class PropThrowsMaybe{addendum} {{" +
+@"	public init () { }
+	public var x: (Bool) throws -> Int {
+		get {
+			return { b in
+					if b {" +
+						$"throw MyErrorPRTC{addendum} ()" +
+@"					}
+					return 42
+				}
+		}
+	}
+}";
+
+			var workerID = new CSIdentifier ("worker");
+			var workerDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, workerID, new CSFunctionCall ($"PropThrowsMaybe{addendum}", true)
+				.Dot (new CSIdentifier ("X")));
+			// body of func
+			// try {
+			//   worker (shouldThrow)
+			//   Console.WriteLine (false);
+			// catch {
+			//    Console.WriteLine (true);
+			// }
+
+			var tryBlock = new CSCodeBlock ();
+			tryBlock.Add (CSFunctionCall.FunctionCallLine (workerID, false, CSConstant.Val (shouldThrow)));
+			tryBlock.Add (CSFunctionCall.ConsoleWriteLine (CSConstant.Val (false)));
+			var catchBody = new CSCodeBlock ();
+			catchBody.Add (CSFunctionCall.ConsoleWriteLine (CSConstant.Val (true)));
+			var catchBlock = new CSCatch (catchBody);
+			var trycatch = new CSTryCatch (tryBlock, catchBlock);
+
+			var callingCode = new CSCodeBlock () { workerDecl, trycatch };
+
+			TestRunning.TestAndExecute (swiftCode, callingCode, expectedResult, testName: $"PropThatReturnsThrowingClosure{addendum}");
+		}
 	}
 }

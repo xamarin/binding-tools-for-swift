@@ -129,13 +129,24 @@ namespace SwiftReflector.TypeMapping {
 					var pointerToArgTuple = arguments.Count != 0 ?
 									 new SLBoundGenericType ("UnsafeMutablePointer", new SLTupleType (arguments))
 									 : null;
-					if (pointerToArgTuple != null) {
-						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", new SLBoundGenericType ("UnsafeMutablePointer", slRetType)),
-											    new SLNameTypePair ("_", pointerToArgTuple)),
-									   new SLTupleType ());
+					SLType returnSLType = null;
+					if (spec.Throws && !spec.IsAsync) {
+						var returnTuple = new SLTupleType (new SLNameTypePair ((string)null, slRetType),
+							new SLNameTypePair ((string)null, new SLSimpleType ("Swift.Error")),
+							new SLNameTypePair ((string)null, SLSimpleType.Bool));
+						returnSLType = new SLBoundGenericType ("UnsafeMutablePointer", returnTuple);
+					} else if (spec.IsAsync) {
+						throw new NotImplementedException ("Not handling async return closure mapping (yet)");
 					} else {
-						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", new SLBoundGenericType ("UnsafeMutablePointer", slRetType))),
-									   new SLTupleType ());
+						returnSLType = new SLBoundGenericType ("UnsafeMutablePointer", slRetType);
+					}
+
+					if (pointerToArgTuple != null) {
+						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", returnSLType),
+							new SLNameTypePair ("_", pointerToArgTuple)), new SLTupleType ());
+					} else {
+						funcType = new SLFuncType (new SLTupleType (new SLNameTypePair ("_", returnSLType)),
+							new SLTupleType ());
 					}
 				}
 			} else {

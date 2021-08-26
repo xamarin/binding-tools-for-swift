@@ -1837,6 +1837,24 @@ public func swiftFuncWrapper<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, 
 } 
 
 
+// return value wrappers for funcs that throw
+
+public func swiftFuncWrapperThrows<T1, TR>(f1: @escaping (T1) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1)>)->() = {
+        (trp, targ) in
+        do {
+            let r = try f1 (targ.pointee)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+
 public func invokePlainAction (f:()->()) {
 	f()
 }
