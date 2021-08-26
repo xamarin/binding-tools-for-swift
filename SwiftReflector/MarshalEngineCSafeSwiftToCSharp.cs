@@ -605,7 +605,13 @@ namespace SwiftReflector {
 					valueExpr = valMarshalId;
 				} else {
 					if (entityType == EntityType.Closure) {
-						valueExpr = MarshalEngine.BuildWrappedClosureCall (delegateParams [1].Name, methodType as CSSimpleType);
+						var flags = ClosureFlags.None;
+						var closureReturn = funcDecl.ParameterLists [1] [0].TypeSpec as ClosureTypeSpec;
+						if (closureReturn.Throws)
+							flags |= ClosureFlags.Throws;
+						if (closureReturn.IsAsync)
+							flags |= ClosureFlags.Async;
+						valueExpr = MarshalEngine.BuildWrappedClosureCall (delegateParams [1].Name, methodType as CSSimpleType, flags);
 					} else {
 						valueExpr = delegateParams [1].Name;
 					}

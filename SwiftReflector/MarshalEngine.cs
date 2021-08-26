@@ -421,7 +421,13 @@ namespace SwiftReflector {
 			var call = new CSFunctionCall (pinvokeCall, false, callParameters.ToArray ());
 
 			if (returnIsClosure) {
-				call = BuildWrappedClosureCall (call, returnType as CSSimpleType);
+				var flags = ClosureFlags.None;
+				var closureReturn = swiftReturnType as ClosureTypeSpec;
+				if (closureReturn.Throws)
+					flags |= ClosureFlags.Throws;
+				if (closureReturn.IsAsync)
+					flags |= ClosureFlags.Async;
+				call = BuildWrappedClosureCall (call, returnType as CSSimpleType, flags);
 			}
 
 			if (originalThrows) {
@@ -548,7 +554,7 @@ namespace SwiftReflector {
 		}
 
 
-		public static CSFunctionCall BuildWrappedClosureCall (CSBaseExpression call, CSSimpleType expectedType)
+		public static CSFunctionCall BuildWrappedClosureCall (CSBaseExpression call, CSSimpleType expectedType, ClosureFlags flags)
 		{
 			if (expectedType == null)
 				throw new ArgumentNullException (nameof (expectedType));
@@ -559,7 +565,12 @@ namespace SwiftReflector {
 			var funcName = new StringBuilder ();
 			funcName.Append (isFunc ? "SwiftObjectRegistry.Registry.FuncForSwiftClosure" :
 			                 "SwiftObjectRegistry.Registry.ActionForSwiftClosure");
-
+			if ((flags & ClosureFlags.Throws) != ClosureFlags.None) {
+				funcName.Append ("Throws");
+			}
+			if ((flags & ClosureFlags.Async) != ClosureFlags.None) {
+				throw new NotImplementedException ("Not wrapping async closures (yet).");
+			}
 
 			if (expectedType.IsGeneric) {
 				foreach (var s in expectedType.GenericTypes.Select (gt => gt.ToString ()).BracketInterleave ("<", ">", ","))

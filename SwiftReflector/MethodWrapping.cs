@@ -1675,7 +1675,7 @@ namespace SwiftReflector {
 						modules.AddIfNotPresent ("XamGlue");
 						var closureArgs = closureReturn.Arguments as TupleTypeSpec;
 						var argCount = closureArgs == null ? 1 : closureArgs.Elements.Count;
-						var wrapFuncName = closureReturn.ReturnType.IsEmptyTuple ? "swiftActionWrapper" : "swiftFuncWrapper";
+						var wrapFuncName = ClosureWrapperFuncName (closureReturn);
 						callSite = new SLFunctionCall (wrapFuncName, false, new SLArgument (new SLIdentifier ($"f{argCount}"), callSite, true));
 					}
 				}
@@ -1894,7 +1894,7 @@ namespace SwiftReflector {
 					modules.AddIfNotPresent ("XamGlue");
 					var closureArgs = closureReturn.Arguments as TupleTypeSpec;
 					var argCount = closureArgs == null ? 1 : closureArgs.Elements.Count;
-					var wrapFuncName = closureReturn.ReturnType.IsEmptyTuple ? "swiftActionWrapper" : "swiftFuncWrapper";
+					var wrapFuncName = ClosureWrapperFuncName (closureReturn);
 					callSite = new SLFunctionCall (wrapFuncName, false, new SLArgument (new SLIdentifier ($"f{argCount}"), callSite, true));
 				}
 			}
@@ -2528,6 +2528,19 @@ namespace SwiftReflector {
 				replacement.ParameterLists [0] [0].TypeName = substituteForSelf;
 			}
 			return replacement;
+		}
+
+		static string ClosureWrapperFuncName (ClosureTypeSpec closure)
+		{
+			if (closure.Throws && !closure.IsAsync) {
+				if (closure.ReturnType.IsEmptyTuple)
+					throw new NotImplementedException ("actions that throw aren't here yet");
+				return closure.IsEmptyTuple ? "swiftActionWrapperThrows" : "swiftFuncWrapperThrows";
+			} else if (closure.IsAsync) {
+				throw new NotImplementedException ("not handling async closures (yet)");
+			} else {
+				return closure.ReturnType.IsEmptyTuple ? "swiftActionWrapper" : "swiftFuncWrapper";
+			}
 		}
 	}
 }

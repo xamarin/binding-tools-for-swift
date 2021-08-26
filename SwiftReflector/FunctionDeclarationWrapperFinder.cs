@@ -336,11 +336,23 @@ namespace SwiftReflector {
 				toMatchReturn = GetUnsafeMutablePointerBoundType (closureWrap.GetArgument (0));
 				if (toMatchReturn == null)
 					return false;
+				if (closureToWrap.Throws && !closureToWrap.IsAsync) {
+					var toMatchReturnList = toMatchReturn as TupleTypeSpec;
+					if (toMatchReturnList == null)
+						return false;
+					toMatchReturn = toMatchReturnList.Elements [0];
+				} else if (closureToWrap.IsAsync) {
+					throw new NotImplementedException ("Not matching async closures (yet).");
+				}
 			}
 
 			if (toMatchReturn != null) {
 				if (!toMatchReturn.Equals (closureToWrap.ReturnType))
 					return false;
+			} else {
+				if (closureToWrap.Throws || closureToWrap.IsAsync) {
+					throw new NotImplementedException ("not matching async action closures (yet).");
+				}
 			}
 
 			if (toMatchArgsIndex >= 0) {
