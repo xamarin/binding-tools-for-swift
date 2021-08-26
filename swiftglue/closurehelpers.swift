@@ -1838,6 +1838,20 @@ public func swiftFuncWrapper<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, 
 
 
 // return value wrappers for funcs that throw
+public func swiftFuncWrapperThrows<TR>(f1: @escaping () throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>)->() = {
+        trp in
+        do {
+            let r = try f1 ()
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
 
 public func swiftFuncWrapperThrows<T1, TR>(f1: @escaping (T1) throws -> TR) ->
         (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1)>)->() {
@@ -1845,6 +1859,246 @@ public func swiftFuncWrapperThrows<T1, TR>(f1: @escaping (T1) throws -> TR) ->
         (trp, targ) in
         do {
             let r = try f1 (targ.pointee)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, TR>(f1: @escaping (T1, T2) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2) = targ.pointee
+            let r = try f1 (a1, a2)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, TR>(f1: @escaping (T1, T2, T3) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3) = targ.pointee
+            let r = try f1 (a1, a2, a3)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, TR>(f1: @escaping (T1, T2, T3, T4) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, TR>(f1: @escaping (T1, T2, T3, T4, T5) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15)
+            setExceptionNotThrown(value:r, retval: trp)
+        }
+        catch let e {
+            setExceptionThrown(err: e, retval: trp)
+        }
+    }
+    return fprime
+}
+
+public func swiftFuncWrapperThrows<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR>(f1: @escaping (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) throws -> TR) ->
+        (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->() {
+    let fprime: (UnsafeMutablePointer<(TR, Swift.Error, Bool)>, UnsafeMutablePointer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)>)->() = {
+        (trp, targ) in
+        do {
+        	let (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16) = targ.pointee
+            let r = try f1 (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16)
             setExceptionNotThrown(value:r, retval: trp)
         }
         catch let e {
