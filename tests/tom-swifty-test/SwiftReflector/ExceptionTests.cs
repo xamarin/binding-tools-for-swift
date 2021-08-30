@@ -453,5 +453,55 @@ $"public struct MyErrorPRTC{addendum}" +
 
 			TestRunning.TestAndExecute (swiftCode, callingCode, expectedResult, testName: $"PropThatReturnsThrowingClosure{addendum}");
 		}
+
+		[TestCase ("False", false, "False\n")]
+		[TestCase ("True", true, "True\n")]
+		public void OverloadableReturnThrowClosure (string addendum, bool shouldThrow, string result)
+		{
+			var swiftCode =
+$"public struct AnError{addendum} : Error {{\n" +
+@"   public init () { }
+}
+" +
+$"open class ThrowingOpenReturnMethod{addendum} {{\n" +
+	@"public init () { }
+	open func Thrower () -> ((Bool) throws -> Int) {
+		return { shouldThrow in
+			if shouldThrow {" +
+$"				throw AnError{addendum} ()" +
+@"			} else {
+				return 42
+			}
+		}
+	}
+}
+";
+
+			// var thrower = new ThrowingOpenReturnMethodAddendum ();
+			var inst = new CSIdentifier ("thrower");
+			var instDecl = CSVariableDeclaration.VarLine (inst, new CSFunctionCall ($"ThrowingOpenReturnMethod{addendum}", true));
+
+			// var workerID = thrower.Thrower ();
+			var workerID = new CSIdentifier ("worker");
+			var workerDecl = CSVariableDeclaration.VarLine (workerID, new CSFunctionCall ($"{inst.Name}.Thrower", false));
+
+			// try {
+			//   worker (shouldThrow)
+			//   Console.WriteLine (false);
+			// catch {
+			//    Console.WriteLine (true);
+			// }
+
+			var tryBlock = new CSCodeBlock ();
+			tryBlock.Add (CSFunctionCall.FunctionCallLine (workerID, false, CSConstant.Val (shouldThrow)));
+			tryBlock.Add (CSFunctionCall.ConsoleWriteLine (CSConstant.Val (false)));
+			var catchBody = new CSCodeBlock ();
+			catchBody.Add (CSFunctionCall.ConsoleWriteLine (CSConstant.Val (true)));
+			var catchBlock = new CSCatch (catchBody);
+			var trycatch = new CSTryCatch (tryBlock, catchBlock);
+
+			var callingCode = new CSCodeBlock () { instDecl, workerDecl, trycatch };
+			TestRunning.TestAndExecute (swiftCode, callingCode, result, testName: $"OveridableMethodWithClosure{addendum}");
+		}
 	}
 }
