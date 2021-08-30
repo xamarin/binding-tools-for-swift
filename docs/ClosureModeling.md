@@ -45,3 +45,6 @@ C# will generate the following code for the method `runIt`:
 For closures that throw, we treat them like functions that throw in that we change the return value from say, `TR` and turn it into a pointer to a medusa tuple of the form `UnsafeMutablePointer<(TR, Swift.Error, Bool)>`. This allows us to pass back to the caller the return value if an exception was not thrown and the Error if it was.
 There are two types of closures from the C# point of view: `Func<T..., TR>` and `Action<T...>`. Actions, obviously, have no return value, but in the case of actions that throw, we still need to handle that so we can use a reduced medusa tuple of the form `(Swift.Error, Bool)`
 For async closures, it looks like we'll have to hoist the async-ness into a `Swift.Task` return type.
+
+Note for future Steve:
+One way we can work with the existing code and not write special cases for `Action<>` types that throw is treat the medusa tuples as tuples with a 0-sized return value. This can be done with either an empty tuple or an empty struct. Both of these things exist in swift. It may have some consequences in C# in that the tuple marshaling code may not be comfortable marshaling something that doesn't exist, but simplifying half the code is better than simplifying none of it.
