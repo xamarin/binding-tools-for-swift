@@ -231,7 +231,7 @@ namespace SwiftReflector {
 
 					var closureExpr = new CSFunctionCall ("StructMarshal.Marshaler.MakeDelegateFromBlindClosure", false, delegateParams [i].Name,
 									      typeArr, returnType, flags);
-					var castTo = new CSCastExpression (csParm.CSType, closureExpr);
+					var castTo = new CSCastExpression (CSType.Copy (csParm.CSType), closureExpr);
 					callParams.Add (castTo);
 				} else if (entityType == EntityType.ProtocolList) {
 					preMarshalCode.Add (CSFunctionCall.FunctionCallLine ("throw new NotImplementedException", false, CSConstant.Val ($"Argument {csParm.Name} is a protocol list type and can't be marshaled from a virtual method.")));

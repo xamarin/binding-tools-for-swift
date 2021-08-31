@@ -691,6 +691,7 @@ namespace SwiftReflector.TypeMapping {
 					return new NetTypeBundle ("SwiftRuntimeLibrary", isReturnValue ? "BlindSwiftClosureRepresentation" : "SwiftClosureRepresentation", false, false, EntityType.Closure);
 				} else {
 					ClosureTypeSpec ft = spec as ClosureTypeSpec;
+					var throws = !isPinvoke && ft.Throws;
 					var arguments = ft.EachArgument().Select (parm => MapType (context, parm, false)).ToList ();
 
 					string delegateName = "Action";
@@ -701,9 +702,9 @@ namespace SwiftReflector.TypeMapping {
 					}
 
 					if (arguments.Count == 0)
-						return new NetTypeBundle ("System", delegateName, false, false, EntityType.Closure);
+						return new NetTypeBundle ("System", delegateName, false, false, EntityType.Closure, swiftThrows: throws);
 					else
-						return new NetTypeBundle ("System", delegateName, EntityType.Closure, false, arguments);
+						return new NetTypeBundle ("System", delegateName, EntityType.Closure, false, arguments, swiftThrows: throws);
 				}
 			case TypeSpecKind.ProtocolList:
 				var pl = (ProtocolListTypeSpec)spec;

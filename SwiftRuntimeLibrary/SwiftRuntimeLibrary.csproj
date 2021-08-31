@@ -119,6 +119,7 @@
     <Compile Include="SwiftNativeInstance.cs" />
     <Compile Include="SwiftNativeValueType.cs" />
     <Compile Include="ISwiftValueType.cs" />
+    <Compile Include="SwiftMarshal\SwiftThrowsAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

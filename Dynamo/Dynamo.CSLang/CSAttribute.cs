@@ -6,10 +6,12 @@ using System.Runtime.InteropServices;
 
 namespace Dynamo.CSLang {
 	public class CSAttribute : LineCodeElementCollection<ICodeElement> {
-		public CSAttribute (CSIdentifier name, CSArgumentList args, bool isSingleLine = false)
+		public CSAttribute (CSIdentifier name, CSArgumentList args, bool isSingleLine = false, bool isReturn = false)
 			: base (isSingleLine, false, isSingleLine)
 		{
 			Add (new SimpleElement ("["));
+			if (isReturn)
+				Add (new SimpleElement ("return:"));
 			Add (Exceptions.ThrowOnNull (name, nameof(name)));
 			if (args != null) {
 				Add (new SimpleElement ("("));
@@ -57,14 +59,14 @@ namespace Dynamo.CSLang {
 			return new CSAttribute (new CSIdentifier ("StructLayout"), args, true);
 		}
 
-		public static CSAttribute FromAttr (Type attribute, CSArgumentList args, bool isSingleLine = false)
+		public static CSAttribute FromAttr (Type attribute, CSArgumentList args, bool isSingleLine = false, bool isReturn = false)
 		{
 			Exceptions.ThrowOnNull (attribute, nameof(attribute));
 			if (!attribute.IsSubclassOf (typeof (Attribute)))
 				throw new ArgumentException (String.Format ("Type {0} is not an Attribute type.", attribute.Name), nameof(attribute));
 			var name = attribute.Name.EndsWith ("Attribute") ?
 				attribute.Name.Substring (0, attribute.Name.Length - "Attribute".Length) : attribute.Name;
-			return new CSAttribute (new CSIdentifier (name), args, isSingleLine);
+			return new CSAttribute (new CSIdentifier (name), args, isSingleLine, isReturn);
 		}
 
 		public static CSAttribute MarshalAsFunctionPointer ()
