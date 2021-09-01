@@ -14,7 +14,8 @@ namespace SwiftReflector.TypeMapping {
 		const string kNoType = "!!NO_TYPE!!";
 		List<NetTypeBundle> genericTypes = new List<NetTypeBundle> ();
 
-		public NetTypeBundle (string nameSpace, string entityName, bool isScalar, bool isReference, EntityType entity)
+		public NetTypeBundle (string nameSpace, string entityName, bool isScalar, bool isReference, EntityType entity,
+			bool swiftThrows = false)
 		{
 			GenericIndex = -1;
 			IsVoid = entityName == kNoType;
@@ -25,6 +26,7 @@ namespace SwiftReflector.TypeMapping {
 			IsScalar = isScalar;
 			IsReference = isReference;
 			Entity = entity;
+			Throws = swiftThrows;
 		}
 
 		public NetTypeBundle (List<NetTypeBundle> tupleElements, bool isReference)
@@ -41,13 +43,15 @@ namespace SwiftReflector.TypeMapping {
 			TupleTypes.AddRange (Exceptions.ThrowOnNull (tupleElements, "tupleElements"));
 		}
 
-		public NetTypeBundle (string nameSpace, string entityName, EntityType entity, bool isReference, IEnumerable<NetTypeBundle> genericTypes)
+		public NetTypeBundle (string nameSpace, string entityName, EntityType entity, bool isReference, IEnumerable<NetTypeBundle> genericTypes,
+			bool swiftThrows = false)
 			: this (nameSpace, entityName, false, isReference, entity)
 		{
 			GenericIndex = -1;
 			this.genericTypes.AddRange (genericTypes);
 			if (this.genericTypes.Count == 0)
 				throw new ArgumentOutOfRangeException (nameof (genericTypes), "Generic NetBundle constructor needs actual generic types.");
+			Throws = swiftThrows;
 		}
 
 		public NetTypeBundle (int depth, int index)
@@ -108,6 +112,7 @@ namespace SwiftReflector.TypeMapping {
 		public ProtocolDeclaration AssociatedTypeProtocol { get; private set; }
 		public AssociatedTypeDeclaration AssociatedType { get; private set; }
 		public bool IsAssociatedType {  get { return AssociatedTypeProtocol != null; } }
+		public bool Throws { get; private set; }
 		public bool ContainsGenericParts {
 			get {
 				return genericTypes.Count > 0;

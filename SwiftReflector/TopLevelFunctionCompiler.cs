@@ -12,6 +12,7 @@ using SwiftReflector.SwiftXmlReflection;
 using SwiftRuntimeLibrary;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
+using SwiftRuntimeLibrary.SwiftMarshal;
 
 namespace SwiftReflector {
 	public class TopLevelFunctionCompiler {
@@ -77,6 +78,7 @@ namespace SwiftReflector {
 				setterBlock = new CSCodeBlock (uselessLine);
 
 			CSProperty theProp = null;
+			var csPropType = propertyType.ToCSType (packs);
 			if (isSubscript) {
 				List<ParameterItem> swiftParms = null;
 				if (getter != null) {
@@ -92,14 +94,16 @@ namespace SwiftReflector {
 						args.Select (a =>
 							new CSParameter (a.Type.ToCSType (packs),
 								new CSIdentifier (a.Name), a.Type.IsReference ? CSParameterKind.Ref : CSParameterKind.None, null)));
-				theProp = new CSProperty (propertyType.ToCSType (packs), methodKind, CSVisibility.Public, getterBlock,
+				theProp = new CSProperty (csPropType, methodKind, CSVisibility.Public, getterBlock,
 					CSVisibility.Public, setterBlock, csParams);
 
 
 			} else {
-				theProp = new CSProperty (propertyType.ToCSType (packs), methodKind,
+				theProp = new CSProperty (csPropType, methodKind,
 					new CSIdentifier (propertyName), CSVisibility.Public, getterBlock, CSVisibility.Public, setterBlock);
 			}
+			if (propertyType.Throws)
+				DecoratePropWithThrows (theProp, packs);
 			if (getterBlock != null)
 				getterBlock.Clear ();
 			if (setterBlock != null)
@@ -235,11 +239,16 @@ namespace SwiftReflector {
 				AddUsingBlock (packs, returnType);
 
 			CSType csReturnType = returnType.IsVoid ? CSSimpleType.Void : returnType.ToCSType (packs);
-			var csParams =
-				new CSParameterList (
-					args.Select (a =>
-						new CSParameter (a.Type.ToCSType (packs),
-							new CSIdentifier (a.Name), a.Type.IsReference ? CSParameterKind.Ref : CSParameterKind.None, null)));
+
+			var csParams = new CSParameterList ();
+			foreach (var arg in args) {
+				var csType = arg.Type.ToCSType (packs);
+				if (arg.Type.Throws)
+					csType = DecorateTypeWithThrows (csType, packs);
+				csParams.Add (new CSParameter (csType, new CSIdentifier (arg.Name),
+					arg.Type.IsReference ? CSParameterKind.Ref : CSParameterKind.None, null));
+
+			}
 
 			if (isPinvoke) {
 				AddExtraGenericArguments (func, csParams, packs);
@@ -311,6 +320,8 @@ namespace SwiftReflector {
 					retval.GenericParameters.AddRange (extraProtoArgs);
 					retval.GenericConstraints.AddRange (extraProtoConstraints);
 				}
+				if (TypeSpecCanThrow (func.ReturnTypeSpec, isPinvoke))
+					DecorateReturnWithThrows (retval, packs);
 				return retval;
 			}
 		}
@@ -455,6 +466,35 @@ namespace SwiftReflector {
 					args [i] = new NetParam (args [i].Name, bundle);
 				}
 			}
+		}
+
+		public static bool TypeSpecCanThrow (TypeSpec t, bool isPinvoke)
+		{
+			if (t == null)
+				return false;
+			return !isPinvoke && t is ClosureTypeSpec cl && cl.Throws;
+		}
+
+		public static T DecorateTypeWithThrows<T> (T csType, CSUsingPackages usingPacks) where T : CSType
+		{
+			Dynamo.Exceptions.ThrowOnNull (csType, nameof (csType));
+			usingPacks.AddIfNotPresent (typeof (SwiftThrowsAttribute));
+			new CSAttribute (new CSIdentifier ("SwiftThrows"), null, isSingleLine: false).AttachBefore (csType);
+			return csType;
+		}
+
+		public static void DecorateReturnWithThrows (ICodeElement elem, CSUsingPackages usingPacks)
+		{
+			Dynamo.Exceptions.ThrowOnNull (elem, nameof (elem));
+			usingPacks.AddIfNotPresent (typeof (SwiftThrowsAttribute));
+			new CSAttribute (new CSIdentifier ("SwiftThrows"), null, isSingleLine: true, isReturn: true).AttachBefore (elem);
+		}
+
+		public static void DecoratePropWithThrows (ICodeElement elem, CSUsingPackages usingPacks)
+		{
+			Dynamo.Exceptions.ThrowOnNull (elem, nameof (elem));
+			usingPacks.AddIfNotPresent (typeof (SwiftThrowsAttribute));
+			new CSAttribute (new CSIdentifier ("SwiftThrows"), null, isSingleLine: true).AttachBefore (elem);
 		}
 	}
 }

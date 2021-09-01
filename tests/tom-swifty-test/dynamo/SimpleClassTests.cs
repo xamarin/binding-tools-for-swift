@@ -79,7 +79,7 @@ namespace dynamotests {
 		public void ClassWithSingleDeclAllTypes ()
 		{
 			foreach (MethodInfo mi in typeof (CSType).GetMethods ().Where (mii => mii.IsStatic && mii.IsPublic &&
-				   mii.ReturnType == typeof (CSType))) {
+				   mii.ReturnType == typeof (CSType) && mii.Name != "Copy")) {
 				CSType cs = mi.Invoke (null, null) as CSType;
 				if (cs != null)
 					DeclType (cs);

@@ -15,6 +15,17 @@ namespace Dynamo.CSLang {
 		public abstract CSFunctionCall Typeof ();
 		public abstract CSFunctionCall Default ();
 		public abstract CSFunctionCall Ctor ();
+
+		public static CSType Copy (CSType csType)
+		{
+			if (csType is CSSimpleType csSimpleType) {
+				return new CSSimpleType (csSimpleType);
+			}
+			if (csType is CSGenericReferenceType csGen) {
+				return new CSGenericReferenceType (csGen);
+			}
+			throw new NotImplementedException ($"Type {csType.GetType ().Name} needs a copy constructor");
+		}
 	}
 
 	public class CSSimpleType : CSType {
@@ -25,6 +36,17 @@ namespace Dynamo.CSLang {
 		public CSSimpleType (string name)
 			: this (name, false)
 		{
+		}
+
+		public CSSimpleType (CSSimpleType csSimpleType)
+			: this (csSimpleType.Name, csSimpleType.IsArray)
+		{
+			if (csSimpleType.GenericTypes != null) {
+				GenericTypes = new CSType [csSimpleType.GenericTypes.Length];
+				for (int i = 0; i < GenericTypes.Length; i++) {
+					GenericTypes [i] = CSType.Copy (csSimpleType.GenericTypes [i]);
+				}
+			}
 		}
 
 		public CSSimpleType (string name, bool isArray)
@@ -159,6 +181,15 @@ namespace Dynamo.CSLang {
 			Depth = depth;
 			Index = index;
 			InterfaceConstraints = new List<CSType> ();
+		}
+
+		public CSGenericReferenceType (CSGenericReferenceType csGeneric)
+			: this (csGeneric.Depth, csGeneric.Index)
+		{
+			foreach (var elem in csGeneric.InterfaceConstraints) {
+				InterfaceConstraints.Add (CSType.Copy (elem));
+			}
+			ReferenceNamer = csGeneric.ReferenceNamer;
 		}
 
 		// this doesn't really belong here, but I'm going to need it.

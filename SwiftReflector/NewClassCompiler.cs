@@ -491,6 +491,8 @@ namespace SwiftReflector {
 				wrapperProp = TLFCompiler.CompileProperty (prop.Name, use,
 									       propType, piGetter != null, piSetter != null,
 									       prop.IsStatic ? CSMethodKind.Static : CSMethodKind.None);
+				if (TopLevelFunctionCompiler.TypeSpecCanThrow (getter.ReturnTypeSpec, false))
+					TopLevelFunctionCompiler.DecorateTypeWithThrows (wrapperProp.PropType, use);
 			}
 
 			if (piGetter != null) {
@@ -4864,6 +4866,10 @@ namespace SwiftReflector {
 			publicMethod = CSMethod.CopyGenerics (publicMethod, new CSMethod (publicMethod.Visibility, CSMethodKind.Virtual, publicMethod.Type,
 			                             new CSIdentifier(publicMethod.Name.Name + homonymSuffix), publicMethod.Parameters,
 			                             publicMethod.Body));
+
+			if (TopLevelFunctionCompiler.TypeSpecCanThrow (funcDecl.ReturnTypeSpec, false))
+				TopLevelFunctionCompiler.DecorateReturnWithThrows (publicMethod, use);
+
 			var call = new CSFunctionCall (superCallName + homonymSuffix, false, publicMethod.Parameters.Select (p => p.Name).ToArray ());
 			publicMethod.Body.Add (publicMethod.Type == null || publicMethod.Type == CSSimpleType.Void ? new CSLine (call) : CSReturn.ReturnLine (call));
 			cl.Methods.Add (publicMethod);
@@ -4902,6 +4908,8 @@ namespace SwiftReflector {
 			if (forcePrivate) {
 				publicMethod = new CSMethod (CSVisibility.None, publicMethod.Kind, publicMethod.Type,
 							publicMethod.Name, publicMethod.Parameters, publicMethod.Body);
+				if (TopLevelFunctionCompiler.TypeSpecCanThrow (methodToWrap.ReturnTypeSpec, false))
+					TopLevelFunctionCompiler.DecorateReturnWithThrows (publicMethod, use);
 			}
 
 			var localIdentifiers = new List<string> {
@@ -5022,6 +5030,8 @@ namespace SwiftReflector {
 
 			publicMethod = CSMethod.CopyGenerics (publicMethod, new CSMethod (forcePrivate ? CSVisibility.None : publicMethod.Visibility, publicMethod.Kind, publicMethod.Type,
 			                                                                  new CSIdentifier(publicMethod.Name.Name + homonymSuffix), publicMethod.Parameters, publicMethod.Body));
+			if (TopLevelFunctionCompiler.TypeSpecCanThrow (funcToWrap.ReturnTypeSpec, false))
+				TopLevelFunctionCompiler.DecorateReturnWithThrows (publicMethod, use);
 
 			if (funcToWrap.Parent is ClassDeclaration classDeclaration) {
 				if (classDeclaration.HasImportedOverride (publicMethod, TypeMapper)) {

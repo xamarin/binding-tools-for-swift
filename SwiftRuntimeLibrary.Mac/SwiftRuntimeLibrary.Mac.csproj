@@ -286,6 +286,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\ISwiftValueType.cs">
       <Link>ISwiftValueType.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftThrowsAttribute.cs">
+      <Link>SwiftMarshal\SwiftThrowsAttribute.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />

@@ -291,6 +291,9 @@
     <Compile Include="..\SwiftRuntimeLibrary\ISwiftValueType.cs">
       <Link>ISwiftValueType.cs</Link>
     </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftThrowsAttribute.cs">
+      <Link>SwiftMarshal\SwiftThrowsAttribute.cs</Link>
+    </Compile>
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.iOS.cs">
     <Exec Command="make --directory=../SwiftRuntimeLibrary create-pinvokes-ios configuration=$(Configuration)" />
