@@ -713,5 +713,20 @@ public func printSandwich (of: Bread, with: Filling) {
 			TestRunning.TestAndExecute (swiftCode, callingCode, "ham on whole wheat\n", otherClass: altClass,
 				generateDeviceTest: false);
 		}
+
+
+		[Test]
+		public void BasicIterator ()
+		{
+			var swiftCode = @"
+public protocol MyIterator {
+	associatedtype Element
+	func next () -> Self.Element?
+}
+";
+			var printIt = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Got here"));
+			var callingCode = CSCodeBlock.Create (printIt);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here\n");
+		}
 	}
 }
