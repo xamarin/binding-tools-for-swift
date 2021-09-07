@@ -153,7 +153,7 @@ namespace SwiftReflector {
 							postMarshalCode.Add (SLReturn.ReturnLine (returnIdent));
 						}
 					} else {
-						if (func.IsTypeSpecGeneric (returnTypeSpec)) {
+						if (func.IsTypeSpecGenericReference (returnTypeSpec)) {
 							imports.AddIfNotPresent ("XamGlue");
 							// dealing with a generic here.
 							// UnsafeMutablePointer<T> retval = UnsafeMutablePointer<T>.alloc(1)
@@ -242,6 +242,9 @@ namespace SwiftReflector {
 							case TypeSpecKind.ProtocolList:
 							case TypeSpecKind.Tuple:
 							case TypeSpecKind.Named:
+								if (func.IsTypeSpecGeneric (returnTypeSpec) && GenericRenamer != null) {
+									returnTypeSpec = GenericRenamer.Rename (returnTypeSpec);
+								}
 								var namedReturn = returnTypeSpec as NamedTypeSpec;
 								// enums and structs can't get returned directly
 								// instead they will be inserted at the head of the argument list
@@ -484,6 +487,7 @@ namespace SwiftReflector {
 		}
 
 		public string SubstituteForSelf { get; set; }
+		public GenericReferenceRenamer GenericRenamer { get; set; }
 	}
 }
 

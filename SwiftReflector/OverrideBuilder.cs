@@ -1252,6 +1252,7 @@ namespace SwiftReflector {
 
 			var marshal = new MarshalEngineSwiftToCSharp (Imports, idents, typeMapper);
 			marshal.SubstituteForSelf = SubstituteForSelf;
+			marshal.GenericRenamer = new GenericReferenceRenamer (func, SLGenericReferenceType.DefaultNamer);
 			ifblock.AddRange (marshal.MarshalFunctionCall (func,
 								      vtRef, VTableEntryIdentifier (index)));
 
@@ -1292,7 +1293,7 @@ namespace SwiftReflector {
 
 			SLType returnType = null;
 			var returnTypeSpec = func.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf);
-			if (func.IsTypeSpecGeneric (returnTypeSpec)) {
+			if (func.IsTypeSpecGenericReference (returnTypeSpec)) {
 				var ns = (NamedTypeSpec)returnTypeSpec;
 				var depthIndex = func.GetGenericDepthAndIndex (ns.Name);
 				returnType = new SLGenericReferenceType (depthIndex.Item1, depthIndex.Item2);

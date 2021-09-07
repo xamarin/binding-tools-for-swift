@@ -51,7 +51,7 @@ namespace Dynamo.CSLang {
 
 		public CSSimpleType (string name, bool isArray)
 		{
-			Name = Exceptions.ThrowOnNull (name, "name") + (isArray ? "[]" : "");
+			hiddenName = Exceptions.ThrowOnNull (name, "name") + (isArray ? "[]" : "");
 		}
 
 		public static explicit operator CSSimpleType (string name)
@@ -68,25 +68,8 @@ namespace Dynamo.CSLang {
 		{
 			IsGeneric = genericSpecialization != null && genericSpecialization.Length > 0;
 			GenericTypes = genericSpecialization;
-			GenericTypeName = name;
+			GenericTypeName = Exceptions.ThrowOnNull (name, nameof (name));
 			IsArray = isArray;
-
-			StringBuilder sb = new StringBuilder ();
-			sb.Append (Exceptions.ThrowOnNull (name, "name"));
-			if (genericSpecialization != null && genericSpecialization.Length > 0) {
-				sb.Append ("<");
-				int i = 0;
-				foreach (CSType type in genericSpecialization) {
-					if (i > 0)
-						sb.Append (", ");
-					sb.Append (type.ToString ());
-					i++;
-				}
-				sb.Append (">");
-			}
-			if (isArray)
-				sb.Append ("[]");
-			Name = sb.ToString ();
 		}
 
 		public CSSimpleType (string name, bool isArray, params string [] genericSpecialization)
@@ -94,11 +77,36 @@ namespace Dynamo.CSLang {
 		{
 		}
 
-		public string Name { get; private set; }
+		string hiddenName;
+		public string Name {
+			get {
+				return hiddenName ?? GenerateName ();
+			}
+		}
 		public bool IsGeneric { get; private set; }
 		public string GenericTypeName { get; private set; }
 		public CSType [] GenericTypes { get; private set; }
 		public bool IsArray { get; private set; }
+
+		string GenerateName ()
+		{
+			StringBuilder sb = new StringBuilder ();
+			sb.Append (GenericTypeName);
+			if (GenericTypes != null && GenericTypes.Length > 0) {
+				sb.Append ("<");
+				int i = 0;
+				foreach (CSType type in GenericTypes) {
+					if (i > 0)
+						sb.Append (", ");
+					sb.Append (type.ToString ());
+					i++;
+				}
+				sb.Append (">");
+			}
+			if (IsArray)
+				sb.Append ("[]");
+			return sb.ToString ();
+		}
 
 		protected override void LLWrite (ICodeWriter writer, object o)
 		{

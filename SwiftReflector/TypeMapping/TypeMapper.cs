@@ -590,8 +590,18 @@ namespace SwiftReflector.TypeMapping {
 					if (isPinvoke) {
 						return new NetTypeBundle ("System", "IntPtr", false, named.IsInOut, EntityType.None);
 					} else {
-						var assocType = context.AssociatedTypeDeclarationFromNamedTypeSpec (named);
-						return new NetTypeBundle (context.AsProtocolOrParentAsProtocol (), assocType, named.IsInOut);
+						if (named.ContainsGenericParameters) {
+							var en = TypeDatabase.EntityForSwiftName (named.Name);
+							var retval = new NetTypeBundle (en.SharpNamespace, en.SharpTypeName, false, spec.IsInOut, en.EntityType);
+							foreach (var gen in named.GenericParameters) {
+								var genNtb = MapType (context, gen, isPinvoke, isReturnValue);
+								retval.GenericTypes.Add (genNtb);
+							}
+							return retval;
+						} else {
+							var assocType = context.AssociatedTypeDeclarationFromNamedTypeSpec (named);
+							return new NetTypeBundle (context.AsProtocolOrParentAsProtocol (), assocType, named.IsInOut);
+						}
 					}
 				} else if (named.Name == "Self") {
 					if (isPinvoke) {

@@ -188,6 +188,7 @@
     <Compile Include="CompilationTargetCollection.cs" />
     <Compile Include="CompilationSettings.cs" />
     <Compile Include="IOUtils\Directories.cs" />
+    <Compile Include="GenericReferenceRenamer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

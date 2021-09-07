@@ -234,7 +234,7 @@ namespace SwiftReflector {
 			}
 			changed = nameChanged || genArgsChanged;
 			if (changed) {
-				return new NamedTypeSpec (newName, newGenParms);
+				return new NamedTypeSpec (newName ?? type.Name, newGenParms);
 			}
 			return type;
 		}
