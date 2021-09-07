@@ -17,8 +17,7 @@ namespace SwiftReflector {
 
 		public TypeSpec Rename (TypeSpec type)
 		{
-			bool changed;
-			var newType = Rename (type, out changed);
+			var newType = Rename (type, out bool changed);
 			return changed ? newType : type;
 		}
 
