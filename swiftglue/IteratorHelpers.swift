@@ -7,11 +7,8 @@ fileprivate var _vtable: [TypeCacheKey : SwiftIteratorProtocol_xam_vtable]
     = [TypeCacheKey : SwiftIteratorProtocol_xam_vtable]();
 
 fileprivate struct SwiftIteratorProtocol_xam_vtable
-{
-    
-    fileprivate var 
-    func0: (@convention(c)(UnsafeRawPointer, 
-        UnsafeRawPointer) -> ())?;
+{   
+	fileprivate var func0: (@convention(c)(UnsafeRawPointer, UnsafeRawPointer) -> ())?;
 }
 
 public final class SwiftIteratorProtocolProtocol<T0> : IteratorProtocol
