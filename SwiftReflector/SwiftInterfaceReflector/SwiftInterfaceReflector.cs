@@ -994,9 +994,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void ExitTypealias_declaration ([NotNull] Typealias_declarationContext context)
 		{
-			// only care about top level typealiases
-			if (currentElement.Peek ().Name != kModule)
-				return;
 			var name = UnTick (context.typealias_name ().GetText ());
 			var generics = context.generic_parameter_clause ()?.GetText () ?? "";
 			var targetType = context.typealias_assignment ().type ().GetText ();
@@ -1004,8 +1001,19 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var map = new XElement (kTypeAlias, new XAttribute (kName, name + generics),
 				new XAttribute (kAccessibility, access),
 				new XAttribute (kType, targetType));
-			if (access != null)
-			typeAliasMap.Add (map);
+			if (access != null) {
+				if (currentElement.Peek ().Name == kModule) {
+					typeAliasMap.Add (map);
+				}  else {
+					var curr = currentElement.Peek ();
+					var aliaslist = curr.Element (kTypeAliases);
+					if (aliaslist == null) {
+						aliaslist = new XElement (kTypeAliases);
+						curr.Add (aliaslist);
+					}
+					aliaslist.Add (map);
+				}
+			}
 		}
 
 		XElement MakeConformanceWhere (string name, string from)

@@ -264,9 +264,6 @@
     <Compile Include="..\SwiftRuntimeLibrary\SwiftTypeRegistry.cs">
       <Link>SwiftTypeRegistry.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftRuntimeLibrary\SwiftIteratorProtocol.cs">
-      <Link>SwiftIteratorProtocol.cs</Link>
-    </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftProtocolConformanceDescriptor.cs">
       <Link>SwiftMarshal\SwiftProtocolConformanceDescriptor.cs</Link>
     </Compile>
@@ -293,6 +290,12 @@
     </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftThrowsAttribute.cs">
       <Link>SwiftMarshal\SwiftThrowsAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\ISwiftIteratorProtocol.cs">
+      <Link>ISwiftIteratorProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftIteratorProtocolProxy.cs">
+      <Link>SwiftIteratorProtocolProxy.cs</Link>
     </Compile>
   </ItemGroup>
   <Target Name="GeneratedCSCode" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="GeneratedCode\BindingMetadata.iOS.cs">
