@@ -211,8 +211,9 @@ namespace SwiftReflector.SwiftXmlReflection {
 					       select SwiftReflector.SwiftXmlReflection.Inheritance.FromXElement (folder, inherit) as Inheritance;
 				decl.Inheritance.AddRange (inherits);
 			}
-			if (elem.Element ("typealiases") != null) {
-				var aliases = from alias in elem.Element ("typealiases").Elements ()
+			var typealiases = elem.Element ("typealiases");
+			if (typealiases != null) {
+				var aliases = from alias in typealiases.Elements ()
 					      select TypeAliasDeclaration.FromXElement (module.Name, alias);
 				decl.TypeAliases.AddRange (aliases);
 			}

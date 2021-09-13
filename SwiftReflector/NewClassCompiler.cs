@@ -5410,13 +5410,15 @@ namespace SwiftReflector {
 		{
 			var aliases = decl.TypeAliases;
 			var result = new List<string> ();
+			var protoName = proto.ToFullyQualifiedName ();
 			foreach (var assoc in proto.AssociatedTypes) {
+				var possibleTypeName = $"{protoName}.{assoc.Name}";
 				foreach (var alias in aliases) {
 					var namedTypeSpec = alias.TypeSpec as NamedTypeSpec;
 					if (namedTypeSpec == null)
 						throw new NotImplementedException ("You should never get an alias name that is not a NamedTypeSpec");
 					var typeName = namedTypeSpec.NameWithoutModule;
-					if (typeName == assoc.Name || typeName == $"{proto.ToFullyQualifiedName ()}.{assoc.Name}") {
+					if (typeName == assoc.Name || typeName == possibleTypeName) {
 						var ntb = TypeMapper.MapType (decl, alias.TargetTypeSpec, false);
 						var csType = ntb.ToCSType (use);
 						result.Add (csType.ToString ());
