@@ -151,6 +151,13 @@
         <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="SwiftMetatype" entityType="Scalar" blitable="Blitable" size="8" stride="8">
             <typedeclaration kind="struct" name="Any.Type" module="Any" accessibility="Public" isObjC="false" isFinal="true" />
         </entity>
+        <entity sharpNameSpace="SwiftRuntimeLibrary" sharpTypeName="ISwiftIteratorProtocol" entityType="Protocol" discretionaryConstraint="false" blitable="NonBlitable" size="0" stride="0">
+        	<typedeclaration kind="protocol" name="Swift.IteratorProtocol" module="Swift" accessibility="Public" isObjC="false" isFinal="true">
+			<associatedtypes>
+				<associatedtype name="Element" />
+			</associatedtypes>
+		</typedeclaration>
+        </entity>
         <!-- Taken from https://developer.apple.com/documentation/swift/swift_standard_library/operator_declarations -->
         <!-- prefix -->
         <operator name="!" operatorKind="Prefix" moduleName="Swift" />

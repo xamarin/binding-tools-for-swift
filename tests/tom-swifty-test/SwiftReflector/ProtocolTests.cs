@@ -38,7 +38,7 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleMethod{type}", otherClass: overCS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSingleMethod{type}", otherClass: overCS);
 		}
 
 		[Test]
@@ -88,8 +88,8 @@ namespace SwiftReflector {
 			overCS.Inheritance.Add (new CSIdentifier ($"IMontyWSGO{type}"));
 			CSParameterList overParams = new CSParameterList ();
 			overParams.Add (new CSParameter (CSSimpleType.Int, "i"));
-			CSCodeBlock overBody = CSCodeBlock.Create (CSReturn.ReturnLine (new CSTernary(new CSIdentifier("i") == CSConstant.Val(0),
-		    	new CSIdentifier(csReplacement), new CSIdentifier(csAlt), false)));
+			CSCodeBlock overBody = CSCodeBlock.Create (CSReturn.ReturnLine (new CSTernary (new CSIdentifier ("i") == CSConstant.Val (0),
+		    	new CSIdentifier (csReplacement), new CSIdentifier (csAlt), false)));
 			CSProperty overProp = new CSProperty (new CSSimpleType (csType), CSMethodKind.None, CSVisibility.Public,
 			    overBody, CSVisibility.Public, null, overParams);
 
@@ -101,7 +101,7 @@ namespace SwiftReflector {
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSingleSubscriptGetOnly{type}", otherClass : overCS,
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSingleSubscriptGetOnly{type}", otherClass: overCS,
 				platform: PlatformName.macOS);
 		}
 
@@ -162,7 +162,7 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSinglePropertyGetOnly{appendage}", otherClass : overCS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSinglePropertyGetOnly{appendage}", otherClass: overCS);
 		}
 
 		[Test]
@@ -221,7 +221,7 @@ namespace SwiftReflector {
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
 			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, initer, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSinglePropertyGetSetOnly{type}", otherClass : overCS);
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSinglePropertyGetSetOnly{type}", otherClass: overCS);
 		}
 
 		[Test]
@@ -283,9 +283,9 @@ namespace SwiftReflector {
 			CSLine decl = CSVariableDeclaration.VarLine (new CSSimpleType ($"OverWSubSGO{type}"), "myOver", new CSFunctionCall ($"OverWSubSGO{type}", true));
 			CSLine decl1 = CSVariableDeclaration.VarLine (new CSSimpleType ($"TestMontyWSubSGO{type}"), "tester", new CSFunctionCall ($"TestMontyWSubSGO{type}", true));
 			CSLine invoker = CSFunctionCall.FunctionCallLine ("tester.DoIt", false, new CSIdentifier ("myOver"));
-			CSCodeBlock callingCode = CSCodeBlock .Create (decl, decl1, invoker);
+			CSCodeBlock callingCode = CSCodeBlock.Create (decl, decl1, invoker);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName : $"WrapSubscriptGetSetOnly{type}", otherClass : overCS,
+			TestRunning.TestAndExecute (swiftCode, callingCode, expected, testName: $"WrapSubscriptGetSetOnly{type}", otherClass: overCS,
 				platform: PlatformName.macOS);
 		}
 
@@ -326,7 +326,7 @@ namespace SwiftReflector {
 		}
 
 		[Test]
-		[Ignore("Taking offline until protocols are redone")]
+		[Ignore ("Taking offline until protocols are redone")]
 		public void CustomStringConvertibleTest ()
 		{
 			var swiftCode = TestRunningCodeGenerator.kSwiftFileWriter +
@@ -336,14 +336,14 @@ namespace SwiftReflector {
 
 			var convertible = new CSClass (CSVisibility.Public, "MyConvert");
 			convertible.Inheritance.Add (new CSIdentifier ("ICustomStringConvertible"));
-			var getBody = CSCodeBlock.Create (CSReturn.ReturnLine (new CSFunctionCall("SwiftString.FromString", false, CSConstant.Val ("I did it!"))));
+			var getBody = CSCodeBlock.Create (CSReturn.ReturnLine (new CSFunctionCall ("SwiftString.FromString", false, CSConstant.Val ("I did it!"))));
 			var declProp = new CSProperty (new CSSimpleType (typeof (SwiftString)), CSMethodKind.None, new CSIdentifier ("Description"),
 							     CSVisibility.Public, getBody, CSVisibility.Public, null);
 			convertible.Properties.Add (declProp);
 			var caller = CSFunctionCall.FunctionCallLine ("TopLevelEntities.PrintIt", false, new CSFunctionCall ("MyConvert", true));
 			var callingCode = CSCodeBlock.Create (caller);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "I did it!", otherClass : convertible);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "I did it!", otherClass: convertible);
 		}
 
 		[Test]
@@ -533,7 +533,7 @@ namespace SwiftReflector {
 				"   @objc func Everything () -> Int {\n" +
 				"       return x\n" +
 				"   }\n" +
-				"}\n"+
+				"}\n" +
 				"public func makeIt (a: Int) -> LifeTheUniverseAnd {\n" +
 				"    return Liff(z: a)\n" +
 				"}\n" +
@@ -586,9 +586,9 @@ public class FilmStrip<T: Interpolatable> where T.ValueType == T {
 			var printIt = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("No smoke"));
 			var callingCode = CSCodeBlock.Create (printIt);
 			// expected errors:
-	    		// associated type
+			// associated type
 			// equality constraint
-	    		// skipping FilmString (due to previous errors)
+			// skipping FilmString (due to previous errors)
 			TestRunning.TestAndExecute (swiftCode, callingCode, "No smoke\n", expectedErrorCount: 1);
 		}
 
@@ -605,7 +605,7 @@ public protocol Useless {
 			var getter = CSFunctionCall.FunctionCallLine ("SwiftProtocolTypeAttribute.DescriptorForType", false,
 				new CSSimpleType ("IUseless").Typeof ());
 			var printer = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("OK"));
-		
+
 			var callingCode = CSCodeBlock.Create (getter, printer);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "OK\n");
 		}
@@ -719,7 +719,7 @@ public func printSandwich (of: Bread, with: Filling) {
 		public void BasicIterator ()
 		{
 			var swiftCode = @"
-public protocol MyIterator {
+public protocol SwiftIteratorProtocol {
 	associatedtype Element
 	func next () -> Self.Element?
 }
@@ -727,6 +727,79 @@ public protocol MyIterator {
 			var printIt = CSFunctionCall.ConsoleWriteLine (CSConstant.Val ("Got here"));
 			var callingCode = CSCodeBlock.Create (printIt);
 			TestRunning.TestAndExecute (swiftCode, callingCode, "Got here\n");
+		}
+
+
+		[Test]
+		public void IntIterator ()
+		{
+			var swiftCode = @"
+public class IntIterator : IteratorProtocol
+{
+    public typealias Element = Int
+    private var count:Int
+    private var curr = -1
+    
+    public init (count:Int)
+    {
+        self.count = count
+    }
+    
+    public func next () -> Int?
+    {
+        if (count <= 0) {
+            return nil;
+        }
+        curr = curr + 1
+        count = count - 1
+        return curr
+    }
+}
+";
+			// var it = new IntIterator (4);
+			// foreach (var value in it.AsEnumerable()) {
+			//	Console.WriteLine (value);
+			// }
+
+			var itId = new CSIdentifier ("it");
+			var itDecl = CSVariableDeclaration.VarLine (itId, new CSFunctionCall ("IntIterator", true,
+				new CSCastExpression ("nint", CSConstant.Val (4))));
+
+			var valueId = new CSIdentifier ("value");
+			var forEachBody = CSCodeBlock.Create (CSFunctionCall.ConsoleWriteLine (valueId));
+			var forEach = new CSForEach (CSSimpleType.Var, valueId, new CSFunctionCall ($"{itId.Name}.AsIEnumerable", false), forEachBody);
+
+			var callingCode = CSCodeBlock.Create (itDecl, forEach);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "0\n1\n2\n3\n");
+		}
+
+		[Test]
+		[Ignore ("See issue - https://github.com/xamarin/binding-tools-for-swift/issues/767")]
+		public void TestCSIterator ()
+		{
+			var swiftCode = @"
+public func printIteratorToString<T>(thing: inout T) -> String where T:IteratorProtocol {
+    var s = """";
+    while let t = thing.next() {
+        print (t, to: &s)
+    }
+    return s
+}";
+			// var ints = new nint [] { 0, 1, 2, 3 };
+			// var output = PrintIteratorToString(ints.AsISwiftIteratorProtocol ());
+			// Console.Write(output);
+
+			var intsId = new CSIdentifier ("ints");
+			var intsDecl = CSVariableDeclaration.VarLine (intsId,
+				new CSArray1DInitialized ("nint", CSConstant.Val (0), CSConstant.Val (1),
+				CSConstant.Val (2), CSConstant.Val (3)));
+			var outId = new CSIdentifier ("output");
+			var outDecl = CSVariableDeclaration.VarLine (outId, new CSFunctionCall ($"{intsId.Name}.AsISwiftIteratorProtocol", false));
+
+			var printer = CSFunctionCall.FunctionCallLine ("Console.Write", outId);
+
+			var callingCode = CSCodeBlock.Create (intsDecl, outDecl, printer);
+			TestRunning.TestAndExecute (swiftCode, callingCode, "0\n1\n2\n3\n");
 		}
 	}
 }

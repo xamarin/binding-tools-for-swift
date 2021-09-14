@@ -23,6 +23,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			InnerEnums = new List<EnumDeclaration> ();
 			Members = new List<Member> ();
 			Inheritance = new List<Inheritance> ();
+			TypeAliases = new List<TypeAliasDeclaration> ();
 		}
 
 		public TypeKind Kind { get; set; }
@@ -31,6 +32,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public List<ClassDeclaration> InnerClasses { get; set; }
 		public List<StructDeclaration> InnerStructs { get; set; }
 		public List<EnumDeclaration> InnerEnums { get; set; }
+		public List<TypeAliasDeclaration> TypeAliases { get; set; }
 		public bool IsObjC { get; set; }
 		public bool IsFinal { get; set; }
 		public bool IsDeprecated { get; set; }
@@ -167,6 +169,10 @@ namespace SwiftReflector.SwiftXmlReflection {
 			xobjects.Add (new XElement ("members", memcontents.ToArray ()));
 			List<XObject> inherits = new List<XObject> (Inheritance.Select (i => i.ToXElement ()));
 			xobjects.Add (new XElement ("inherits", inherits.ToArray ()));
+			if (TypeAliases.Count > 0) {
+				var aliases = new List<XObject> (TypeAliases.Select (a => a.ToXElement ()));
+				xobjects.Add (new XElement ("typealiases", aliases.ToArray ()));
+			}
 		}
 
 		#endregion
@@ -204,6 +210,12 @@ namespace SwiftReflector.SwiftXmlReflection {
 				var inherits = from inherit in elem.Element ("inherits").Elements ()
 					       select SwiftReflector.SwiftXmlReflection.Inheritance.FromXElement (folder, inherit) as Inheritance;
 				decl.Inheritance.AddRange (inherits);
+			}
+			var typealiases = elem.Element ("typealiases");
+			if (typealiases != null) {
+				var aliases = from alias in typealiases.Elements ()
+					      select TypeAliasDeclaration.FromXElement (module.Name, alias);
+				decl.TypeAliases.AddRange (aliases);
 			}
 			EnumDeclaration edecl = decl as EnumDeclaration;
 			if (edecl != null) {

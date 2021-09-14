@@ -5406,6 +5406,28 @@ namespace SwiftReflector {
 			}
 		}
 
+		List<string> GetBoundGenericsForAssociatedTypes (TypeDeclaration decl, ProtocolDeclaration proto, CSUsingPackages use)
+		{
+			var aliases = decl.TypeAliases;
+			var result = new List<string> ();
+			var protoName = proto.ToFullyQualifiedName ();
+			foreach (var assoc in proto.AssociatedTypes) {
+				var possibleTypeName = $"{protoName}.{assoc.Name}";
+				foreach (var alias in aliases) {
+					var namedTypeSpec = alias.TypeSpec as NamedTypeSpec;
+					if (namedTypeSpec == null)
+						throw new NotImplementedException ("You should never get an alias name that is not a NamedTypeSpec");
+					var typeName = namedTypeSpec.NameWithoutModule;
+					if (typeName == assoc.Name || typeName == possibleTypeName) {
+						var ntb = TypeMapper.MapType (decl, alias.TargetTypeSpec, false);
+						var csType = ntb.ToCSType (use);
+						result.Add (csType.ToString ());
+					}
+				}
+			}
+			return result;
+		}
+
 		void AddInheritedProtocols (TypeDeclaration decl, CSClass cl, ClassContents classContents, string trimmedLibPath,
 		                            CSUsingPackages use, ErrorHandling errors)
 		{
@@ -5423,8 +5445,19 @@ namespace SwiftReflector {
 				string itemName = null;
 				if (iface.Namespace == typeof (SwiftError).Namespace && iface.TypeName == typeof (SwiftError).Name)
 					itemName = "ISwiftError";
-				else
-					itemName = iface.TypeName;
+				else {
+					var entity = TypeMapper.GetEntityForTypeSpec (inh.InheritedTypeSpec);
+					if (entity == null || entity.Type is ProtocolDeclaration proto && proto.AssociatedTypes.Count == 0) {
+						itemName = iface.TypeName;
+					} else {
+						var boundTypes = GetBoundGenericsForAssociatedTypes (decl, entity.Type as ProtocolDeclaration, use);
+						var sb = new StringBuilder ();
+						sb.Append (iface.TypeName).Append ('<');
+						sb.Append (boundTypes.InterleaveCommas ());
+						sb.Append ('>');
+						itemName = sb.ToString ();
+					}
+				}
 				return new CSIdentifier (itemName);
 			}));
 
