@@ -1654,7 +1654,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return flagsValue;
 		}
 
-		static string [] ModulesThatWeCanSkip = new string [] {
+		static HashSet<string> ModulesThatWeCanSkip = new HashSet<string> () {
 			"XamGlue",
 			"RegisterAccess",
 			"_StringProcessing",
