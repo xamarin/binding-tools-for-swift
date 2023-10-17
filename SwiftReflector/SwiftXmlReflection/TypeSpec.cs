@@ -49,6 +49,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 		public List<TypeSpecAttribute> Attributes { get; private set; }
 		public bool HasAttributes { get { return Attributes.Count != 0; } }
 		public bool IsInOut { get; set; }
+		public bool IsAny { get; set; }
 		public virtual bool IsEmptyTuple { get { return false; } }
 		protected abstract string LLToString (bool useFullName);
 		protected virtual string LLFinalStringParts () { return ""; }
@@ -132,6 +133,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return false;
 			if (IsInOut != spec.IsInOut)
 				return false;
+			if (IsAny != spec.IsAny)
+				return false;
 			return LLEquals (spec, false);
 		}
 
@@ -144,6 +147,8 @@ namespace SwiftReflector.SwiftXmlReflection {
 			if (!ListEqual (GenericParameters, spec.GenericParameters, true))
 				return false;
 			if (IsInOut != spec.IsInOut)
+				return false;
+			if (IsAny != spec.IsAny)
 				return false;
 			return LLEquals (spec, true);
 		}
@@ -258,6 +263,9 @@ namespace SwiftReflector.SwiftXmlReflection {
 			if (IsInOut)
 				builder.Append ("inout ");
 
+			if (IsAny)
+				builder.Append ("any ");
+
 			if (TypeLabel != null) {
 				builder.Append (TypeLabel).Append (": ");
 			}
@@ -366,6 +374,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				result.Attributes.AddRange (original.Attributes);
 				result.TypeLabel = original.TypeLabel;
 				result.IsInOut = original.IsInOut;
+				result.IsAny = original.IsAny;
 			}
 			return changed;
 		}

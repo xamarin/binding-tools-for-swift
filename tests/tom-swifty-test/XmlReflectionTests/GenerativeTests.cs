@@ -198,7 +198,21 @@ namespace XmlReflectionTests {
 			Assert.AreEqual (0, spec.Attributes.Count ());
 		}
 
+		[Test]
+		public void HasAnyAttribute ()
+		{
+			var module = ReflectToModules (
+				"public func SomeFunction (a: any Equatable) { }\n", "SomeModule").FirstOrDefault ();
+			Assert.IsNotNull (module, "no module");
+			var func = module.AllTypesAndTopLevelDeclarations.OfType<FunctionDeclaration> ().FirstOrDefault ();
+			Assert.IsNotNull (func, "no function");
+			Assert.AreEqual (1, func.ParameterLists.Count, "wrong number of parameter lists");
+			Assert.AreEqual (1, func.ParameterLists [0].Count, "wong number of parameters");
 
+			var paramItem = func.ParameterLists [0] [0];
+			var spec = paramItem.TypeSpec;
+			Assert.IsTrue (spec.IsAny, "didn't find 'any'");
+		}
 	}
 }
 

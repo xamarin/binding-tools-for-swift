@@ -25,6 +25,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			TypeSpec type = null;
 			List<TypeSpecAttribute> attrs = null;
 			var inout = false;
+			var isAny = false;
 			string typeLabel = null;
 			var throwsClosure = false;
 			var asyncClosure = false;
@@ -41,6 +42,12 @@ namespace SwiftReflector.SwiftXmlReflection {
 			// looks like it's inout
 			if (token.Kind == TypeTokenKind.TypeName && token.Value == "inout") {
 				inout = true;
+				tokenizer.Next ();
+				token = tokenizer.Peek ();
+			}
+
+			if (token.Kind == TypeTokenKind.TypeName && token.Value == "any") {
+				isAny = true;
 				tokenizer.Next ();
 				token = tokenizer.Peek ();
 			}
@@ -130,6 +137,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 			}
 
 			type.IsInOut = inout;
+			type.IsAny = isAny;
 			type.TypeLabel = typeLabel;
 
 			if (type != null && attrs != null) {
