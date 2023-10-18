@@ -1658,7 +1658,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			"XamGlue",
 			"RegisterAccess",
 			"_StringProcessing",
-			"_Concurrenct",
+			"_Concurrency",
 		};
 
 		void LoadReferencedModules ()
@@ -1666,7 +1666,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var failures = new StringBuilder ();
 			foreach (var module in importModules) {
 				// XamGlue and RegisterAccess may very well get
-				// used, but we the functions/types exported from these
+				// used, but the functions/types exported from these
 				// should never need to be loaded.
 				if (ModulesThatWeCanSkip.Contains (module))
 					continue;
