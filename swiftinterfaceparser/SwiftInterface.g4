@@ -383,7 +383,7 @@ function_type_argument_list :
 	;
 
 function_type_argument : 
-	attributes? 'inout'? type
+	attributes? inout_clause? type
 	| argument_label type_annotation
 	;
 
@@ -400,12 +400,15 @@ type :
 	| protocol_composition_type # proto_comp_type
 	| type OpDot 'Type' # meta_type
 	| type OpDot 'Protocol' # proto_type
+	| any_clause type # boxed_protocol_type
 	| 'Any' # any_type
 	| 'Self' # self_type
 	| 'Self' OpDot type_identifier # self_long
 	;
 
 type_annotation : OpColon attributes? inout_clause? type ;
+
+any_clause : 'any' ;
 
 inout_clause : 'inout' ;
 

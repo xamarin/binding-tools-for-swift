@@ -144,6 +144,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		string moduleName;
 		TypeDatabase typeDatabase;
 		IModuleLoader moduleLoader;
+		ICharStream inputStream;
 
 		public SwiftInterfaceReflector (TypeDatabase typeDatabase, IModuleLoader moduleLoader)
 		{
@@ -179,9 +180,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 				var desugarer = new SyntaxDesugaringParser (inFile);
 				var desugaredResult = desugarer.Desugar ();
-				var charStream = CharStreams.fromString (desugaredResult);
+				inputStream = CharStreams.fromString (desugaredResult);
 
-				var lexer = new SwiftInterfaceLexer (charStream);
+				var lexer = new SwiftInterfaceLexer (inputStream);
 				var tokenStream = new CommonTokenStream (lexer);
 				var parser = new SwiftInterfaceParser (tokenStream);
 				var walker = new ParseTreeWalker ();
@@ -212,7 +213,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					new XElement ("modulelist", module));
 				var xDocument = new XDocument (new XDeclaration ("1.0", "utf-8", "yes"), tlElement);
 				return xDocument;
-			} catch (ParseException) {
+			} catch (ParseException parseException) {
 				throw;
 			} catch (Exception e) {
 				throw new ParseException ($"Unknown error parsing {inFile}: {e.Message}", e.InnerException);
@@ -328,7 +329,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var alias = EnumTypeAliases (context).FirstOrDefault (ta => ta.typealias_name ().GetText () == kRawValue);
 			if (alias == null)
 				return null;
-			var rawType = alias.typealias_assignment ().type ().GetText ();
+			var rawType = TypeText (alias.typealias_assignment ().type ());
 			return new XAttribute (kRawType, rawType);
 		}
 
@@ -496,7 +497,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void EnterProtocol_associated_type_declaration ([NotNull] Protocol_associated_type_declarationContext context)
 		{
 			var conformingProtocols = GatherConformingProtocols (context.type_inheritance_clause ());
-			var defaultDefn = context.typealias_assignment ()?.type ().GetText ();
+			var defaultDefn = TypeText (context.typealias_assignment ()?.type ());
 			var assocType = new XElement (kAssociatedType,
 				new XAttribute (kName, UnTick (context.typealias_name ().GetText ())));
 			if (defaultDefn != null)
@@ -547,7 +548,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var signature = context.function_signature ();
 
 			var name = UnTick (context.function_name ().GetText ());
-			var returnType = signature.function_result () != null ? signature.function_result ().type ().GetText () : "()";
+			var returnType = signature.function_result () != null ? TypeText (signature.function_result ().type ()) : "()";
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var isStatic = IsStaticOrClass (head.declaration_modifiers ());
 			var hasThrows = signature.throws_clause () != null || signature.rethrows_clause () != null;
@@ -719,7 +720,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			// On ExitSubscript_declaration, we remove the IGNORE tag
 
 			var head = context.subscript_head ();
-			var resultType = context.subscript_result ().type ().GetText ();
+			var resultType = TypeText (context.subscript_result ().type ());
 			var accessibility = AccessibilityFromModifiers (head.declaration_modifiers ());
 			var attributes = GatherAttributes (head.attributes ());
 			var isDeprecated = CheckForDeprecated (attributes);
@@ -782,6 +783,16 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			PopIgnore ();
 		}
 
+		string TypeText (TypeContext ty)
+		{
+			if (ty is null)
+				return null;
+			var start = ty.Start.StartIndex;
+			var end = ty.Stop.StopIndex;
+			var interval = new Interval (start, end);
+			return inputStream.GetText (interval);
+		}
+
 		public override void EnterVariable_declaration ([NotNull] Variable_declarationContext context)
 		{
 			var head = context.variable_declaration_head ();
@@ -798,9 +809,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var isProperty = true;
 
 			foreach (var tail in context.variable_declaration_tail ()) {
-
 				var name = UnTick (tail.variable_name ().GetText ());
-				var resultType = TrimColon (tail.type_annotation ().GetText ());
+				var resultType = TypeText (tail.type_annotation ().type ());
 				var hasThrows = false;
 				var isAsync = HasAsync (tail.getter_setter_keyword_block ()?.getter_keyword_clause ());
 
@@ -920,7 +930,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterOptional_type ([NotNull] Optional_typeContext context)
 		{
-			var innerType = context.type ().GetText ();
 		}
 
 		XElement InfixOperator (Infix_operator_declarationContext context)
@@ -984,7 +993,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 					genericElem.Add (MakeConformanceWhere (name, from));
 				} else {
 					var name = UnTick (requirement.same_type_requirement ().type_identifier ().GetText ());
-					var type = requirement.same_type_requirement ().type ().GetText ();
+					var type = TypeText (requirement.same_type_requirement ().type ());
 					genericElem.Add (MakeEqualityWhere (name, type));
 				}
 			}
@@ -996,7 +1005,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var name = UnTick (context.typealias_name ().GetText ());
 			var generics = context.generic_parameter_clause ()?.GetText () ?? "";
-			var targetType = context.typealias_assignment ().type ().GetText ();
+			var targetType = TypeText (context.typealias_assignment ().type ());
 			var access = ToAccess (context.access_level_modifier ());
 			var map = new XElement (kTypeAlias, new XAttribute (kName, name + generics),
 				new XAttribute (kAccessibility, access),
@@ -1188,7 +1197,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var typeAnnotation = context.type_annotation ();
 			var isInOut = typeAnnotation.inout_clause () != null;
-			var type = typeAnnotation.type ().GetText ();
+			var type = TypeText (typeAnnotation.type ());
 			var privateName = NoUnderscore (UnTick (context.local_parameter_name ()?.GetText ()) ?? "");
 			var replacementPublicName = isSubscript ? "" : privateName;
 			var publicName = NoUnderscore (UnTick (context.external_parameter_name ()?.GetText ()) ?? replacementPublicName);
@@ -1645,6 +1654,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return flagsValue;
 		}
 
+		static HashSet<string> ModulesThatWeCanSkip = new HashSet<string> () {
+			"XamGlue",
+			"RegisterAccess",
+			"_StringProcessing",
+			"_Concurrenct",
+		};
+
 		void LoadReferencedModules ()
 		{
 			var failures = new StringBuilder ();
@@ -1652,9 +1668,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				// XamGlue and RegisterAccess may very well get
 				// used, but we the functions/types exported from these
 				// should never need to be loaded.
-				if (module == "XamGlue")
-					continue;
-				if (module == "RegisterAccess")
+				if (ModulesThatWeCanSkip.Contains (module))
 					continue;
 				if (!moduleLoader.Load (module, typeDatabase)) {
 					if (failures.Length > 0)
@@ -2262,15 +2276,6 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		static bool IsCtorDtor (string name)
 		{
 			return ctorDtorNames.Contains (name);
-		}
-
-		static string TrimColon (string input)
-		{
-			if (!input.Contains (":"))
-				return input;
-			input = input.Trim ();
-			return input.StartsWith (":", StringComparison.Ordinal) ?
-				input.Substring (1) : input;
 		}
 
 		public static string UnTick (string str)
