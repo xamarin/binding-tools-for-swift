@@ -8,11 +8,18 @@ using System.IO;
 
 namespace Dynamo.SwiftLang {
 	public abstract class SLType : DelegatedSimpleElement {
+		public SLType (bool isAny = false)
+		{
+			IsAny = isAny;
+		}
 		public override string ToString () => CodeWriter.WriteToString (this);
+		public bool IsAny { get; set; }
+		protected string AnyString => IsAny ? "any " : "";
 	}
 
 	public class SLCompoundType : SLType {
-		public SLCompoundType(SLType parent, SLType child)
+		public SLCompoundType(SLType parent, SLType child, bool isAny = false)
+			: base (isAny)
 		{
 			Parent = Exceptions.ThrowOnNull (parent, nameof (parent));
 			Child = Exceptions.ThrowOnNull (child, nameof (child));
@@ -22,6 +29,7 @@ namespace Dynamo.SwiftLang {
 
 		protected override void LLWrite(ICodeWriter writer, object o)
 		{
+			writer.Write (AnyString, true);
 			Parent.Write (writer, o);
 			writer.Write ('.', false);
 			Child.Write (writer, o);
@@ -29,8 +37,8 @@ namespace Dynamo.SwiftLang {
 	}
 
 	public class SLSimpleType : SLType {
-		public SLSimpleType (string name)
-			: base ()
+		public SLSimpleType (string name, bool isAny = false)
+			: base (isAny)
 		{
 			Name = Exceptions.ThrowOnNull (name, nameof(name));
 		}
@@ -39,6 +47,7 @@ namespace Dynamo.SwiftLang {
 
 		protected override void LLWrite (ICodeWriter writer, object o)
 		{
+			writer.Write (AnyString, true);
 			writer.Write (Name, false);
 		}
 
@@ -111,6 +120,7 @@ namespace Dynamo.SwiftLang {
 
 	public class SLOptionalType : SLType {
 		public SLOptionalType (SLType opt)
+			: base (false)
 		{
 			Optional = Exceptions.ThrowOnNull (opt, nameof (opt));
 		}
@@ -130,6 +140,7 @@ namespace Dynamo.SwiftLang {
 
 	public class SLBoundGenericType : SLType {
 		public SLBoundGenericType (string name, IEnumerable<SLType> boundTypes)
+			: base (false)
 		{
 			Name = Exceptions.ThrowOnNull (name, nameof (name));
 			BoundTypes = new List<SLType> ();
@@ -168,6 +179,7 @@ namespace Dynamo.SwiftLang {
 
 	public class SLArrayType : SLType {
 		public SLArrayType (SLType elementType)
+			: base (false)
 		{
 			ElementType = Exceptions.ThrowOnNull (elementType, nameof (elementType));
 		}
@@ -184,6 +196,7 @@ namespace Dynamo.SwiftLang {
 
 	public class SLTupleType : SLType { 
 		public SLTupleType (List<SLNameTypePair> pairs)
+			: base (false)
 		{
 			Elements = new List<SLNameTypePair> ();
 			if (pairs != null)
@@ -191,6 +204,7 @@ namespace Dynamo.SwiftLang {
 		}
 
 		public SLTupleType (params SLNameTypePair [] pairs)
+			: base (false)
 		{
 			Elements = new List<SLNameTypePair> ();
 			Elements.AddRange (pairs);
@@ -230,6 +244,7 @@ namespace Dynamo.SwiftLang {
 
 		public SLFuncType (SLType retType, IEnumerable<SLUnnamedParameter> parameters,
 			bool hasThrows = false, bool isAsync = false)
+			: base (false)
 		{
 			Exceptions.ThrowOnNull (parameters, nameof (parameters));
 			Attributes = new List<SLAttribute> ();
@@ -284,6 +299,7 @@ namespace Dynamo.SwiftLang {
 
 	public class SLDictionaryType : SLType {
 		public SLDictionaryType (SLType keyType, SLType valueType)
+			: base (false)
 		{
 			KeyType = Exceptions.ThrowOnNull (keyType, nameof (keyType));
 			ValueType = Exceptions.ThrowOnNull (valueType, nameof (valueType));
@@ -305,6 +321,7 @@ namespace Dynamo.SwiftLang {
 
 	public class SLGenericReferenceType : SLType {
 		public SLGenericReferenceType (int depth, int index, bool isMetatype = false, List<string> associatedTypePath = null)
+			: base (false)
 		{
 			if (depth < 0)
 				throw new ArgumentOutOfRangeException (nameof (depth));
@@ -355,6 +372,7 @@ namespace Dynamo.SwiftLang {
 
 	public class SLVariadicType : SLType {
 		public SLVariadicType (SLType repeatingType)
+			: base (repeatingType.IsAny)
 		{
 			RepeatingType = Exceptions.ThrowOnNull (repeatingType, nameof (repeatingType));
 		}
