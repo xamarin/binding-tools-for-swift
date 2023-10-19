@@ -31,9 +31,24 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			return rewriter.GetText ();
 		}
 
+		internal static string TypeText (ICharStream input, ParserRuleContext ty)
+		{
+			if (ty is null)
+				return null;
+			var start = ty.Start.StartIndex;
+			var end = ty.Stop.StopIndex;
+			var interval = new Interval (start, end);
+			return input.GetText (interval);
+		}
+
+		string TypeText (ParserRuleContext ty)
+		{
+			return TypeText (charStream, ty);
+		}
+
 		public override void ExitOptional_type ([NotNull] Optional_typeContext context)
 		{
-			var innerType = context.type ().GetText ();
+			var innerType = TypeText (context.type ());
 			var replacementType = $"Swift.Optional<{innerType}>";
 			var startToken = context.Start;
 			var endToken = context.Stop;
@@ -42,7 +57,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void ExitUnwrapped_optional_type ([NotNull] Unwrapped_optional_typeContext context)
 		{
-			var innerType = context.type ().GetText ();
+			var innerType = TypeText (context.type ());
 			var replacementType = $"Swift.Optional<{innerType}>";
 			var startToken = context.Start;
 			var endToken = context.Stop;
@@ -51,7 +66,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void ExitArray_type ([NotNull] Array_typeContext context)
 		{
-			var innerType = context.type ().GetText ();
+			var innerType = TypeText (context.type ());
 			var replacementType = $"Swift.Array<{innerType}>";
 			var startToken = context.Start;
 			var endToken = context.Stop;
@@ -60,8 +75,8 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void ExitDictionary_type ([NotNull] Dictionary_typeContext context)
 		{
-			var keyType = context.children [1].GetText ();
-			var valueType = context.children [3].GetText ();
+			var keyType = TypeText (context.children [1] as ParserRuleContext);
+			var valueType = TypeText (context.children [3] as ParserRuleContext);
 			var replacementType = $"Swift.Dictionary<{keyType},{valueType}>";
 			var startToken = context.Start;
 			var endToken = context.Stop;
