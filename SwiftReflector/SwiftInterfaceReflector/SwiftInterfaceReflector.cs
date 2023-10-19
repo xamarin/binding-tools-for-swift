@@ -442,7 +442,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		{
 			var enumElement = new XElement (kElement, new XAttribute (kName, UnTick (context.enum_case_name ().GetText ())));
 			if (context.tuple_type () != null) {
-				var tupString = context.tuple_type ().GetText ();
+				var tupString = TypeText (context.tuple_type ());
 				// special casing:
 				// the type of a union case is a tuple, but we special case
 				// unit tuples to be just the type of the unit
@@ -522,7 +522,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var inheritance = context.type_inheritance_list ();
 			while (inheritance != null) {
 				var elem = inheritance.GetText ();
-				var name = inheritance.type_identifier ()?.GetText ();
+				var name = TypeText (inheritance.type_identifier ());
 				if (name != null)
 					elems.Add (new XElement (kConformingProtocol, new XAttribute (kName, UnTick (name))));
 				inheritance = inheritance.type_inheritance_list ();
@@ -783,14 +783,9 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			PopIgnore ();
 		}
 
-		string TypeText (TypeContext ty)
+		string TypeText (ParserRuleContext ty)
 		{
-			if (ty is null)
-				return null;
-			var start = ty.Start.StartIndex;
-			var end = ty.Stop.StopIndex;
-			var interval = new Interval (start, end);
-			return inputStream.GetText (interval);
+			return SyntaxDesugaringParser.TypeText (inputStream, ty);
 		}
 
 		public override void EnterVariable_declaration ([NotNull] Variable_declarationContext context)
@@ -879,7 +874,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 		public override void EnterExtension_declaration ([NotNull] Extension_declarationContext context)
 		{
-			var onType = UnTick (context.type_identifier ().GetText ());
+			var onType = UnTick (TypeText (context.type_identifier ()));
 			var inherits = GatherInheritance (context.type_inheritance_clause (), forceProtocolInheritance: true);
 			// why, you say, why put a kKind tag into an extension?
 			// The reason is simple: this is a hack. Most of the contents
@@ -900,7 +895,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			var extensionElem = currentElement.Pop ();
 			var onType = extensionElem.Attribute (kOnType);
 			var givenOnType = onType.Value;
-			var actualOnType = UnTick (context.type_identifier ().GetText ());
+			var actualOnType = UnTick (TypeText (context.type_identifier ()));
 			if (givenOnType != actualOnType)
 				throw new Exception ($"extension type mismatch on exit declaration: expected {actualOnType} but got {givenOnType}");
 			// remove the kKind attribute - you've done your job.
@@ -970,11 +965,11 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			if (addParentGenerics)
 				AddParentGenerics (genericElem);
 			foreach (var generic in genericContext.generic_parameter_list ().generic_parameter ()) {
-				var name = UnTick (generic.type_name ().GetText ());
+				var name = UnTick (TypeText (generic.type_name ()));
 				var genParam = new XElement (kParam, new XAttribute (kName, name));
 				genericElem.Add (genParam);
-				var whereType = generic.type_identifier ()?.GetText () ??
-					generic.protocol_composition_type ()?.GetText ();
+				var whereType = TypeText (generic.type_identifier ()) ??
+					TypeText (generic.protocol_composition_type ());
 				if (whereType != null) {
 					genericElem.Add (MakeConformanceWhere (name, whereType));
 				}
@@ -985,14 +980,14 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 			foreach (var requirement in whereContext.requirement_list ().requirement ()) {
 				if (requirement.conformance_requirement () != null) {
-					var name = UnTick (requirement.conformance_requirement ().type_identifier () [0].GetText ());
+					var name = UnTick (TypeText (requirement.conformance_requirement ().type_identifier () [0]));
 
 					// if there is no protocol composition type, then it's the second type identifier
-					var from = requirement.conformance_requirement ().protocol_composition_type ()?.GetText ()
-						?? requirement.conformance_requirement ().type_identifier () [1].GetText ();
+					var from = TypeText (requirement.conformance_requirement ().protocol_composition_type ())
+						?? TypeText (requirement.conformance_requirement ().type_identifier () [1]);
 					genericElem.Add (MakeConformanceWhere (name, from));
 				} else {
-					var name = UnTick (requirement.same_type_requirement ().type_identifier ().GetText ());
+					var name = UnTick (TypeText (requirement.same_type_requirement ().type_identifier ()));
 					var type = TypeText (requirement.same_type_requirement ().type ());
 					genericElem.Add (MakeEqualityWhere (name, type));
 				}
@@ -1004,7 +999,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		public override void ExitTypealias_declaration ([NotNull] Typealias_declarationContext context)
 		{
 			var name = UnTick (context.typealias_name ().GetText ());
-			var generics = context.generic_parameter_clause ()?.GetText () ?? "";
+			var generics = TypeText (context.generic_parameter_clause ()) ?? "";
 			var targetType = TypeText (context.typealias_assignment ().type ());
 			var access = ToAccess (context.access_level_modifier ());
 			var map = new XElement (kTypeAlias, new XAttribute (kName, name + generics),
@@ -1314,7 +1309,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			while (list != null) {
 				var inheritanceKind = forceProtocolInheritance ? kProtocol :
 					(inheritance.Count > 0 ? kProtocol : kLittleUnknown);
-				var type = list.type_identifier ().GetText ();
+				var type = TypeText (list.type_identifier ());
 				if (!(first && removeNonProtocols && TypeIsNotProtocol (type))) {
 					var elem = new XElement (kInherit, new XAttribute (kType, type),
 						new XAttribute (nameof (inheritanceKind), inheritanceKind));
