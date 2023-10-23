@@ -12,6 +12,7 @@ using SwiftReflector;
 using SwiftReflector.SwiftInterfaceReflector;
 using SwiftReflector.TypeMapping;
 using tomwiftytest;
+using System.Text;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -67,11 +68,24 @@ public func hello ()
 			var modules = ReflectToXDocument (swiftCode, "SomethingSomething", out reflector);
 
 			var importModules = reflector.ImportModules;
-			if (importModules.Count == 2)
-				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no swift modules");
-			else if (importModules.Count > 2)
-				Assert.Fail ("wrong number of expected swift modules");
-			Assert.IsTrue (importModules.Contains ("Swift"), "no swift module");
+			if (importModules.Count == 3) {
+				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no _Concurrency import");
+				Assert.IsTrue (importModules.Contains ("_StringProcessing"), "no _StringProcessing import");
+			} else if (importModules.Count > 3) {
+				Assert.Fail ($"Expected 3 swift modules, but got {importModules.Count}: {AllImportModules (importModules)}");
+			}
+			Assert.IsTrue (importModules.Contains ("Swift"), "no Swift import");
+		}
+
+		static string AllImportModules (List<string> importModules)
+		{
+			var sb = new StringBuilder ();
+			foreach (var module in importModules) {
+				if (sb.Length > 0)
+					sb.Append (", ");
+				sb.Append (module);
+			}
+			return sb.ToString ();
 		}
 
 		[Test]
@@ -90,12 +104,14 @@ public func hello ()
 			var modules = ReflectToXDocument (swiftCode, "SomethingSomething", out reflector);
 
 			var importModules = reflector.ImportModules;
-			if (importModules.Count == 3)
-				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no swift modules");
-			else if (importModules.Count > 3)
-				Assert.Fail ("wrong number of expected swift modules");
-			Assert.IsTrue (importModules.Contains ("Swift"), "no swift module");
-			Assert.IsTrue (importModules.Contains ("Foundation"), "no swift module");
+			if (importModules.Count == 4) {
+				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no _Concurrency import");
+				Assert.IsTrue (importModules.Contains ("_StringProcessing"), "no _StringProcessing import");
+			} else if (importModules.Count > 4) {
+				Assert.Fail ($"Expected 3 swift modules, but got {importModules.Count}: {AllImportModules (importModules)}");
+			}
+			Assert.IsTrue (importModules.Contains ("Swift"), "no Swift import");
+			Assert.IsTrue (importModules.Contains ("Foundation"), "no Foundation import");
 		}
 
 		[Test]
