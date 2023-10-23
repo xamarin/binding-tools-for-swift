@@ -133,8 +133,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return false;
 			if (IsInOut != spec.IsInOut)
 				return false;
-			if (IsAny != spec.IsAny)
-				return false;
+			// Don't compare IsAny - it's really not important (yet)
 			return LLEquals (spec, false);
 		}
 
@@ -148,8 +147,7 @@ namespace SwiftReflector.SwiftXmlReflection {
 				return false;
 			if (IsInOut != spec.IsInOut)
 				return false;
-			if (IsAny != spec.IsAny)
-				return false;
+			// Don't compare IsAny - it's really not important (yet)
 			return LLEquals (spec, true);
 		}
 
