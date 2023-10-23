@@ -79,13 +79,7 @@ public func hello ()
 
 		static string AllImportModules (List<string> importModules)
 		{
-			var sb = new StringBuilder ();
-			foreach (var module in importModules) {
-				if (sb.Length > 0)
-					sb.Append (", ");
-				sb.Append (module);
-			}
-			return sb.ToString ();
+			return String.Join (", ", importModules);
 		}
 
 		[Test]
