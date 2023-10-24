@@ -163,17 +163,15 @@ namespace SwiftReflector {
     return a + b
 }";
 			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.2", null,
-				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.Armv7s }, false)) {
+				new List<TargetCpu> () { TargetCpu.Arm64 }, false)) {
 
 				var outputFile = Path.Combine (output.DirectoryPath, "NoNameModule.framework", "NoNameModule");
 				Assert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (2, macho.Count, "wrong contents");
+					Assert.AreEqual (1, macho.Count, "wrong contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
 					Assert.IsNotNull (file, "no arm64");
-					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARMv7s);
-					Assert.IsNotNull (file, "no arm7s");
 				}
 			}
 		}
@@ -185,19 +183,17 @@ namespace SwiftReflector {
     return a + b
 }";
 			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.2",
-				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64, TargetCpu.I386 }, null, false)) {
+				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64 }, null, false)) {
 
 				var outputFile = Path.Combine (output.DirectoryPath, "NoNameModule.framework", "NoNameModule");
 				Assert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (3, macho.Count, "wrong contents");
+					Assert.AreEqual (2, macho.Count, "wrong contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
 					Assert.IsNotNull (file, "no arm64");
 					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.x86_64);
 					Assert.IsNotNull (file, "no x86_64");
-					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.i386);
-					Assert.IsNotNull (file, "no i386");
 				}
 			}
 		}
@@ -210,38 +206,34 @@ namespace SwiftReflector {
     return a + b
 }";
 			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.2",
-				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64, TargetCpu.I386 },
-				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.Armv7s }, false)) {
+				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64 },
+				new List<TargetCpu> () { TargetCpu.Arm64 }, false)) {
 
 				var outputDirectory = Path.Combine (output.DirectoryPath, "NoNameModule.xcframework");
 				Assert.IsTrue (Directory.Exists (outputDirectory), "no xcframework");
 
-				var deviceFM = Path.Combine (outputDirectory, "ios-arm64_armv7s", "NoNameModule.framework");
+				var deviceFM = Path.Combine (outputDirectory, "ios-arm64", "NoNameModule.framework");
 				Assert.IsTrue (Directory.Exists (deviceFM), "no device directory");
 
-				var simFM = Path.Combine (outputDirectory, "ios-arm64_i386_x86_64-simulator", "NoNameModule.framework");
+				var simFM = Path.Combine (outputDirectory, "ios-arm64_x86_64-simulator", "NoNameModule.framework");
 				Assert.IsTrue (Directory.Exists (simFM), "no simulator directory");
 
 				var outputFile = Path.Combine (deviceFM, "NoNameModule");
 				Assert.IsTrue (File.Exists (outputFile), "we didn't get a device file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (2, macho.Count, "wrong device contents");
+					Assert.AreEqual (1, macho.Count, "wrong device contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
 					Assert.IsNotNull (file, "device: no arm64");
-					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARMv7s);
-					Assert.IsNotNull (file, "device: no armv7s");
 				}
 
 				outputFile = Path.Combine (simFM, "NoNameModule");
 				Assert.IsTrue (File.Exists (outputFile), "we didn't get a simulator file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (3, macho.Count, "wrong simulator contents");
+					Assert.AreEqual (2, macho.Count, "wrong simulator contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
 					Assert.IsNotNull (file, "simulator: no arm64");
-					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.i386);
-					Assert.IsNotNull (file, "simulator: no i386");
 					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.x86_64);
 					Assert.IsNotNull (file, "simulator: no x86_64");
 				}
@@ -310,7 +302,7 @@ namespace SwiftReflector {
     return a - b
 }";
 			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.9",
-				null, new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.Armv7s }, false)) {
+				null, new List<TargetCpu> () { TargetCpu.Arm64 }, false)) {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
@@ -320,13 +312,13 @@ namespace SwiftReflector {
 				var fwk = rep.Framework;
 
 				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (2, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
 				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
 				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
 
 				foreach (var target in fwk.Targets) {
 					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.Armv7s, $"wrong cpu in {target}");
+					Assert.IsTrue (target.Cpu == TargetCpu.Arm64, $"wrong cpu in {target}");
 				}
 			}
 		}
@@ -369,7 +361,7 @@ namespace SwiftReflector {
 }";
 			using (var output = CompileStringToResult (swiftCode, PlatformName.iOS, "10.9",
 				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64 },
-				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.Armv7s }, false)) {
+				new List<TargetCpu> () { TargetCpu.Arm64 }, false)) {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
@@ -384,12 +376,12 @@ namespace SwiftReflector {
 				var fwk = xcfwk.Frameworks.FirstOrDefault (fw => fw.Environment == TargetEnvironment.Device);
 				Assert.IsNotNull (fwk, "not a device framwwork");
 
-				Assert.AreEqual (2, fwk.Targets.Count, "wrong number of targets");
+				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
 				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
 
 				foreach (var target in fwk.Targets) {
 					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64 || target.Cpu == TargetCpu.Armv7s, $"wrong cpu in {target}");
+					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64, $"wrong cpu in {target}");
 				}
 			}
 		}
@@ -543,11 +535,7 @@ namespace SwiftReflector {
 			Assert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget ("i386-banana-ios10.1"));
 		}
 
-		[TestCase ("i386", TargetCpu.I386)]
 		[TestCase ("arm64", TargetCpu.Arm64)]
-		[TestCase ("armv7k", TargetCpu.Arm7vk)]
-		[TestCase ("armv7s", TargetCpu.Armv7s)]
-		[TestCase ("armv7", TargetCpu.Armv7)]
 		[TestCase ("x86_64", TargetCpu.X86_64)]
 		[TestCase ("arm64_32", TargetCpu.Arm64_32)]
 		public void FromStringCpuSuccess (string cpu, TargetCpu targetCpu)
