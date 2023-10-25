@@ -387,7 +387,7 @@ function_type_argument :
 	| argument_label type_annotation
 	;
 
-argument_label : label_identifier ;
+argument_label : label_identifier | label_identifier label_identifier;
 
 type : 
 	array_type # arr_type
