@@ -89,6 +89,10 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				var startToken = context.Start;
 				var endToken = context.Stop;
 				rewriter.Replace (startToken, endToken, "()");
+			} else if (context.GetText () == "CoreFoundation.CGFloat") {
+				var startToken = context.Start;
+				var endToken = context.Stop;
+				rewriter.Replace (startToken, endToken, "CoreGraphics.CGFloat");
 			}
 		}
 	}
