@@ -95,6 +95,18 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 				rewriter.Replace (startToken, endToken, "CoreGraphics.CGFloat");
 			}
 		}
+
+		public override void ExitFunction_type_argument([NotNull] Function_type_argumentContext context)
+		{
+			if (context.argument_label () is Argument_labelContext argContext && argContext.ChildCount == 2) {
+				// function type argument of the form public_label private_label
+				// change to public_label
+				// in a .swiftinterface context, the private label means nothing to us
+				var startToken = argContext.Start;
+				var endToken = argContext.Stop;
+				rewriter.Replace (startToken, endToken, argContext.children [0].GetText ());
+			}
+		}
 	}
 }
 
