@@ -92,6 +92,7 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			{ "CoreFoundation.CGRect", "CoreGraphics.CGRect" },
 			{ "CoreFoundation.CGSize", "CoreGraphics.CGSize" },
 			{ "CoreFoundation.CGVector", "CoreGraphics.CGVector" },
+			{ "CoreFoundation.CGFloat", "CoreGraphics.CGFloat" },
 		};
 
 		public override void ExitIdentifier_type ([NotNull] Identifier_typeContext context)
