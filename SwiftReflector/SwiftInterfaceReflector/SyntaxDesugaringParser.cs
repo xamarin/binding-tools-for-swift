@@ -6,6 +6,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using static SwiftInterfaceParser;
+using System.Collections.Generic;
 
 namespace SwiftReflector.SwiftInterfaceReflector {
 	public class SyntaxDesugaringParser : SwiftInterfaceBaseListener {
@@ -83,16 +84,22 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			rewriter.Replace (startToken, endToken, replacementType);
 		}
 
+		static Dictionary<string, string> typeChanges = new Dictionary<string, string> () {
+			{ "Swift.Void", "()" },
+			{ "CoreFoundation.CGAffineTransform", "CoreGraphics.CGAffineTransform" },
+			{ "CoreFoundation.CGColorSapceModel", "CoreGraphics.CGColorSapceModel" },
+			{ "CoreFoundation.CGPoint", "CoreGraphics.CGPoint" },
+			{ "CoreFoundation.CGRect", "CoreGraphics.CGRect" },
+			{ "CoreFoundation.CGSize", "CoreGraphics.CGSize" },
+			{ "CoreFoundation.CGVector", "CoreGraphics.CGVector" },
+		};
+
 		public override void ExitIdentifier_type ([NotNull] Identifier_typeContext context)
 		{
-			if (context.GetText () == "Swift.Void") {
+			if (typeChanges.TryGetValue (context.GetText (), out var substitution)) {
 				var startToken = context.Start;
 				var endToken = context.Stop;
-				rewriter.Replace (startToken, endToken, "()");
-			} else if (context.GetText () == "CoreFoundation.CGFloat") {
-				var startToken = context.Start;
-				var endToken = context.Stop;
-				rewriter.Replace (startToken, endToken, "CoreGraphics.CGFloat");
+				rewriter.Replace (startToken, endToken, substitution);
 			}
 		}
 
