@@ -148,7 +148,9 @@ namespace Dynamo.CSLang {
 			tByteStar = new CSSimpleType ("byte *"),
 			tType = new CSSimpleType ("Type"),
 			tVar = new CSSimpleType ("var"),
-			tNfloat = new CSSimpleType ("nfloat")
+			tNfloat = new CSSimpleType ("nfloat"),
+			tNint = new CSSimpleType ("nint"),
+			tNUint = new CSSimpleType ("nuint")
 			;
 
 		public CSSimpleType Star {
@@ -181,6 +183,8 @@ namespace Dynamo.CSLang {
 		public static CSSimpleType Type { get { return tType; } }
 		public static CSSimpleType Var { get { return tVar; } }
 		public static CSSimpleType NFloat { get { return tNfloat; } }
+		public static CSSimpleType NInt => tNint;
+		public static CSSimpleType NUInt => tNUint;
 	}
 
 	public class CSGenericReferenceType : CSType {

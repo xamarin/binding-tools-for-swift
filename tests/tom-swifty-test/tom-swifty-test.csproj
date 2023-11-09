@@ -119,6 +119,7 @@
     <Compile Include="DylibBinderTests\ReferenceStructTests.cs" />
     <Compile Include="SwiftReflector\ClangTargetTests.cs" />
     <Compile Include="SwiftReflector\CompilationTargetTests.cs" />
+    <Compile Include="SwiftReflector\ExpermimentalTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

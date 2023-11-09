@@ -149,6 +149,10 @@ namespace Dynamo.CSLang {
 				return "virtual";
 			case CSMethodKind.Abstract:
 				return "abstract";
+			case CSMethodKind.Unsafe:
+				return "unsafe";
+			case CSMethodKind.StaticUnsafe:
+				return "static unsafe";
 			default:
 				throw new ArgumentOutOfRangeException (nameof (kind));
 			}
