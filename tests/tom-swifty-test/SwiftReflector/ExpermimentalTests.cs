@@ -8,6 +8,25 @@ using tomwiftytest;
 
 namespace SwiftReflector
 {
+	// These are experimental tests to look at the possibility of
+	// using opaque structs to hold the payload for value types that
+	// are passed by reference.
+	// At present the .NET runtime only supports passing structs by
+	// value that are 2 machine words or 1 machine word, but when this
+	// is supported, we can support calling functions/methods that take or
+	// return value types without writing wrappers.
+	//
+	// What we had been doing was doing a stack alloc of an array (cheap)
+	// then calling the swift value witness table entry that copies (with retains
+	// if needed) the value type from one place to another (not cheap) and upon return
+	// calls the value witness table destroy function (not cheap)
+	//
+	// What we can do instead is use no wrapper function and pinvoke directly (cheaper)
+	// and pass by value by blitting the payload array (very cheap).
+	// We can get away with not worrying about retain release because swift
+	// got rid of the retain-before-call and release-on-return approach as it's
+	// redundant.
+
 	[TestFixture]
 	public class ExpermimentalTests
 	{
@@ -87,11 +106,11 @@ public struct OneInt {
 			// public static unsafe nint Getter (OneInt self)
 			// {
 			//    fixed (byte* thisSwiftDataPtr = SwiftRuntimeLibrary.SwiftMarshal.StructMarshal.Marshaler.PrepareValueType (self)) {
-			//        var p = (XXOpaque1 *)thisSwiftDataPtr;
+			//        var p = (XXOpaque2 *)thisSwiftDataPtr;
 			//        return XGetter (*p);
 			// }
 			// [DllImport ("libExpermimentalTests.dylib", EntryPoint = "_$s18ExpermimentalTests6OneIntV1XSivg")]
-			// public static extern nint XGetter (XXOpaque1 r);
+			// public static extern nint XGetter (XXOpaque2 r);
 			//
 
 			var xxopName = new CSIdentifier ("XXOpaque2");
@@ -148,11 +167,11 @@ public struct OneInt {
 			// public static unsafe nint Getter (OneInt self)
 			// {
 			//    fixed (byte* thisSwiftDataPtr = SwiftRuntimeLibrary.SwiftMarshal.StructMarshal.Marshaler.PrepareValueType (self)) {
-			//        var p = (XXOpaque1 *)thisSwiftDataPtr;
+			//        var p = (XXOpaque2 *)thisSwiftDataPtr;
 			//        return XGetter (*p);
 			// }
 			// [DllImport ("libExpermimentalTests.dylib", EntryPoint = "_$s18ExpermimentalTests6OneIntV1XSivg")]
-			// public static extern nint XGetter (XXOpaque1 r);
+			// public static extern nint XGetter (XXOpaque2 r);
 			//
 
 			var xxopName = new CSIdentifier ("XXOpaque2");
@@ -210,11 +229,11 @@ public struct OneInt {
 			// public static unsafe nint Getter (OneInt self)
 			// {
 			//    fixed (byte* thisSwiftDataPtr = SwiftRuntimeLibrary.SwiftMarshal.StructMarshal.Marshaler.PrepareValueType (self)) {
-			//        var p = (XXOpaque1 *)thisSwiftDataPtr;
+			//        var p = (XXOpaque2 *)thisSwiftDataPtr;
 			//        return XGetter (*p);
 			// }
 			// [DllImport ("libExpermimentalTests.dylib", EntryPoint = "_$s18ExpermimentalTests6OneIntV1XSivg")]
-			// public static extern nint XGetter (XXOpaque1 r);
+			// public static extern nint XGetter (XXOpaque2 r);
 			//
 
 			var xxopName = new CSIdentifier ("XXOpaque2");
