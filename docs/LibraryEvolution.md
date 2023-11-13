@@ -60,5 +60,5 @@ I'm going to break these down per type:
   that the size can and must be determined at runtime by the caller)
 - typical arguments are copied and passed by reference
 - inout arguments are passed by reference
-- instance values are passed in a copy passed in the self register
-- instance values are passed in the self register (no copy)
+- instance values are passed by reference as a copy passed in the self register
+- instance values are passed by reference in the self register (no copy)
