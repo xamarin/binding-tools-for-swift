@@ -55,7 +55,8 @@ handle return marshaling
 ```
 It gets ugly especially if unsafe and fixed blocks are needed.
 
-Marshaling the parameters to a simple function call is 270 lines of code that don't read.
+Marshaling the parameters to a simple function call is 270 lines of code that doesn't
+read well.
 
 What we should have is an engine type that defines a series of functions for handling each individual
 marshal case in complete isolation. These would include being able to set up a fixed block,
@@ -63,5 +64,5 @@ flag the need for unsafe code, write arbitrary pre-marshal code, write an expres
 argument, write arbitrary post martial code, define extra arguments for generic type metadata
 and protocol witness tables, and leave all of this in a context object.
 
-The calling code should just be able to loop through all the arguments, select and engine,
+The calling code should just be able to loop through all the arguments, select an engine,
 call it to generate code, and then aggregate all the code for all the arguments.
