@@ -71,7 +71,8 @@ import_path_identifier : declaration_identifier ;
 variable_declaration: variable_declaration_head variable_declaration_tail (OpComma variable_declaration_tail)* ;
 variable_declaration_head : attributes? declaration_modifiers? var_clause
 	| attributes? declaration_modifiers? let_clause ;
-variable_declaration_tail : variable_name type_annotation getter_setter_keyword_block? ;
+variable_declaration_tail : variable_name type_annotation getter_setter_keyword_block? 
+	| variable_name type_annotation defaultInitializer?;
 variable_name : declaration_identifier ;
 
 var_clause : 'var';
