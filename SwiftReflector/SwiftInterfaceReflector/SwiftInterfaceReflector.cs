@@ -865,11 +865,17 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 		bool HasSetter (Variable_declaration_tailContext context, bool isLet)
 		{
 			// conditions for having a setter:
-			// getter_setter_keyword_block is null (public var foo: Type)
+			// defaultInitializer and getter_setter_keyword are both null (public var foo: Type)
+			// defaultInitializer is not null (public var foo: Type = initialValue)
 			// getter_setter_keyword_block is non-null and the getter_setter_keyword_block
 			// has a non-null setter_keyword_clause (public var foo:Type { get; set; }, public foo: Type { set }
-			return !isLet && (context.getter_setter_keyword_block () == null ||
-				context.getter_setter_keyword_block ().setter_keyword_clause () != null);
+
+			var defaultInitializer = context.defaultInitializer ();
+			var gettersetter = context.getter_setter_keyword_block ();
+
+			return !isLet && ((defaultInitializer == null && gettersetter == null) ||
+				defaultInitializer != null ||
+				gettersetter?.setter_keyword_clause () != null);
 		}
 
 		public override void EnterExtension_declaration ([NotNull] Extension_declarationContext context)

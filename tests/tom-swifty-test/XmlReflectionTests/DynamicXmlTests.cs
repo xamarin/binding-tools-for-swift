@@ -1724,5 +1724,23 @@ return a + b
 			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "sum");
 			Assert.IsNotNull (fn, "no function");
 		}
+
+		[TestCase (ReflectorMode.Parser)]
+		public void InitializedProperty (ReflectorMode mode)
+		{
+			var code = @"
+@frozen
+public struct Foo {
+    public var X:Int = 17
+}
+";
+			var module = ReflectToModules (code, "SomeModule", mode).FirstOrDefault (m => m.Name == "SomeModule");
+			Assert.IsNotNull (module, "no module");
+			var cl = module.Structs.FirstOrDefault (c => c.Name == "Foo");
+			Assert.IsNotNull (cl, "no class");
+
+			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "X");
+			Assert.IsNotNull (prop, "no prop");
+		}
 	}
 }
