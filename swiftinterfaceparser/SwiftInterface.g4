@@ -297,7 +297,7 @@ dyckSubExpression :
 	| any_other_things_for_dyck_expression;
 
 any_other_things_for_dyck_expression :	
-	( OpDot | OpComma | OpColon | OpSemi | OpAssign | OpAt | OpPound | OpBackTick | OpQuestion | OpUnder)
+	( OpDot | OpComma | OpColon | OpSemi | OpAssign | OpAt | OpPound | OpBackTick | OpQuestion | OpUnder | OpPlus | OpMinus | OpAmp | OpBang | OpTilde | OpGreater | opGreater)
 	| arrow_operator
 	;
 
