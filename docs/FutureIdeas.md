@@ -134,7 +134,7 @@ public func setMontyWSMBool_xam_vtable(uvt: UnsafeRawPointer)
 The class implements the constructor and overrides the virtual method, sending it to a function
 pointer which ends up in C#.
 BTfS generates a C# class that looks like this (leaving out most implementations for brevity):
-```C#
+```csharp
     [SwiftNativeObjectTag()][SwiftTypeName("OverrideTests.MontyWSMBool")]
     public class MontyWSMBool : SwiftNativeObject
     {
@@ -205,7 +205,7 @@ Swift override.
 We can fix that - here's one way of doing that.
 Suppose we have an attribute named `[ExposeToSwift]` that can be applied to the type. That way if
 I write this in C#:
-```C#
+```csharp
 [ExposeToSwift]
 public class Bar : MontyWSMBool {
 }
@@ -234,7 +234,7 @@ It would probably also behoove us to provide a way to have a possibly different 
 property in Swift than in C# in the event that we create a name collision that needs to be resolved.
 
 So we might have an implementation like this:
-```C#
+```csharp
 public class ExposeToSwiftAttribute : Attribute {
     public string SwiftAttributes { get; private set; }
     public string SwiftName { get; private set; }
