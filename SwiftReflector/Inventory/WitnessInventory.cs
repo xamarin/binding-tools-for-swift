@@ -11,6 +11,7 @@ using ObjCRuntime;
 
 namespace SwiftReflector.Inventory {
 	public class WitnessInventory {
+		object valuesLock = new object ();
 		Dictionary<string, TLFunction> values = new Dictionary<string, TLFunction> ();
 		int sizeofMachinePointer;
 
@@ -21,14 +22,16 @@ namespace SwiftReflector.Inventory {
 
 		public void Add (TLDefinition tld, Stream srcStm)
 		{
-			TLFunction tlf = tld as TLFunction;
-			if (tlf == null)
-				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 9, $"Expected a TLFunction for a witness table but got a {tld.GetType ().Name}.");
+			lock (valuesLock) {
+				TLFunction tlf = tld as TLFunction;
+				if (tlf == null)
+					throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 9, $"Expected a TLFunction for a witness table but got a {tld.GetType ().Name}.");
 
-			if (values.ContainsKey (tlf.MangledName))
-				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 10, $"Already received witness table entry for {tlf.MangledName}.");
-			values.Add (tlf.MangledName, tlf);
-			LoadWitnessTable (tlf, srcStm);
+				if (values.ContainsKey (tlf.MangledName))
+					throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 10, $"Already received witness table entry for {tlf.MangledName}.");
+				values.Add (tlf.MangledName, tlf);
+				LoadWitnessTable (tlf, srcStm);
+			}
 		}
 
 		public IEnumerable<string> MangledNames { get { return values.Keys; } }

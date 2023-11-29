@@ -21,13 +21,15 @@ namespace SwiftReflector.Inventory {
 
 		public override void Add (TLDefinition tld, Stream srcStm)
 		{
-			TLFunction tlf = tld as TLFunction;
-			if (tlf == null)
-				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 11, $"expected a top-level function but got a {tld.GetType ().Name}");
-			if (Functions.Exists (f => tlf.MangledName == f.MangledName)) {
-				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 12, $"duplicate function found for {tlf.MangledName}");
-			} else {
-				Functions.Add (tlf);
+			lock (valuesLock) {
+				TLFunction tlf = tld as TLFunction;
+				if (tlf == null)
+					throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 11, $"expected a top-level function but got a {tld.GetType ().Name}");
+				if (Functions.Exists (f => tlf.MangledName == f.MangledName)) {
+					throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 12, $"duplicate function found for {tlf.MangledName}");
+				} else {
+					Functions.Add (tlf);
+				}
 			}
 		}
 

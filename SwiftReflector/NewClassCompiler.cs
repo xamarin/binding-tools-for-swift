@@ -23,6 +23,7 @@ using SwiftRuntimeLibrary.SwiftMarshal;
 using Xamarin;
 using SwiftReflector.Importing;
 using ObjCRuntime;
+using System.Threading.Tasks;
 
 namespace SwiftReflector {
 	public class WrappingResult {
@@ -192,20 +193,22 @@ namespace SwiftReflector {
 
 			OutputIsFramework = UniformTargetRepresentation.ModuleIsFramework (CompilerNames.ModuleName, ClassCompilerLocations.LibraryDirectories);
 
-			var moduleInventory = GetModuleInventories (ClassCompilerLocations.LibraryDirectories, moduleNames, errors);
+			var inventoryErrors = new ErrorHandling ();
+			var inventoryTask = GetModuleInventoriesAsync (ClassCompilerLocations.LibraryDirectories, moduleNames, inventoryErrors);
+			var declarationsErrors = new ErrorHandling ();
+			var declarationsTask = GetModuleDeclarationsAsync (ClassCompilerLocations.ModuleDirectories, moduleNames, outputDirectory,
+									Options.RetainReflectedXmlOutput, targets, declarationsErrors, dylibXmlPath);
 
-			// Dylibs may create extra errors when Getting Module Inventories that we will ignore
-			if (isLibrary)
-				errors = new ErrorHandling ();
-
+			Task.WaitAll (inventoryTask, declarationsTask);
+			if (!isLibrary)
+				errors.Add (inventoryErrors);
+			errors.Add (declarationsErrors);
 			if (errors.AnyErrors)
 				return errors;
 
-			var moduleDeclarations = GetModuleDeclarations (ClassCompilerLocations.ModuleDirectories, moduleNames, outputDirectory,
-									Options.RetainReflectedXmlOutput, targets, errors, dylibXmlPath);
-			if (errors.AnyErrors)
-				return errors;
-
+			var moduleInventory = inventoryTask.Result;
+			var moduleDeclarations = declarationsTask.Result;
+			
 			var declsPerModule = new List<List<BaseDeclaration>> ();
 			foreach (ModuleDeclaration moduleDeclaration in moduleDeclarations) {
 				TypeMapper.TypeDatabase.ModuleDatabaseForModuleName (moduleDeclaration.Name);
@@ -5492,6 +5495,13 @@ namespace SwiftReflector {
 			return ModuleInventory.FromFile (libPath, errors);
 		}
 
+		static async Task<ModuleInventory> GetModuleInventoriesAsync (List<string> libraryDirectories,
+			List<string> moduleNames, ErrorHandling errors)
+		{
+			var dylibPaths = GetDylibs (libraryDirectories, moduleNames);
+			return await ModuleInventory.FromFilesAsync (dylibPaths, errors);
+		}
+
 		static ModuleInventory GetModuleInventories (List<string> libraryDirectories,
 		                                             List<string> moduleNames, ErrorHandling errors)
 		{
@@ -5526,6 +5536,16 @@ namespace SwiftReflector {
 			//	}
 			//}
 			//return null;
+		}
+
+		async Task<List<ModuleDeclaration>> GetModuleDeclarationsAsync (List<string> moduleDirectories, List<string> moduleNames,
+							       string outputDirectory, bool retainReflectedXmlOutput,
+							       CompilationTargetCollection targets, ErrorHandling errors, string dylibXmlPath = null)
+		{
+			return await Task.Run (() => {
+				return GetModuleDeclarations (moduleDirectories, moduleNames, outputDirectory, retainReflectedXmlOutput,
+					targets, errors, dylibXmlPath);
+			});
 		}
 
 		List<ModuleDeclaration> GetModuleDeclarations (List<string> moduleDirectories, List<string> moduleNames,

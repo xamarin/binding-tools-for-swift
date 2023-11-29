@@ -16,23 +16,25 @@ namespace SwiftReflector.Inventory {
 		}
 		public override void Add (TLDefinition tld, Stream srcStm)
 		{
-			TLVariable vari = tld as TLVariable;
-			if (vari != null) {
-				VariableContents contents = GoGetIt (vari.Name);
-				if (contents.Variable != null)
-					throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 4, $"duplicate variable {vari.Name.Name}.");
-				contents.Variable = vari;
-				return;
-			}
+			lock (valuesLock) {
+				TLVariable vari = tld as TLVariable;
+				if (vari != null) {
+					VariableContents contents = GoGetIt (vari.Name);
+					if (contents.Variable != null)
+						throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 4, $"duplicate variable {vari.Name.Name}.");
+					contents.Variable = vari;
+					return;
+				}
 
-			TLFunction tlf = tld as TLFunction;
-			if (tlf != null) {
-				VariableContents contents = GoGetIt (tlf.Name);
-				contents.Addressors.Add (tlf);
-				return;
-			}
+				TLFunction tlf = tld as TLFunction;
+				if (tlf != null) {
+					VariableContents contents = GoGetIt (tlf.Name);
+					contents.Addressors.Add (tlf);
+					return;
+				}
 
-			throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 5, $"expected a top-level function or top-level variable but got a {tld.GetType ().Name}");
+				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 5, $"expected a top-level function or top-level variable but got a {tld.GetType ().Name}");
+			}
 
 		}
 
