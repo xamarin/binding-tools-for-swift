@@ -238,7 +238,7 @@ So we might have an implementation like this:
 public class ExposeToSwiftAttribute : Attribute {
     public string SwiftAttributes { get; private set; }
     public string SwiftName { get; private set; }
-    public ExposeToSwiftAttribte (string swiftAttributes = "", swiftName = "")
+    public ExposeToSwiftAttribute (string swiftAttributes = "", swiftName = "")
     {
         SwiftAttributes = swiftAttributes;
         SwiftName = swiftName;
