@@ -14,6 +14,8 @@ using System.Text;
 using Dynamo;
 using SwiftReflector.TypeMapping;
 using SwiftReflector.SwiftXmlReflection;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace SwiftReflector.SwiftInterfaceReflector {
 	public class SwiftInterfaceReflector : SwiftInterfaceBaseListener {
@@ -152,6 +154,19 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 			this.moduleLoader = Exceptions.ThrowOnNull (moduleLoader, nameof (moduleLoader));
 		}
 
+		public async Task ReflectAsync (string inFile, Stream outStm)
+		{
+			Exceptions.ThrowOnNull (inFile, nameof (inFile));
+			Exceptions.ThrowOnNull (outStm, nameof (outStm));
+
+
+			await Task.Run (() => {
+				var xDocument = Reflect (inFile);
+				xDocument.Save (outStm);
+				currentElement.Clear ();
+			});
+		}
+
 		public void Reflect (string inFile, Stream outStm)
 		{
 			Exceptions.ThrowOnNull (inFile, nameof (inFile));
@@ -161,6 +176,13 @@ namespace SwiftReflector.SwiftInterfaceReflector {
 
 			xDocument.Save (outStm);
 			currentElement.Clear ();
+		}
+
+		public async Task<XDocument> ReflectAsync (string inFile)
+		{
+			return await Task.Run (() => {
+				return Reflect (inFile);
+			});
 		}
 
 		public XDocument Reflect (string inFile)

@@ -22,12 +22,14 @@ namespace SwiftReflector.Inventory {
 			if (tlf == null)
 				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 10, $"expected a top-level function but got a {tld.GetType ().Name}");
 
-			OverloadInventory overloads = null;
-			if (!values.TryGetValue (tlf.Name, out overloads)) {
-				overloads = new OverloadInventory (tlf.Name, sizeofMachinePointer);
-				values.Add (tlf.Name, overloads);
+			lock (valuesLock) {
+				OverloadInventory overloads = null;
+				if (!values.TryGetValue (tlf.Name, out overloads)) {
+					overloads = new OverloadInventory (tlf.Name, sizeofMachinePointer);
+					values.Add (tlf.Name, overloads);
+				}
+				overloads.Add (tlf, srcStm);
 			}
-			overloads.Add (tlf, srcStm);
 		}
 
 		public TLFunction ContainsEquivalentFunction (TLFunction func)

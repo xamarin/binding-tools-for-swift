@@ -19,21 +19,23 @@ namespace SwiftReflector.Inventory {
 
 		public override void Add (TLDefinition tld, Stream srcStm)
 		{
-			TLFunction tlf = tld as TLFunction;
-			if (tlf == null)
-				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 7, $"Expected a TLFunction for a property but got a {tld.GetType ().Name}.");
+			lock (valuesLock) {
+				TLFunction tlf = tld as TLFunction;
+				if (tlf == null)
+					throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 7, $"Expected a TLFunction for a property but got a {tld.GetType ().Name}.");
 
-			SwiftPropertyType prop = tlf.Signature as SwiftPropertyType;
-			if (prop == null)
-				throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 8, $"Expected a function of property type but got a {tlf.Signature.GetType ().Name}.");
+				SwiftPropertyType prop = tlf.Signature as SwiftPropertyType;
+				if (prop == null)
+					throw ErrorHelper.CreateError (ReflectorError.kInventoryBase + 8, $"Expected a function of property type but got a {tlf.Signature.GetType ().Name}.");
 
-			PropertyContents contents = null;
-			SwiftName nameToUse = prop.PrivateName ?? prop.Name;
-			if (!values.TryGetValue (nameToUse, out contents)) {
-				contents = new PropertyContents (tlf.Class, nameToUse, sizeofMachinePointer);
-				values.Add (nameToUse, contents);
+				PropertyContents contents = null;
+				SwiftName nameToUse = prop.PrivateName ?? prop.Name;
+				if (!values.TryGetValue (nameToUse, out contents)) {
+					contents = new PropertyContents (tlf.Class, nameToUse, sizeofMachinePointer);
+					values.Add (nameToUse, contents);
+				}
+				contents.Add (tlf, prop);
 			}
-			contents.Add (tlf, prop);
 		}
 
 		public PropertyContents PropertyWithName (SwiftName name)

@@ -11,6 +11,7 @@ using ObjCRuntime;
 
 namespace SwiftReflector {
 	public class ErrorHandling {
+		object messagesLock = new object ();
 		List<ReflectorError> messages;
 
 		public ErrorHandling ()
@@ -37,37 +38,61 @@ namespace SwiftReflector {
 
 		public void Add (ErrorHandling eh)
 		{
-			messages.AddRange (eh.messages);
+			lock (messagesLock) {
+				lock (eh.messagesLock) {
+					messages.AddRange (eh.messages);
+				}
+			}
 		}
 
 		public void Add (params ReflectorError [] errors)
 		{
-			messages.AddRange (errors);
+			lock (messagesLock) {
+				messages.AddRange (errors);
+			}
 		}
 
 		public void Add (Exception exception)
 		{
+			lock (messagesLock) {
 #if CRASH_ON_EXCEPTION
 			ExceptionDispatchInfo.Capture (exception).Throw ();
 #else
-			messages.Add (new ReflectorError (exception));
+				messages.Add (new ReflectorError (exception));
 #endif
+			}
 		}
 
 		public bool AnyMessages {
-			get { return messages.Count > 0; }
+			get {
+				lock (messagesLock) {
+					return messages.Count > 0;
+				}
+			}
 		}
 
 		public bool AnyErrors {
-			get { return messages.Any ((v) => !v.IsWarning);  }
+			get {
+				lock (messagesLock) {
+					return messages.Any ((v) => !v.IsWarning);
+				}
+			}
 		}
 
 		public int WarningCount {
-			get { return messages.Count ((v) => v.IsWarning); }
+			get {
+				lock (messagesLock) {
+					return messages.Count ((v) => v.IsWarning);
+				}
+			}
 		}
 
 		public int ErrorCount {
-			get { return messages.Count ((v) => !v.IsWarning); }
+			get {
+				lock (messagesLock) {
+					return messages.Count ((v) => !v.IsWarning);
+				}
+			}
 		}
 
 		public int Show (int verbosity)

@@ -22,12 +22,14 @@ namespace SwiftReflector.Inventory {
 				return;
 			SwiftName className = ToClassName (tld);
 			SwiftClassName formalName = ToFormalClassName (tld);
-			ClassContents contents = null;
-			if (!values.TryGetValue (className, out contents)) {
-				contents = new ClassContents (formalName, sizeofMachinePointer);
-				values.Add (className, contents);
+			lock (valuesLock) {
+				ClassContents contents = null;
+				if (!values.TryGetValue (className, out contents)) {
+					contents = new ClassContents (formalName, sizeofMachinePointer);
+					values.Add (className, contents);
+				}
+				contents.Add (tld, srcStm);
 			}
-			contents.Add (tld, srcStm);
 		}
 
 		public static SwiftClassName ToFormalClassName (TLDefinition tld)

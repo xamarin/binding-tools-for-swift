@@ -11,6 +11,7 @@ using SwiftReflector.IOUtils;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
 using SwiftRuntimeLibrary;
+using System.Threading.Tasks;
 
 namespace SwiftReflector.Inventory {
 	public class ModuleInventory : Inventory<ModuleContents> {
@@ -24,12 +25,14 @@ namespace SwiftReflector.Inventory {
 
 		public override void Add (TLDefinition tld, Stream srcStm)
 		{
-			ModuleContents module = null;
-			if (!values.TryGetValue (tld.Module, out module)) {
-				module = new ModuleContents (tld.Module, SizeofMachinePointer);
-				values.Add (tld.Module, module);
+			lock (valuesLock) {
+				ModuleContents module = null;
+				if (!values.TryGetValue (tld.Module, out module)) {
+					module = new ModuleContents (tld.Module, SizeofMachinePointer);
+					values.Add (tld.Module, module);
+				}
+				module.Add (tld, srcStm);
 			}
-			module.Add (tld, srcStm);
 		}
 
 		public IEnumerable<SwiftName> ModuleNames {
@@ -111,6 +114,23 @@ namespace SwiftReflector.Inventory {
 			}
 		}
 
+		public static async Task<ModuleInventory> FromFilesAsync (IEnumerable<string> pathsToLibraryFiles, ErrorHandling errors)
+		{
+			var streams = pathsToLibraryFiles.Select (path => new FileStream (path, FileMode.Open, FileAccess.Read, FileShare.Read)).ToList ();
+			if (streams.Count == 0)
+				return null;
+			var inventory = new ModuleInventory ();
+			try {
+				var tasks = streams.Select (stm => FromStreamIntoAsync (stm, inventory, errors, stm.Name));
+				await Task.WhenAll (tasks);
+			} finally {
+				foreach (var stm in streams) {
+					stm.Dispose ();
+				}
+			}
+			return inventory;
+		}
+
 		public static ModuleInventory FromFiles (IEnumerable<string> pathsToLibraryFiles, ErrorHandling errors)
 		{
 			ModuleInventory inventory = null;
@@ -122,6 +142,14 @@ namespace SwiftReflector.Inventory {
 				}
 			}
 			return inventory;
+		}
+
+		static async Task<ModuleInventory> FromStreamIntoAsync (Stream stm, ModuleInventory inventory,
+			ErrorHandling errors, string fileName = null)
+		{
+			return await Task.Run (() => {
+				return FromStreamInto (stm, inventory, errors, fileName);
+			});
 		}
 
 		static ModuleInventory FromStreamInto (Stream stm, ModuleInventory inventory,

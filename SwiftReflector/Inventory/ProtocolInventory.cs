@@ -15,14 +15,16 @@ namespace SwiftReflector.Inventory {
 
 		public override void Add (TLDefinition tld, Stream srcStm)
 		{
-			SwiftName className = ClassInventory.ToClassName (tld);
-			SwiftClassName formalName = ClassInventory.ToFormalClassName (tld);
-			ProtocolContents contents = null;
-			if (!values.TryGetValue (className, out contents)) {
-				contents = new ProtocolContents (formalName, sizeofMachinePointer);
-				values.Add (className, contents);
+			lock (valuesLock) {
+				SwiftName className = ClassInventory.ToClassName (tld);
+				SwiftClassName formalName = ClassInventory.ToFormalClassName (tld);
+				ProtocolContents contents = null;
+				if (!values.TryGetValue (className, out contents)) {
+					contents = new ProtocolContents (formalName, sizeofMachinePointer);
+					values.Add (className, contents);
+				}
+				contents.Add (tld, srcStm);
 			}
-			contents.Add (tld, srcStm);
 		}
 	}
 }
