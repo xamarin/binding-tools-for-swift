@@ -1932,12 +1932,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			*((ulong*)p) = val;
 		}
 
-		static unsafe void Write (IntPtr val, IntPtr p)
-		{
-			*((void**)p) = (void*)val;
-		}
-
-		static unsafe void Write (UIntPtr val, IntPtr p)
+		static unsafe void Write (void *val, IntPtr p)
 		{
 			*((void**)p) = (void*)val;
 		}
