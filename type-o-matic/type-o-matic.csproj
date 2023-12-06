@@ -1,44 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetFramework>net7.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>typeomatic</RootNamespace>
-    <AssemblyName>type-o-matic</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;BINDING_TOOLS_FOR_SWIFT</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ExternalConsole>true</ExternalConsole>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ExternalConsole>true</ExternalConsole>
-    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Mono.Options">
-      <HintPath>..\packages\Mono.Options.5.3.0.1\lib\net4-client\Mono.Options.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="..\SwiftReflector\Importing\TypeAggregator.cs">
       <Link>TypeAggregator.cs</Link>
     </Compile>
@@ -48,11 +28,9 @@
     <Compile Include="..\SwiftReflector\Enums.cs">
       <Link>Enums.cs</Link>
     </Compile>
-    <Compile Include="TypeOMaticOptions.cs" />
     <Compile Include="..\SwiftReflector\IOUtils\ExecAndCollect.cs">
       <Link>ExecAndCollect.cs</Link>
     </Compile>
-    <Compile Include="FileSymbolPair.cs" />
     <Compile Include="..\SwiftReflector\Importing\TypeAggregator.iOS.cs">
       <Link>TypeAggregator.iOS.cs</Link>
     </Compile>
@@ -130,22 +108,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Dynamo\Dynamo.csproj">
-      <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
-      <Name>Dynamo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
-      <Project>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</Project>
-      <Name>SwiftRuntimeLibrary</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Dynamo\Dynamo.csproj" />
+    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
     <Folder Include="Demangling\" />
     <Folder Include="SwiftType\" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <PackageReference Include="Mono.Options" Version="5.3.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="TypeMetadataSet.cs" />
+  </ItemGroup>
 </Project>

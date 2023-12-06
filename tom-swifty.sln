@@ -1,29 +1,29 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tom-swifty", "tom-swifty\tom-swifty.csproj", "{8CAC7366-9650-440D-A3C5-36D880285DD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tom-swifty", "tom-swifty\tom-swifty.csproj", "{8CAC7366-9650-440D-A3C5-36D880285DD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftReflector", "SwiftReflector\SwiftReflector.csproj", "{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwiftReflector", "SwiftReflector\SwiftReflector.csproj", "{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary", "SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj", "{B7E6CF5A-B836-41CF-988C-A83607AF5445}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwiftRuntimeLibrary", "SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj", "{B7E6CF5A-B836-41CF-988C-A83607AF5445}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plist-swifty", "plist-swifty\plist-swifty.csproj", "{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plist-swifty", "plist-swifty\plist-swifty.csproj", "{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary.Mac", "SwiftRuntimeLibrary.Mac\SwiftRuntimeLibrary.Mac.csproj", "{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwiftRuntimeLibrary.Mac", "SwiftRuntimeLibrary.Mac\SwiftRuntimeLibrary.Mac.csproj", "{12C9A447-D0EB-4FDD-8094-F8DE9945EFD0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary.iOS", "SwiftRuntimeLibrary.iOS\SwiftRuntimeLibrary.iOS.csproj", "{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo", "Dynamo\Dynamo.csproj", "{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tom-swifty-test", "tests\tom-swifty-test\tom-swifty-test.csproj", "{F565616E-274E-44FA-9F6E-8095308FD80A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tom-swifty-test", "tests\tom-swifty-test\tom-swifty-test.csproj", "{F565616E-274E-44FA-9F6E-8095308FD80A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "swift-copy-libs", "swift-copy-libs\swift-copy-libs.csproj", "{11F5D3B2-AC30-47A9-A4FF-998835C5CF9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "swift-copy-libs", "swift-copy-libs\swift-copy-libs.csproj", "{11F5D3B2-AC30-47A9-A4FF-998835C5CF9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "leaktest", "leaktest\leaktest.csproj", "{33D1E7E3-A123-43F0-B047-163C6E75D3BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "leaktest", "leaktest\leaktest.csproj", "{33D1E7E3-A123-43F0-B047-163C6E75D3BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "type-o-matic", "type-o-matic\type-o-matic.csproj", "{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "type-o-matic", "type-o-matic\type-o-matic.csproj", "{AB8D0455-7DB1-43ED-ACD3-4DB10350E762}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DylibBinder", "DylibBinder\DylibBinder.csproj", "{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DylibBinder", "DylibBinder\DylibBinder.csproj", "{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

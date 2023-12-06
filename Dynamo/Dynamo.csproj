@@ -1,157 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</ProjectGuid>
+    <TargetFramework>net7.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>Dynamo</RootNamespace>
-    <AssemblyName>Dynamo</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ICodeElement.cs" />
-    <Compile Include="ICodeWriter.cs" />
-    <Compile Include="WriteEventArgs.cs" />
-    <Compile Include="ICodeElementSet.cs" />
-    <Compile Include="CodeWriter.cs" />
-    <Compile Include="Exceptions.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="CodeElementCollection.cs" />
-    <Compile Include="DecoratedCodeElementCollection.cs" />
-    <Compile Include="SimpleLineElement.cs" />
-    <Compile Include="SimpleElement.cs" />
-    <Compile Include="LabeledCodeElementCollection.cs" />
-    <Compile Include="CommaListElementCollection.cs" />
-    <Compile Include="DelegatedSimpleElement.cs" />
-    <Compile Include="Dynamo.CSLang\CSUsing.cs" />
-    <Compile Include="Dynamo.CSLang\CSComment.cs" />
-    <Compile Include="Dynamo.CSLang\ICSTopLevelDeclaration.cs" />
-    <Compile Include="Dynamo.CSLang\CSNamespace.cs" />
-    <Compile Include="Dynamo.CSLang\Enums.cs" />
-    <Compile Include="Dynamo.CSLang\CSFile.cs" />
-    <Compile Include="Dynamo.CSLang\CSType.cs" />
-    <Compile Include="Dynamo.CSLang\CSIdentifier.cs" />
-    <Compile Include="Dynamo.CSLang\ICSExpression.cs" />
-    <Compile Include="Dynamo.CSLang\CSBinaryExpression.cs" />
-    <Compile Include="Dynamo.CSLang\CSBaseExpression.cs" />
-    <Compile Include="Dynamo.CSLang\CSFunctionCall.cs" />
-    <Compile Include="Dynamo.CSLang\CSConstant.cs" />
-    <Compile Include="Dynamo.CSLang\CSAssignment.cs" />
-    <Compile Include="Dynamo.CSLang\CSLine.cs" />
-    <Compile Include="Dynamo.CSLang\ICSLineable.cs" />
-    <Compile Include="Dynamo.CSLang\CSIfElse.cs" />
-    <Compile Include="Dynamo.CSLang\CSMethod.cs" />
-    <Compile Include="Dynamo.CSLang\CSParameter.cs" />
-    <Compile Include="Dynamo.CSLang\CSCodeBlock.cs" />
-    <Compile Include="Dynamo.CSLang\ICSStatement.cs" />
-    <Compile Include="LineCodeElementCollection.cs" />
-    <Compile Include="Dynamo.CSLang\CSArgument.cs" />
-    <Compile Include="Dynamo.CSLang\CSAttribute.cs" />
-    <Compile Include="Dynamo.CSLang\CSProperty.cs" />
-    <Compile Include="Dynamo.CSLang\CSReturn.cs" />
-    <Compile Include="Dynamo.CSLang\CSBinding.cs" />
-    <Compile Include="Dynamo.CSLang\CSFieldDeclaration.cs" />
-    <Compile Include="Dynamo.CSLang\CSParenthesisExpression.cs" />
-    <Compile Include="Dynamo.CSLang\CSFileBasic.cs" />
-    <Compile Include="Dynamo.SwiftLang\Enums.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLType.cs" />
-    <Compile Include="Dynamo.SwiftLang\ISLExpr.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLBaseExpr.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLBinaryExpr.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLIdentifier.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLBinding.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLNameTypePair.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLReturn.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLConstant.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLLine.cs" />
-    <Compile Include="Dynamo.SwiftLang\ISLStatement.cs" />
-    <Compile Include="Dynamo.SwiftLang\ISLLineable.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLTupleExpr.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLCodeBlock.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLFunc.cs" />
-    <Compile Include="Dynamo.CSLang\CSInheritance.cs" />
-    <Compile Include="Dynamo.CSLang\CSClass.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLClass.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLFile.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLDeclaration.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLImport.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLFunctionCall.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLArgument.cs" />
-    <Compile Include="DelegatedCommaListElementCollection.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLSubscriptExpr.cs" />
-    <Compile Include="Dynamo.CSLang\CSEnum.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLSwitch.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLClosure.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLClosureCall.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLTryBang.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLIfElse.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLThrow.cs" />
-    <Compile Include="Dynamo.CSLang\CSThrow.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLInheritance.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLAttribute.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLAddressOf.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLNamedClosureCall.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLPostBang.cs" />
-    <Compile Include="Dynamo.CSLang\CSDelegateTypeDecl.cs" />
-    <Compile Include="Dynamo.CSLang\CSLambda.cs" />
-    <Compile Include="Dynamo.CSLang\CSTernary.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLProperty.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLSubscript.cs" />
-    <Compile Include="Dynamo.CSLang\CSIndexExpression.cs" />
-    <Compile Include="Dynamo.CSLang\CSInterface.cs" />
-    <Compile Include="Dynamo.CSLang\CSArray1D.cs" />
-    <Compile Include="Dynamo.CSLang\CSUnaryExpression.cs" />
-    <Compile Include="Dynamo.CSLang\CSFixed.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLGenericTypeDeclaration.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLGenericConstraint.cs" />
-    <Compile Include="Dynamo.CSLang\CSGenericTypeDeclaration.cs" />
-    <Compile Include="Dynamo.CSLang\CSGenericConstraint.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLVariadicExpr.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLCommaListExpr.cs" />
-    <Compile Include="Dynamo.CSLang\CSTryCatch.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLDoCatch.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLAsExpr.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLLetMatch.cs" />
-    <Compile Include="Dynamo.CSLang\CSForEach.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLUnaryExpr.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLLineableOperator.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLParameter.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLParameterList.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLParenthesisExpression.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLConditionalCompilation.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLComment.cs" />
-    <Compile Include="Dynamo.CSLang\CSInitializer.cs" />
-    <Compile Include="Dynamo.CSLang\CSConditionalCompilation.cs" />
-    <Compile Include="Dynamo.CSLang\CSInject.cs" />
-    <Compile Include="Dynamo.SwiftLang\SLInject.cs" />
-    <Compile Include="Dynamo.CSLang\CSShortCircuit.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
     <Folder Include="Dynamo.CSLang\" />
     <Folder Include="Dynamo.SwiftLang\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
   </ItemGroup>
 </Project>

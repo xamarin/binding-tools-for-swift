@@ -8,7 +8,7 @@ using Xamarin.iOS;
 
 namespace SwiftRuntimeLibrary {
 	public struct SwiftClosureRepresentation {
-		public SwiftClosureRepresentation (Delegate function, IntPtr data)
+		public unsafe SwiftClosureRepresentation (void *function, IntPtr data)
 		{
 			Function = function;
 			Data = data;
@@ -17,7 +17,7 @@ namespace SwiftRuntimeLibrary {
 #endif
 		}
 		[MarshalAs (UnmanagedType.FunctionPtr)]
-		public Delegate Function;
+		public unsafe void *Function;
 		public IntPtr Data;
 
 
@@ -27,7 +27,7 @@ namespace SwiftRuntimeLibrary {
 			return Marshal.ReadIntPtr (p + 3 * IntPtr.Size);
 		}
 
-		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr>))]
+		[UnmanagedCallersOnly]
 		public static void FuncCallbackVoid (IntPtr retValPtr, IntPtr refPtr)
 		{
 			if (refPtr == IntPtr.Zero)
@@ -41,7 +41,7 @@ namespace SwiftRuntimeLibrary {
 			StructMarshal.ReleaseSwiftObject (capsule);
 		}
 
-		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr, IntPtr>))]
+		[UnmanagedCallersOnly]
 		public static void FuncCallback (IntPtr retValPtr, IntPtr args, IntPtr refPtr)
 		{
 			if (refPtr == IntPtr.Zero)
@@ -73,14 +73,19 @@ namespace SwiftRuntimeLibrary {
 			StructMarshal.ReleaseSwiftObject (capsule);
 		}
 
-		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr>))]
+		[UnmanagedCallersOnly]
 		public static void FuncCallbackVoidMaybeThrows (IntPtr retValPtr, IntPtr refPtr)
 		{
-			FuncCallbackMaybeThrows (retValPtr, IntPtr.Zero, refPtr);
+			FuncCallbackMaybeThrowsImpl (retValPtr, IntPtr.Zero, refPtr);
 		}
 
-		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr, IntPtr>))]
+		[UnmanagedCallersOnly]
 		public static void FuncCallbackMaybeThrows (IntPtr retValPtr, IntPtr args, IntPtr refPtr)
+		{
+			FuncCallbackMaybeThrowsImpl (retValPtr, IntPtr.Zero, refPtr);
+		}
+
+		static void FuncCallbackMaybeThrowsImpl (IntPtr retValPtr, IntPtr args, IntPtr refPtr)
 		{
 			// instead of a pointer to a return value, this is a pointer to a Medusa tuple of the form:
 			// (T, SwiftError, bool)
@@ -152,7 +157,7 @@ namespace SwiftRuntimeLibrary {
 			StructMarshal.ReleaseSwiftObject (capsule);
 		}
 
-		[MonoPInvokeCallback (typeof (Action<IntPtr>))]
+		[UnmanagedCallersOnly]
 		public static void ActionCallbackVoidVoid (IntPtr refPtr)
 		{
 			if (refPtr == IntPtr.Zero)
@@ -174,7 +179,7 @@ namespace SwiftRuntimeLibrary {
 		}
 
 
-		[MonoPInvokeCallback (typeof (Action<IntPtr, IntPtr>))]
+		[UnmanagedCallersOnly]
 		public static void ActionCallback (IntPtr args, IntPtr refPtr)
 		{
 			if (refPtr == IntPtr.Zero)

@@ -1,196 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}</ProjectGuid>
+    <TargetFramework>net7.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>SwiftReflector</RootNamespace>
-    <AssemblyName>SwiftReflector</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG; SWIFT4;BINDING_TOOLS_FOR_SWIFT</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>
+    </DebugType>
     <OutputPath>bin\Release</OutputPath>
     <DefineConstants>SWIFT4;BINDING_TOOLS_FOR_SWIFT</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml.Serialization" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\packages\Mono.Cecil.0.10.3\lib\net40\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb">
-      <HintPath>..\packages\Mono.Cecil.0.10.3\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb">
-      <HintPath>..\packages\Mono.Cecil.0.10.3\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks">
-      <HintPath>..\packages\Mono.Cecil.0.10.3\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr4.Runtime.Standard">
-      <HintPath>..\packages\Antlr4.Runtime.Standard.4.9.1\lib\netstandard2.0\Antlr4.Runtime.Standard.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="..\..\common\MachO.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="SwiftName.cs" />
-    <Compile Include="PunyCode.cs" />
-    <Compile Include="Visitors.cs" />
-    <Compile Include="SwiftType.cs" />
-    <Compile Include="StringSlice.cs" />
-    <Compile Include="SwiftClassName.cs" />
-    <Compile Include="TopLevelFunctionCompiler.cs" />
-    <Compile Include="ModuleMapper.cs" />
-    <Compile Include="ReflectorError.cs" />
-    <Compile Include="MethodWrapping.cs" />
-    <Compile Include="WrappingCompiler.cs" />
-    <Compile Include="IOUtils\IStreamProvider.cs" />
-    <Compile Include="IOUtils\DisposableTempDirectory.cs" />
-    <Compile Include="IOUtils\TempDirectoryStreamProvider.cs" />
-    <Compile Include="IOUtils\TempDirectorySwiftClassFileProvider.cs" />
-    <Compile Include="CSKeywords.cs" />
-    <Compile Include="SwiftXmlReflection\Enums.cs" />
-    <Compile Include="SwiftXmlReflection\TypeDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\Member.cs" />
-    <Compile Include="SwiftXmlReflection\BaseDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\ClassDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\StructDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\FunctionDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\ParameterItem.cs" />
-    <Compile Include="SwiftXmlReflection\PropertyDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\ExtensionMethods.cs" />
-    <Compile Include="SwiftXmlReflection\ModuleDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\Reflector.cs" />
-    <Compile Include="SwiftXmlReflection\TypeSpec.cs" />
-    <Compile Include="SwiftXmlReflection\TypeSpecTokenizer.cs" />
-    <Compile Include="SwiftXmlReflection\TypeSpecToken.cs" />
-    <Compile Include="SwiftXmlReflection\TypeSpecParser.cs" />
-    <Compile Include="Inventory\ModuleInventory.cs" />
-    <Compile Include="Inventory\ModuleContents.cs" />
-    <Compile Include="Inventory\OverloadInventory.cs" />
-    <Compile Include="Inventory\FunctionInventory.cs" />
-    <Compile Include="Inventory\ClassInventory.cs" />
-    <Compile Include="Inventory\ClassContents.cs" />
-    <Compile Include="Inventory\WitnessInventory.cs" />
-    <Compile Include="Inventory\PropertyInventory.cs" />
-    <Compile Include="Inventory\PropertyContents.cs" />
-    <Compile Include="Inventory\Inventory.cs" />
-    <Compile Include="IOUtils\IFileProvider.cs" />
-    <Compile Include="IOUtils\TempDirectoryFilenameProvider.cs" />
-    <Compile Include="CustomSwiftCompiler.cs" />
-    <Compile Include="NewClassCompiler.cs" />
-    <Compile Include="XmlToTLFunctionMapper.cs" />
-    <Compile Include="NominalStructTypeDescriptor.cs" />
-    <Compile Include="IOUtils\OffsetStream.cs" />
-    <Compile Include="MarshalEngine.cs" />
-    <Compile Include="Inventory\VariableInventory.cs" />
-    <Compile Include="Inventory\VariableContents.cs" />
-    <Compile Include="SwiftXmlReflection\SubscriptDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\EnumDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\EnumElement.cs" />
-    <Compile Include="ValueWitnessTable.cs" />
-    <Compile Include="SwiftXmlReflection\Inheritance.cs" />
-    <Compile Include="TypeMapping\TypeMapper.cs" />
-    <Compile Include="TypeMapping\NetTypeBundle.cs" />
-    <Compile Include="TypeMapping\NetParam.cs" />
-    <Compile Include="IOUtils\IXElementConvertible.cs" />
-    <Compile Include="TypeMapping\TypeDatabase.cs" />
-    <Compile Include="TypeMapping\Entity.cs" />
-    <Compile Include="SwiftXmlReflection\ShamDeclaration.cs" />
-    <Compile Include="OverrideBuilder.cs" />
-    <Compile Include="TypeMapping\TypeSpecToSLType.cs" />
-    <Compile Include="TypeMapping\SwiftTypeToSLType.cs" />
-    <Compile Include="MarshalEngineSwiftToCSharp.cs" />
-    <Compile Include="MarshalEngineCSafeSwiftToCSharp.cs" />
-    <Compile Include="SwiftXmlReflection\ProtocolDeclaration.cs" />
-    <Compile Include="Inventory\ProtocolContents.cs" />
-    <Compile Include="Inventory\ProtocolInventory.cs" />
-    <Compile Include="SwiftXmlReflection\GenericDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\BaseConstraint.cs" />
-    <Compile Include="SwiftXmlReflection\GenericDeclarationCollection.cs" />
-    <Compile Include="MachOHelpers.cs" />
-    <Compile Include="IOUtils\PLItems.cs" />
-    <Compile Include="IOUtils\PLItemEnums.cs" />
-    <Compile Include="IOUtils\ExecAndCollect.cs" />
-    <Compile Include="IOUtils\ReliablePath.cs" />
-    <Compile Include="IOUtils\InfoPList.cs" />
-    <Compile Include="MachOHawley.cs" />
-    <Compile Include="Demangling\Decomposer.cs" />
-    <Compile Include="Demangling\TLDefinition.cs" />
-    <Compile Include="Demangling\Swift4Demangler.cs" />
-    <Compile Include="Demangling\Enums.cs" />
-    <Compile Include="Demangling\Node.cs" />
-    <Compile Include="Demangling\ContextAttribute.cs" />
-    <Compile Include="Demangling\Swift4NodeToTLDefinition.cs" />
-    <Compile Include="Demangling\MatchRule.cs" />
-    <Compile Include="Demangling\RuleRunner.cs" />
-    <Compile Include="Homonyms.cs" />
-    <Compile Include="ErrorHandling.cs" />
-    <Compile Include="SwiftXmlReflection\ExtensionDeclaration.cs" />
-    <Compile Include="UnicodeMapper.cs" />
-    <Compile Include="IOUtils\PosixHelpers.cs" />
-    <Compile Include="FunctionReferenceCodeMap.cs" />
-    <Compile Include="ObjCProtocolCompiler.cs" />
-    <Compile Include="SwiftCompilerLocation.cs" />
-    <Compile Include="Importing\BindingImporter.cs" />
-    <Compile Include="Importing\PatternMatch.cs" />
-    <Compile Include="Importing\MemberImporter.cs" />
-    <Compile Include="Importing\CSMethodComparator.cs" />
-    <Compile Include="Downloaded\StringUtils.cs" />
-    <Compile Include="ExceptionTools\RuntimeException.cs" />
-    <Compile Include="ExceptionTools\ErrorHelper.cs" />
-    <Compile Include="Importing\TypeAggregator.cs" />
-    <Compile Include="Importing\TypeAggregator.iOS.cs" />
-    <Compile Include="Importing\TypeAggregator.MacOS.cs" />
-    <Compile Include="Demangling\Swift5NodeToTLDefinition.cs" />
-    <Compile Include="Demangling\Swift5Demangler.cs" />
-    <Compile Include="SwiftXmlReflection\AssociatedTypeDeclaration.cs" />
-    <Compile Include="ProtocolMethodMatcher.cs" />
-    <Compile Include="PatToGenericMap.cs" />
-    <Compile Include="SwiftXmlReflection\GenericReferenceAssociatedTypeProtocol.cs" />
-    <Compile Include="FunctionDeclarationWrapperFinder.cs" />
-    <Compile Include="SwiftInterfaceReflector\SwiftInterfaceReflector.cs" />
-    <Compile Include="SwiftInterfaceReflector\ParseException.cs" />
-    <Compile Include="SwiftXmlReflection\OperatorDeclaration.cs" />
-    <Compile Include="TypeMapping\ModuleDatabase.cs" />
-    <Compile Include="SwiftInterfaceReflector\IModuleLoader.cs" />
-    <Compile Include="SwiftXmlReflection\AttributeDeclaration.cs" />
-    <Compile Include="SwiftInterfaceReflector\ObjCSelectorFactory.cs" />
-    <Compile Include="SwiftInterfaceReflector\SyntaxDesugaringParser.cs" />
-    <Compile Include="SwiftXmlReflection\TypeAliasDeclaration.cs" />
-    <Compile Include="SwiftXmlReflection\TypeAliasFolder.cs" />
-    <Compile Include="CompilationTarget.cs" />
-    <Compile Include="FrameworkRepresentation.cs" />
-    <Compile Include="CompilationTargetCollection.cs" />
-    <Compile Include="CompilationSettings.cs" />
-    <Compile Include="IOUtils\Directories.cs" />
-    <Compile Include="GenericReferenceRenamer.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="IOUtils\" />
     <Folder Include="ExceptionTools\" />
@@ -204,27 +35,16 @@
   <Target Name="GeneratedCSParser" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="SwiftInterfaceReflector\GeneratedParser\SwuftUnterfaceBaseListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceLexer.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceParser.cs">
     <Exec Command="make" WorkingDirectory="../swiftinterfaceparser" />
   </Target>
-
   <ItemGroup>
-	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceBaseListener.cs" />
-	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceListener.cs" />
-	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceLexer.cs" />
-	<Compile Include="SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceParser.cs" />
+    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj" />
+    <ProjectReference Include="..\Dynamo\Dynamo.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
-      <Project>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</Project>
-      <Name>SwiftRuntimeLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dynamo\Dynamo.csproj">
-      <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
-      <Name>Dynamo</Name>
-    </ProjectReference>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.1" />
+    <PackageReference Include="Mono.Cecil" Version="0.10.3" />
   </ItemGroup>
-  <!-- If 'Inputs' isn't specified, the target will always run (even if 'Outputs' is specified, and exists). -->
-  <!-- So just use the project file as the input. -->
   <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Remove="SwiftTypeAttribute.cs" />
   </ItemGroup>
   <Target Name="BeforeBuild" Inputs="$(MSBuildProjectFullPath)" Outputs="Downloaded\StringUtils.cs">
     <Exec Command="mkdir -p Downloaded" />

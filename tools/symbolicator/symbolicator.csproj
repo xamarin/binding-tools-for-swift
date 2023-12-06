@@ -1,19 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <DefaultItemExcludes>$(DefaultItemExcludes);*.sh;*.md;*.props</DefaultItemExcludes>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DefineConstants>TRACE;DEBUG;SYMBOLICATOR;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
+    <DebugType>
+    </DebugType>
     <DefineConstants>TRACE;RELEASE;SYMBOLICATOR;NETCOREAPP;NETCOREAPP2_1</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="..\..\SwiftReflector\IOUtils\ExecAndCollect.cs">
       <Link>ExecAndCollect.cs</Link>
@@ -23,6 +21,6 @@
     </Compile>
   </ItemGroup>
   <Target Name="ProvisionDeps" BeforeTargets="ResolveAssemblyReferences">
-      <Exec Command="../../devops/automation/provision-deps.sh" />
+    <Exec Command="../../devops/automation/provision-deps.sh" />
   </Target>
 </Project>

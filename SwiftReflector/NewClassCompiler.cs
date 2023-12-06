@@ -24,6 +24,7 @@ using Xamarin;
 using SwiftReflector.Importing;
 using ObjCRuntime;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace SwiftReflector {
 	public class WrappingResult {
@@ -2897,11 +2898,8 @@ namespace SwiftReflector {
 					new CSIdentifier (recvrName),
 					pl, body);
 
-			use.AddIfNotPresent (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), kMobilePlatforms);
-			var args = new CSArgumentList ();
-			args.Add (new CSFunctionCall ("typeof", false, new CSIdentifier (vtableName.Name + "." + delType.Name.Name)));
-			var attr = CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true);
-			CSConditionalCompilation.ProtectWithIfEndif (kMobilePlatforms, attr);
+			use.AddIfNotPresent (typeof (UnmanagedCallersOnlyAttribute));
+			var attr = CSAttribute.FromAttr (typeof (UnmanagedCallersOnlyAttribute), new CSArgumentList (), true);
 			attr.AttachBefore (recvr);
 			return recvr;
 		}
@@ -2936,11 +2934,8 @@ namespace SwiftReflector {
 
 			recvr = new CSMethod (CSVisibility.None, CSMethodKind.Static, returnType, new CSIdentifier (recvrName), pl, body);
 
-			use.AddIfNotPresent ("ObjCRuntime", kMobilePlatforms);
-			var args = new CSArgumentList ();
-			args.Add (new CSFunctionCall ("typeof", false, new CSIdentifier (vtableName.Name + "." + delType.Name.Name)));
-			var attr = CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true);
-			CSConditionalCompilation.ProtectWithIfEndif (kMobilePlatforms, attr);
+			use.AddIfNotPresent (typeof (UnmanagedCallersOnlyAttribute));
+			var attr = CSAttribute.FromAttr (typeof (UnmanagedCallersOnlyAttribute), new CSArgumentList (), true);
 			attr.AttachBefore (recvr);
 			return recvr;
 		}
@@ -2966,11 +2961,8 @@ namespace SwiftReflector {
 			                          new CSIdentifier ("xamVtable_recv_" + publicMethod.Name.Name + homonymSuffix),
 										      pl, body);
 
-			use.AddIfNotPresent ("ObjCRuntime", kMobilePlatforms);
-			var args = new CSArgumentList ();
-			args.Add (new CSFunctionCall ("typeof", false, new CSIdentifier (vtableName.Name + "." + delType.Name.Name)));
-			var attr = CSAttribute.FromAttr (typeof (Xamarin.iOS.MonoPInvokeCallbackAttribute), args, true);
-			CSConditionalCompilation.ProtectWithIfEndif (kMobilePlatforms, attr);
+			use.AddIfNotPresent (typeof (UnmanagedCallersOnlyAttribute));
+			var attr = CSAttribute.FromAttr (typeof (UnmanagedCallersOnlyAttribute), new CSArgumentList (), true);
 			attr.AttachBefore (recvr);
 			return recvr;
 		}

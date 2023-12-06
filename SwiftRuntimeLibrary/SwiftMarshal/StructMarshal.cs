@@ -810,45 +810,9 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 					return delTuple.Item1;
 				// didn't find it - weird - but we can still handle that case. Let it fall through
 			}
-			var visibleClosure = MakeVisibleClosureFromBlindClosure (blindClosure, argTypes, returnType);
 
 			throw new NotImplementedException ();
 		}
-
-		SwiftClosureRepresentation MakeVisibleClosureFromBlindClosure (BlindSwiftClosureRepresentation blindClosure,
-										      Type [] argTypes, Type returnType)
-		{
-			var delegateObj = MakeDelegateFromBlindClosure (blindClosure, argTypes, returnType);
-			return new SwiftClosureRepresentation (delegateObj, blindClosure.Data);
-		}
-
-		public Delegate MakeDelegateFromBlindClosure (BlindSwiftClosureRepresentation blindClosure, Type [] argTypes, Type returnType, ClosureFlags flags = ClosureFlags.None)
-		{
-			if (argTypes.Length == 0 && flags == ClosureFlags.None)
-				return SwiftObjectRegistry.Registry.ActionForSwiftClosure (blindClosure);
-
-			if (returnType != null) {
-				Array.Resize (ref argTypes, argTypes.Length + 1);
-				argTypes [argTypes.Length - 1] = returnType;
-			}
-
-			var methodName = "";
-			if (flags == ClosureFlags.Throws) {
-				if (returnType == null)
-					throw new SwiftRuntimeException ("Need to handle Action closures that throw.");
-				methodName = returnType == null ? "ActionForSwiftClosureThrows" : "FuncForSwiftClosureThrows";
-			} else if ((flags & ClosureFlags.Async) == ClosureFlags.Async) {
-				throw new SwiftRuntimeException ("Marshaling async closures isn't supported (yet).");
-			} else {
-				methodName = returnType == null ? "ActionForSwiftClosure" : "FuncForSwiftClosure";
-			}
-			var mi = typeof (SwiftObjectRegistry).GetMethod (methodName);
-			if (mi == null)
-				throw new SwiftRuntimeException ($"Making a closure, unable to find method {methodName}");
-			var genCall = mi.MakeGenericMethod (argTypes);
-			return (Delegate)genCall.Invoke (SwiftObjectRegistry.Registry, new object [] { blindClosure });
-		}
-
 
 		IntPtr MarshalDelegateToSwift (Type t, Delegate del, IntPtr swiftDestinationMemory)
 		{
@@ -1078,22 +1042,22 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-		SwiftClosureRepresentation BuildClosureRepresentation (Delegate del, Type [] argTypes, Type returnType)
+		unsafe SwiftClosureRepresentation BuildClosureRepresentation (Delegate del, Type [] argTypes, Type returnType)
 		{
 			if (returnType == null) { // Action
 				if (argTypes.Length == 0) {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.ActionCallbackVoidVoid,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.ActionCallbackVoidVoid,
 												    argTypes);
 				} else {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.ActionCallback,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.ActionCallback,
 												    argTypes);
 				}
 			} else {
 				if (argTypes.Length == 0) {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.FuncCallbackVoid,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.FuncCallbackVoid,
 												    argTypes, returnType);
 				} else {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.FuncCallback,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.FuncCallback,
 												    argTypes, returnType);
 				}
 			}
