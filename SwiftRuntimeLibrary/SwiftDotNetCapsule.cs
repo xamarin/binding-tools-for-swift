@@ -3,7 +3,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Xamarin.iOS;
 
 namespace SwiftRuntimeLibrary {
 	public sealed class SwiftDotNetCapsule : ISwiftObject {

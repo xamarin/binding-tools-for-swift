@@ -4,7 +4,6 @@
 using System;
 using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
-using Xamarin.iOS;
 
 namespace SwiftRuntimeLibrary {
 	public struct SwiftClosureRepresentation {

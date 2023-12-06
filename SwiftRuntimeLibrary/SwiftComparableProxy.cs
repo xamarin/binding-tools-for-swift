@@ -4,7 +4,6 @@
 using System;
 using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
-using Xamarin.iOS;
 
 namespace SwiftRuntimeLibrary {
 	public class SwiftComparableProxy : BaseProxy, ISwiftComparable {
@@ -23,11 +22,10 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		struct Comparable_xam_vtable {
-			public delegate bool Delfunc0 (IntPtr one, IntPtr two);
 			[MarshalAs (UnmanagedType.FunctionPtr)]
-			public Delfunc0 opEqualFunc;
+			public unsafe delegate* unmanaged<IntPtr, IntPtr, bool> opEqualFunc;
 			[MarshalAs (UnmanagedType.FunctionPtr)]
-			public Delfunc0 opLessFunc;
+			public unsafe delegate* unmanaged<IntPtr, IntPtr, bool> opLessFunc;
 		}
 
 		static Comparable_xam_vtable vtableIComparable;
@@ -36,9 +34,7 @@ namespace SwiftRuntimeLibrary {
 			XamSetVTable ();
 		}
 
-#if __IOS__
-		[MonoPInvokeCallback(typeof(Comparable_xam_vtable.Delfunc0))]
-#endif
+		[UnmanagedCallersOnly]		
 		static bool EqFunc (IntPtr oneptr, IntPtr twoptr)
 		{
 			if (oneptr == twoptr)
@@ -48,9 +44,7 @@ namespace SwiftRuntimeLibrary {
 			return one.OpEquals (two);
 		}
 
-#if __IOS__
-		[MonoPInvokeCallback(typeof(Comparable_xam_vtable.Delfunc0))]
-#endif
+		[UnmanagedCallersOnly]
 		static bool LessFunc (IntPtr oneptr, IntPtr twoptr)
 		{
 			if (oneptr == twoptr)
@@ -62,9 +56,11 @@ namespace SwiftRuntimeLibrary {
 
 		static void XamSetVTable ()
 		{
-			vtableIComparable.opEqualFunc = EqFunc;
-			vtableIComparable.opLessFunc = LessFunc;
-			PISetVtable (ref vtableIComparable);
+			unsafe {
+				vtableIComparable.opEqualFunc = &EqFunc;
+				vtableIComparable.opLessFunc = &LessFunc;
+				PISetVtable (ref vtableIComparable);
+			}
 		}
 
 		public bool OpEquals (ISwiftEquatable other)
