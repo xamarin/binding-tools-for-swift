@@ -17,4 +17,7 @@
     <Folder Include="Dynamo.CSLang\" />
     <Folder Include="Dynamo.SwiftLang\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.CodeDom" Version="7.0.0" />
+  </ItemGroup>
 </Project>

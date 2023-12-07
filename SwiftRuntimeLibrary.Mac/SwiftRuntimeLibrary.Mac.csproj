@@ -52,9 +52,6 @@
     <Compile Include="..\SwiftRuntimeLibrary\ISwiftObject.cs">
       <Link>ISwiftObject.cs</Link>
     </Compile>
-    <Compile Include="..\SwiftRuntimeLibrary\MonoPInvokeCallbackAttribute.cs">
-      <Link>MonoPInvokeCallbackAttribute.cs</Link>
-    </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\RuntimeDebugging.cs">
       <Link>RuntimeDebugging.cs</Link>
     </Compile>
