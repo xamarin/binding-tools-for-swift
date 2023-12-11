@@ -1,23 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-macos</TargetFramework>
+    <TargetFramework>net7.0-ios</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <CreatePackage>false</CreatePackage>
-    <UseSGen>false</UseSGen>
-    <DefineConstants>__MACOS__;__UNIFIED__;TRACE;DEBUG;NET;NET7_0;NETCOREAPP;SWIFT;SWIFT4</DefineConstants>
-    <WarningLevel>4</WarningLevel>
-    <LinkMode>None</LinkMode>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CreatePackage>false</CreatePackage>
-    <UseSGen>false</UseSGen>
-    <LinkMode>None</LinkMode>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="SwiftMarshal\" />
+    <None Remove="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SwiftMarshal\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\StructMarshal.cs">
       <Link>SwiftMarshal\StructMarshal.cs</Link>
@@ -90,6 +90,9 @@
     </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftTupleMap.cs">
       <Link>SwiftMarshal\SwiftTupleMap.cs</Link>
+    </Compile>
+    <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftTypeNameAttribute.cs">
+      <Link>SwiftMarshal\SwiftTypeNameAttribute.cs</Link>
     </Compile>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\SwiftValueWitnessTable.cs">
       <Link>SwiftMarshal\SwiftValueWitnessTable.cs</Link>
@@ -250,11 +253,19 @@
     <Compile Include="..\tools\symbolicator\SwiftCoreConstants.cs">
       <Link>SwiftCoreConstants.cs</Link>
     </Compile>
-    <Compile Include="..\tools\symbolicator\XamGlueConstants.cs">
-      <Link>XamGlueConstants.cs</Link>
-    </Compile>
     <Compile Include="..\tools\symbolicator\SymbolicatorInfoAttribute.cs">
       <Link>SymbolicatorInfoAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\tools\symbolicator\XamGlueConstants.cs">
+      <Link>XamGlueConstants.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
+      <Link>SwiftRuntimeLibrary.csproj</Link>
+    </None>
+    <None Include="..\SwiftRuntimeLibrary\Makefile">
+      <Link>Makefile</Link>
+    </None>
   </ItemGroup>
 </Project>
