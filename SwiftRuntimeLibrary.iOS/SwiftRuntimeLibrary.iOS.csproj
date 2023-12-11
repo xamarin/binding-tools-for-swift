@@ -6,17 +6,18 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <CreatePackage>false</CreatePackage>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <CreatePackage>false</CreatePackage>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="SwiftMarshal\" />
-    <None Remove="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SwiftMarshal\" />
-    <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\StructMarshal.cs">

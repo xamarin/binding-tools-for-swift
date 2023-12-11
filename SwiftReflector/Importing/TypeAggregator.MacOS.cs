@@ -209,6 +209,8 @@ namespace SwiftReflector.Importing {
 			"AppKit.NSTextStorageEditedFlags", // can't find it
 			"AppKit.NSType", // can't find it
 			"AppKit.NSUnderlinePattern", // not an enum
+			"AppKit.NSUnderlineStyle", // not part of AppKit
+			"AppKit.NSWritingDirection", // not part of AppKit
 			// AudioToolbox
 			"AudioToolbox.AudioQueueChannelAssignment", // macOS 10.15+
 			"AudioToolbox.AudioSessionInterruptionType", // iOS only
@@ -249,6 +251,8 @@ namespace SwiftReflector.Importing {
 			"AVFoundation.AVSpeechBoundary", // macOS 10.14+
 			// AVKit
 			"AVKit.AVKitError", // not on macOS
+			// CoreBluetooth
+			"CoreBluetooth.CBPeripheralManagerAuthorizationStatus", // not showing in CoreBluetooth
 			// CoreFoundation
 			"CoreFoundation.DispatchBlockFlags",
 			"CoreFoundation.DispatchQualityOfService",
@@ -257,6 +261,8 @@ namespace SwiftReflector.Importing {
 			// CoreGraphics
 			"CoreGraphics.CGPdfTagType",
 			"CoreGraphics.CGConstantColor",
+			// CoreLocation
+			"CoreLocation.CLLocationPushServiceError", // not found
 			// CoreMedia
 			"CoreMedia.CMSampleBufferAttachmentKey",
 			// CoreServices
@@ -347,6 +353,8 @@ namespace SwiftReflector.Importing {
 			"MetalPerformanceShaders.MPSCnnLossType",
 			"MetalPerformanceShaders.MPSCnnReductionType",
 			"MetalPerformanceShaders.MPSCnnWeightsQuantizationType",
+			// ModelIO
+			"ModelIO.MDLVoxelIndexExtent2",
 			// Network
 			"NetworkExtension.NEDnsProtocol",
 			"NetworkExtension.NEDnsSettingsManagerError",
@@ -362,8 +370,10 @@ namespace SwiftReflector.Importing {
 			"Photos.PHPhotosError",
 			// SafariServices
 			"SafariServices.SFErrorCode", // not on macOS
+			"SafariServices.SFSafariServicesVersion", // can't find it
 			// Security
 			"Security.AuthorizationStatus", // can't find it
+			"Security.SslCipherSuite", // can't find it
 			"Security.TlsCipherSuite",
 			"Security.TlsCipherSuiteGroup",
 			"Security.TlsProtocolVersion",
