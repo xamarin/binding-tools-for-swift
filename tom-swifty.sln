@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwiftRuntimeLibrary", "Swif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plist-swifty", "plist-swifty\plist-swifty.csproj", "{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xxSwiftRuntimeLibrary.iOS", "SwiftRuntimeLibrary.iOS\xxSwiftRuntimeLibrary.iOS.csproj", "{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynamo", "Dynamo\Dynamo.csproj", "{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tom-swifty-test", "tests\tom-swifty-test\tom-swifty-test.csproj", "{F565616E-274E-44FA-9F6E-8095308FD80A}"
@@ -24,6 +22,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DylibBinder", "DylibBinder\DylibBinder.csproj", "{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary.Mac", "SwiftRuntimeLibrary.Mac\SwiftRuntimeLibrary.Mac.csproj", "{25AEC965-2332-4AD0-AF67-A18B5B432E62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftRuntimeLibrary.iOS", "SwiftRuntimeLibrary.iOS\SwiftRuntimeLibrary.iOS.csproj", "{7774864E-0E6B-4F0F-B690-3A095F8D60E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,6 @@ Global
 		{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}.Debug|x86.Build.0 = Debug|x86
 		{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}.Release|x86.ActiveCfg = Release|x86
 		{74C4FF75-6D3A-4F58-8D8D-562610E1A40D}.Release|x86.Build.0 = Release|x86
-		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Debug|x86.Build.0 = Debug|Any CPU
-		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Release|x86.ActiveCfg = Release|Any CPU
-		{03490BF4-3B9F-4D49-BD6E-F8D576578BE1}.Release|x86.Build.0 = Release|Any CPU
 		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Debug|x86.Build.0 = Debug|Any CPU
 		{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}.Release|x86.ActiveCfg = Release|Any CPU
@@ -79,6 +75,10 @@ Global
 		{25AEC965-2332-4AD0-AF67-A18B5B432E62}.Debug|x86.Build.0 = Debug|Any CPU
 		{25AEC965-2332-4AD0-AF67-A18B5B432E62}.Release|x86.ActiveCfg = Release|Any CPU
 		{25AEC965-2332-4AD0-AF67-A18B5B432E62}.Release|x86.Build.0 = Release|Any CPU
+		{7774864E-0E6B-4F0F-B690-3A095F8D60E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7774864E-0E6B-4F0F-B690-3A095F8D60E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{7774864E-0E6B-4F0F-B690-3A095F8D60E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{7774864E-0E6B-4F0F-B690-3A095F8D60E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
