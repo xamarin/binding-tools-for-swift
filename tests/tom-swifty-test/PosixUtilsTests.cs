@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SwiftReflector.IOUtils;
 
 
@@ -17,7 +18,7 @@ namespace tomwiftytest {
 		public void DotWorks ()
 		{
 			var finalPath = PosixHelpers.RealPath ("/foo/././././bar");
-			Assert.AreEqual ("/foo/bar", finalPath);
+			ClassicAssert.AreEqual ("/foo/bar", finalPath);
 		}
 
 
@@ -25,14 +26,14 @@ namespace tomwiftytest {
 		public void DotDotWorks ()
 		{
 			var finalPath = PosixHelpers.RealPath ("/foo/bar/baz/../goo");
-			Assert.AreEqual ("/foo/bar/goo", finalPath);
+			ClassicAssert.AreEqual ("/foo/bar/goo", finalPath);
 		}
 
 		[Test]
 		public void DotDotWorks1 ()
 		{
 			var finalPath = PosixHelpers.RealPath ("/foo/bar/baz/bing/goo/../../doo");
-			Assert.AreEqual ("/foo/bar/baz/doo", finalPath);
+			ClassicAssert.AreEqual ("/foo/bar/baz/doo", finalPath);
 		}
 
 		[Test]
@@ -44,7 +45,7 @@ namespace tomwiftytest {
 				var link1 = Path.Combine (dir.DirectoryPath, "link1");
 				symlink ("../../..", link1);
 				var finalPath = PosixHelpers.RealPath (link1);
-				Assert.AreEqual (expectedPath, finalPath, "1");
+				ClassicAssert.AreEqual (expectedPath, finalPath, "1");
 			}
 		}
 
@@ -57,7 +58,7 @@ namespace tomwiftytest {
 				var link2 = Path.Combine (dir.DirectoryPath, "link2");
 				symlink (Path.Combine (dir.DirectoryPath, "..", "..", ".."), link2);
 				var finalPath = PosixHelpers.RealPath (link2);
-				Assert.AreEqual (expectedPath, finalPath, "2");
+				ClassicAssert.AreEqual (expectedPath, finalPath, "2");
 			}
 		}
 

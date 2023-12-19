@@ -13,6 +13,7 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using Xamarin.Utils;
+using NUnit.Framework.Legacy;
 
 namespace tomwiftytest {
 
@@ -257,20 +258,20 @@ namespace tomwiftytest {
 			using (Stream ostm = CompileStringUsing (null, XCodeCompiler.C,
 						    kHelloC,
 						    null)) {
-				Assert.IsNotNull (ostm);
-				Assert.IsTrue (ostm.Length > 0);
+				ClassicAssert.IsNotNull (ostm);
+				ClassicAssert.IsTrue (ostm.Length > 0);
 			}
 		}
 
 		[Test]
 		public void CSyntaxError ()
 		{
-			Assert.Throws<Exception> (() => {
+			ClassicAssert.Throws<Exception> (() => {
 				using (Stream ostm = CompileStringUsing (null, XCodeCompiler.C,
 				    "thisisnotc",
 				    null)) {
-					Assert.IsNotNull (ostm);
-					Assert.IsTrue (ostm.Length > 0);
+					ClassicAssert.IsNotNull (ostm);
+					ClassicAssert.IsTrue (ostm.Length > 0);
 				}
 			});
 		}
@@ -281,8 +282,8 @@ namespace tomwiftytest {
 			using (Stream ostm = CompileStringUsing (null, XCodeCompiler.Cpp,
 				kHelloCpp,
 				null)) {
-				Assert.IsNotNull (ostm);
-				Assert.IsTrue (ostm.Length > 0);
+				ClassicAssert.IsNotNull (ostm);
+				ClassicAssert.IsTrue (ostm.Length > 0);
 			}
 		}
 
@@ -290,12 +291,12 @@ namespace tomwiftytest {
 		[Test]
 		public void CppSyntaxError ()
 		{
-			Assert.Throws<Exception> (() => {
+			ClassicAssert.Throws<Exception> (() => {
 				using (Stream ostm = CompileStringUsing (null, XCodeCompiler.Cpp,
 				    "thisisnotcpp",
 				    null)) {
-					Assert.IsNotNull (ostm);
-					Assert.IsTrue (ostm.Length > 0);
+					ClassicAssert.IsNotNull (ostm);
+					ClassicAssert.IsTrue (ostm.Length > 0);
 				}
 			});
 		}
@@ -307,20 +308,20 @@ namespace tomwiftytest {
 			using (Stream ostm = CompileStringUsing (null, XCodeCompiler.ObjectiveC,
 				kHelloObjC,
 				null)) {
-				Assert.IsNotNull (ostm);
-				Assert.IsTrue (ostm.Length > 0);
+				ClassicAssert.IsNotNull (ostm);
+				ClassicAssert.IsTrue (ostm.Length > 0);
 			}
 		}
 
 		[Test]
 		public void ObjCSyntaxError ()
 		{
-			Assert.Throws<Exception> (() => {
+			ClassicAssert.Throws<Exception> (() => {
 				using (Stream ostm = CompileStringUsing (null, XCodeCompiler.ObjectiveC,
 				    "thisisnotobjc",
 				    null)) {
-					Assert.IsNotNull (ostm);
-					Assert.IsTrue (ostm.Length > 0);
+					ClassicAssert.IsNotNull (ostm);
+					ClassicAssert.IsTrue (ostm.Length > 0);
 				}
 			});
 		}
@@ -329,12 +330,12 @@ namespace tomwiftytest {
 		[Test]
 		public void SwiftSyntaxError ()
 		{
-			Assert.Throws<Exception> (() => {
+			ClassicAssert.Throws<Exception> (() => {
 				using (Stream ostm = CompileStringUsing (null, XCodeCompiler.Swiftc,
 				    "thisisnotswift",
 				    null)) {
-					Assert.IsNotNull (ostm);
-					Assert.IsTrue (ostm.Length > 0);
+					ClassicAssert.IsNotNull (ostm);
+					ClassicAssert.IsTrue (ostm.Length > 0);
 				}
 			});
 		}
@@ -345,20 +346,20 @@ namespace tomwiftytest {
 			using (Stream ostm = CompileStringUsing (null, XCodeCompiler.CSharp,
 				kHelloCSharp,
 				null)) {
-				Assert.IsNotNull (ostm);
-				Assert.IsTrue (ostm.Length > 0);
+				ClassicAssert.IsNotNull (ostm);
+				ClassicAssert.IsTrue (ostm.Length > 0);
 			}
 		}
 
 		[Test]
 		public void CSharpSyntaxError ()
 		{
-			Assert.Throws<Exception> (() => {
+			ClassicAssert.Throws<Exception> (() => {
 				using (Stream ostm = CompileStringUsing (null, XCodeCompiler.CSharp,
 				    "thisisnotcsharp",
 				    null)) {
-					Assert.IsNotNull (ostm);
-					Assert.IsTrue (ostm.Length > 0);
+					ClassicAssert.IsNotNull (ostm);
+					ClassicAssert.IsTrue (ostm.Length > 0);
 				}
 			});
 		}
@@ -369,8 +370,8 @@ namespace tomwiftytest {
 			using (Stream ostm = CompileStringUsing (null, XCodeCompiler.Swiftc,
 				kHelloSwift,
 				null)) {
-				Assert.IsNotNull (ostm);
-				Assert.IsTrue (ostm.Length > 0);
+				ClassicAssert.IsNotNull (ostm);
+				ClassicAssert.IsTrue (ostm.Length > 0);
 			}
 		}
 

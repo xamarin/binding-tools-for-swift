@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 using NUnit;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -20,7 +21,7 @@ namespace XmlReflectionTests {
 			var sb = new StringBuilder ();
 			diffs.ForEach (s => sb.Append (s).Append ('\n'));
 
-			Assert.AreEqual (expectedDiffs, diffs.Count, $"Mismatch from test {testName} diffs:\n{sb.ToString ()}");
+			ClassicAssert.AreEqual (expectedDiffs, diffs.Count, $"Mismatch from test {testName} diffs:\n{sb.ToString ()}");
 		}
 
 		[Test]

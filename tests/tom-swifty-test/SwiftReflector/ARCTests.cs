@@ -5,6 +5,7 @@ using System.IO;
 using Dynamo;
 using Dynamo.CSLang;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SwiftReflector.Inventory;
 using SwiftReflector.IOUtils;
 using tomwiftytest;
@@ -60,7 +61,7 @@ namespace SwiftReflector {
 
 				TestRunning.CopyTestReferencesTo (provider.DirectoryPath);
 				string output = Compiler.RunWithMono (exeOutFilename, provider.DirectoryPath);
-				Assert.AreEqual ("nothing\n", output);
+				ClassicAssert.AreEqual ("nothing\n", output);
 			}
 		}
 
@@ -119,7 +120,7 @@ namespace SwiftReflector {
 				TestRunning.CopyTestReferencesTo (provider.DirectoryPath);
 
 				string output = Compiler.RunWithMono (exeOutFilename, provider.DirectoryPath);
-				Assert.AreEqual ("nothing\n", output);
+				ClassicAssert.AreEqual ("nothing\n", output);
 			}
 		}
 	}

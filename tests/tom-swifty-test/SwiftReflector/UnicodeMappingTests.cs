@@ -5,6 +5,7 @@ using System;
 using Dynamo;
 using Dynamo.CSLang;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using tomwiftytest;
 
 namespace SwiftReflector
@@ -26,7 +27,7 @@ namespace SwiftReflector
 		{
 			var mapper = new UnicodeMapper ();
 			mapper.AddMappingsFromXML (TemplateWith (""));
-			Assert.AreEqual ("U03A3", mapper.MapToUnicodeName ("Σ"));
+			ClassicAssert.AreEqual ("U03A3", mapper.MapToUnicodeName ("Σ"));
 		}
 
 		[Test]
@@ -34,19 +35,19 @@ namespace SwiftReflector
 		{
 			var mapper = new UnicodeMapper ();
 			mapper.AddMappingsFromXML (TemplateWith ($@"<map from=""Σ""/>"));
-			Assert.AreEqual ("U03A3", mapper.MapToUnicodeName ("Σ"));
+			ClassicAssert.AreEqual ("U03A3", mapper.MapToUnicodeName ("Σ"));
 		}
 
 		[Test]
 		public void BuiltinMapping ()
 		{
-			Assert.AreEqual ("Alpha", UnicodeMapper.Default.MapToUnicodeName ("α"));
+			ClassicAssert.AreEqual ("Alpha", UnicodeMapper.Default.MapToUnicodeName ("α"));
 		}
 
 		[Test]
 		public void WithNoMapping ()
 		{
-			Assert.AreEqual ("U03B6", UnicodeMapper.Default.MapToUnicodeName ("ζ"));
+			ClassicAssert.AreEqual ("U03B6", UnicodeMapper.Default.MapToUnicodeName ("ζ"));
 		}
 
 		[Test]
@@ -54,7 +55,7 @@ namespace SwiftReflector
 		{
 			var mapper = new UnicodeMapper ();
 			mapper.AddMappingsFromXML (TemplateWith ($@"<map from=""Σ"" to=""Sigma""/>"));
-			Assert.AreEqual ("Sigma", mapper.MapToUnicodeName ("Σ"));
+			ClassicAssert.AreEqual ("Sigma", mapper.MapToUnicodeName ("Σ"));
 		}
 
 		[Test]
@@ -62,7 +63,7 @@ namespace SwiftReflector
 		{
 			var mapper = new UnicodeMapper ();
 			mapper.AddMappingsFromXML (TemplateWith ($@"<map from=""🍎"" to=""Apple""/>"));
-			Assert.AreEqual ("Apple", mapper.MapToUnicodeName ("🍎"));
+			ClassicAssert.AreEqual ("Apple", mapper.MapToUnicodeName ("🍎"));
 		}
 
 		[Test]
@@ -71,7 +72,7 @@ namespace SwiftReflector
 			var mapper = new UnicodeMapper ();
 			mapper.AddMappingsFromXML (TemplateWith ($@"<map from=""Σ"" to=""NotFinalMapping""/>"));
 			mapper.AddMappingsFromXML (TemplateWith ($@"<map from=""Σ"" to=""Sigma""/>"));
-			Assert.AreEqual ("Sigma", mapper.MapToUnicodeName ("Σ"));
+			ClassicAssert.AreEqual ("Sigma", mapper.MapToUnicodeName ("Σ"));
 		}
 	}
 

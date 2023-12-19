@@ -3,6 +3,7 @@
 
 using System;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SwiftReflector.Importing;
 using SwiftReflector.TypeMapping;
 using tomwiftytest;
@@ -21,8 +22,8 @@ namespace SwiftReflector {
 			var errors = new ErrorHandling ();
 			var importer = new BindingImporter (platform, errors);
 			var database = importer.Import ();
-			Assert.IsNotNull (database, $"null database for {platform}");
-			Assert.Less (expectedLowerLimit, database.Count, $"Expected at least {expectedLowerLimit} db entries, but got {database.Count} entries.");
+			ClassicAssert.IsNotNull (database, $"null database for {platform}");
+			ClassicAssert.Less (expectedLowerLimit, database.Count, $"Expected at least {expectedLowerLimit} db entries, but got {database.Count} entries.");
 			errors.AssertNoErrors ("importing database.");
 		}
 
@@ -36,9 +37,9 @@ namespace SwiftReflector {
 			var importer = new BindingImporter (platform, errors);
 			var database = importer.Import ();
 			var entity = database.EntityForDotNetName (new DotNetName ("Foundation", "NSObject"));
-			Assert.IsNotNull (entity, $"Didn't get an NSObject from database on {platform}");
-			Assert.IsTrue (entity.IsObjCClass, $"NSObject is not an ObjC class on {platform}. Seriously?");
-			Assert.IsNotNull (entity.Type, $"No type in NSObject on {platform}");
+			ClassicAssert.IsNotNull (entity, $"Didn't get an NSObject from database on {platform}");
+			ClassicAssert.IsTrue (entity.IsObjCClass, $"NSObject is not an ObjC class on {platform}. Seriously?");
+			ClassicAssert.IsNotNull (entity.Type, $"No type in NSObject on {platform}");
 			errors.AssertNoErrors ("importing database.");
 		}
 
@@ -49,7 +50,7 @@ namespace SwiftReflector {
 			var importer = new BindingImporter (PlatformName.macOS, errors);
 			importer.Excludes.Add (new PatternMatch (".*"));
 			var database = importer.Import ();
-			Assert.AreEqual (0, database.Count, $"This was supposed to exclude everything, but we got {database.Count} entries.");
+			ClassicAssert.AreEqual (0, database.Count, $"This was supposed to exclude everything, but we got {database.Count} entries.");
 			errors.AssertNoErrors ("importing database.");
 		}
 
@@ -62,7 +63,7 @@ namespace SwiftReflector {
 			importer.Excludes.Add (new PatternMatch (".*"));
 			importer.Includes.Add (new PatternMatch ("Foundation\\.NSObject"));
 			var database = importer.Import ();
-			Assert.AreEqual (1, database.Count, $"This was supposed to exclude everything, but we got {database.Count} entries.");
+			ClassicAssert.AreEqual (1, database.Count, $"This was supposed to exclude everything, but we got {database.Count} entries.");
 			errors.AssertNoErrors ("importing database.");
 		}
 
@@ -76,7 +77,7 @@ namespace SwiftReflector {
 			importer.Excludes.Add (new PatternMatch (".*"));
 			importer.Includes.Add (new PatternMatch ("Foundation\\..*"));
 			var database = importer.Import ();
-			Assert.Less (175, database.Count, $"This was supposed to exclude everything, but we got {database.Count} entries.");
+			ClassicAssert.Less (175, database.Count, $"This was supposed to exclude everything, but we got {database.Count} entries.");
 			errors.AssertNoErrors ("importing database.");
 		}
 
@@ -90,9 +91,9 @@ namespace SwiftReflector {
 			var importer = new BindingImporter (platform, errors);
 			var database = importer.Import ();
 			var entity = database.EntityForDotNetName (new DotNetName ("UIKit", "IUIViewControllerTransitionCoordinator"));
-			Assert.IsNotNull (entity, $"Didn't get an IUIViewControllerTransitionCoordinator from database on {platform}");
-			Assert.IsTrue (entity.IsObjCProtocol, $"NSObject is not an ObjC protocol on {platform}. Seriously?");
-			Assert.IsNotNull (entity.Type, $"No type in IUIViewControllerTransitionCoordinator on {platform}");
+			ClassicAssert.IsNotNull (entity, $"Didn't get an IUIViewControllerTransitionCoordinator from database on {platform}");
+			ClassicAssert.IsTrue (entity.IsObjCProtocol, $"NSObject is not an ObjC protocol on {platform}. Seriously?");
+			ClassicAssert.IsNotNull (entity.Type, $"No type in IUIViewControllerTransitionCoordinator on {platform}");
 			errors.AssertNoErrors ("importing database.");
 		}
 	}

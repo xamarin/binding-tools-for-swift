@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using tomwiftytest;
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -19,7 +20,7 @@ namespace SwiftReflector {
 		{
 			SwiftName sn = new SwiftName ("Bob", false);
 			SwiftName sn1 = new SwiftName ("Bob", false);
-			Assert.AreEqual (sn, sn1);
+			ClassicAssert.AreEqual (sn, sn1);
 		}
 
 		[Test]
@@ -27,7 +28,7 @@ namespace SwiftReflector {
 		{
 			SwiftName sn = new SwiftName ("Bob", false);
 			SwiftName sn1 = new SwiftName ("Bob1", false);
-			Assert.AreNotEqual (sn, sn1);
+			ClassicAssert.AreNotEqual (sn, sn1);
 		}
 
 		[Test]
@@ -35,7 +36,7 @@ namespace SwiftReflector {
 		{
 			SwiftName sn = new SwiftName ("GrIh", true);
 			SwiftName sn1 = new SwiftName ("GrIh", true);
-			Assert.AreEqual (sn, sn1);
+			ClassicAssert.AreEqual (sn, sn1);
 		}
 
 		[Test]
@@ -43,7 +44,7 @@ namespace SwiftReflector {
 		{
 			SwiftName sn = new SwiftName ("GrIh", true);
 			SwiftName sn1 = new SwiftName ("Bob1", false);
-			Assert.AreNotEqual (sn, sn1);
+			ClassicAssert.AreNotEqual (sn, sn1);
 		}
 	}
 }

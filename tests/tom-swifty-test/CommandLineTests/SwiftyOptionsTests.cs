@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.IO;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SwiftReflector.IOUtils;
 using tomswifty;
 
@@ -734,65 +735,65 @@ namespace CommandLineTests {
 		{
 			var options = new SwiftyOptions ();
 			var extra = options.ParseCommandLine (args);
-			Assert.AreEqual (0, extra.Count, "Extra parameters");
+			ClassicAssert.AreEqual (0, extra.Count, "Extra parameters");
 
 			var d = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, "first");
 			// compare the values
-			Assert.AreEqual (expectedOptions.RetainXmlReflection, options.RetainXmlReflection, $"{testMessage} - {nameof(SwiftyOptions.RetainXmlReflection)}");
-			Assert.AreEqual (expectedOptions.RetainSwiftWrappingCode, options.RetainSwiftWrappingCode, $"{testMessage} - {nameof(SwiftyOptions.RetainSwiftWrappingCode)}");
-			Assert.AreEqual (expectedOptions.PrintStackTrace, options.PrintStackTrace, $"{testMessage} - {nameof(SwiftyOptions.PrintStackTrace)}");
-			Assert.AreEqual (expectedOptions.ModuleName, options.ModuleName, $"{testMessage} - {nameof(SwiftyOptions.ModuleName)}");
-			Assert.AreEqual (expectedOptions.WrappingModuleName, options.WrappingModuleName, $"{testMessage} - {nameof(SwiftyOptions.WrappingModuleName)}");
-			Assert.AreEqual (expectedOptions.GlobalClassName, options.GlobalClassName, $"{testMessage} - {nameof(SwiftyOptions.GlobalClassName)}");
-			Assert.AreEqual (expectedOptions.TargetPlatformIs64Bit, options.TargetPlatformIs64Bit, $"{testMessage} - {nameof(SwiftyOptions.TargetPlatformIs64Bit)}");
-			Assert.AreEqual (expectedOptions.PrintHelp, options.PrintHelp, $"{testMessage} - {nameof(SwiftyOptions.PrintHelp)}");
-			Assert.AreEqual (expectedOptions.Demangle, options.Demangle, $"{testMessage} - {nameof(SwiftyOptions.Demangle)}");
-			Assert.AreEqual (expectedOptions.PInvokeClassPrefix, options.PInvokeClassPrefix, $"{testMessage} - {nameof(SwiftyOptions.PInvokeClassPrefix)}");
-			Assert.AreEqual (expectedOptions.PrintStackTrace, options.PrintStackTrace, $"{testMessage} - {nameof(SwiftyOptions.PrintStackTrace)}");
-			Assert.AreEqual (expectedOptions.Verbose, options.Verbose, $"{testMessage} - {nameof(SwiftyOptions.Verbose)}");
-			Assert.AreEqual (expectedOptions.PrintVersion, options.PrintVersion, $"{testMessage} - {nameof(SwiftyOptions.PrintVersion)}");
+			ClassicAssert.AreEqual (expectedOptions.RetainXmlReflection, options.RetainXmlReflection, $"{testMessage} - {nameof(SwiftyOptions.RetainXmlReflection)}");
+			ClassicAssert.AreEqual (expectedOptions.RetainSwiftWrappingCode, options.RetainSwiftWrappingCode, $"{testMessage} - {nameof(SwiftyOptions.RetainSwiftWrappingCode)}");
+			ClassicAssert.AreEqual (expectedOptions.PrintStackTrace, options.PrintStackTrace, $"{testMessage} - {nameof(SwiftyOptions.PrintStackTrace)}");
+			ClassicAssert.AreEqual (expectedOptions.ModuleName, options.ModuleName, $"{testMessage} - {nameof(SwiftyOptions.ModuleName)}");
+			ClassicAssert.AreEqual (expectedOptions.WrappingModuleName, options.WrappingModuleName, $"{testMessage} - {nameof(SwiftyOptions.WrappingModuleName)}");
+			ClassicAssert.AreEqual (expectedOptions.GlobalClassName, options.GlobalClassName, $"{testMessage} - {nameof(SwiftyOptions.GlobalClassName)}");
+			ClassicAssert.AreEqual (expectedOptions.TargetPlatformIs64Bit, options.TargetPlatformIs64Bit, $"{testMessage} - {nameof(SwiftyOptions.TargetPlatformIs64Bit)}");
+			ClassicAssert.AreEqual (expectedOptions.PrintHelp, options.PrintHelp, $"{testMessage} - {nameof(SwiftyOptions.PrintHelp)}");
+			ClassicAssert.AreEqual (expectedOptions.Demangle, options.Demangle, $"{testMessage} - {nameof(SwiftyOptions.Demangle)}");
+			ClassicAssert.AreEqual (expectedOptions.PInvokeClassPrefix, options.PInvokeClassPrefix, $"{testMessage} - {nameof(SwiftyOptions.PInvokeClassPrefix)}");
+			ClassicAssert.AreEqual (expectedOptions.PrintStackTrace, options.PrintStackTrace, $"{testMessage} - {nameof(SwiftyOptions.PrintStackTrace)}");
+			ClassicAssert.AreEqual (expectedOptions.Verbose, options.Verbose, $"{testMessage} - {nameof(SwiftyOptions.Verbose)}");
+			ClassicAssert.AreEqual (expectedOptions.PrintVersion, options.PrintVersion, $"{testMessage} - {nameof(SwiftyOptions.PrintVersion)}");
 			
-			Assert.AreEqual (expectedOptions.PrintHelp, options.PrintHelp, $"{testMessage} - {nameof(SwiftyOptions.PrintHelp)}");
+			ClassicAssert.AreEqual (expectedOptions.PrintHelp, options.PrintHelp, $"{testMessage} - {nameof(SwiftyOptions.PrintHelp)}");
 
 			if (expectedOptions.SwiftGluePath != null)
-				Assert.AreEqual (expectedOptions.SwiftGluePath, options.SwiftGluePath,
+				ClassicAssert.AreEqual (expectedOptions.SwiftGluePath, options.SwiftGluePath,
 					$"{testMessage} - {nameof (SwiftyOptions.SwiftGluePath)}");
 			else
-				Assert.Null (options.SwiftGluePath, $"{testMessage} - {nameof (SwiftyOptions.SwiftGluePath)}");
+				ClassicAssert.Null (options.SwiftGluePath, $"{testMessage} - {nameof (SwiftyOptions.SwiftGluePath)}");
 
 
 
 			if (expectedOptions.SwiftLibPath != null)
-				Assert.AreEqual (expectedOptions.SwiftLibPath, options.SwiftLibPath,
+				ClassicAssert.AreEqual (expectedOptions.SwiftLibPath, options.SwiftLibPath,
 					$"{testMessage} - {nameof (SwiftyOptions.SwiftLibPath)}");
 			else
-				Assert.Null (options.SwiftLibPath, $"{testMessage} - {nameof (SwiftyOptions.SwiftLibPath)}");
+				ClassicAssert.Null (options.SwiftLibPath, $"{testMessage} - {nameof (SwiftyOptions.SwiftLibPath)}");
 				
 			if (expectedOptions.SwiftBinPath != null)
-				Assert.AreEqual (expectedOptions.SwiftBinPath, options.SwiftBinPath,
+				ClassicAssert.AreEqual (expectedOptions.SwiftBinPath, options.SwiftBinPath,
 					$"{testMessage} - {nameof (SwiftyOptions.SwiftBinPath)}");
 			else
-				Assert.Null (options.SwiftBinPath, $"{testMessage} - {nameof (SwiftyOptions.SwiftBinPath)}");
+				ClassicAssert.Null (options.SwiftBinPath, $"{testMessage} - {nameof (SwiftyOptions.SwiftBinPath)}");
 			
 			if (expectedOptions.OutputDirectory != null)
-				Assert.AreEqual (expectedOptions.OutputDirectory, options.OutputDirectory,
+				ClassicAssert.AreEqual (expectedOptions.OutputDirectory, options.OutputDirectory,
 					$"{testMessage} - {nameof (SwiftyOptions.OutputDirectory)}");
 			else
-				Assert.Null (options.OutputDirectory, $"{testMessage} - {nameof (SwiftyOptions.OutputDirectory)}");
+				ClassicAssert.Null (options.OutputDirectory, $"{testMessage} - {nameof (SwiftyOptions.OutputDirectory)}");
 				
 			// path collections
 			
-			Assert.AreEqual (expectedOptions.DylibPaths.Count, options.DylibPaths.Count, $"{testMessage} - {nameof(SwiftyOptions.DylibPaths)}.Count");
+			ClassicAssert.AreEqual (expectedOptions.DylibPaths.Count, options.DylibPaths.Count, $"{testMessage} - {nameof(SwiftyOptions.DylibPaths)}.Count");
 			for (var i = 0; i < expectedOptions.DylibPaths.Count; i++)
 			{
-				Assert.AreEqual (expectedOptions.DylibPaths[i], options.DylibPaths[i],
+				ClassicAssert.AreEqual (expectedOptions.DylibPaths[i], options.DylibPaths[i],
 					$"{testMessage} - {nameof (SwiftyOptions.DylibPaths)}[{i}]");
 			}
 			
-			Assert.AreEqual (expectedOptions.ModulePaths.Count, options.ModulePaths.Count, $"{testMessage} - {nameof(SwiftyOptions.ModulePaths)}.Count");
+			ClassicAssert.AreEqual (expectedOptions.ModulePaths.Count, options.ModulePaths.Count, $"{testMessage} - {nameof(SwiftyOptions.ModulePaths)}.Count");
 			for (var i = 0; i < expectedOptions.ModulePaths.Count; i++)
 			{
-				Assert.AreEqual (expectedOptions.ModulePaths[i], options.ModulePaths[i],
+				ClassicAssert.AreEqual (expectedOptions.ModulePaths[i], options.ModulePaths[i],
 					$"{testMessage} - {nameof (SwiftyOptions.ModulePaths)}[{i}]");
 			}
 			

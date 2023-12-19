@@ -13,6 +13,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Linq;
 using SwiftReflector.SwiftInterfaceReflector;
+using NUnit.Framework.Legacy;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -57,16 +58,16 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public class Foo { } ", "SomeModule").Find (m => m.Name == "SomeModule");
 			ClassDeclaration fooClass = module.AllClasses.Where (cl => cl.Name == "Foo").FirstOrDefault ();
-			Assert.IsNotNull (fooClass);
-			Assert.IsFalse (fooClass.IsUnrooted);
+			ClassicAssert.IsNotNull (fooClass);
+			ClassicAssert.IsFalse (fooClass.IsUnrooted);
 			ClassDeclaration unrootedFoo = fooClass.MakeUnrooted () as ClassDeclaration;
-			Assert.IsNotNull (unrootedFoo);
-			Assert.IsTrue (unrootedFoo != fooClass);
-			Assert.AreEqual (unrootedFoo.Name, fooClass.Name);
-			Assert.AreEqual (unrootedFoo.Access, fooClass.Access);
+			ClassicAssert.IsNotNull (unrootedFoo);
+			ClassicAssert.IsTrue (unrootedFoo != fooClass);
+			ClassicAssert.AreEqual (unrootedFoo.Name, fooClass.Name);
+			ClassicAssert.AreEqual (unrootedFoo.Access, fooClass.Access);
 			ClassDeclaration doubleUnrootedFoo = unrootedFoo.MakeUnrooted () as ClassDeclaration;
-			Assert.IsNotNull (doubleUnrootedFoo);
-			Assert.IsTrue (doubleUnrootedFoo == unrootedFoo);
+			ClassicAssert.IsNotNull (doubleUnrootedFoo);
+			ClassicAssert.IsTrue (doubleUnrootedFoo == unrootedFoo);
 		}
 
 		[Test]
@@ -75,7 +76,7 @@ namespace XmlReflectionTests {
 			ModuleDeclaration module = ReflectToModules ("public class Foo { } ",
 								     "SomeModule").Find (m => m.Name == "SomeModule");
 			ClassDeclaration fooClass = module.AllClasses.Where (cl => cl.Name == "Foo").FirstOrDefault ();
-			Assert.IsNotNull (fooClass);
+			ClassicAssert.IsNotNull (fooClass);
 			ClassDeclaration unrootedFoo = fooClass.MakeUnrooted () as ClassDeclaration;
 
 			Entity entity = new Entity {
@@ -95,10 +96,10 @@ namespace XmlReflectionTests {
 			var errors = dbread.Read (ostm);
 			Utils.CheckErrors (errors);
 			Entity entityRead = dbread.EntityForSwiftName ("SomeModule.Foo");
-			Assert.IsNotNull (entityRead);
-			Assert.AreEqual (entity.SharpNamespace, entityRead.SharpNamespace);
-			Assert.AreEqual (entity.SharpTypeName, entityRead.SharpTypeName);
-			Assert.IsTrue (entity.Type is ClassDeclaration);
+			ClassicAssert.IsNotNull (entityRead);
+			ClassicAssert.AreEqual (entity.SharpNamespace, entityRead.SharpNamespace);
+			ClassicAssert.AreEqual (entity.SharpTypeName, entityRead.SharpTypeName);
+			ClassicAssert.IsTrue (entity.Type is ClassDeclaration);
 		}
 
 		[Test]
@@ -106,7 +107,7 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public struct Foo {\npublic var x:Int\n } ", "SomeModule").Find (m => m.Name == "SomeModule");
 			StructDeclaration fooClass = module.AllStructs.Where (cl => cl.Name == "Foo").FirstOrDefault ();
-			Assert.IsNotNull (fooClass);
+			ClassicAssert.IsNotNull (fooClass);
 			StructDeclaration unrootedFoo = fooClass.MakeUnrooted () as StructDeclaration;
 
 			Entity entity = new Entity {
@@ -126,10 +127,10 @@ namespace XmlReflectionTests {
 			var errors = dbread.Read (ostm);
 			Utils.CheckErrors (errors);
 			Entity entityRead = dbread.EntityForSwiftName ("SomeModule.Foo");
-			Assert.IsNotNull (entityRead);
-			Assert.AreEqual (entity.SharpNamespace, entityRead.SharpNamespace);
-			Assert.AreEqual (entity.SharpTypeName, entityRead.SharpTypeName);
-			Assert.IsTrue (entity.Type is StructDeclaration);
+			ClassicAssert.IsNotNull (entityRead);
+			ClassicAssert.AreEqual (entity.SharpNamespace, entityRead.SharpNamespace);
+			ClassicAssert.AreEqual (entity.SharpTypeName, entityRead.SharpTypeName);
+			ClassicAssert.IsTrue (entity.Type is StructDeclaration);
 		}
 
 		[Test]
@@ -137,7 +138,7 @@ namespace XmlReflectionTests {
 		{
 			ModuleDeclaration module = ReflectToModules ("public enum Foo {\ncase a, b, c\n } ", "SomeModule").Find (m => m.Name == "SomeModule");
 			EnumDeclaration fooClass = module.AllEnums.Where (cl => cl.Name == "Foo").FirstOrDefault ();
-			Assert.IsNotNull (fooClass);
+			ClassicAssert.IsNotNull (fooClass);
 			EnumDeclaration unrootedFoo = fooClass.MakeUnrooted () as EnumDeclaration;
 
 			Entity entity = new Entity {
@@ -157,10 +158,10 @@ namespace XmlReflectionTests {
 			var errors = dbread.Read (ostm);
 			Utils.CheckErrors (errors);
 			Entity entityRead = dbread.EntityForSwiftName ("SomeModule.Foo");
-			Assert.IsNotNull (entityRead);
-			Assert.AreEqual (entity.SharpNamespace, entityRead.SharpNamespace);
-			Assert.AreEqual (entity.SharpTypeName, entityRead.SharpTypeName);
-			Assert.IsTrue (entity.Type is EnumDeclaration);
+			ClassicAssert.IsNotNull (entityRead);
+			ClassicAssert.AreEqual (entity.SharpNamespace, entityRead.SharpNamespace);
+			ClassicAssert.AreEqual (entity.SharpTypeName, entityRead.SharpTypeName);
+			ClassicAssert.IsTrue (entity.Type is EnumDeclaration);
 		}
 
 
@@ -170,15 +171,15 @@ namespace XmlReflectionTests {
 			var module = ReflectToModules (
 				"public func SomeFunction(a: @escaping ()->()) {\n a() \n}\n", "SomeModule").Find (m => m.Name == "SomeModule");
 			var func = module.AllTypesAndTopLevelDeclarations.OfType<FunctionDeclaration> ().FirstOrDefault ();
-			Assert.IsNotNull (func);
+			ClassicAssert.IsNotNull (func);
 
-			Assert.AreEqual (1, func.ParameterLists.Count);
-			Assert.AreEqual (1, func.ParameterLists [0].Count);
+			ClassicAssert.AreEqual (1, func.ParameterLists.Count);
+			ClassicAssert.AreEqual (1, func.ParameterLists [0].Count);
 
 			var paramItem = func.ParameterLists [0] [0];
 			var spec = paramItem.TypeSpec;
-			Assert.AreEqual (1, spec.Attributes.Count ());
-			Assert.AreEqual ("escaping", spec.Attributes [0].Name);
+			ClassicAssert.AreEqual (1, spec.Attributes.Count ());
+			ClassicAssert.AreEqual ("escaping", spec.Attributes [0].Name);
 		}
 
 
@@ -188,14 +189,14 @@ namespace XmlReflectionTests {
 			var module = ReflectToModules (
 				"public func SomeFunction(a: ()->()) {\n a() \n}\n", "SomeModule").Find (m => m.Name == "SomeModule");
 			var func = module.AllTypesAndTopLevelDeclarations.OfType<FunctionDeclaration> ().FirstOrDefault ();
-			Assert.IsNotNull (func);
+			ClassicAssert.IsNotNull (func);
 
-			Assert.AreEqual (1, func.ParameterLists.Count);
-			Assert.AreEqual (1, func.ParameterLists [0].Count);
+			ClassicAssert.AreEqual (1, func.ParameterLists.Count);
+			ClassicAssert.AreEqual (1, func.ParameterLists [0].Count);
 
 			var paramItem = func.ParameterLists [0] [0];
 			var spec = paramItem.TypeSpec;
-			Assert.AreEqual (0, spec.Attributes.Count ());
+			ClassicAssert.AreEqual (0, spec.Attributes.Count ());
 		}
 
 		[Test]
@@ -203,15 +204,15 @@ namespace XmlReflectionTests {
 		{
 			var module = ReflectToModules (
 				"public func SomeFunction (a: any Equatable) { }\n", "SomeModule").FirstOrDefault ();
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 			var func = module.AllTypesAndTopLevelDeclarations.OfType<FunctionDeclaration> ().FirstOrDefault ();
-			Assert.IsNotNull (func, "no function");
-			Assert.AreEqual (1, func.ParameterLists.Count, "wrong number of parameter lists");
-			Assert.AreEqual (1, func.ParameterLists [0].Count, "wong number of parameters");
+			ClassicAssert.IsNotNull (func, "no function");
+			ClassicAssert.AreEqual (1, func.ParameterLists.Count, "wrong number of parameter lists");
+			ClassicAssert.AreEqual (1, func.ParameterLists [0].Count, "wong number of parameters");
 
 			var paramItem = func.ParameterLists [0] [0];
 			var spec = paramItem.TypeSpec;
-			Assert.IsTrue (spec.IsAny, "didn't find 'any'");
+			ClassicAssert.IsTrue (spec.IsAny, "didn't find 'any'");
 		}
 	}
 }

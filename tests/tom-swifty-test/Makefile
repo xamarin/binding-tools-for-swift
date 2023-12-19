@@ -14,11 +14,11 @@ check: run-tests
 # new (incompatible but much more powerful) runner syntax means using FIXTURES has to look like
 # FIXTURES="--where=test=SwiftReflector.LinkageTests.TestMissingNSObject" make
 # https://github.com/nunit/docs/wiki/Test-Selection-Language
-run-tests: bin/Debug/tom-swifty-test.dll
+run-tests: bin/Debug/net7.0/tom-swifty-test.dll
 	rm -f .failed-stamp
 	rm -Rf bin/devicetests # remove any existing device test output
 	DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):/usr/lib/swift:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
-	mono --debug --runtime=v4.0 $(TOP)/packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=4 --framework=mono-4.0 --nocolor --labels=All --shadowcopy $(FIXTURES) || touch .failed-stamp
+	dotnet test tom-swifty-test.csproj --environment FIXTURES=$(FIXTURES) #-- --workers=4 --nocolor --labels=All --shadowcopy $(FIXTURES) || touch .failed-stamp
 	@# Create an html file and tell MonkeyWrench to upload it (if we're running there)
 	@[[ -z "$$BUILD_REPOSITORY" ]] || \
 		( xsltproc ../HtmlTransform.xslt TestResult.xml  > index.html && \
@@ -27,14 +27,13 @@ run-tests: bin/Debug/tom-swifty-test.dll
 
 build: bin/Debug/tom-swifty-test.dll
 
-run-runtime-library-tests: bin/Debug/tom-swifty-test.dll
+run-runtime-library-tests: bin/Debug/net7.0/tom-swifty-test.dll
 	rm -f .$@-failed-stamp
 	LEAKTEST_DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):/usr/lib/swift:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
-	$(TOP)/leaktest/bin/Debug/leaktest mono --debug --runtime=v4.0 $(TOP)/packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/tom-swifty-test.dll --workers=1 --framework=mono-4.0 --nocolor --labels=All --shadowcopy --where=namespace=SwiftRuntimeLibraryTests --inprocess || touch .failed-stamp
+	$(TOP)/leaktest/bin/Debug/net7.0/leaktest mono --debug --runtime=v4.0 $(TOP)/packages/NUnit.ConsoleRunner.3.8.0/tools/nunit3-console.exe bin/Debug/net7.0/tom-swifty-test.dll --workers=1 --framework=mono-4.0 --nocolor --labels=All --shadowcopy --where=namespace=SwiftRuntimeLibraryTests --inprocess || touch .failed-stamp
 
-bin/Debug/tom-swifty-test.dll: $(shell git ls-files . | grep '[.]cs$$') tom-swifty-test.csproj SwiftRuntimeLibrary.Mac.dll.config
-	nuget restore ../..
-	msbuild
+bin/Debug/net7.0/tom-swifty-test.dll: $(shell git ls-files . | grep '[.]cs$$') tom-swifty-test.csproj SwiftRuntimeLibrary.Mac.dll.config
+	dotnet build
 
 SwiftRuntimeLibrary.Mac.dll.config: SwiftRuntimeLibrary.Mac.dll.config.in Makefile
 	$(Q) sed -e 's|@SWIFTLIB@|$(SWIFTLIB)|' -e 's|@SWIFTGLUEPREFIX@|$(SWIFTGLUEPREFIX)|' -e 's|@SWIFTGLUESUFFIX@|$(SWIFTGLUESUFFIX)|' $< > $@.tmp
@@ -139,7 +138,7 @@ all-ios: build-iphone csproj-iphone
 build-device-tests: all-ios tomswiftydevicetests.zip
 
 tomswiftydevicetests/iphone/bin/iPhone/Debug/tomswiftydevicetests.app: build-iphone csproj-iphone $(wildcard tomswiftydevicetests/*/*.cs)
-	msbuild tomswiftydevicetests/iphone/tomswiftydevicetests.csproj /p:Platform=iPhone
+	dotnet build tomswiftydevicetests/iphone/tomswiftydevicetests.csproj /p:Platform=iPhone
 
 run-device-tests: tomswiftydevicetests/iphone/bin/iPhone/Debug/tomswiftydevicetests.app
 	./tomswiftydevicetests/runtests.sh

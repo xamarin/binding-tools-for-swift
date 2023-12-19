@@ -27,7 +27,7 @@ namespace CommandLineTests {
 			var swiftCode = "public class Foo {\npublic var x:Int = 3\n }";
 			var output = RunBindingToolsForSwift (swiftCode, "TestWarningOutput");
 			var lines = output.Split ('\n');
-			CollectionAssert.Contains (lines, "warning SM4018: entry _$s11OutputTests3FooC1xSivMTq uses an unsupported swift feature, skipping.");
+			Assert.That (lines, Has.Member ("warning SM4018: entry _$s11OutputTests3FooC1xSivMTq uses an unsupported swift feature, skipping."));
 		}
 
 		string RunBindingToolsForSwift (string swiftCode, string testName = null)

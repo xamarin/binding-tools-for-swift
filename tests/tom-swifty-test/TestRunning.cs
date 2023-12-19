@@ -13,6 +13,7 @@ using SwiftReflector;
 using SwiftReflector.IOUtils;
 using Xamarin.Utils;
 using System.Text.RegularExpressions;
+using NUnit.Framework.Legacy;
 
 [assembly: Parallelizable]
 
@@ -257,7 +258,7 @@ namespace tomwiftytest {
 
 			if (string.IsNullOrEmpty (callingMethodName)) {
 				if (!callingMethod.CustomAttributes.Any (x => x.AttributeType.Name == "TestAttribute"))
-					Assert.Fail ("TestRunning expect invocations without an explicit `testName` parameter to be invoked from the [Test] method directly. Consider passing an explicit `testName`.");
+					ClassicAssert.Fail ("TestRunning expect invocations without an explicit `testName` parameter to be invoked from the [Test] method directly. Consider passing an explicit `testName`.");
 
 				callingMethodName = callingMethod.Name;
 			}
@@ -292,7 +293,7 @@ namespace tomwiftytest {
 				CopyTestReferencesTo (tempDirectoryPath, platform);
 
 				var output = Execute (tempDirectoryPath, "NameNotImportant.exe", platform);
-				Assert.AreEqual (expectedOutput, output);
+				ClassicAssert.AreEqual (expectedOutput, output);
 			}			
 		}
 
@@ -411,10 +412,10 @@ namespace tomwiftytest {
 
 				var output = Execute (tempDirectoryPath, "NameNotImportant.exe", platform);
 				if (expectedOutput != null)
-					Assert.AreEqual (expectedOutput, output);
+					ClassicAssert.AreEqual (expectedOutput, output);
 				else {
 					foreach (var s in expectedOutputContains) {
-						Assert.IsTrue (output.Contains (s), $"Expected to find string {s} in {output}");
+						ClassicAssert.IsTrue (output.Contains (s), $"Expected to find string {s} in {output}");
 					}
 				}
 			}
@@ -772,7 +773,7 @@ public static class Console {
 					return exec_output.ToString ();
 				}
 			case PlatformName.iOS:
-				Assert.Ignore ($"Execution does not apply during a test run for {platform}, tests will be executed as part of the device tests.");
+				ClassicAssert.Ignore ($"Execution does not apply during a test run for {platform}, tests will be executed as part of the device tests.");
 				return string.Empty;
 			case PlatformName.None: {
 					return Compiler.RunWithMono (executable, workingDirectory, platform: platform);
@@ -829,7 +830,7 @@ public static class Console {
 			// point.
 			capturedMatches.Remove ("warning CS0219:");
 			if (capturedMatches.Count > 0)
-				Assert.Fail ($"Unexpected C# compiler warning(s): {warnings}");
+				ClassicAssert.Fail ($"Unexpected C# compiler warning(s): {warnings}");
 		}
 
 		static void SnarfSwiftInterfaceFile (string childPath, string testName, string testClassName, string nameSpace, string targetDirectory)

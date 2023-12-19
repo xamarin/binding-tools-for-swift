@@ -11,6 +11,7 @@ using SwiftReflector.Inventory;
 using NUnit.Framework;
 using tomwiftytest;
 using SwiftReflector.TypeMapping;
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -37,10 +38,10 @@ namespace SwiftReflector {
 				var errors = new ErrorHandling ();
 				ModuleInventory inventory = ModuleInventory.FromStream (stm, errors);
 				Utils.CheckErrors (errors);
-				Assert.AreEqual (1, inventory.Classes.Count ());
+				ClassicAssert.AreEqual (1, inventory.Classes.Count ());
 				ClassContents cl = inventory.Classes.First ();
-				Assert.AreEqual ("noname.None", cl.Name.ToFullyQualifiedName ());
-				Assert.AreEqual (2, cl.Constructors.Values.Count ());
+				ClassicAssert.AreEqual ("noname.None", cl.Name.ToFullyQualifiedName ());
+				ClassicAssert.AreEqual (2, cl.Constructors.Values.Count ());
 			}
 		}
 
@@ -48,16 +49,16 @@ namespace SwiftReflector {
 		[Test]
 		public void SwiftRuntimeLibraryExists ()
 		{
-			Assert.IsTrue (Directory.Exists (kSwiftRuntimeOutputDirectory));
-			Assert.IsTrue (File.Exists (Path.Combine (kSwiftRuntimeOutputDirectory, kSwiftRuntimeLibrary + ".dll")));
+			ClassicAssert.IsTrue (Directory.Exists (kSwiftRuntimeOutputDirectory));
+			ClassicAssert.IsTrue (File.Exists (Path.Combine (kSwiftRuntimeOutputDirectory, kSwiftRuntimeLibrary + ".dll")));
 		}
 
 
 		[Test]
 		public void SwiftRuntimeLibraryMacExists ()
 		{
-			Assert.IsTrue (Directory.Exists (kSwiftRuntimeMacOutputDirectory));
-			Assert.IsTrue (File.Exists (Path.Combine (kSwiftRuntimeMacOutputDirectory, kSwiftRuntimeLibraryMac + ".dll")));
+			ClassicAssert.IsTrue (Directory.Exists (kSwiftRuntimeMacOutputDirectory));
+			ClassicAssert.IsTrue (File.Exists (Path.Combine (kSwiftRuntimeMacOutputDirectory, kSwiftRuntimeLibraryMac + ".dll")));
 		}
 
 

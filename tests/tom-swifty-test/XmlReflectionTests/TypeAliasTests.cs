@@ -14,6 +14,7 @@ using System.Linq;
 using SwiftReflector;
 using SwiftReflector.SwiftInterfaceReflector;
 using SwiftReflector.TypeMapping;
+using NUnit.Framework.Legacy;
 
 namespace XmlReflectionTests {
 	public class TypeAliasTests {
@@ -47,8 +48,8 @@ namespace XmlReflectionTests {
 
 			var folder = new TypeAliasFolder (aliases);
 			var result = folder.FoldAlias (context, sourceTypeSpec);
-			Assert.IsNotNull (result, $"Test {testName} result was null");
-			Assert.AreEqual (expected, result.ToString (), $"Test {testName} type spec mismatch");
+			ClassicAssert.IsNotNull (result, $"Test {testName} result was null");
+			ClassicAssert.AreEqual (expected, result.ToString (), $"Test {testName} type spec mismatch");
 		}
 
 		[Test]

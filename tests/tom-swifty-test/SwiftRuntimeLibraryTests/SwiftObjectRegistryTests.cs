@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using SwiftRuntimeLibrary;
 using SwiftRuntimeLibrary.SwiftMarshal;
+using NUnit.Framework.Legacy;
 
 namespace SwiftRuntimeLibraryTests {
 	[TestFixture]
@@ -24,7 +25,7 @@ namespace SwiftRuntimeLibraryTests {
 		//			AnonymousSwiftObject anon = AnonymousSwiftObject.XamarinFactory (sham);
 		//
 		//			AnonymousSwiftObject registered = SwiftObjectRegistry.Registry.CSObjectForSwiftObject (sham);
-		//			Assert.AreEqual (anon, registered);
+		//			ClassicAssert.AreEqual (anon, registered);
 		//		}
 
 		class GoodISwiftObject : ISwiftObject {
@@ -104,14 +105,14 @@ namespace SwiftRuntimeLibraryTests {
 		{
 			// has no class factory
 			IntPtr sham = new IntPtr (42);
-			Assert.Throws<SwiftRuntimeException> (() => {
+			ClassicAssert.Throws<SwiftRuntimeException> (() => {
 				try {
-					Assert.IsFalse (SwiftObjectRegistry.Registry.Contains (sham));
+					ClassicAssert.IsFalse (SwiftObjectRegistry.Registry.Contains (sham));
 					using (SwiftObjectRegistry.Registry.CSObjectForSwiftObject<BadISwiftObject> (sham)) {
 
 					}
 				} finally {
-					Assert.IsFalse (SwiftObjectRegistry.Registry.Contains (sham));
+					ClassicAssert.IsFalse (SwiftObjectRegistry.Registry.Contains (sham));
 				}
 			});
 		}

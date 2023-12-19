@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Xamarin;
 using System.Linq;
 using System.Collections.Generic;
+using NUnit.Framework.Legacy;
 
 namespace tomwiftytest {
 	[TestFixture]
@@ -23,8 +24,8 @@ namespace tomwiftytest {
 		{
 			Stream lib = HelloSwiftAsLibrary (null);
 			List<MachOFile> macho = MachO.Read (lib, null).ToList ();
-			Assert.IsNotNull (macho);
-			Assert.AreEqual (1, macho.Count);
+			ClassicAssert.IsNotNull (macho);
+			ClassicAssert.AreEqual (1, macho.Count);
 		}
 
 		[Test]
@@ -32,12 +33,12 @@ namespace tomwiftytest {
 		{
 			Stream lib = HelloSwiftAsLibrary (null);
 			List<MachOFile> macho = MachO.Read (lib, null).ToList ();
-			Assert.IsNotNull (macho);
-			Assert.AreEqual (1, macho.Count);
+			ClassicAssert.IsNotNull (macho);
+			ClassicAssert.AreEqual (1, macho.Count);
 			MachOFile file = macho [0];
 			bool hasSymbolTable = file.load_commands.Exists (lc => lc.cmd == (uint)MachO.LoadCommands.SymTab ||
 				lc.cmd == (uint)MachO.LoadCommands.DySymTab);
-			Assert.IsTrue (hasSymbolTable);
+			ClassicAssert.IsTrue (hasSymbolTable);
 		}
 
 
@@ -46,15 +47,15 @@ namespace tomwiftytest {
 		{
 			Stream lib = HelloSwiftAsLibrary (null);
 			List<MachOFile> macho = MachO.Read (lib, null).ToList ();
-			Assert.IsNotNull (macho);
-			Assert.AreEqual (1, macho.Count);
+			ClassicAssert.IsNotNull (macho);
+			ClassicAssert.AreEqual (1, macho.Count);
 			MachOFile file = macho [0];
 			List<SymTabLoadCommand> symbols = file.load_commands.OfType<SymTabLoadCommand> ().ToList ();
-			Assert.AreEqual (1, symbols.Count);
+			ClassicAssert.AreEqual (1, symbols.Count);
 			NListEntryType nlet = symbols [0].nlist [0].EntryType;
 			List<NListEntry> entries = symbols [0].nlist.
 				Where ((nle, i) => nle.IsPublic && nle.EntryType == NListEntryType.InSection).ToList ();
-			Assert.AreEqual (1, entries.Count);
+			ClassicAssert.AreEqual (1, entries.Count);
 		}
 
 	}
