@@ -11,14 +11,15 @@ all: build run-tests
 check: run-tests
 
 
-# new (incompatible but much more powerful) runner syntax means using FIXTURES has to look like
-# FIXTURES="--where=test=SwiftReflector.LinkageTests.TestMissingNSObject" make
-# https://github.com/nunit/docs/wiki/Test-Selection-Language
+# in order to run a single test, do:
+# dotnet test --filter Name=HasBuiltInTypes
+# If you want to do a fully qualified name, do:
+# dotnet test --filter FullyQualifiedName~SwiftReflector.SwiftTypeRegistryTests.HasBuiltInTypes
 run-tests: bin/Debug/net7.0/tom-swifty-test.dll
 	rm -f .failed-stamp
 	rm -Rf bin/devicetests # remove any existing device test output
 	DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH):/usr/lib/swift:$(SWIFTGLUEPREFIX)mac$(SWIFTGLUESUFFIX) \
-	dotnet test tom-swifty-test.csproj --environment FIXTURES=$(FIXTURES) #-- --workers=4 --nocolor --labels=All --shadowcopy $(FIXTURES) || touch .failed-stamp
+	dotnet test tom-swifty-test.csproj
 	@# Create an html file and tell MonkeyWrench to upload it (if we're running there)
 	@[[ -z "$$BUILD_REPOSITORY" ]] || \
 		( xsltproc ../HtmlTransform.xslt TestResult.xml  > index.html && \

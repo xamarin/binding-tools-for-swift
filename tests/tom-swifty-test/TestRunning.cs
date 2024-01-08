@@ -776,7 +776,7 @@ public static class Console {
 				ClassicAssert.Ignore ($"Execution does not apply during a test run for {platform}, tests will be executed as part of the device tests.");
 				return string.Empty;
 			case PlatformName.None: {
-					return Compiler.RunWithMono (executable, workingDirectory, platform: platform);
+					return Compiler.RunWithDotnet (executable, workingDirectory, platform: platform);
 				}
 			default:
 				throw new NotImplementedException (platform.ToString ());
@@ -788,6 +788,9 @@ public static class Console {
 		};
 		static string [] testiOSRuntimeAssemblies = {
 			Path.Combine (ConstructorTests.kXamariniOSDir, "Xamarin.iOS.dll"),
+		};
+		static string [] testnoneRuntimeAssemblies = {
+			Path.Combine (ConstructorTests.kSwiftRuntimeOutputDirectory, $"{ConstructorTests.kSwiftRuntimeLibrary}.dll"),
 		};
 
 		public static void CopyTestReferencesTo (string targetDirectory, PlatformName platform = PlatformName.None)
@@ -802,7 +805,8 @@ public static class Console {
 				references = testiOSRuntimeAssemblies;
 				break;
 			case PlatformName.None:
-				return;
+				references = testnoneRuntimeAssemblies;
+				break;
 			default:
 				throw new NotImplementedException (platform.ToString ());
 			}

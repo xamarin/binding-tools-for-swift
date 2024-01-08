@@ -18,12 +18,11 @@ namespace SwiftReflector {
 	[Parallelizable (ParallelScope.All)]
 	[RunWithLeaks]
 	public class ConstructorTests {
-		public static string kSwiftRuntimeOutputDirectory = Path.Combine (TestContext.CurrentContext.TestDirectory, "../../../../SwiftRuntimeLibrary/bin/Debug");
+		public static string kSwiftRuntimeOutputDirectory = Path.Combine (TestContext.CurrentContext.TestDirectory, $"../../../../../SwiftRuntimeLibrary/bin/Debug/net{Compiler.kframeWorkVersion}");
 		public const string kSwiftRuntimeLibrary = "SwiftRuntimeLibrary";
 
-
-		public static string kSwiftRuntimeMacOutputDirectory = Path.Combine (TestContext.CurrentContext.TestDirectory, "../../../../SwiftRuntimeLibrary.Mac/bin/Debug");
-		public static string kSwiftRuntimeiOSOutputDirectory = Path.Combine (TestContext.CurrentContext.TestDirectory, "../../../../SwiftRuntimeLibrary.iOS/bin/Debug");
+		public static string kSwiftRuntimeMacOutputDirectory = Path.Combine (TestContext.CurrentContext.TestDirectory, $"../../../../../SwiftRuntimeLibrary.Mac/bin/Debug/net{Compiler.kframeWorkVersion}");
+		public static string kSwiftRuntimeiOSOutputDirectory = Path.Combine (TestContext.CurrentContext.TestDirectory, $"../../../../../SwiftRuntimeLibrary.iOS/bin/Debug/net{Compiler.kframeWorkVersion}");
 		public const string kSwiftRuntimeLibraryMac = "SwiftRuntimeLibrary.Mac";
 		public const string kSwiftRuntimeLibraryiOS = "SwiftRuntimeLibrary.iOS";
 

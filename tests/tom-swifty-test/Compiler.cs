@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using Xamarin.Utils;
 using NUnit.Framework.Legacy;
+using System.Linq;
 
 namespace tomwiftytest {
 
@@ -29,9 +30,10 @@ namespace tomwiftytest {
 	public class Compiler {
 		// Enviroment var that can be used to test binding-tools-for-swift from a package
 		static string SOM_PATH = Environment.GetEnvironmentVariable ("SOM_PATH");
+		public static string kframeWorkVersion = "7.0";
 #if DEBUG
-		public const string kSwiftRuntimeGlueDirectoryRel = "../../../../swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework";
-		public const string kSwiftRuntimeSourceDirectoryRel = "../../../../swiftglue/";
+		public const string kSwiftRuntimeGlueDirectoryRel = "../../../../../swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework";
+		public const string kSwiftRuntimeSourceDirectoryRel = "../../../../../swiftglue/";
 #endif
 		public static string kSwiftDeviceTestRoot = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "../../devicetests"));
 		public static string kLeakCheckBinary = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "..", "..", "..", "..", "leaktest", "bin", "Debug", "leaktest"));
@@ -52,11 +54,11 @@ namespace tomwiftytest {
 		}
 
 
-		public static List<string> kTypeDatabases = new List<string> { PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../bindings") : FindPathFromEnvVariable ("bindings")) };
+		public static List<string> kTypeDatabases = new List<string> { PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../../bindings") : FindPathFromEnvVariable ("bindings")) };
 		public const string kMono64Path = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
 		public static string kTestRoot = PosixHelpers.RealPath (GetTestDirectory ());
 #if DEBUG
-		public static string kTomSwiftyPath = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../tom-swifty/bin/Debug/tom-swifty.exe") : FindPathFromEnvVariable ("lib/binding-tools-for-swift/tom-swifty.exe"));
+		public static string kTomSwiftyPath = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../../tom-swifty/bin/Debug/tom-swifty.exe") : FindPathFromEnvVariable ("lib/binding-tools-for-swift/tom-swifty.exe"));
 #else
 		public static string kTomSwiftyPath = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../tom-swifty/bin/Release/tom-swifty.exe") : FindPathFromEnvVariable ("lib/binding-tools-for-swift/tom-swifty.exe"));
 #endif
@@ -153,7 +155,17 @@ namespace tomwiftytest {
 
 		public static string CSCompile (string workingDirectory, string [] sourceFiles, string outputFile, string extraOptions = "", PlatformName platform = PlatformName.None)
 		{
-			return ExecAndCollect.Run ("/Library/Frameworks/Mono.framework/Versions/Current/bin/csc", BuildCSCompileArgs (sourceFiles, outputFile, extraOptions, platform), workingDirectory: workingDirectory ?? "");
+			CreateRuntimeConfigJson (workingDirectory, outputFile);
+			var compilerArgs = BuildCSCompileArgs (sourceFiles, outputFile, extraOptions, platform);
+			return ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", $"exec {GetDotnetCSCompiler ()} {compilerArgs}", workingDirectory: workingDirectory ?? "");
+		}
+
+		static void CreateRuntimeConfigJson (string workingDirectory, string outputFile)
+		{
+			var fileName = Path.ChangeExtension (outputFile, ".runtimeconfig.json");
+			var fullPath = Path.Combine (workingDirectory ?? "", fileName);
+			using var file = new StreamWriter (fullPath, false);
+			file.WriteLine ($"{{\n  \"runtimeOptions\": {{\n    \"tfm\": \"net{kframeWorkVersion}\",\n    \"framework\": {{\n      \"name\": \"Microsoft.NETCore.App\",\n      \"version\": \"{kframeWorkVersion}.0\"\n    }}\n  }}\n}}");
 		}
 
 		static string BuildCSCompileArgs (string [] sourceFiles, string outputFile, string extraOptions, PlatformName platform = PlatformName.None)
@@ -181,8 +193,14 @@ namespace tomwiftytest {
 				sb.Append ($"-r:Xamarin.iOS.dll ");
 				break;
 			case PlatformName.None:
+				var referenceAssemblyDir = GetReferenceAssemblyLocation ();
 				sb.Append ($"-lib:{ConstructorTests.kSwiftRuntimeOutputDirectory} ");
 				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibrary}.dll ");
+				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.dll")} ");
+				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Console.dll")} ");
+				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Runtime.dll")} ");
+				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Runtime.InteropServices.dll")} ");
+				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "mscorlib.dll")} ");
 				break;
 			default:
 				throw new NotImplementedException (platform.ToString ());
@@ -450,7 +468,7 @@ namespace tomwiftytest {
 				var rv = ExecAndCollect.RunCommand (executable, args.ToString (), env, output, workingDirectory: workingDirectory ?? string.Empty);
 
 				if (rv != 0) {
-					var outputStr = output.ToString ();						 
+					var outputStr = output.ToString ();
 					Console.WriteLine ($"Test failed to execute (exit code: {rv}):\n{outputStr}");
 					throw new Exception ($"Test failed to execute (exit code: {rv}):\n{outputStr}");
 				}
@@ -465,6 +483,66 @@ namespace tomwiftytest {
 				if (!string.IsNullOrEmpty (outputFile))
 					File.Delete (outputFile);
 			}
+		}
+
+		public static string RunWithDotnet (string filename, string workingDirectory = null, PlatformName platform = PlatformName.None)
+		{
+			// XamGlue is really a framework (XamGlue.framework), and any libraries linked with XamGlue would have a reference to @rpath/XamGlue.framework/XamGlue.
+			// When running the test executable with mono (as opposed to from an actual XM/XI .app), we have no way of specifying rpath (since the executable
+			// is mono itself), so we copy the XamGlue library into the current directory, and fixup any dylibs with references to @rpath/XamGlue.framework/XamGlue
+			// to point to the XamGlue library instead.
+			// If the libraries were compiled properly (linked with the XamGlue library instead of framework), this wouldn't be necessary, but it's simpler to
+			// fixup things here than fix everywhere else.
+			var executablePath = workingDirectory;
+			if (string.IsNullOrEmpty (executablePath)) {
+				executablePath = Path.GetDirectoryName (filename);
+				if (string.IsNullOrEmpty (executablePath))
+					executablePath = Environment.CurrentDirectory;
+			}
+			FixXamGlueReferenceInDylibs (executablePath);
+
+			var args = new StringBuilder ();
+			args.Append ("exec ");
+			args.Append (Exceptions.ThrowOnNull (filename, nameof (filename))).Append (' ');
+			var executable = "/usr/local/share/dotnet/dotnet";
+			var env = new Dictionary<string, string> ();
+
+			// this will let you see why things might not link
+			// or why libraries might not load (for instance if dependent libraries can't be found)
+			//env.Add ("MONO_LOG_LEVEL", "debug");
+			//env.Add ("MONO_LOG_MASK", "dll");
+			// this will print out every library that was loaded
+			//env.Add ("DYLD_PRINT_LIBRARIES") = "YES";
+			env.Add ("DYLD_LIBRARY_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "DYLD_LIBRARY_PATH", $"/usr/lib/swift:{kSwiftRuntimeGlueDirectory}"));
+			switch (platform) {
+			case PlatformName.macOS:
+				// This is really a hack, any tests needing to use XM, should create a proper .app using mmp instead.
+				env.Add ("MONO_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "MONO_PATH", $"{ConstructorTests.kSwiftRuntimeMacOutputDirectory}"));
+				env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", "/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib");
+				break;
+			case PlatformName.None:
+				env.Add ("MONO_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "MONO_PATH", $"{ConstructorTests.kSwiftRuntimeOutputDirectory}"));
+				env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", ".");
+				if (workingDirectory != null)
+					env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", workingDirectory);
+				break;
+			default:
+				throw new NotImplementedException (platform.ToString ());
+			}
+
+			var sb = new StringBuilder ();
+			// uncomment this to see the DYLD_LIBRARY_PATH in the output.
+			// Do NOT leave this uncommented as it will fail nearly all the tests
+			//			sb.AppendLine ("DYLD_LIBRARY_PATH: " + env ["DYLD_LIBRARY_PATH"]);
+
+			var rv = RunCommandWithLeaks (executable, args, env, sb, workingDirectory: workingDirectory ?? string.Empty);
+
+			if (rv != 0) {
+				Console.WriteLine ($"Test failed to execute (exit code: {rv}):\n{sb}");
+				throw new Exception ($"Test failed to execute (exit code: {rv}):\n{sb}");
+			}
+
+			return sb.ToString ();
 		}
 
 		public static string RunWithMono (string filename, string workingDirectory = null, PlatformName platform = PlatformName.None)
@@ -566,6 +644,48 @@ namespace tomwiftytest {
 				throw;
 			}
 			return provider;
+		}
+		static string? csdirectoryCache = null;
+		static string GetCSSdkLocation ()
+		{
+			if (csdirectoryCache is null) {
+				var parentDirectory = "/usr/local/share/dotnet/sdk/";
+				var searchPattern = $"{kframeWorkVersion}.*";
+				csdirectoryCache = MaxDirectory (parentDirectory, searchPattern);
+			}
+			return csdirectoryCache;
+		}
+
+		static string GetDotnetCSCompiler ()
+		{
+			var path = Path.Combine (GetCSSdkLocation (), "Roslyn/bincore/csc.dll");
+			if (!File.Exists (path))
+				throw new Exception ($"Unable to find dotnet cs compiler - expecting it at {path}");
+			return path;
+		}
+
+		static string? refdirectoryCache = null;
+		static string GetReferenceAssemblyLocation ()
+		{
+			// pattern is {sdk}{max}/ref/net{sdk}
+			if (refdirectoryCache is null) {
+				var parentDirectory = "/usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/";
+				var searchPattern = $"{kframeWorkVersion}.*";
+				refdirectoryCache = Path.Combine (MaxDirectory (parentDirectory, searchPattern), $"ref/net{kframeWorkVersion}");
+				if (!Directory.Exists (refdirectoryCache))
+					throw new Exception ($"Unable to find dotnet reference assmeblies. Looked in {refdirectoryCache}");
+			}
+			return refdirectoryCache;
+		}
+
+		static string MaxDirectory (string parentDirectory, string searchPattern)
+		{
+			var directories = Directory.GetDirectories (parentDirectory, searchPattern);
+			if (directories.Length == 0) {
+				throw new Exception ($"Unable to find directory using the pattern {parentDirectory}{searchPattern}");
+			}
+			Array.Sort (directories);
+			return directories [directories.Length - 1];
 		}
 	}
 }

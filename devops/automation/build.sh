@@ -8,14 +8,14 @@ fi
 cd $BTFS_TOP
 WORKSPACE=$(pwd)
 
-nuget restore tom-swifty.sln
+dotnet restore tom-swifty.sln --packages packages
 cd "$WORKSPACE/plist-swifty"
-msbuild
+dotnet build
 cd "$WORKSPACE/type-o-matic"
-msbuild
+dotnet build
 cd "$WORKSPACE/swiftglue"
 make generate-swift-bindings
 make all -j8
 
 cd "$WORKSPACE"
-msbuild tom-swifty.sln
+dotnet build tom-swifty.sln

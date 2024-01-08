@@ -399,20 +399,32 @@ namespace SwiftReflector.Importing {
 		static partial void TypesToSkipIOS (ref HashSet<string> result);
 		static partial void TypesToSkipMacOS (ref HashSet<string> result);
 
+		static HashSet<string> typesToSkipIOS = null;
+		static HashSet<string> typesToSkipMacOS = null;
+		static object skipLock = new object ();
+
 		static HashSet<string> TypeSkipForPlatform (PlatformName platform)
 		{
-			var result = new HashSet<string> ();
-			switch (platform) {
-			case PlatformName.iOS:
-				TypesToSkipIOS (ref result);
-				break;
-			case PlatformName.macOS:
-				TypesToSkipMacOS (ref result);
-				break;
-			default:
-				break;
+			lock (skipLock) {
+				var result = new HashSet<string> ();
+				switch (platform) {
+				case PlatformName.iOS:
+					if (typesToSkipIOS is null) {
+						typesToSkipIOS = new HashSet<string> ();
+						TypesToSkipIOS (ref typesToSkipIOS);
+					}
+					return typesToSkipIOS;
+				case PlatformName.macOS:
+					if (typesToSkipMacOS is null) {
+						typesToSkipMacOS = new HashSet<string> ();
+						TypesToSkipMacOS (ref typesToSkipMacOS);
+					}
+					return typesToSkipMacOS;
+				default:
+					break;
+				}
+				return result;
 			}
-			return result;
 		}
 
 		static partial void TypeNamesToMapIOS (ref Dictionary<string, string> result);

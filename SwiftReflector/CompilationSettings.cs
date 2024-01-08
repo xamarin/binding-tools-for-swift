@@ -260,7 +260,7 @@ namespace SwiftReflector {
 			// from code main code base as run from the IDE:
 			// ../../tools/make-framework
 			// from unit tests:
-			// ../../../../tools/make-framwork
+			// ../../../../../tools/make-framwork
 			// from Pack-Man installation:
 			// ../make-framework/make-framework
 
@@ -279,6 +279,10 @@ namespace SwiftReflector {
 				return backupIDEPath;
 			var greatGreatGrandParent = Directory.GetParent (greatGrandParent).ToString ();
 			var unitTestsPath = Path.Combine (greatGreatGrandParent, "tools/make-framework");
+			if (File.Exists (unitTestsPath))
+				return unitTestsPath;
+			var greatGreatGreatGrandParent = Directory.GetParent (greatGreatGrandParent).ToString ();
+			unitTestsPath = Path.Combine (greatGreatGreatGrandParent, "tools/make-framework");
 			return File.Exists (unitTestsPath) ? unitTestsPath : null;
 		}
 
