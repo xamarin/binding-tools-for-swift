@@ -537,7 +537,8 @@ namespace SwiftReflector {
 					identifiersUsed.Add (returnContainerName);
 					var returnContainerId = new CSIdentifier (returnContainerName);
 					body.Add (CSVariableDeclaration.VarLine (CSSimpleType.Var, returnContainerId, new CSFunctionCall ("SwiftObjectRegistry.Registry.ExistentialContainerForProtocols", false, containerExprs.ToArray ())));
-					body.Add (CSFunctionCall.FunctionCallLine ($"{returnContainerName}.CopyTo", false, new CSUnaryExpression (CSUnaryOperator.Ref, delegateParams [0].Name)));
+					body.Add (CSFunctionCall.FunctionCallLine ($"{returnContainerName}.CopyTo", false,
+						new CSFunctionCall ("IntPtr", true, delegateParams [0].Name)));
 					
 				} else {
 					if (returnIsClosure) {

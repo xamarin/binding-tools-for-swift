@@ -2133,7 +2133,7 @@ namespace SwiftReflector {
 				true, CSVisibility.Public, !protocolDecl.IsObjC && protocolDecl.IsExistential);
 			var unmanagedDelegateType = RecastDelegateDeclAsFunctionPtr (delegateDecl);
 
-			var field = new CSFieldDeclaration (unmanagedDelegateType, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
+			var field = new CSFieldDeclaration (unmanagedDelegateType, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public, isUnsafe: true);
 			CSAttribute.MarshalAsFunctionPointer ().AttachBefore (field);
 			vtable.Fields.Add (new CSLine (field));
 
@@ -2183,7 +2183,7 @@ namespace SwiftReflector {
 			var delegateDecl = TLFCompiler.CompileToDelegateDeclaration (func, use, null, "Del" + OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), true, CSVisibility.Public, false);
 			var unmanagedDelegate = RecastDelegateDeclAsFunctionPtr (delegateDecl);
 
-			var field = new CSFieldDeclaration (unmanagedDelegate, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
+			var field = new CSFieldDeclaration (unmanagedDelegate, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public, isUnsafe: true);
 			CSAttribute.MarshalAsFunctionPointer ().AttachBefore (field);
 			vtable.Fields.Add (new CSLine (field));
 
@@ -2781,7 +2781,7 @@ namespace SwiftReflector {
 		CSSimpleType RecastDelegateDeclAsFunctionPtr (CSDelegateTypeDecl decl)
 		{
 			// given a type in the form:
-			// unsafe delegate returnType DelFunc(Arg1 arg1 ...)
+			// delegate returnType DelFunc(Arg1 arg1 ...)
 			// Turn it into
 			// delegate *unmanaged<Arg1..., returnType> ();
 			var types = new CSType [decl.Parameters.Count + 1];
@@ -2789,7 +2789,7 @@ namespace SwiftReflector {
 				types [i] = decl.Parameters [i].CSType;
 			}
 			types [types.Length - 1] = decl.Type;
-			var declType = new CSSimpleType ("unsafe delegate *unmanaged", false, types);
+			var declType = new CSSimpleType ("delegate *unmanaged", false, types);
 			return declType;
 		}
 
@@ -2894,7 +2894,11 @@ namespace SwiftReflector {
 				recvrName = "xamVtable_recv_" + (funcDecl.IsSubscriptGetter ? "index_get_" : "index_set_") + prop.Name.Name;
 			}
 
-			recvr = new CSMethod (CSVisibility.None, CSMethodKind.Static, returnType,
+			var methodKind = CSMethodKind.Static;
+			if (delType.IsUnsafe || ParameterListContainsPointer (pl))
+				methodKind = CSMethodKind.StaticUnsafe;
+
+			recvr = new CSMethod (CSVisibility.None, methodKind, returnType,
 					new CSIdentifier (recvrName),
 					pl, body);
 
@@ -2932,7 +2936,11 @@ namespace SwiftReflector {
 				recvrName = "xamVtable_recv_" + (funcDecl.IsGetter ? "get_" : "set_") + prop.Name.Name;
 			}
 
-			recvr = new CSMethod (CSVisibility.None, CSMethodKind.Static, returnType, new CSIdentifier (recvrName), pl, body);
+			var methodKind = CSMethodKind.Static;
+			if (delType.IsUnsafe || ParameterListContainsPointer (pl))
+				methodKind = CSMethodKind.StaticUnsafe;
+
+			recvr = new CSMethod (CSVisibility.None, methodKind, returnType, new CSIdentifier (recvrName), pl, body);
 
 			use.AddIfNotPresent (typeof (UnmanagedCallersOnlyAttribute));
 			var attr = CSAttribute.FromAttr (typeof (UnmanagedCallersOnlyAttribute), new CSArgumentList (), true);

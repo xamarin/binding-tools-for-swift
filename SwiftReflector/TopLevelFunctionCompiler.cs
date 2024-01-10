@@ -199,7 +199,7 @@ namespace SwiftReflector {
 								csParams.Insert (0, new CSParameter (CSSimpleType.IntPtr, retvalID, CSParameterKind.None));
 								csReturnType = CSSimpleType.Void;
 							} else if (func.ReturnTypeSpec is ProtocolListTypeSpec pl) {
-								csParams.Insert (0, new CSParameter (new CSSimpleType ($"SwiftExistentialContainer{pl.Protocols.Count}"), retvalID, CSParameterKind.Ref));
+								csParams.Insert (0, new CSParameter (new CSSimpleType ($"SwiftExistentialContainer{pl.Protocols.Count}").Star, retvalID, CSParameterKind.None));
 								csReturnType = CSSimpleType.Void;
 							}
 						}
