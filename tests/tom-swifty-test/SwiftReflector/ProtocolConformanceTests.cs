@@ -155,8 +155,8 @@ public func blindAssocFunc{nameSuffix} () -> Any.Type {{
 
 
 		[TestCase ("Bool", "Boolean", "[true, false, true]")]
-		[TestCase ("Int", "nint", "[0, 1, 2]")]
-		[TestCase ("UInt", "nuint", "[0, 1, 2]")]
+		[TestCase ("Int", "IntPtr", "[0, 1, 2]")]
+		[TestCase ("UInt", "UIntPtr", "[0, 1, 2]")]
 		[TestCase ("Int32", "Int32", "[0, 1, 2]")]
 		[TestCase ("UInt32", "UInt32", "[0, 1, 2]")]
 		[TestCase ("Float", "Single", "[0.1, 1.1, 2.1]")]
