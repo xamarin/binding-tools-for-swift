@@ -2111,7 +2111,7 @@ namespace SwiftReflector {
 												   virtFuncs, virtFuncs [i], vtableEntryIndex, vtableName, vtable, vtableAssignments, use, swiftLibraryPath);
 				}
 			}
-			if (vtable.Delegates.Count > 0) {
+			if (vtable.Fields.Count > 0) {
 				cl.InnerClasses.Add (vtable);
 			}
 			ImplementVTableInitializer (cl, picl, usedPinvokeNames, classDecl, vtableAssignments, wrapper, vtableType, vtableName, swiftLibraryPath);
@@ -2224,7 +2224,7 @@ namespace SwiftReflector {
 			CSMethod staticRecv = ImplementVirtualMethodStaticReceiver (cl.ToCSType (), null, delegateDecl, use, func, publicOverload, vtable.Name, "", classDecl.IsObjCOrInheritsObjC (TypeMapper), false);
 			cl.Methods.Add (staticRecv);
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}", vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)),
-								  staticRecv.Name));
+								  CSUnaryExpression.AddressOf (staticRecv.Name)));
 
 			return vtableEntryIndex + 1;
 		}
@@ -2958,7 +2958,7 @@ namespace SwiftReflector {
 			var body = new CSCodeBlock (bodyContents);
 
 			var methodKind = CSMethodKind.Static;
-			if (delType.IsUnsafe)
+			if (delType.IsUnsafe || ParameterListContainsPointer (pl))
 				methodKind = CSMethodKind.StaticUnsafe;
 			
 			var recvr = new CSMethod (CSVisibility.None, methodKind, delType.Type,
@@ -6053,6 +6053,12 @@ namespace SwiftReflector {
 		static bool IsOptional (TypeSpec spec)
 		{
 			return spec is NamedTypeSpec namedSpec && namedSpec.ContainsGenericParameters && namedSpec.Name == "Swift.Optional";
+		}
+
+		static bool ParameterListContainsPointer (CSParameterList pl)
+		{
+			return pl.FirstOrDefault (pi => 
+				pi.CSType is CSSimpleType cs && cs.IsPointer) is not null;
 		}
 	}
 }

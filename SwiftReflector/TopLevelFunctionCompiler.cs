@@ -165,8 +165,10 @@ namespace SwiftReflector {
 				if (arg.Type.Entity == EntityType.Tuple || (!argIsGeneric && IsObjCStruct (parmType))) {
 					csParam = new CSParameter (CSSimpleType.IntPtr, new CSIdentifier (arg.Name), CSParameterKind.None, null);
 				} else {
-					csParam = new CSParameter (arg.Type.ToCSType (packs), new CSIdentifier (arg.Name),
-								   arg.Type.IsReference ? CSParameterKind.Ref : CSParameterKind.None, null);
+					var argType = arg.Type.ToCSType (packs);
+					if (argType is CSSimpleType csType && arg.Type.IsReference)
+						argType = csType.Star;
+					csParam = new CSParameter (argType, new CSIdentifier (arg.Name), CSParameterKind.None, null);
 				}
 				csParams.Add (csParam);
 			}
