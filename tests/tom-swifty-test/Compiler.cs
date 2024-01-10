@@ -168,6 +168,21 @@ namespace tomwiftytest {
 			file.WriteLine ($"{{\n  \"runtimeOptions\": {{\n    \"tfm\": \"net{kframeWorkVersion}\",\n    \"framework\": {{\n      \"name\": \"Microsoft.NETCore.App\",\n      \"version\": \"{kframeWorkVersion}.0\"\n    }}\n  }}\n}}");
 		}
 
+		static void ShowAllFiles (string [] sourceFiles)
+		{
+			// useful for debugging
+			foreach (var file in sourceFiles)
+				ShowFile (file);
+		}
+
+		static void ShowFile (string file)
+		{
+			Console.WriteLine ($"-------- {file} --------");
+			using var reader = new StreamReader (file);
+			var text = reader.ReadToEnd ();
+			Console.WriteLine (text);
+		}
+
 		static string BuildCSCompileArgs (string [] sourceFiles, string outputFile, string extraOptions, PlatformName platform = PlatformName.None)
 		{
 			StringBuilder sb = new StringBuilder ();

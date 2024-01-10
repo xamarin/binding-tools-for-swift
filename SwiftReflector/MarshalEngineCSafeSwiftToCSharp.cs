@@ -166,7 +166,7 @@ namespace SwiftReflector {
 					if (csParmProxyType == null)
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 33, $"Unable to find C# interface type for protocol {entity.Type.ToFullyQualifiedName ()}");
 
-					var retrievecall = new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{csParmType.ToString ()}>", false, delegateParams [i].Name);
+					var retrievecall = new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{csParmType.ToString ()}>", false, CSUnaryExpression.Star (delegateParams [i].Name));
 					if (csParm.ParameterKind == CSParameterKind.Out || csParm.ParameterKind == CSParameterKind.Ref) {
 						CSIdentifier id = new CSIdentifier (MarshalEngine.Uniqueify (delegateParams [i].Name.Name, identifiersUsed));
 						identifiersUsed.Add (id.Name);
@@ -277,7 +277,7 @@ namespace SwiftReflector {
 			string registryCall;
 
 			if (thisIsInterface && !hasAssociatedTypes) {
-				registryCall = $"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self)";
+				registryCall = $"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (*self)";
 			} else {
 				registryCall = isObjC ? $"Runtime.GetNSObject<{thisTypeName}> (self)" : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)";
 			}
@@ -466,7 +466,7 @@ namespace SwiftReflector {
 			CSIdentifier csharpCall = null;
 			var thisTypeName = hasAssociatedTypes ? csProxyName : thisType.ToString ();
 			if (forProtocol && !hasAssociatedTypes) {
-				csharpCall = new CSInject ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (self).{prop.Name.Name}");
+				csharpCall = new CSInject ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (*self).{prop.Name.Name}");
 			} else {
 				var call = isObjC ?
 					$"ObjCRuntime.Runtime.GetNSObject<{thisTypeName}> (self).{prop.Name.Name}" :

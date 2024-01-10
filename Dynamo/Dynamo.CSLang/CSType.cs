@@ -87,6 +87,7 @@ namespace Dynamo.CSLang {
 		public string GenericTypeName { get; private set; }
 		public CSType [] GenericTypes { get; private set; }
 		public bool IsArray { get; private set; }
+		public bool IsPointer { get; private set; }
 
 		string GenerateName ()
 		{
@@ -145,7 +146,7 @@ namespace Dynamo.CSLang {
 			tObject = new CSSimpleType ("object"),
 			tIntPtr = new CSSimpleType ("IntPtr"),
 			tVoid = new CSSimpleType ("void"),
-			tByteStar = new CSSimpleType ("byte *"),
+			tByteStar = new CSSimpleType ("byte").Star,
 			tType = new CSSimpleType ("Type"),
 			tVar = new CSSimpleType ("var"),
 			tNfloat = new CSSimpleType ("nfloat"),
@@ -158,7 +159,9 @@ namespace Dynamo.CSLang {
 				if (Name.EndsWith ("[]")) {
 					throw new NotImplementedException ("Blindly making an array a pointer doesn't do what you think.");
 				} else {
-					return new CSSimpleType (Name + " *", false);
+					var ptrType = new CSSimpleType (Name + " *", false);
+					ptrType.IsPointer = true;
+					return ptrType;
 				}
 			}
 		}

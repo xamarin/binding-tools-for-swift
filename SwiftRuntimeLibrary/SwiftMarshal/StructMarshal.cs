@@ -472,8 +472,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			case TypeCode.Double:
 				return SwiftStandardMetatypes.Double;
 			default:
-				if (t == typeof (IntPtr) || t == typeof (UIntPtr)) {
-					return Metatypeof (typeof (OpaquePointer));
+				if (t == typeof (IntPtr)) {
+					return SwiftStandardMetatypes.Int;
+				} else if (t == typeof (UIntPtr)) {
+					return SwiftStandardMetatypes.UInt;
 				}
 				throw new SwiftRuntimeException ($"Illegal type code for type {t.Name}:  {Type.GetTypeCode (t)}");
 			}

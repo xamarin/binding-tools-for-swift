@@ -1623,7 +1623,7 @@ namespace SwiftReflector {
 					nm.Block.Add (iface);
 					nm.Block.Add (cl);
 					nm.Block.Add (picl);
-					if (vtable?.Delegates.Count > 0)
+					if (vtable?.Fields.Count > 0)
 						nm.Block.Add (vtable);
 					CSFile csfile = new CSFile (use, new CSNamespace [] { nm });
 
@@ -1848,7 +1848,6 @@ namespace SwiftReflector {
 			                                               proxyClass, picl, usedPinvokeNames, use, swiftLibraryPath,
 								       out vtable);
 
-
 			if (!isExistential) {
 				var classContents = wrapper.Contents.Classes.Values.FirstOrDefault (cl => cl.Name.ToFullyQualifiedName () == wrapperClass.ToFullyQualifiedName ());
 				if (classContents == null)
@@ -2022,8 +2021,9 @@ namespace SwiftReflector {
 			CollectAllProtocolMethods (virtFunctions, protocolDecl);
 			string vtableName = "xamVtable" + iface.Name;
 			string vtableTypeName = OverrideBuilder.VtableTypeName (protocolDecl);
+			var vtableType = new CSSimpleType (vtableTypeName);
 			if (virtFunctions.Count > 0)
-				proxyClass.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (vtableTypeName), vtableName, null, CSVisibility.None, true));
+				proxyClass.Fields.Add (CSFieldDeclaration.FieldLine (vtableType, vtableName, null, CSVisibility.None, true));
 			var vtableAssignments = new List<CSLine> ();
 
 			vtable = new CSStruct (CSVisibility.Internal, new CSIdentifier (vtableTypeName));
@@ -2053,8 +2053,9 @@ namespace SwiftReflector {
 					                                                                   virtFunctions, virtFunctions [i], vtableEntryIndex, vtableName, vtable, vtableAssignments, use, swiftLibraryPath);
 				}
 			}
-			ImplementVTableInitializer (proxyClass, picl, usedPinvokeNames, protocolDecl, vtableAssignments, wrapper, vtableName, swiftLibraryPath);
-			return vtable.Delegates.Count > 0;
+			ImplementVTableInitializer (proxyClass, picl, usedPinvokeNames, protocolDecl, vtableAssignments, wrapper, vtableType, vtableName, swiftLibraryPath);
+
+			return vtable.Fields.Count > 0;
 		}
 
 		void CollectAllProtocolMethods (List<FunctionDeclaration> functions, ProtocolDeclaration decl)
@@ -2085,7 +2086,8 @@ namespace SwiftReflector {
 				return 0;
 			string vtableName = "xamVtable" + cl.Name;
 			string vtableTypeName = OverrideBuilder.VtableTypeName (classDecl);
-			cl.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (vtableTypeName), vtableName, null, CSVisibility.None, true));
+			var vtableType = new CSSimpleType (vtableTypeName);
+			cl.Fields.Add (CSFieldDeclaration.FieldLine (vtableType, vtableName, null, CSVisibility.None, true));
 			var vtableAssignments = new List<CSLine> ();
 
 
@@ -2112,7 +2114,7 @@ namespace SwiftReflector {
 			if (vtable.Delegates.Count > 0) {
 				cl.InnerClasses.Add (vtable);
 			}
-			ImplementVTableInitializer (cl, picl, usedPinvokeNames, classDecl, vtableAssignments, wrapper, vtableName, swiftLibraryPath);
+			ImplementVTableInitializer (cl, picl, usedPinvokeNames, classDecl, vtableAssignments, wrapper, vtableType, vtableName, swiftLibraryPath);
 			return virtFuncs.Count;
 		}
 
@@ -2129,8 +2131,9 @@ namespace SwiftReflector {
 			}
 			var delegateDecl = TLFCompiler.CompileToDelegateDeclaration (func, use, null, "Del" + OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex),
 				true, CSVisibility.Public, !protocolDecl.IsObjC && protocolDecl.IsExistential);
-			vtable.Delegates.Add (delegateDecl);
-			var field = new CSFieldDeclaration (new CSSimpleType (delegateDecl.Name.Name), OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
+			var unmanagedDelegateType = RecastDelegateDeclAsFunctionPtr (delegateDecl);
+
+			var field = new CSFieldDeclaration (unmanagedDelegateType, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
 			CSAttribute.MarshalAsFunctionPointer ().AttachBefore (field);
 			vtable.Fields.Add (new CSLine (field));
 
@@ -2164,7 +2167,7 @@ namespace SwiftReflector {
 			                                                       delegateDecl, use, func, publicMethod, vtable.Name, homonymSuffix, protocolDecl.IsObjC, !protocolDecl.IsExistential);
 			proxyClass.Methods.Add (staticRecv);
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}", vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)),
-								  staticRecv.Name));
+								  CSUnaryExpression.AddressOf (staticRecv.Name)));
 			return vtableEntryIndex + 1;
 		}
 
@@ -2178,8 +2181,9 @@ namespace SwiftReflector {
 			var subClassSwiftName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
 
 			var delegateDecl = TLFCompiler.CompileToDelegateDeclaration (func, use, null, "Del" + OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), true, CSVisibility.Public, false);
-			vtable.Delegates.Add (delegateDecl);
-			var field = new CSFieldDeclaration (new CSSimpleType (delegateDecl.Name.Name), OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
+			var unmanagedDelegate = RecastDelegateDeclAsFunctionPtr (delegateDecl);
+
+			var field = new CSFieldDeclaration (unmanagedDelegate, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), null, CSVisibility.Public);
 			CSAttribute.MarshalAsFunctionPointer ().AttachBefore (field);
 			vtable.Fields.Add (new CSLine (field));
 
@@ -2295,7 +2299,6 @@ namespace SwiftReflector {
 		{
 			CSDelegateTypeDecl etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
 			                                                                     OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), !protocolDecl.HasAssociatedTypes);
-			vtable.Delegates.Add (etterDelegateDecl);
 
 			var etterWrapperFunc = FindProtocolWrapperFunction (etterFunc, wrapper);
 			if (etterWrapperFunc == null) {
@@ -2378,7 +2381,7 @@ namespace SwiftReflector {
 			proxyClass.Methods.Add (recv);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
-										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), recv.Name));
+										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), CSUnaryExpression.AddressOf (recv.Name)));
 			return wrapperProp;
 		}
 
@@ -2420,7 +2423,6 @@ namespace SwiftReflector {
 
 			var etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
 			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), false);
-			vtable.Delegates.Add (etterDelegateDecl);
 
 
 			TLFunction etterWrapper = null;
@@ -2509,7 +2511,7 @@ namespace SwiftReflector {
 			cl.Methods.Add (recv);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
-										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), recv.Name));
+										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), CSUnaryExpression.AddressOf (recv.Name)));
 			return wrapperProp;
 		}
 
@@ -2582,7 +2584,6 @@ namespace SwiftReflector {
 		{
 			var etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
 			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), protocolDecl.IsExistential);
-			vtable.Delegates.Add (etterDelegateDecl);
 
 			var etterWrapperFunc = FindProtocolWrapperFunction (etterFunc, wrapper);
 			if (etterWrapperFunc == null) {
@@ -2659,7 +2660,7 @@ namespace SwiftReflector {
 			proxyClass.Methods.Add (recvr);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
-										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), recvr.Name));
+										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), CSUnaryExpression.AddressOf (recvr.Name)));
 			return wrapperProp;
 		}
 
@@ -2673,7 +2674,6 @@ namespace SwiftReflector {
 			var swiftClassName = XmlToTLFunctionMapper.ToSwiftClassName (subclassDecl);
 			var etterDelegateDecl = DefineDelegateAndAddToVtable (vtable, etterFunc, use,
 			                                                      OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex), false);
-			vtable.Delegates.Add (etterDelegateDecl);
 
 			var finder = new FunctionDeclarationWrapperFinder (TypeMapper, wrapper);
 			var etterWrapperFunc = finder.FindWrapperForMethod (classDecl ?? subclassDecl, etterFunc, isSetter ? PropertyType.Setter : PropertyType.Getter);
@@ -2762,7 +2762,7 @@ namespace SwiftReflector {
 			cl.Methods.Add (recvr);
 
 			vtableAssignments.Add (CSAssignment.Assign (String.Format ("{0}.{1}",
-										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), recvr.Name));
+										 vtableName, OverrideBuilder.VTableEntryIdentifier (vtableEntryIndex)), CSUnaryExpression.AddressOf (recvr.Name)));
 			return wrapperProp;
 		}
 
@@ -2770,14 +2770,31 @@ namespace SwiftReflector {
 		{
 			var decl = TLFCompiler.CompileToDelegateDeclaration (func, use, null, "Del" + entryID,
 			                                                     true, CSVisibility.Public, isProtocol);
-			var field = new CSFieldDeclaration (new CSSimpleType (decl.Name.Name), entryID, null, CSVisibility.Public);
+			var unmanagedFunctionPtrType = RecastDelegateDeclAsFunctionPtr (decl);
+
+			var field = new CSFieldDeclaration (unmanagedFunctionPtrType, new CSIdentifier (entryID), null, CSVisibility.Public, isStatic: false, isReadOnly: false, isUnsafe: true);
 			CSAttribute.MarshalAsFunctionPointer ().AttachBefore (field);
 			vtable.Fields.Add (new CSLine (field));
 			return decl;
 		}
 
+		CSSimpleType RecastDelegateDeclAsFunctionPtr (CSDelegateTypeDecl decl)
+		{
+			// given a type in the form:
+			// unsafe delegate returnType DelFunc(Arg1 arg1 ...)
+			// Turn it into
+			// delegate *unmanaged<Arg1..., returnType> ();
+			var types = new CSType [decl.Parameters.Count + 1];
+			for (int i = 0; i < decl.Parameters.Count; i++) {
+				types [i] = decl.Parameters [i].CSType;
+			}
+			types [types.Length - 1] = decl.Type;
+			var declType = new CSSimpleType ("unsafe delegate *unmanaged", false, types);
+			return declType;
+		}
+
 		void ImplementVTableInitializer (CSClass cl, CSClass picl, List<string> usedPinvokeNames, ClassDeclaration classDecl,
-		                                 List<CSLine> vtableAssignments, WrappingResult wrapper, string vtableName,
+		                                 List<CSLine> vtableAssignments, WrappingResult wrapper, CSSimpleType vtableType, string vtableName,
 		                                 string swiftLibraryPath)
 		{
 			if (vtableAssignments.Count == 0)
@@ -2807,32 +2824,26 @@ namespace SwiftReflector {
 
 			var setVTable = new CSMethod (CSVisibility.None, CSMethodKind.Static,
 						   CSSimpleType.Void, new CSIdentifier ("XamSetVTable"), new CSParameterList (), new CSCodeBlock ());
-			setVTable.Body.AddRange (vtableAssignments);
-
 			// unsafe {
-			//   vtData = stackalloc byte[Marshal.SizeOf(Monty_xam_vtable)];
-			//   vtPtr = new IntPtr(vtPtrData);
-			// this repeats n time.
-			//   Marshal.WriteIntPtr(vtPtr + (IntPtr.Size * n), Marshal.GetFunctionPointerForDelegate(vtableName.funcn));
-			//   Pinvokes.SwiftXamSetVTable(vPtr [, StructMarshal.Marsahler.Metatypeof(gen0), StructMarshal.Marsahler.Metatypeof(gen0)...);
+			//  fixed (VTableType *v = &vtableName) {
+			//    SetVtable (new IntPtr (v));
+			//  }
 			// }
 
 			var vtName = new CSIdentifier (vtableName);
 			var unsafeBlock = new CSUnsafeCodeBlock (null);
-			var vtData = new CSIdentifier ("vtData");
-			var vtableSize = new CSFunctionCall ("Marshal.SizeOf", false, vtName);
-			var vtDataLine = CSVariableDeclaration.VarLine (CSSimpleType.ByteStar, vtData, CSArray1D.New (CSSimpleType.Byte, true, vtableSize));
-			unsafeBlock.Add (vtDataLine);
+			unsafeBlock.AddRange (vtableAssignments);
+			var vtablePtrName = new CSIdentifier ("vtData");
+
+			var fixedBody = new List<ICodeElement> ();
+			var fixedBlock = new CSFixedCodeBlock (vtableType.Star, vtablePtrName, CSUnaryExpression.AddressOf (vtName), fixedBody);
+			unsafeBlock.Add (fixedBlock);
 
 			var vtPtr = new CSIdentifier ("vtPtr");
 			var varLine = CSVariableDeclaration.VarLine (
 				CSSimpleType.IntPtr, vtPtr,
-				new CSFunctionCall ("IntPtr", true, vtData));
-			unsafeBlock.Add (varLine);
-
-			for (int i = 0; i < vtableAssignments.Count (); i++) {
-				unsafeBlock.Add (CallToWriteIntPtr (vtPtr, i, vtableAssignments [i]));
-			}
+				new CSFunctionCall ("IntPtr", true, vtablePtrName));
+			fixedBlock.Add (varLine);
 
 			var args = new List<CSBaseExpression> ();
 			args.Add (vtPtr);
@@ -2844,23 +2855,12 @@ namespace SwiftReflector {
 				}
 			}
 
-			unsafeBlock.Add (CSFunctionCall.FunctionCallLine (String.Format ("{0}.{1}",
+			fixedBlock.Add (CSFunctionCall.FunctionCallLine (String.Format ("{0}.{1}",
 										    picl.Name.Name, "SwiftXamSetVtable"), false, args.ToArray ()));
 
 			setVTable.Body.Add (unsafeBlock);
 
 			cl.Methods.Add (setVTable);
-		}
-
-		static CSLine CallToWriteIntPtr (CSIdentifier vtPtrName, int index, CSLine assignLine)
-		{
-			var assign = assignLine.Contents as CSAssignment;
-			if ((object)assign == null)
-				throw new ArgumentException ($"Expecting an Assignment, but got {assignLine.Contents.GetType ()}", nameof (assignLine));
-			var vtEl = assign.Target;
-			var getDel = new CSFunctionCall ("Marshal.GetFunctionPointerForDelegate", false, vtEl);
-			var ptrExp = index == 0 ? vtPtrName : vtPtrName + new CSParenthesisExpression (CSConstant.Val (index) * new CSIdentifier ("IntPtr.Size"));
-			return CSFunctionCall.FunctionCallLine ("Marshal.WriteIntPtr", false, ptrExp, getDel);
 		}
 
 		CSLine CallToSetVTable ()
@@ -2957,7 +2957,11 @@ namespace SwiftReflector {
 
 			var body = new CSCodeBlock (bodyContents);
 
-			var recvr = new CSMethod (CSVisibility.None, CSMethodKind.Static, delType.Type,
+			var methodKind = CSMethodKind.Static;
+			if (delType.IsUnsafe)
+				methodKind = CSMethodKind.StaticUnsafe;
+			
+			var recvr = new CSMethod (CSVisibility.None, methodKind, delType.Type,
 			                          new CSIdentifier ("xamVtable_recv_" + publicMethod.Name.Name + homonymSuffix),
 										      pl, body);
 

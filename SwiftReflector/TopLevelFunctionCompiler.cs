@@ -148,6 +148,7 @@ namespace SwiftReflector {
 			RemapSwiftClosureRepresensation (args);
 			var returnType = returnIsGeneric || returnIsSelf ? null : typeMap.MapType (func, func.ReturnTypeSpec, objectsAreIntPtrs, true);
 			delegateName = delegateName ?? typeMap.SanitizeIdentifier (func.Name);
+			var isUnsafe = false;
 
 			args.ForEach (a => AddUsingBlock (packs, a.Type));
 
@@ -172,7 +173,8 @@ namespace SwiftReflector {
 
 			if (isSwiftProtocol) {
 				packs.AddIfNotPresent (typeof (SwiftExistentialContainer1));
-				csParams.Insert (0, new CSParameter (new CSSimpleType (typeof (SwiftExistentialContainer1)), new CSIdentifier ("self"), CSParameterKind.Ref));
+				csParams.Insert (0, new CSParameter (new CSSimpleType (typeof (SwiftExistentialContainer1)).Star, new CSIdentifier ("self"), CSParameterKind.None));
+				isUnsafe = true;
 			} else {
 				csParams.Insert (0, new CSParameter (CSSimpleType.IntPtr, new CSIdentifier ("self")));
 			}
@@ -205,7 +207,7 @@ namespace SwiftReflector {
 				}
 			}
 
-			return new CSDelegateTypeDecl (vis, csReturnType, new CSIdentifier (delegateName), csParams);
+			return new CSDelegateTypeDecl (vis, csReturnType, new CSIdentifier (delegateName), csParams, isUnsafe);
 		}
 
 		public CSMethod CompileMethod (FunctionDeclaration func, CSUsingPackages packs, string libraryPath,
