@@ -83,14 +83,14 @@ The types in this hierarchy are meant to be immutable.
 
 ##  [Deprecated] Reflector
 
-_This module deprecated. Swiftmodule parser is used instead._
+_This component is deprecated. Swiftmodule parser is used instead._
 
 The reflector is a modified version of the swift compiler that consumes swift libraries and writes out an XML representation of the public facing API. This is necessary in order to capture all the details and information associated with an API. The swift compiler provides a visitor pattern that allows virtual methods to get called for each of the nodes in the parse tree of the module. Based on this we can output XML depending on the node that we’re in.
 
 
 ## [Deprecated] SwiftXmlReflection
 
-_This module deprecated. Swiftmodule parser is used instead._
+_This component is deprecated. Swiftmodule parser is used instead._
 
 This hierarchy is very similar to `SwiftType`, but has methods/properties to represent information that isn’t present in the mangled signatures. In addition, there is another type thrown in called `TypeSpec`. When swift generates type information for a given return value or parameter type, it uses a little language to represent the type. There are roughly 4 types that are represented in this: named types, tuples, closures, and protocol lists. The little language encodes all of this. `TypeSpecParser` is a simple recursive descent parser that consumes the little language and generates one of the `TypeSpec` types representing it.
 
