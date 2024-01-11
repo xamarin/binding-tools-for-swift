@@ -1503,7 +1503,7 @@ public func reportIt (a: EasyToRepresent) -> Bool {
 				typeof (ArgumentNullException), errID.Name, CSCodeBlock.Create (printer));
 			var callingCode = CSCodeBlock.Create (tryCatch);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Here.Value cannot be null.\nParameter name: a\n");
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Here.Value cannot be null. (Parameter 'a')\n");
 		}
 
 		[Test]
