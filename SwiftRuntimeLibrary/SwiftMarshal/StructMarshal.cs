@@ -1819,7 +1819,8 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		static IntPtr MarshalScalarToSwift (Type fieldType, object value, IntPtr swiftDestinationMemory)
 		{
 			// see https://msdn.microsoft.com/en-us/library/system.type.isprimitive.aspx
-			switch (Type.GetTypeCode (fieldType)) {
+			var typeCode = Type.GetTypeCode (fieldType);
+			switch (typeCode) {
 			case TypeCode.Boolean:
 				Write ((bool)value ? (byte)1 : (byte)0, swiftDestinationMemory);
 				break;
@@ -1859,8 +1860,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			default:
 				if (fieldType == typeof (IntPtr) || fieldType == typeof (UIntPtr)) {
 					Marshal.StructureToPtr (value, swiftDestinationMemory, false);
+				} else {
+					throw new SwiftRuntimeException ($"Illegal type code {Enum.GetName (typeof (TypeCode), typeCode)} for {value} (value Type: {value.GetType ().Name}, fieldType {fieldType.Name})");
 				}
-				throw new SwiftRuntimeException ("Illegal type code " + Type.GetTypeCode (fieldType));
+				break;
 			}
 			return swiftDestinationMemory;
 		}
