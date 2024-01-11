@@ -15,7 +15,6 @@ namespace SwiftRuntimeLibrary {
 			//Console.WriteLine ($"Constructed SwiftClosureRepresentation with data {data.ToString ("X8")}");
 #endif
 		}
-		[MarshalAs (UnmanagedType.FunctionPtr)]
 		public unsafe void *Function;
 		public IntPtr Data;
 
