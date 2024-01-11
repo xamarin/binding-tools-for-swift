@@ -25,7 +25,7 @@ The flow generally goes like this:
 4. Inventory/ModuleDeclarations → OverrideBuilder → wrapper source (.swift)
 5. wrapper source (.swift) → WrappingCompiler → wrapper library (.dylib)
 6. wrapper library (.dylib) → Demangler → wrapper Inventory
-7. wrapper .swiftmodule/library → Reflector → wrapper ModuleDeclaration(s)
+7. wrapper .swiftmodule/library → Swiftmodule parser → wrapper ModuleDeclaration(s)
 8. (ModuleDeclarations, Inventory, wrapper ModuleDeclarations, wrapper Inventory) → NewClassCompiler → C# binding
 
 The flow starts with the source Swift library, which is processed by the Demangler to generate `TLDefinition` objects. Then, the `Swiftmodule parser` aggregates the public API from `.swiftmodule` file and generates a module declaration. Both the `TLDefinition` objects and module declaration are then used as inputs for two distinct components: the `WrappingCompiler` and `OverrideBuilder`. These components generate Swift wrappers source code. The wrappers source code is subsequently processed again by the `Demangler` and `Swiftmodule parser` leading to the generation of wrapper library `TLDefinition` objects and its module declaration. Finally, `TLDefinition` and module declarations, both for the source Swift library and Swift wrappers, are consumed by the `NewClassCompiler` to generate C# bindings.
@@ -81,12 +81,16 @@ The types in this hierarchy are meant to be immutable.
  In order to interoperate with ObjC bindings generated for Xamarin.iOS/mac/tvos/watchos, we need a way to map swift types to existing C# bindings. In order to do this, we rip through all the C# types and build up type database entries from them.
  
 
-##  Reflector
+##  [Deprecated] Reflector
+
+_This module deprecated. Swiftmodule parser is used instead._
 
 The reflector is a modified version of the swift compiler that consumes swift libraries and writes out an XML representation of the public facing API. This is necessary in order to capture all the details and information associated with an API. The swift compiler provides a visitor pattern that allows virtual methods to get called for each of the nodes in the parse tree of the module. Based on this we can output XML depending on the node that we’re in.
 
 
-## SwiftXmlReflection
+## [Deprecated] SwiftXmlReflection
+
+_This module deprecated. Swiftmodule parser is used instead._
 
 This hierarchy is very similar to `SwiftType`, but has methods/properties to represent information that isn’t present in the mangled signatures. In addition, there is another type thrown in called `TypeSpec`. When swift generates type information for a given return value or parameter type, it uses a little language to represent the type. There are roughly 4 types that are represented in this: named types, tuples, closures, and protocol lists. The little language encodes all of this. `TypeSpecParser` is a simple recursive descent parser that consumes the little language and generates one of the `TypeSpec` types representing it.
 
