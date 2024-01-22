@@ -14,6 +14,7 @@ using SwiftReflector.IOUtils;
 using Xamarin.Utils;
 using System.Text.RegularExpressions;
 using NUnit.Framework.Legacy;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 
 [assembly: Parallelizable]
 
@@ -96,9 +97,6 @@ namespace tomwiftytest {
 
 			var dlopen = CSMethod.PrivatePInvoke (CSSimpleType.IntPtr, "dlopen", "/usr/lib/libSystem.dylib", "dlopen", parms);
 			cl.Methods.Add (dlopen);
-
-			var appID = new CSIdentifier ("Application");
-			cl.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (typeof (Type)), appID, null, CSVisibility.None, true));
 
 			// NSApplication.Init ();
 			var body = CSCodeBlock.Create (CSFunctionCall.FunctionCallLine ("AppKit.NSApplication.Init", false));
@@ -225,7 +223,7 @@ namespace tomwiftytest {
 
 			CSLine pathLine = CSVariableDeclaration.VarLine (CSSimpleType.String, pathID,
 								    new CSFunctionCall ("Path.Combine", false,
-										     new CSArray1D (urlID.Name, CSConstant.Val (0)).Dot (new CSIdentifier ("Path")),
+										     new CSArray1D (urlID.Name, CSConstant.Val (0)).Dot (new CSIdentifier ("Path!")),
 										     CSConstant.Val (fileName)));
 			block.Add (pathLine);
 			block.Add (new CSIdentifier ("\n#endif\n"));
@@ -508,7 +506,7 @@ func print(_ value:String) {
 			return @"
 #if !DEVICETESTS
 public static class Console {
-	static string filename;
+	static string filename = """";
 	static string Filename {
 		get {
 			if (filename == null)
@@ -526,7 +524,7 @@ public static class Console {
 		}
 	}
 
-	public static void Write (object value)
+	public static void Write (object? value)
 	{
 		write (value?.ToString ());
 	}
@@ -553,7 +551,7 @@ public static class Console {
 			var cs = new CSNamespace ();
 
 			var console = new CSClass (CSVisibility.Public, "Console", isStatic: true);
-			console.Fields.Add (CSFieldDeclaration.FieldLine (CSSimpleType.String, new CSIdentifier ("filename"), isStatic: true));
+			console.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType ("string?"), new CSIdentifier ("filename"), isStatic: true));
 			console.Properties.Add (
 				new CSProperty (
 					CSSimpleType.String,
@@ -618,7 +616,7 @@ public static class Console {
 						CSFunctionCall.FunctionCallLine (
 							"write",
 							false,
-							new CSInject ("value?.ToString ()")
+							new CSInject ("value.ToString () ?? \"\"")
 						)
 					)
 				)
@@ -687,66 +685,10 @@ public static class Console {
 		{
 			switch (platform) {
 			case PlatformName.macOS: {
-					// for macOS we create an app bundle with mmp
-					var name = Path.GetFileNameWithoutExtension (executable);
-					var mmp = new StringBuilder ();
-
-					mmp.AppendLine ($"/cache:{StringUtils.Quote (Path.Combine (workingDirectory, "mmp-cache"))}");
-					mmp.AppendLine ($"/root-assembly:{StringUtils.Quote (Path.Combine (workingDirectory, executable))}");
-					mmp.AppendLine ($"/sdkroot:/Applications/Xcode.app");
-					mmp.AppendLine ($"/profile:Xamarin.Mac,v2.0,Profile=Mobile");
-					mmp.AppendLine ($"/arch:x86_64");
-					mmp.AppendLine ($"/assembly:{StringUtils.Quote (Path.Combine (ConstructorTests.kXamarinMacDir, "Xamarin.Mac.dll"))}");
-					mmp.AppendLine ($"/output:{StringUtils.Quote (Path.Combine (workingDirectory, name))}");
-					mmp.AppendLine ($"/assembly:{StringUtils.Quote (Path.Combine (ConstructorTests.kSwiftRuntimeMacOutputDirectory, ConstructorTests.kSwiftRuntimeLibraryMac))}.dll");
-					mmp.AppendLine ($"/debug");
-					mmp.AppendLine ($"/linksdkonly"); // FIXME: link all doesn't work for all tests, this needs looking into.
-					mmp.AppendLine ($"/native-reference:{StringUtils.Quote (Compiler.kSwiftRuntimeGlueDirectory)}"); // link with XamGlue.framework
-					foreach (var dylib in Directory.GetFiles (workingDirectory, "*.dylib")) // Link with any dylibs produced by the test 
-						mmp.AppendLine ($"/native-reference:{StringUtils.Quote (dylib)}");
-					mmp.AppendLine ($"/v /v /v /v");
-
 					var output = new StringBuilder ();
-					var responseFile = Path.Combine (workingDirectory, name + ".rsp");
-					File.WriteAllText (responseFile, mmp.ToString ());
-					// The test environment is coming is with PKG_CONFIG_LIBDIR=""
-					// which causes macOS tests to fail. This removes the environment
-					// variable and lets the tests pass.
-					var env = new Dictionary<string, string> () {
-						{ "PKG_CONFIG_LIBDIR", null }
-					};
-					var rv = ExecAndCollect.RunCommand ("/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/bin/mmp", "--link_flags=-headerpad_max_install_names " + StringUtils.Quote ($"@{responseFile}"),
-						env: env, output: output, verbose: true);
-					if (rv != 0) {
-						Console.WriteLine (output);
-						throw new Exception ($"Failed to run mmp, exit code: {rv}");
-					}
-
-					// This should probably go into mmp/mtouch
-					// run swift-stdlib-tool to get swift libraries into the app.
-					var appPath = Path.Combine (workingDirectory, name, name + ".app");
+					var name = Path.GetFileNameWithoutExtension (executable);
+					var appPath = Path.Combine (workingDirectory, name, $"bin/Debug/net{Compiler.kframeWorkVersion}-macos/osx-x64/{name}.app");
 					var appExecutable = Path.Combine (appPath, "Contents", "MacOS", name);
-					var swift_stdlib_tool = new StringBuilder ();
-					swift_stdlib_tool.Append ($"swift-stdlib-tool ");
-					swift_stdlib_tool.Append ($"--copy ");
-					swift_stdlib_tool.Append ($"--verbose ");
-					swift_stdlib_tool.Append ($"--scan-executable {StringUtils.Quote (appExecutable)} ");
-					swift_stdlib_tool.Append ($"--platform macosx ");
-					swift_stdlib_tool.Append ($"--destination {StringUtils.Quote (Path.Combine (appPath, "Contents", "Frameworks"))} ");
-					swift_stdlib_tool.Append ($"--strip-bitcode ");
-					swift_stdlib_tool.Append ($"--scan-folder {StringUtils.Quote (Path.Combine (appPath, "Contents", "MonoBundle"))} ");
-					swift_stdlib_tool.Append ($"--scan-folder {StringUtils.Quote (Path.Combine (appPath, "Contents", "Frameworks"))} ");
-					swift_stdlib_tool.Append ($"--platform macosx ");
-					swift_stdlib_tool.Append ($"--source-libraries {StringUtils.Quote (Compiler.SystemCompilerLocation.SwiftCompilerLib)} ");
-					output.Clear ();
-					rv = ExecAndCollect.RunCommand ("xcrun", swift_stdlib_tool.ToString (), output: output, verbose: true);
-					if (rv != 0) {
-						Console.WriteLine (output);
-						throw new Exception ($"Failed to run swift-stdlib-tool, exit code: {rv}\n{output}\n");
-					}
-
-					// This should probably go into mmp/mtouch
-					// make sure the executable has the Frameworks and MonoBundle directories as rpaths.
 					var install_name_tool = new StringBuilder ();
 					install_name_tool.Append ($"install_name_tool ");
 					install_name_tool.Append ($"-add_rpath @executable_path/../Frameworks ");
@@ -755,7 +697,7 @@ public static class Console {
 					install_name_tool.Append ($"-change XamGlue @rpath/XamGlue ");
 					install_name_tool.Append ($"{StringUtils.Quote (Path.Combine (appPath, "Contents", "MacOS", name))} ");
 					output.Clear ();
-					rv = ExecAndCollect.RunCommand ("xcrun", install_name_tool.ToString (), output: output, verbose: true);
+					var rv = ExecAndCollect.RunCommand ("xcrun", install_name_tool.ToString (), output: output, verbose: true);
 					if (rv != 0) {
 						Console.WriteLine (output);
 						throw new Exception ($"Failed to run install_name_tool, exit code: {rv}\n{output}\n");
@@ -763,8 +705,13 @@ public static class Console {
 
 					var exec_output = new StringBuilder ();
 					var exec_env = new Dictionary<string, string> ();
-					//exec_env.Add ("MONO_LOG_LEVEL", "debug");
-					//exec_env.Add ("MONO_LOG_MASK", "dll");
+
+					// probably need links to runtime libraries and swift glue
+					exec_env.Add ("DYLD_LIBRARY_PATH", Compiler.AddOrAppendPathTo (exec_env, "DYLD_LIBRARY_PATH", Compiler.kSystemLib));
+					Compiler.RunCommandWithLeaks ("otool", new StringBuilder ($"-L {appExecutable} "), exec_env, exec_output);
+					Console.WriteLine (exec_output);
+					exec_output = new StringBuilder ();
+
 					var exec_rv = Compiler.RunCommandWithLeaks (appExecutable, new StringBuilder (), exec_env, exec_output);
 					if (exec_rv != 0) {
 						Console.WriteLine (exec_output);
@@ -784,10 +731,10 @@ public static class Console {
 		}
 
 		static string [] testMacRuntimeAssemblies = {
-			Path.Combine (ConstructorTests.kXamarinMacDir, "Xamarin.Mac.dll"),
+			
 		};
 		static string [] testiOSRuntimeAssemblies = {
-			Path.Combine (ConstructorTests.kXamariniOSDir, "Xamarin.iOS.dll"),
+			
 		};
 		static string [] testnoneRuntimeAssemblies = {
 			Path.Combine (ConstructorTests.kSwiftRuntimeOutputDirectory, $"{ConstructorTests.kSwiftRuntimeLibrary}.dll"),
@@ -833,6 +780,8 @@ public static class Console {
 			// that generate them. Removing them all is not a small task at this
 			// point.
 			capturedMatches.Remove ("warning CS0219:");
+			// CS8632
+			capturedMatches.Remove ("warning CS8632:");
 			if (capturedMatches.Count > 0)
 				ClassicAssert.Fail ($"Unexpected C# compiler warning(s): {warnings}");
 		}

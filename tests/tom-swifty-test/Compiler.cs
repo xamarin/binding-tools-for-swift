@@ -31,6 +31,7 @@ namespace tomwiftytest {
 		// Enviroment var that can be used to test binding-tools-for-swift from a package
 		static string SOM_PATH = Environment.GetEnvironmentVariable ("SOM_PATH");
 		public static string kframeWorkVersion = "7.0";
+		public static string kswiftVersion = "5.5";
 #if DEBUG
 		public const string kSwiftRuntimeGlueDirectoryRel = "../../../../../swiftglue/bin/Debug/mac/FinalProduct/XamGlue.framework";
 		public const string kSwiftRuntimeSourceDirectoryRel = "../../../../../swiftglue/";
@@ -41,7 +42,7 @@ namespace tomwiftytest {
 		public static string kXamGlueSourceDirectory = PosixHelpers.RealPath (SOM_PATH ?? Path.Combine (GetTestDirectory (), kSwiftRuntimeSourceDirectoryRel));
 
 		static string kSystemBin = "/usr/bin/";
-		static string kSystemLib = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx";
+		public const string kSystemLib = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx";
 
 		[ThreadStatic]
 		static SwiftCompilerLocation systemCompilerLocation;
@@ -62,6 +63,8 @@ namespace tomwiftytest {
 #else
 		public static string kTomSwiftyPath = PosixHelpers.RealPath (SOM_PATH is null ? Path.Combine (GetTestDirectory (), "../../../../tom-swifty/bin/Release/tom-swifty.exe") : FindPathFromEnvVariable ("lib/binding-tools-for-swift/tom-swifty.exe"));
 #endif
+		public static string kMacProjPath = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "../../../../../SwiftRuntimeLibrary.Mac/SwiftRuntimeLibrary.Mac.csproj"));
+		public static string kiOSProjPath = PosixHelpers.RealPath (Path.Combine (GetTestDirectory (), "../../../../../SwiftRuntimeLibrary.iOS/SwiftRuntimeLibrary.iOS.csproj"));
 		static string [] compilers = new string [] {
 			"clang -x c", "clang -x c++", "clang -x objective-c", "swiftc", "mcs", "mcs", "swiftc", "swift"
 		};
@@ -155,9 +158,94 @@ namespace tomwiftytest {
 
 		public static string CSCompile (string workingDirectory, string [] sourceFiles, string outputFile, string extraOptions = "", PlatformName platform = PlatformName.None)
 		{
-			CreateRuntimeConfigJson (workingDirectory, outputFile);
-			var compilerArgs = BuildCSCompileArgs (sourceFiles, outputFile, extraOptions, platform);
-			return ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", $"exec {GetDotnetCSCompiler ()} {compilerArgs}", workingDirectory: workingDirectory ?? "");
+			if (platform != PlatformName.None) {
+				return PlatformBuild (workingDirectory, outputFile, platform);
+			} else {
+				CreateRuntimeConfigJson (workingDirectory, outputFile);
+				var compilerArgs = BuildCSCompileArgs (sourceFiles, outputFile, extraOptions, platform);
+				// ShowAllFiles (sourceFiles);
+				return ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", $"exec {GetDotnetCSCompiler ()} {compilerArgs}", workingDirectory: workingDirectory ?? "");
+			}
+		}
+
+		static string PlatformBuild (string workingDirectory, string outputfile, PlatformName platform)
+		{
+			// what happens here:
+			// make a new dotnet project for the specified platform (dotnet new ...)
+			// add a reference to the platform csproj to get runtime
+			// build the resulting project
+
+			var sb = new StringBuilder ();
+			var name = Path.GetFileNameWithoutExtension (outputfile);
+			var projectDirectory = Path.Combine (workingDirectory, name);
+			var dotnetPlatform = PlatformNameToDotnetPlatform (platform);
+			var result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", $"new {dotnetPlatform} --name {name}", workingDirectory);
+			sb.Append (result);
+			RemoveExistingCSFiles (projectDirectory);
+			CopySourceCSFiles (workingDirectory, projectDirectory);
+			var projectReference = PlatformNameToPlatformProject (platform);
+			if (!File.Exists (projectReference)) {
+				throw new Exception ("Unable to find project: " + projectReference);
+			}
+
+			// copy xamglue, project libraries and swiftlibraries to somewhere useful
+			// Maybe MonoBundle or make a Frameworks directory as well.
+
+			result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", $"add reference {projectReference}", projectDirectory);
+			sb.Append (result);
+			result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", "build", projectDirectory);
+			sb.Append (result);
+			result = sb.ToString ();
+
+			Console.WriteLine ("build output");
+			Console.WriteLine (result);
+
+			return result;
+		}
+
+		static void RemoveExistingCSFiles (string directory)
+		{
+			var files = Directory.GetFiles (directory, "*.cs");
+			foreach (var file in files) {
+				File.Delete (file);
+			}
+		}
+
+		static void CopySourceCSFiles (string source, string dest)
+		{
+			var files = Directory.GetFiles (source, "*.cs");
+			foreach (var file in files) {
+				File.Copy (file, Path.Combine (dest, Path.GetFileName (file)));
+			}
+		}
+
+		static string PlatformNameToPlatformProject (PlatformName platform)
+		{
+			switch (platform)
+			{
+			case PlatformName.macOS:
+				return kMacProjPath;
+			case PlatformName.iOS:
+				return kiOSProjPath;
+			default:
+				throw new ArgumentOutOfRangeException (nameof (platform), $"unknown platform {platform}");
+			}
+		}
+
+		static string PlatformNameToDotnetPlatform (PlatformName platform)
+		{
+			switch (platform) {
+			case PlatformName.macOS:
+				return "macos";
+			case PlatformName.iOS:
+				return "ios";
+			case PlatformName.tvOS:
+				return "tvos";
+			case PlatformName.watchOS:
+				return "watchos";
+			default:
+				throw new ArgumentOutOfRangeException (nameof (platform), $"unknown platform {platform}");
+			}
 		}
 
 		static void CreateRuntimeConfigJson (string workingDirectory, string outputFile)
@@ -620,7 +708,7 @@ namespace tomwiftytest {
 			return sb.ToString ();
 		}
 
-		static string AddOrAppendPathTo (System.Collections.IDictionary sd, string key, string value)
+		public static string AddOrAppendPathTo (System.Collections.IDictionary sd, string key, string value)
 		{
 			if (sd.Contains (key)) {
 				return String.Format ("{0}:{1}", sd [key], value);
