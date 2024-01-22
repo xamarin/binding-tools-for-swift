@@ -780,7 +780,7 @@ public static class Console {
 			// that generate them. Removing them all is not a small task at this
 			// point.
 			capturedMatches.Remove ("warning CS0219:");
-			// CS8632
+			// CS8632 is a nullable warning in the main. NBD.
 			capturedMatches.Remove ("warning CS8632:");
 			if (capturedMatches.Count > 0)
 				ClassicAssert.Fail ($"Unexpected C# compiler warning(s): {warnings}");
