@@ -121,7 +121,4 @@
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="TypeMetadataSet.cs" />
-  </ItemGroup>
 </Project>
