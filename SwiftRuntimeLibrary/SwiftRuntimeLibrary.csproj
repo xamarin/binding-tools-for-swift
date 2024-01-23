@@ -30,9 +30,6 @@
       <Link>SymbolicatorInfoAttribute.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SwiftMarshal\" />
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

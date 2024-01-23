@@ -14,12 +14,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="SwiftMarshal\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SwiftMarshal\" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\SwiftRuntimeLibrary\SwiftMarshal\StructMarshal.cs">
       <Link>SwiftMarshal\StructMarshal.cs</Link>
     </Compile>
