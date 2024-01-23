@@ -6,12 +6,6 @@
     <RootNamespace>swiftcopylibs</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Platforms>x86;AnyCPU</Platforms>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ExternalConsole>true</ExternalConsole>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <ItemGroup>
