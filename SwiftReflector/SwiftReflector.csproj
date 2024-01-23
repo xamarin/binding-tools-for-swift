@@ -5,32 +5,17 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG; SWIFT4;BINDING_TOOLS_FOR_SWIFT</DefineConstants>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>
     </DebugType>
-    <OutputPath>bin\Release</OutputPath>
     <DefineConstants>SWIFT4;BINDING_TOOLS_FOR_SWIFT</DefineConstants>
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Posix" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="..\..\common\MachO.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IOUtils\" />
-    <Folder Include="ExceptionTools\" />
-    <Folder Include="SwiftXmlReflection\" />
-    <Folder Include="Inventory\" />
-    <Folder Include="TypeMapping\" />
-    <Folder Include="Demangling\" />
-    <Folder Include="Importing\" />
-    <Folder Include="SwiftInterfaceReflector\" />
   </ItemGroup>
   <Target Name="GeneratedCSParser" BeforeTargets="CoreCompile" Inputs="$(MSBuildProjectFullPath)" Outputs="SwiftInterfaceReflector\GeneratedParser\SwuftUnterfaceBaseListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceLexer.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceListener.cs;SwiftInterfaceReflector\GeneratedParser\SwiftInterfaceParser.cs">
     <Exec Command="make" WorkingDirectory="../swiftinterfaceparser" />
@@ -42,9 +27,6 @@
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.1" />
     <PackageReference Include="Mono.Cecil" Version="0.10.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="SwiftTypeAttribute.cs" />
   </ItemGroup>
   <Target Name="BeforeBuild" Inputs="$(MSBuildProjectFullPath)" Outputs="Downloaded\StringUtils.cs">
     <Exec Command="mkdir -p Downloaded" />
