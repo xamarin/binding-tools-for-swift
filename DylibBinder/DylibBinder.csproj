@@ -6,7 +6,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Platforms>x86;AnyCPU</Platforms>
     <ExternalConsole>true</ExternalConsole>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Dynamo\Dynamo.csproj" />
