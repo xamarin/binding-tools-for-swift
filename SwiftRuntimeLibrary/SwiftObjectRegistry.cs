@@ -431,7 +431,7 @@ namespace SwiftRuntimeLibrary {
 		Dictionary<SwiftDotNetCapsule, Tuple<Delegate, Type [], Type>> registeredClosures =
 				new Dictionary<SwiftDotNetCapsule, Tuple<Delegate, Type [], Type>> ();
 
-		public SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, Action<IntPtr, IntPtr> action, Type [] argumentTypes)
+		public unsafe SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, delegate *unmanaged<IntPtr, IntPtr, void> action, Type [] argumentTypes)
 		{
 			lock (registryLock) {
 				var capsule = new SwiftDotNetCapsule (IntPtr.Zero);
@@ -441,7 +441,7 @@ namespace SwiftRuntimeLibrary {
 			}
 		}
 
-		public SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, Action<IntPtr> action, Type [] argumentTypes)
+		public unsafe SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, delegate *unmanaged<IntPtr, void> action, Type [] argumentTypes)
 		{
 			lock (registryLock) {
 				var capsule = new SwiftDotNetCapsule (IntPtr.Zero);
@@ -451,7 +451,7 @@ namespace SwiftRuntimeLibrary {
 			}
 		}
 
-		public SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, Action<IntPtr, IntPtr> action, Type [] argumentTypes, Type returnType)
+		public unsafe SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, delegate *unmanaged <IntPtr, IntPtr, void> action, Type [] argumentTypes, Type returnType)
 		{
 			lock (registryLock) {
 				var capsule = new SwiftDotNetCapsule (IntPtr.Zero);
@@ -470,7 +470,7 @@ namespace SwiftRuntimeLibrary {
 		}
 
 
-		public SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, Action<IntPtr, IntPtr, IntPtr> action, Type [] argumentTypes, Type returnType)
+		public unsafe SwiftClosureRepresentation SwiftClosureForDelegate (Delegate d, delegate *unmanaged <IntPtr, IntPtr, IntPtr, void> action, Type [] argumentTypes, Type returnType)
 		{
 			lock (registryLock) {
 				var capsule = new SwiftDotNetCapsule (IntPtr.Zero);

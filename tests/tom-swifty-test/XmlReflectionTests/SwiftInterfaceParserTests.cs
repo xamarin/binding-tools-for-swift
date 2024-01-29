@@ -13,6 +13,7 @@ using SwiftReflector.SwiftInterfaceReflector;
 using SwiftReflector.TypeMapping;
 using tomwiftytest;
 using System.Text;
+using NUnit.Framework.Legacy;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -44,7 +45,7 @@ namespace XmlReflectionTests {
 			var files = Directory.GetFiles (compiler.DirectoryPath);
 			var file = files.FirstOrDefault (name => name.EndsWith (".swiftinterface", StringComparison.Ordinal));
 			if (file == null)
-				Assert.Fail ("no swiftinterface file");
+				ClassicAssert.Fail ("no swiftinterface file");
 			reflector = new SwiftInterfaceReflector (typeDatabase, new NoLoadLoader ());
 			return reflector.Reflect (file);
 		}
@@ -69,12 +70,12 @@ public func hello ()
 
 			var importModules = reflector.ImportModules;
 			if (importModules.Count == 3) {
-				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no _Concurrency import");
-				Assert.IsTrue (importModules.Contains ("_StringProcessing"), "no _StringProcessing import");
+				ClassicAssert.IsTrue (importModules.Contains ("_Concurrency"), "no _Concurrency import");
+				ClassicAssert.IsTrue (importModules.Contains ("_StringProcessing"), "no _StringProcessing import");
 			} else if (importModules.Count > 3) {
-				Assert.Fail ($"Expected 3 swift modules, but got {importModules.Count}: {AllImportModules (importModules)}");
+				ClassicAssert.Fail ($"Expected 3 swift modules, but got {importModules.Count}: {AllImportModules (importModules)}");
 			}
-			Assert.IsTrue (importModules.Contains ("Swift"), "no Swift import");
+			ClassicAssert.IsTrue (importModules.Contains ("Swift"), "no Swift import");
 		}
 
 		static string AllImportModules (List<string> importModules)
@@ -99,20 +100,20 @@ public func hello ()
 
 			var importModules = reflector.ImportModules;
 			if (importModules.Count == 4) {
-				Assert.IsTrue (importModules.Contains ("_Concurrency"), "no _Concurrency import");
-				Assert.IsTrue (importModules.Contains ("_StringProcessing"), "no _StringProcessing import");
+				ClassicAssert.IsTrue (importModules.Contains ("_Concurrency"), "no _Concurrency import");
+				ClassicAssert.IsTrue (importModules.Contains ("_StringProcessing"), "no _StringProcessing import");
 			} else if (importModules.Count > 4) {
-				Assert.Fail ($"Expected 3 swift modules, but got {importModules.Count}: {AllImportModules (importModules)}");
+				ClassicAssert.Fail ($"Expected 3 swift modules, but got {importModules.Count}: {AllImportModules (importModules)}");
 			}
-			Assert.IsTrue (importModules.Contains ("Swift"), "no Swift import");
-			Assert.IsTrue (importModules.Contains ("Foundation"), "no Foundation import");
+			ClassicAssert.IsTrue (importModules.Contains ("Swift"), "no Swift import");
+			ClassicAssert.IsTrue (importModules.Contains ("Foundation"), "no Foundation import");
 		}
 
 		[Test]
 		public void TypeDatabaseHasOperators ()
 		{
 			var operators = typeDatabase.OperatorsForModule ("Swift");
-			Assert.Less (0, operators.Count (), "no operators");
+			ClassicAssert.Less (0, operators.Count (), "no operators");
 		}
 
 		[Test]
@@ -132,18 +133,18 @@ public class Imag {
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
 
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Imag");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
-			Assert.AreEqual (2, cl.AllProperties ().Count, "wrong property count");
+			ClassicAssert.AreEqual (2, cl.AllProperties ().Count, "wrong property count");
 
 			var fn = cl.Members.FirstOrDefault (m => m.Name == "==") as FunctionDeclaration;
-			Assert.IsNotNull (fn, "no function");
+			ClassicAssert.IsNotNull (fn, "no function");
 
-			Assert.IsTrue (fn.IsOperator, "not an operator");
-			Assert.AreEqual (OperatorType.Infix, fn.OperatorType, "wrong operator type");
+			ClassicAssert.IsTrue (fn.IsOperator, "not an operator");
+			ClassicAssert.AreEqual (OperatorType.Infix, fn.OperatorType, "wrong operator type");
 		}
 
 		[Test]
@@ -162,18 +163,18 @@ public class Imag {
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
 
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Imag");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
-			Assert.AreEqual (2, cl.AllProperties ().Count, "wrong property count");
+			ClassicAssert.AreEqual (2, cl.AllProperties ().Count, "wrong property count");
 
 			var fn = cl.Members.FirstOrDefault (m => m.Name == "*^*") as FunctionDeclaration;
-			Assert.IsNotNull (fn, "no function");
+			ClassicAssert.IsNotNull (fn, "no function");
 
-			Assert.IsTrue (fn.IsOperator, "not an operator");
-			Assert.AreEqual (OperatorType.Postfix, fn.OperatorType, "wrong operator type");
+			ClassicAssert.IsTrue (fn.IsOperator, "not an operator");
+			ClassicAssert.AreEqual (OperatorType.Postfix, fn.OperatorType, "wrong operator type");
 		}
 
 		[Test]
@@ -190,17 +191,17 @@ public extension Int {
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
 
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var ext = module.Extensions.FirstOrDefault ();
-			Assert.IsNotNull (ext, "no extensions");
+			ClassicAssert.IsNotNull (ext, "no extensions");
 			var extType = ext.ExtensionOnTypeName;
-			Assert.AreEqual ("Swift.Int", extType, "wrong type");
+			ClassicAssert.AreEqual ("Swift.Int", extType, "wrong type");
 			var extFunc = ext.Members [0] as FunctionDeclaration;
-			Assert.IsNotNull (extFunc, "no func");
-			Assert.AreEqual ("*^*", extFunc.Name, "wrong func name");
-			Assert.IsTrue (extFunc.IsOperator, "not an operator");
-			Assert.AreEqual (OperatorType.Postfix, extFunc.OperatorType, "wrong operator type");
+			ClassicAssert.IsNotNull (extFunc, "no func");
+			ClassicAssert.AreEqual ("*^*", extFunc.Name, "wrong func name");
+			ClassicAssert.IsTrue (extFunc.IsOperator, "not an operator");
+			ClassicAssert.AreEqual (OperatorType.Postfix, extFunc.OperatorType, "wrong operator type");
 		}
 
 
@@ -218,17 +219,17 @@ public extension Int {
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
 
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var ext = module.Extensions.FirstOrDefault ();
-			Assert.IsNotNull (ext, "no extensions");
+			ClassicAssert.IsNotNull (ext, "no extensions");
 			var extType = ext.ExtensionOnTypeName;
-			Assert.AreEqual ("Swift.Int", extType, "wrong type");
+			ClassicAssert.AreEqual ("Swift.Int", extType, "wrong type");
 			var extFunc = ext.Members [0] as FunctionDeclaration;
-			Assert.IsNotNull (extFunc, "no func");
-			Assert.AreEqual ("*^*", extFunc.Name, "wrong func name");
-			Assert.IsTrue (extFunc.IsOperator, "not an operator");
-			Assert.AreEqual (OperatorType.Infix, extFunc.OperatorType, "wrong operator type");
+			ClassicAssert.IsNotNull (extFunc, "no func");
+			ClassicAssert.AreEqual ("*^*", extFunc.Name, "wrong func name");
+			ClassicAssert.IsTrue (extFunc.IsOperator, "not an operator");
+			ClassicAssert.AreEqual (OperatorType.Infix, extFunc.OperatorType, "wrong operator type");
 		}
 
 		[Test]
@@ -246,13 +247,13 @@ public class Bar : Foo {
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
 
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.Where (c => c.Name == "Bar").FirstOrDefault ();
-			Assert.IsNotNull (cl, "no class");
-			Assert.AreEqual (1, cl.Inheritance.Count, "wrong amount of inheritance");
+			ClassicAssert.IsNotNull (cl, "no class");
+			ClassicAssert.AreEqual (1, cl.Inheritance.Count, "wrong amount of inheritance");
 			var inh = cl.Inheritance [0];
-			Assert.AreEqual (InheritanceKind.Class, inh.InheritanceKind, "wrong inheritance kind");
+			ClassicAssert.AreEqual (InheritanceKind.Class, inh.InheritanceKind, "wrong inheritance kind");
 		}
 
 		[Test]
@@ -272,15 +273,15 @@ public class Bar : Foo, Nifty {
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (m => m.Name == "SomeModule");
 
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.Where (c => c.Name == "Bar").FirstOrDefault ();
-			Assert.IsNotNull (cl, "no class");
-			Assert.AreEqual (2, cl.Inheritance.Count, "wrong amount of inheritance");
+			ClassicAssert.IsNotNull (cl, "no class");
+			ClassicAssert.AreEqual (2, cl.Inheritance.Count, "wrong amount of inheritance");
 			var inh = cl.Inheritance [0];
-			Assert.AreEqual (InheritanceKind.Class, inh.InheritanceKind, "wrong inheritance kind from class");
+			ClassicAssert.AreEqual (InheritanceKind.Class, inh.InheritanceKind, "wrong inheritance kind from class");
 			inh = cl.Inheritance [1];
-			Assert.AreEqual (InheritanceKind.Protocol, inh.InheritanceKind, "wrong inheritance kind from protocol");
+			ClassicAssert.AreEqual (InheritanceKind.Protocol, inh.InheritanceKind, "wrong inheritance kind from protocol");
 		}
 
 		[Test]
@@ -294,7 +295,7 @@ public class Bar {
 }
 ";
 			SwiftInterfaceReflector reflector;
-			Assert.Throws<ParseException> (() => ReflectToModules (swiftCode, "SomeModule", out reflector));
+			ClassicAssert.Throws<ParseException> (() => ReflectToModules (swiftCode, "SomeModule", out reflector));
 		}
 
 
@@ -311,18 +312,18 @@ public class Foo : NSObject {
 			var module = ReflectToXDocument (swiftCode, "SomeModule", out reflector);
 
 			var cl = module.Descendants ("typedeclaration").FirstOrDefault ();
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var clonlyattrs = cl.Element ("attributes");
-			Assert.IsNotNull (clonlyattrs, "no attributes on class");
+			ClassicAssert.IsNotNull (clonlyattrs, "no attributes on class");
 			var attribute = clonlyattrs.Descendants ("attribute")
 				.Where (el => el.Attribute ("name").Value == "objc").FirstOrDefault ();
-			Assert.IsNotNull (attribute, "no objc attribute");
+			ClassicAssert.IsNotNull (attribute, "no objc attribute");
 			var initializer = cl.Descendants ("func")
 				.Where (el => el.Attribute ("name").Value == ".ctor").FirstOrDefault ();
-			Assert.IsNotNull (initializer, "no initializer");
+			ClassicAssert.IsNotNull (initializer, "no initializer");
 			attribute = initializer.Descendants ("attribute")
 				.Where (el => el.Attribute ("name").Value == "objc").FirstOrDefault ();
-			Assert.IsNotNull (attribute, "no function attribute");
+			ClassicAssert.IsNotNull (attribute, "no function attribute");
 		}
 
 		[Test]
@@ -337,15 +338,15 @@ public class Foo : NSObject {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
-			Assert.AreEqual (2, cl.Attributes.Count, "wrong number of attributes");
+			ClassicAssert.AreEqual (2, cl.Attributes.Count, "wrong number of attributes");
 
 			var attr = cl.Attributes.FirstOrDefault (at => at.Name == "objc");
-			Assert.IsNotNull (attr, "no objc attribute");
+			ClassicAssert.IsNotNull (attr, "no objc attribute");
 		}
 
 
@@ -365,21 +366,21 @@ public class Foo : NSObject {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
-			Assert.IsNotNull (method, "no method");
+			ClassicAssert.IsNotNull (method, "no method");
 
-			Assert.AreEqual (1, method.Attributes.Count, "wrong number of attributes");
+			ClassicAssert.AreEqual (1, method.Attributes.Count, "wrong number of attributes");
 
 			var attr = method.Attributes.FirstOrDefault (at => at.Name == "objc");
-			Assert.IsNotNull (attr, "no objc attribute");
+			ClassicAssert.IsNotNull (attr, "no objc attribute");
 			var attrParam = attr.Parameters [0] as AttributeParameterLabel;
-			Assert.IsNotNull (attrParam, "not a label");
-			Assert.AreEqual (attrParam.Label, "narwhal", "wrong label");
+			ClassicAssert.IsNotNull (attrParam, "not a label");
+			ClassicAssert.AreEqual (attrParam.Label, "narwhal", "wrong label");
 		}
 
 		[Test]
@@ -399,27 +400,27 @@ public class Foo {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
-			Assert.IsNotNull (method, "no method");
+			ClassicAssert.IsNotNull (method, "no method");
 
-			Assert.AreEqual (1, method.Attributes.Count, "wrong number of attributes");
+			ClassicAssert.AreEqual (1, method.Attributes.Count, "wrong number of attributes");
 			var attr = method.Attributes [0];
-			Assert.AreEqual (attr.Name, "available");
-			Assert.AreEqual (3, attr.Parameters.Count, "wrong number of parameters");
+			ClassicAssert.AreEqual (attr.Name, "available");
+			ClassicAssert.AreEqual (3, attr.Parameters.Count, "wrong number of parameters");
 			var label = attr.Parameters [0] as AttributeParameterLabel;
-			Assert.IsNotNull (label, "not a label at 0");
-			Assert.AreEqual ("*", label.Label, "not a star");
+			ClassicAssert.IsNotNull (label, "not a label at 0");
+			ClassicAssert.AreEqual ("*", label.Label, "not a star");
 			label = attr.Parameters [1] as AttributeParameterLabel;
-			Assert.IsNotNull (label, "not a label at 1");
-			Assert.AreEqual (",", label.Label, "not a comma");
+			ClassicAssert.IsNotNull (label, "not a label at 1");
+			ClassicAssert.AreEqual (",", label.Label, "not a comma");
 			label = attr.Parameters [2] as AttributeParameterLabel;
-			Assert.IsNotNull (label, "not a label at 2");
-			Assert.AreEqual ("unavailable", label.Label, "not unavailable");
+			ClassicAssert.IsNotNull (label, "not a label at 2");
+			ClassicAssert.AreEqual ("unavailable", label.Label, "not unavailable");
 		}
 
 		[Test]
@@ -438,15 +439,15 @@ public class Foo : NSObject {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
-			Assert.IsNotNull (method, "no method");
+			ClassicAssert.IsNotNull (method, "no method");
 
-			Assert.AreEqual ("narwhal", method.ObjCSelector, "wrong selector");
+			ClassicAssert.AreEqual ("narwhal", method.ObjCSelector, "wrong selector");
 		}
 
 		[Test]
@@ -465,15 +466,15 @@ public class Foo : NSObject {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "DoSomething");
-			Assert.IsNotNull (method, "no method");
+			ClassicAssert.IsNotNull (method, "no method");
 
-			Assert.AreEqual ("DoSomething", method.ObjCSelector, "wrong selector");
+			ClassicAssert.AreEqual ("DoSomething", method.ObjCSelector, "wrong selector");
 		}
 
 
@@ -489,15 +490,15 @@ public class Foo : NSObject {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == ".dtor");
-			Assert.IsNotNull (method, "no method");
+			ClassicAssert.IsNotNull (method, "no method");
 
-			Assert.AreEqual ("dealloc", method.ObjCSelector, "wrong selector");
+			ClassicAssert.AreEqual ("dealloc", method.ObjCSelector, "wrong selector");
 		}
 
 		[Test]
@@ -516,25 +517,25 @@ public class Foo : NSObject {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "bar");
-			Assert.IsNotNull (method, "no method bar");
+			ClassicAssert.IsNotNull (method, "no method bar");
 
-			Assert.AreEqual ("barWithA:", method.ObjCSelector, "wrong bar selector");
+			ClassicAssert.AreEqual ("barWithA:", method.ObjCSelector, "wrong bar selector");
 
 			method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "foo");
-			Assert.IsNotNull (method, "no method foo");
+			ClassicAssert.IsNotNull (method, "no method foo");
 
-			Assert.AreEqual ("foo", method.ObjCSelector, "wrong foo selector");
+			ClassicAssert.AreEqual ("foo", method.ObjCSelector, "wrong foo selector");
 
 			method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "set");
-			Assert.IsNotNull (method, "no method set");
+			ClassicAssert.IsNotNull (method, "no method set");
 
-			Assert.AreEqual ("setAt:", method.ObjCSelector, "wrong set selector");
+			ClassicAssert.AreEqual ("setAt:", method.ObjCSelector, "wrong set selector");
 
 		}
 
@@ -559,20 +560,20 @@ public class Foo : NSObject {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (swiftCode, "SomeModule", out reflector).FirstOrDefault (mod => mod.Name == "SomeModule");
-			Assert.IsNotNull (module, "no module");
+			ClassicAssert.IsNotNull (module, "no module");
 
 			var cl = module.Classes.FirstOrDefault (c => c.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 
 			var method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "get_subscript");
-			Assert.IsNotNull (method, "no method subscript getter");
+			ClassicAssert.IsNotNull (method, "no method subscript getter");
 
-			Assert.AreEqual ("objectAtIndexedSubscript:", method.ObjCSelector, "wrong subscript getter selector");
+			ClassicAssert.AreEqual ("objectAtIndexedSubscript:", method.ObjCSelector, "wrong subscript getter selector");
 
 			method = cl.Members.OfType<FunctionDeclaration> ().FirstOrDefault (fn => fn.Name == "set_subscript");
-			Assert.IsNotNull (method, "no method subscript setter");
+			ClassicAssert.IsNotNull (method, "no method subscript setter");
 
-			Assert.AreEqual ("setObject:atIndexedSubscript:", method.ObjCSelector, "wrong subscript setter selector");
+			ClassicAssert.AreEqual ("setObject:atIndexedSubscript:", method.ObjCSelector, "wrong subscript setter selector");
 
 		}
 
@@ -585,11 +586,11 @@ public class Foo : NSObject {
 				"public func foo() { }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "module");
+			ClassicAssert.IsNotNull (module, "module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (func, "func");
-			Assert.IsTrue (func.IsDeprecated, "deprecated");
-			Assert.IsFalse (func.IsUnavailable, "unavailable");
+			ClassicAssert.IsNotNull (func, "func");
+			ClassicAssert.IsTrue (func.IsDeprecated, "deprecated");
+			ClassicAssert.IsFalse (func.IsUnavailable, "unavailable");
 		}
 
 		[Test]
@@ -600,11 +601,11 @@ public class Foo : NSObject {
 				"public func foo() { }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "module");
+			ClassicAssert.IsNotNull (module, "module");
 			var func = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (func, "func");
-			Assert.IsFalse (func.IsDeprecated, "deprecated");
-			Assert.IsTrue (func.IsUnavailable, "unavilable");
+			ClassicAssert.IsNotNull (func, "func");
+			ClassicAssert.IsFalse (func.IsDeprecated, "deprecated");
+			ClassicAssert.IsTrue (func.IsUnavailable, "unavilable");
 		}
 
 
@@ -616,11 +617,11 @@ public class Foo : NSObject {
 				"public class Foo { }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.Classes.FirstOrDefault (f => f.Name == "Foo");
-			Assert.IsNotNull (cl, "no class");
-			Assert.IsTrue (cl.IsDeprecated, "not deprecated");
-			Assert.IsFalse (cl.IsUnavailable, "available");
+			ClassicAssert.IsNotNull (cl, "no class");
+			ClassicAssert.IsTrue (cl.IsDeprecated, "not deprecated");
+			ClassicAssert.IsFalse (cl.IsUnavailable, "available");
 		}
 
 		[Test]
@@ -633,11 +634,11 @@ public func foo (a: Bool) -> Int? {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
+			ClassicAssert.IsNotNull (fn, "no function");
 			var retType = fn.ReturnTypeName;
-			Assert.AreEqual ("Swift.Optional<Swift.Int>", retType, "wrong return");
+			ClassicAssert.AreEqual ("Swift.Optional<Swift.Int>", retType, "wrong return");
 		}
 
 		[Test]
@@ -650,11 +651,11 @@ public func foo () -> [Int:Int] {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
+			ClassicAssert.IsNotNull (fn, "no function");
 			var retType = fn.ReturnTypeName;
-			Assert.AreEqual ("Swift.Dictionary<Swift.Int,Swift.Int>", retType, "wrong return");
+			ClassicAssert.AreEqual ("Swift.Dictionary<Swift.Int,Swift.Int>", retType, "wrong return");
 		}
 
 		[Test]
@@ -667,11 +668,11 @@ public func foo () -> [Int] {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
+			ClassicAssert.IsNotNull (fn, "no function");
 			var retType = fn.ReturnTypeName;
-			Assert.AreEqual ("Swift.Array<Swift.Int>", retType, "wrong return");
+			ClassicAssert.AreEqual ("Swift.Array<Swift.Int>", retType, "wrong return");
 		}
 
 		[Test]
@@ -684,10 +685,10 @@ public func foo () async -> Int {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsTrue (fn.IsAsync, "not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsTrue (fn.IsAsync, "not async");
 		}
 
 		[Test]
@@ -699,10 +700,10 @@ public func foo () -> Int {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var fn = module.TopLevelFunctions.FirstOrDefault (f => f.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsFalse (fn.IsAsync, "not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsFalse (fn.IsAsync, "not async");
 		}
 
 		[Test]
@@ -718,12 +719,12 @@ public class bar {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsTrue (fn.IsAsync, "not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsTrue (fn.IsAsync, "not async");
 		}
 
 		[Test]
@@ -738,12 +739,12 @@ public class bar {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsFalse (fn.IsAsync, "not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsFalse (fn.IsAsync, "not async");
 		}
 
 		[Test]
@@ -756,12 +757,12 @@ public protocol bar {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsTrue (fn.IsAsync, "not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsTrue (fn.IsAsync, "not async");
 		}
 
 		[Test]
@@ -773,12 +774,12 @@ public protocol bar {
 }";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var fn = cl.AllMethodsNoCDTor ().FirstOrDefault (m => m.Name == "foo");
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsFalse (fn.IsAsync, "not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsFalse (fn.IsAsync, "not async");
 		}
 
 		[Test]
@@ -798,15 +799,15 @@ public class bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.GetGetter ();
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsTrue (fn.IsAsync, "not async");
-			Assert.IsTrue (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsTrue (fn.IsAsync, "not async");
+			ClassicAssert.IsTrue (prop.IsAsync, "prop not async");
 		}
 
 		[Test]
@@ -825,15 +826,15 @@ public class bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.GetGetter ();
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsFalse (fn.IsAsync, "not async");
-			Assert.IsFalse (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsFalse (fn.IsAsync, "not async");
+			ClassicAssert.IsFalse (prop.IsAsync, "prop not async");
 		}
 
 		[Test]
@@ -852,15 +853,15 @@ public class bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllSubscripts ().FirstOrDefault ();
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.Getter;
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsTrue (fn.IsAsync, "not async");
-			Assert.IsTrue (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsTrue (fn.IsAsync, "not async");
+			ClassicAssert.IsTrue (prop.IsAsync, "prop not async");
 		}
 
 		[Test]
@@ -878,15 +879,15 @@ public class bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllClasses.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllSubscripts ().FirstOrDefault ();
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.Getter;
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsFalse (fn.IsAsync, "not async");
-			Assert.IsFalse (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsFalse (fn.IsAsync, "not async");
+			ClassicAssert.IsFalse (prop.IsAsync, "prop not async");
 		}
 
 		[Test]
@@ -902,15 +903,15 @@ public protocol bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.GetGetter ();
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsTrue (fn.IsAsync, "not async");
-			Assert.IsTrue (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsTrue (fn.IsAsync, "not async");
+			ClassicAssert.IsTrue (prop.IsAsync, "prop not async");
 		}
 
 		[Test]
@@ -925,15 +926,15 @@ public protocol bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllProperties ().FirstOrDefault (p => p.Name == "x");
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.GetGetter ();
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsFalse (fn.IsAsync, "not async");
-			Assert.IsFalse (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsFalse (fn.IsAsync, "not async");
+			ClassicAssert.IsFalse (prop.IsAsync, "prop not async");
 		}
 
 		[Test]
@@ -949,15 +950,15 @@ public protocol bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllSubscripts ().FirstOrDefault ();
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.Getter;
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsTrue (fn.IsAsync, "not async");
-			Assert.IsTrue (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsTrue (fn.IsAsync, "not async");
+			ClassicAssert.IsTrue (prop.IsAsync, "prop not async");
 		}
 
 		[Test]
@@ -972,15 +973,15 @@ public protocol bar {
 ";
 			SwiftInterfaceReflector reflector;
 			var module = ReflectToModules (code, "SomeModule", out reflector).Find (m => m.Name == "SomeModule");
-			Assert.IsNotNull (module, "not a module");
+			ClassicAssert.IsNotNull (module, "not a module");
 			var cl = module.AllProtocols.FirstOrDefault (c => c.Name == "bar");
-			Assert.IsNotNull (cl, "no class");
+			ClassicAssert.IsNotNull (cl, "no class");
 			var prop = cl.AllSubscripts ().FirstOrDefault ();
-			Assert.IsNotNull (prop, "no property");
+			ClassicAssert.IsNotNull (prop, "no property");
 			var fn = prop.Getter;
-			Assert.IsNotNull (fn, "no function");
-			Assert.IsFalse (fn.IsAsync, "not async");
-			Assert.IsFalse (prop.IsAsync, "prop not async");
+			ClassicAssert.IsNotNull (fn, "no function");
+			ClassicAssert.IsFalse (fn.IsAsync, "not async");
+			ClassicAssert.IsFalse (prop.IsAsync, "prop not async");
 		}
 	}
 }

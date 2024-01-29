@@ -797,15 +797,17 @@ namespace SwiftReflector {
 				string actionCallName = csSimp.GenericTypes.Count () == 0 ?
 							      "SwiftClosureRepresentation.ActionCallbackVoidVoid" :
 							      "SwiftClosureRepresentation.ActionCallback";
+				this.RequiredUnsafeCode = true; // for AddressOf
 				return new CSFunctionCall ("SwiftObjectRegistry.Registry.SwiftClosureForDelegate",
-							 false,  p.Name, new CSIdentifier (actionCallName), typeArr);
+							 false,  p.Name, CSUnaryExpression.AddressOf (new CSIdentifier (actionCallName)), typeArr);
 			} else {  // func
 				var typeArr = new CSArray1DInitialized ("Type",
 									csSimp.GenericTypes.Take (csSimp.GenericTypes.Length - 1).Select (ct => ct.Typeof ()));
 				string funcCallName = CallbackNameForFuncClosure (csSimp.GenericTypes.Count (), originalClosure);
 				var retType = TypeOfFuncClosureReturnType (csSimp.GenericTypes.Last (), originalClosure);
+				this.RequiredUnsafeCode = true; // for AddressOf
 				return new CSFunctionCall ("SwiftObjectRegistry.Registry.SwiftClosureForDelegate",
-							false, p.Name, new CSIdentifier (funcCallName), typeArr, retType);
+							false, p.Name, CSUnaryExpression.AddressOf (new CSIdentifier (funcCallName)), typeArr, retType);
 			}
 		}
 

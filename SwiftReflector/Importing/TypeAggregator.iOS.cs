@@ -11,6 +11,7 @@ namespace SwiftReflector.Importing {
 		static HashSet<string> iOSModulesToSkip = new HashSet<string> () {
 			"OpenTK", // not a namespace
 	    		"CoreMidi", // not a namespace
+			"iAd",
 			"Registrar", // not a namespace
 	    		"Twitter", // not compatible with Swift
 			"CoreAnimation", // not a namespace
@@ -176,6 +177,7 @@ namespace SwiftReflector.Importing {
 			"Contacts.CNSocialProfileServiceOption", // not an enum
 			// CoreBlueTooth
 			"CoreBluetooth.CBCentralManagerState",
+			"CoreBluetooth.CBPeripheralManagerAuthorizationStatus", // can't find it
 			"CoreBluetooth.CBPeripheralManagerState",
 			// CoreData
 			"CoreData.NSPersistentStoreUbiquitousTransitionType",
@@ -223,9 +225,13 @@ namespace SwiftReflector.Importing {
 			"CoreMedia.CMSampleBufferError", // doesn't exist
 			"CoreMedia.CMSyncError", // doesn't exist
 			// CoreNFC
+			"CoreNFC.EncryptionId", // not found
 			"CoreNFC.NFCIso15693ResponseFlag",
 			"CoreNFC.NFCNdefStatus", // iOS 13
 			"CoreNFC.NFCTagType", // iOS 13
+			"CoreNFC.PollingRequestCode", // not found
+			"CoreNFC.PollingTimeSlot", // not found
+			"CoreNFC.RequestFlag", // not found
 			"CoreNFC.VasErrorCode", // iOS 13
 			"CoreNFC.VasMode", // iOS 13
 			// CoreSpotlight
@@ -354,6 +360,7 @@ namespace SwiftReflector.Importing {
 			// ModelIO
 			"ModelIO.MDLNoiseTextureType", // can't find it
 			"ModelIO.MDLVoxelIndexExtent", // replaced
+			"ModelIO.MDLVoxelIndexExtent2", // can't find it
 			// Network
 			"Network.NWBrowseResultChange",
 			"Network.NWBrowserState",
@@ -400,6 +407,7 @@ namespace SwiftReflector.Importing {
 			"Security.SecRevocation", // not an enum
 			"Security.SecStatusCode", // can't find it
 			"Security.SecTokenID", // not an enum
+			"Security.SslCipherSuite", // can't find it
 			"Security.SslSessionConfig", // can't find it
 			"Security.SslSessionStrengthPolicy", // can't find it
 			"Security.SslStatus", // can't find it
@@ -445,6 +453,7 @@ namespace SwiftReflector.Importing {
 	    		"UIKit.UIPrintErrorCode", // can't find it?
 			"UIKit.UIPrintError", // can't find it?
 			"UIKit.UISceneErrorCode",
+			"UIKit.UITextWritingDirection", // can't find it
 			"UIKit.UITransitionViewControllerKind", // can't find it?
 	    		"UIKit.UIUserInterfaceStyle", // can't find it?
 			"UIKit.UIUserNotificationActionContext", // deprecated

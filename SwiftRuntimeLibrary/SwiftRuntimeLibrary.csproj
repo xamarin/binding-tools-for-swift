@@ -1,94 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</ProjectGuid>
+    <TargetFramework>net7.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>SwiftRuntimeLibrary</RootNamespace>
-    <AssemblyName>SwiftRuntimeLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;TOM_SWIFTY;SWIFT;SWIFT4</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <Commandlineparameters>--swift-bin-path /Users/steveh/xamroot/maccore/tools/apple/build/Xcode-DebugAssert/swift-macosx-x86_64/Debug/bin/ --swift-lib-path /Users/steveh/xamroot/maccore/tools/apple/build/Xcode-DebugAssert/swift-macosx-x86_64/Debug/lib -C /Users/steveh/hacking/unithelp -o /Users/steveh/hacking/unithelp/nonewrap None1</Commandlineparameters>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>
+    </DebugType>
     <OutputPath>bin\Release</OutputPath>
     <DefineConstants>TOM_SWIFTY;SWIFT;SWIFT4</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SwiftCore.cs" />
-    <Compile Include="SwiftObjectRegistry.cs" />
-    <Compile Include="SwiftRuntimeException.cs" />
-    <Compile Include="SwiftAnyObject.cs" />
-    <Compile Include="SwiftString.cs" />
-    <Compile Include="SwiftOptional.cs" />
-    <Compile Include="SwiftEnumMapper.cs" />
-    <Compile Include="SwiftEnumRawValueAttribute.cs" />
-    <Compile Include="XamProxyTypeAttribute.cs" />
-    <Compile Include="SwiftMarshal\DynamicLib.cs" />
-    <Compile Include="SwiftMarshal\SwiftValueWitnessTable.cs" />
-    <Compile Include="SwiftMarshal\StructMarshal.cs" />
-    <Compile Include="SwiftMarshal\NominalSizeSet.cs" />
-    <Compile Include="SwiftMarshal\SwiftStructAttribute.cs" />
-    <Compile Include="NIntNUInt.cs" />
-    <Compile Include="SwiftMarshal\SwiftTupleMap.cs" />
-    <Compile Include="SwiftMarshal\Extensions.cs" />
-    <Compile Include="SwiftMarshal\Memory.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="SwiftMetatype.cs" />
-    <Compile Include="SwiftMarshal\SwiftNominalTypeDescriptor.cs" />
-    <Compile Include="SwiftMarshal\SwiftStandardMetatypes.cs" />
-    <Compile Include="XamTrivialSwiftObject.cs" />
-    <Compile Include="SwiftMarshal\SwiftNominalTypeAttribute.cs" />
-    <Compile Include="SwiftMarshal\SwiftProtocolTypeAttribute.cs" />
-    <Compile Include="SwiftMarshal\SwiftEnumTypeAttribute.cs" />
-    <Compile Include="SwiftMarshal\SwiftEnumBackingTypeAttribute.cs" />
-    <Compile Include="SwiftMarshal\SwiftProtocolConstraintAttribute.cs" />
-    <Compile Include="SwiftMarshal\SwiftClassObject.cs" />
-    <Compile Include="RuntimeDebugging.cs" />
-    <Compile Include="SwiftException.cs" />
-    <Compile Include="SwiftError.cs" />
-    <Compile Include="ISwiftError.cs" />
-    <Compile Include="SwiftArray.cs" />
-    <Compile Include="ISwiftHashable.cs" />
-    <Compile Include="SwiftHashableProxy.cs" />
-    <Compile Include="SwiftMarshal\SwiftExternalProtocolDefinition.cs" />
-    <Compile Include="SwiftDictionary.cs" />
-    <Compile Include="SwiftClosureRepresentation.cs" />
-    <Compile Include="SwiftDotNetCapsule.cs" />
-    <Compile Include="MonoPInvokeCallbackAttribute.cs" />
-    <Compile Include="SwiftMarshal\BlindClosureMapper.cs" />
-    <Compile Include="ISwiftObject.cs" />
-    <Compile Include="SwiftMarshal\SwiftNativeObjectAttribute.cs" />
-    <Compile Include="UnsafeMutablePointer.cs" />
-    <Compile Include="UnsafePointer.cs" />
-    <Compile Include="ICustomStringConvertible.cs" />
-    <Compile Include="BlindSwiftClosureRepresentation.cs" />
-    <Compile Include="SwiftSet.cs" />
-    <Compile Include="ISwiftEquatable.cs" />
-    <Compile Include="SwiftEquatableProxy.cs" />
-    <Compile Include="SwiftComparableProxy.cs" />
-    <Compile Include="ISwiftComparable.cs" />
-    <Compile Include="SwiftCharacter.cs" />
-    <Compile Include="Exceptions.cs" />
-    <Compile Include="SwiftMarshal\ImportedTypeCache.cs" />
     <Compile Include="..\tools\symbolicator\XamGlueConstants.cs">
       <Link>XamGlueConstants.cs</Link>
     </Compile>
@@ -98,36 +29,6 @@
     <Compile Include="..\tools\symbolicator\SymbolicatorInfoAttribute.cs">
       <Link>SymbolicatorInfoAttribute.cs</Link>
     </Compile>
-    <Compile Include="SwiftMarshal\StringMemory.cs" />
-    <Compile Include="UnsafeRawPointer.cs" />
-    <Compile Include="UnsafeRawBufferPointer.cs" />
-    <Compile Include="UnsafeMutableRawBufferPointer.cs" />
-    <Compile Include="SwiftHasher.cs" />
-    <Compile Include="SwiftDate.cs" />
-    <Compile Include="SwiftFoundationConstants.cs" />
-    <Compile Include="EveryProtocol.cs" />
-    <Compile Include="ExistentialContainers.cs" />
-    <Compile Include="BaseProxy.cs" />
-    <Compile Include="SwiftMarshal\SwiftTypeNameAttribute.cs" />
-    <Compile Include="SwiftTypeRegistry.cs" />
-    <Compile Include="SwiftMarshal\SwiftProtocolConformanceDescriptor.cs" />
-    <Compile Include="SwiftMarshal\SwiftProtocolWitnessTable.cs" />
-    <Compile Include="SwiftMarshal\SwiftAssociatedTypeDescriptor.cs" />
-    <Compile Include="BaseAssociatedTypeProxy.cs" />
-    <Compile Include="SwiftNativeObject.cs" />
-    <Compile Include="SwiftNativeInstance.cs" />
-    <Compile Include="SwiftNativeValueType.cs" />
-    <Compile Include="ISwiftValueType.cs" />
-    <Compile Include="SwiftMarshal\SwiftThrowsAttribute.cs" />
-    <Compile Include="ISwiftIteratorProtocol.cs" />
-    <Compile Include="SwiftIteratorProtocolProxy.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SwiftMarshal\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

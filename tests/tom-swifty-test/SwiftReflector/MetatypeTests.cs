@@ -18,6 +18,7 @@ using System.CodeDom.Compiler;
 using System.CodeDom;
 using System.Reflection;
 using Dynamo.CSLang;
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -171,7 +172,7 @@ namespace dlopentest
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
-				Assert.AreEqual (expected, output);
+				ClassicAssert.AreEqual (expected, output);
 				var typeBasedClassName = typeName.Replace ('.', '_');
 
 				string tsource = $@"using System;
@@ -229,7 +230,7 @@ namespace dlopentest
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				var output = TestRunning.Execute (temp.DirectoryPath, "TestIt.exe", PlatformName.macOS);
-				Assert.AreEqual (expected, output);
+				ClassicAssert.AreEqual (expected, output);
 				var typeBasedClassName = typeName.Replace ('.', '_');
 
 				var tsource = $@"using System;
@@ -287,7 +288,7 @@ namespace dlopentest
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				var output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
-				Assert.AreEqual (expected, output);
+				ClassicAssert.AreEqual (expected, output);
 				var typeBasedClassName = typeName.Replace('.', '_');
 
 				var tsource = $@"using System;
@@ -376,7 +377,7 @@ namespace dlopentest
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
 				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath);
-				Assert.AreEqual (expected, output);
+				ClassicAssert.AreEqual (expected, output);
 			}
 		}
 

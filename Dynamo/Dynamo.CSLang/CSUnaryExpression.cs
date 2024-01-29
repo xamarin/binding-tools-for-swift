@@ -47,6 +47,16 @@ namespace Dynamo.CSLang {
 			}
 		}
 
+		public static CSUnaryExpression AddressOf (ICSExpression expr)
+		{
+			return new CSUnaryExpression (CSUnaryOperator.AddressOf, expr);
+		}
+
+		public static CSUnaryExpression Star (ICSExpression expr)
+		{
+			return new CSUnaryExpression (CSUnaryOperator.Indirection, expr);
+		}
+
 		public static CSUnaryExpression Out (CSIdentifier id)
 		{
 			return new CSUnaryExpression (CSUnaryOperator.Out, id);

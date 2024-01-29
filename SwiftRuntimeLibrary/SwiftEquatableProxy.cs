@@ -3,8 +3,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using SwiftRuntimeLibrary.SwiftMarshal;
-using Xamarin.iOS;
 
 namespace SwiftRuntimeLibrary {
 	public class SwiftEquatableProxy : BaseProxy, ISwiftEquatable {
@@ -24,8 +22,7 @@ namespace SwiftRuntimeLibrary {
 
 		struct Equatable_xam_vtable {
 			public delegate bool Delfunc0 (IntPtr one, IntPtr two);
-			[MarshalAs (UnmanagedType.FunctionPtr)]
-			public Delfunc0 func0;
+			public unsafe delegate *unmanaged<IntPtr, IntPtr, bool> func0;
 		}
 
 		static Equatable_xam_vtable vtableIEquatable;
@@ -34,9 +31,7 @@ namespace SwiftRuntimeLibrary {
 			XamSetVTable ();
 		}
 
-#if __IOS__
-		[MonoPInvokeCallback(typeof(Equatable_xam_vtable.Delfunc0))]
-#endif
+		[UnmanagedCallersOnly]
 		static bool EqFunc (IntPtr oneptr, IntPtr twoptr)
 		{
 			if (oneptr == twoptr)
@@ -50,8 +45,10 @@ namespace SwiftRuntimeLibrary {
 
 		static void XamSetVTable ()
 		{
-			vtableIEquatable.func0 = EqFunc;
-			PISetVtable (ref vtableIEquatable);
+			unsafe {
+				vtableIEquatable.func0 = &EqFunc;
+				PISetVtable (ref vtableIEquatable);
+			}
 		}
 
 		public bool OpEquals (ISwiftEquatable other)

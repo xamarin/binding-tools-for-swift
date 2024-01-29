@@ -1,6 +1,7 @@
 ﻿using System;
 using SwiftReflector;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 
@@ -16,7 +17,7 @@ namespace SwiftReflector {
 		[TestCase ("i386-apple-watchos3.2-simulator", true)]
 		public void SimulatorTests (string target, bool expected)
 		{
-			Assert.AreEqual (expected, target.ClangTargetIsSimulator (), $"wrong simulator state for {target}");
+			ClassicAssert.AreEqual (expected, target.ClangTargetIsSimulator (), $"wrong simulator state for {target}");
 		}
 	}
 }

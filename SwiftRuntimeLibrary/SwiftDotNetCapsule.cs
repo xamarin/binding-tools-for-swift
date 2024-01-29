@@ -3,13 +3,14 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Xamarin.iOS;
 
 namespace SwiftRuntimeLibrary {
 	public sealed class SwiftDotNetCapsule : ISwiftObject {
 		static SwiftDotNetCapsule ()
 		{
-			SetCapsuleOnDeinit (OnDeInit);
+			unsafe {
+				SetCapsuleOnDeinit (&OnDeInit);
+			}
 		}
 
 		internal class CapsuleTrackArgs : EventArgs {
@@ -23,7 +24,7 @@ namespace SwiftRuntimeLibrary {
 		internal static event EventHandler<EventArgs> DeInitCalled;
 		internal static event EventHandler<EventArgs> AllocCalled;
 
-		[MonoPInvokeCallback (typeof (Action<IntPtr>))]
+		[UnmanagedCallersOnly]
 		static void OnDeInit (IntPtr p)
 		{
 			if (SwiftObjectRegistry.Registry.Contains (p)) {
@@ -130,6 +131,6 @@ namespace SwiftRuntimeLibrary {
 		static extern void SetData (IntPtr inst, IntPtr p);
 
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftDotNetCapsule_SetCapsuleOnDeinit)]
-		static extern void SetCapsuleOnDeinit ([MarshalAs (UnmanagedType.FunctionPtr)] Action<IntPtr> callBack);
+		static extern unsafe void SetCapsuleOnDeinit (delegate *unmanaged<IntPtr, void> callBack);
 	}
 }

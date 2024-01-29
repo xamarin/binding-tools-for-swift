@@ -148,6 +148,7 @@ namespace SwiftReflector {
 			RemapSwiftClosureRepresensation (args);
 			var returnType = returnIsGeneric || returnIsSelf ? null : typeMap.MapType (func, func.ReturnTypeSpec, objectsAreIntPtrs, true);
 			delegateName = delegateName ?? typeMap.SanitizeIdentifier (func.Name);
+			var isUnsafe = false;
 
 			args.ForEach (a => AddUsingBlock (packs, a.Type));
 
@@ -164,15 +165,18 @@ namespace SwiftReflector {
 				if (arg.Type.Entity == EntityType.Tuple || (!argIsGeneric && IsObjCStruct (parmType))) {
 					csParam = new CSParameter (CSSimpleType.IntPtr, new CSIdentifier (arg.Name), CSParameterKind.None, null);
 				} else {
-					csParam = new CSParameter (arg.Type.ToCSType (packs), new CSIdentifier (arg.Name),
-								   arg.Type.IsReference ? CSParameterKind.Ref : CSParameterKind.None, null);
+					var argType = arg.Type.ToCSType (packs);
+					if (argType is CSSimpleType csType && arg.Type.IsReference)
+						argType = csType.Star;
+					csParam = new CSParameter (argType, new CSIdentifier (arg.Name), CSParameterKind.None, null);
 				}
 				csParams.Add (csParam);
 			}
 
 			if (isSwiftProtocol) {
 				packs.AddIfNotPresent (typeof (SwiftExistentialContainer1));
-				csParams.Insert (0, new CSParameter (new CSSimpleType (typeof (SwiftExistentialContainer1)), new CSIdentifier ("self"), CSParameterKind.Ref));
+				csParams.Insert (0, new CSParameter (new CSSimpleType (typeof (SwiftExistentialContainer1)).Star, new CSIdentifier ("self"), CSParameterKind.None));
+				isUnsafe = true;
 			} else {
 				csParams.Insert (0, new CSParameter (CSSimpleType.IntPtr, new CSIdentifier ("self")));
 			}
@@ -195,7 +199,7 @@ namespace SwiftReflector {
 								csParams.Insert (0, new CSParameter (CSSimpleType.IntPtr, retvalID, CSParameterKind.None));
 								csReturnType = CSSimpleType.Void;
 							} else if (func.ReturnTypeSpec is ProtocolListTypeSpec pl) {
-								csParams.Insert (0, new CSParameter (new CSSimpleType ($"SwiftExistentialContainer{pl.Protocols.Count}"), retvalID, CSParameterKind.Ref));
+								csParams.Insert (0, new CSParameter (new CSSimpleType ($"SwiftExistentialContainer{pl.Protocols.Count}").Star, retvalID, CSParameterKind.None));
 								csReturnType = CSSimpleType.Void;
 							}
 						}
@@ -205,7 +209,7 @@ namespace SwiftReflector {
 				}
 			}
 
-			return new CSDelegateTypeDecl (vis, csReturnType, new CSIdentifier (delegateName), csParams);
+			return new CSDelegateTypeDecl (vis, csReturnType, new CSIdentifier (delegateName), csParams, isUnsafe);
 		}
 
 		public CSMethod CompileMethod (FunctionDeclaration func, CSUsingPackages packs, string libraryPath,

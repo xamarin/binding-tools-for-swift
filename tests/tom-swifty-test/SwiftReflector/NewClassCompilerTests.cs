@@ -9,6 +9,7 @@ using System.Linq;
 using Dynamo;
 using Dynamo.CSLang;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SwiftReflector.IOUtils;
 using SwiftReflector.TypeMapping;
 using tomwiftytest;
@@ -1116,8 +1117,8 @@ public enum Position {
 					List<string> typeDatabasePaths = new List<string> { Path.Combine (libProvider.DirectoryPath, "bindings") };
 					TypeMapper typeMapper = new TypeMapper (typeDatabasePaths, UnicodeMapper.Default);
 					var entity = typeMapper.TypeDatabase.EntityForSwiftName (swiftName);
-					Assert.AreEqual (ns, entity.SharpNamespace);
-					Assert.AreEqual (csharpName, entity.SharpTypeName);
+					ClassicAssert.AreEqual (ns, entity.SharpNamespace);
+					ClassicAssert.AreEqual (csharpName, entity.SharpTypeName);
 				}
 			}
 		}
@@ -1145,7 +1146,7 @@ public enum Position {
 
 					var localErrors = new ErrorHandling ();
 					var inputTarget = UniformTargetRepresentation.FromPath ("Consumer", new List<string> () { consumerProvider.DirectoryPath }, localErrors);
-					Assert.IsNotNull (inputTarget, "Didn't get an input target");
+					ClassicAssert.IsNotNull (inputTarget, "Didn't get an input target");
 
 					NewClassCompiler ncc = Utils.DefaultCSharpCompiler (inputTarget);
 
@@ -1262,8 +1263,8 @@ open class LazyVariable
 		public static void AssertBindingsCreated (string ouputDirectory, string moduleName)
 		{
 			string bindingDir = Path.Combine (ouputDirectory, "bindings");
-			Assert.IsTrue (Directory.Exists (bindingDir), "Binding directory was not created?");
-			Assert.IsTrue (File.Exists (Path.Combine (bindingDir, moduleName)), "Module type database not written out?");
+			ClassicAssert.IsTrue (Directory.Exists (bindingDir), "Binding directory was not created?");
+			ClassicAssert.IsTrue (File.Exists (Path.Combine (bindingDir, moduleName)), "Module type database not written out?");
 		}
 
 
@@ -1295,9 +1296,9 @@ public enum Counters {
 		static void XmlOutputExists(string directory)
 		{
 			var xmlDir = Path.Combine (directory, "XmlReflection");
-			Assert.IsTrue (Directory.Exists (xmlDir), "reflection directory doesn't exist");
+			ClassicAssert.IsTrue (Directory.Exists (xmlDir), "reflection directory doesn't exist");
 			var file = Path.Combine (xmlDir, "Swift_XamReflect.xml");
-			Assert.IsTrue (File.Exists (file), "reflection file doesn't exist");
+			ClassicAssert.IsTrue (File.Exists (file), "reflection file doesn't exist");
 		}
 
 
@@ -1502,7 +1503,7 @@ public func reportIt (a: EasyToRepresent) -> Bool {
 				typeof (ArgumentNullException), errID.Name, CSCodeBlock.Create (printer));
 			var callingCode = CSCodeBlock.Create (tryCatch);
 
-			TestRunning.TestAndExecute (swiftCode, callingCode, "Here.Value cannot be null.\nParameter name: a\n");
+			TestRunning.TestAndExecute (swiftCode, callingCode, "Here.Value cannot be null. (Parameter 'a')\n");
 		}
 
 		[Test]

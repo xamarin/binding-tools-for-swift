@@ -23,7 +23,7 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		public SwiftArray (nint capacity)
-			: this (NativeMethodsForSwiftArray.NewArray (ValidateCapacity (capacity), ElementMetatype))
+			: this (NativeMethodsForSwiftArray.NewArray (ValidateCapacity (capacity), ElementMetatype), SwiftValueTypeCtorArgument.None)
 		{
 		}
 
@@ -34,7 +34,7 @@ namespace SwiftRuntimeLibrary {
 			return capacity;
 		}
 
-		internal SwiftArray (IntPtr p)
+		internal SwiftArray (IntPtr p, SwiftValueTypeCtorArgument unused)
 			: this (SwiftValueTypeCtorArgument.None)
 		{
 			CheckedSwiftData.WriteIntPtr (p, offset: 0);

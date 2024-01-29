@@ -60,11 +60,6 @@ namespace SwiftReflector.IOUtils {
 			return stm.CopyToAsync (destination, bufferSize, cancellationToken);
 		}
 
-		public override System.Runtime.Remoting.ObjRef CreateObjRef (Type requestedType)
-		{
-			return stm.CreateObjRef (requestedType);
-		}
-
 		protected override void Dispose (bool disposing)
 		{
 			if (disposing)

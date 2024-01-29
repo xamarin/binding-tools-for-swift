@@ -472,8 +472,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			case TypeCode.Double:
 				return SwiftStandardMetatypes.Double;
 			default:
-				if (t == typeof (IntPtr) || t == typeof (UIntPtr)) {
-					return Metatypeof (typeof (OpaquePointer));
+				if (t == typeof (IntPtr)) {
+					return SwiftStandardMetatypes.Int;
+				} else if (t == typeof (UIntPtr)) {
+					return SwiftStandardMetatypes.UInt;
 				}
 				throw new SwiftRuntimeException ($"Illegal type code for type {t.Name}:  {Type.GetTypeCode (t)}");
 			}
@@ -810,16 +812,31 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 					return delTuple.Item1;
 				// didn't find it - weird - but we can still handle that case. Let it fall through
 			}
-			var visibleClosure = MakeVisibleClosureFromBlindClosure (blindClosure, argTypes, returnType);
 
 			throw new NotImplementedException ();
 		}
 
-		SwiftClosureRepresentation MakeVisibleClosureFromBlindClosure (BlindSwiftClosureRepresentation blindClosure,
-										      Type [] argTypes, Type returnType)
+		IntPtr MarshalDelegateToSwift (Type t, Delegate del, IntPtr swiftDestinationMemory)
 		{
-			var delegateObj = MakeDelegateFromBlindClosure (blindClosure, argTypes, returnType);
-			return new SwiftClosureRepresentation (delegateObj, blindClosure.Data);
+			var mi = t.GetMethod ("Invoke");
+			var argTypes = DelegateParameterTypes (mi);
+			var returnType = mi.ReturnType;
+
+			var rep = BuildClosureRepresentation (del, argTypes, returnType);
+			var blindRep = BuildBlindClosure (rep, argTypes, returnType, swiftDestinationMemory);
+			Marshal.StructureToPtr (blindRep, swiftDestinationMemory, false);
+			return swiftDestinationMemory;
+		}
+
+		public unsafe BlindSwiftClosureRepresentation GetBlindSwiftClosureRepresentation (Type t, Delegate del)
+		{
+			byte* p = stackalloc byte [IntPtr.Size * 2];
+			var mi = t.GetMethod ("Invoke");
+			var argTypes = DelegateParameterTypes (mi);
+			var returnType = mi.ReturnType;
+
+			var rep = BuildClosureRepresentation (del, argTypes, returnType);
+			return BuildBlindClosure (rep, argTypes, returnType, new IntPtr (p));
 		}
 
 		public Delegate MakeDelegateFromBlindClosure (BlindSwiftClosureRepresentation blindClosure, Type [] argTypes, Type returnType, ClosureFlags flags = ClosureFlags.None)
@@ -847,30 +864,6 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 				throw new SwiftRuntimeException ($"Making a closure, unable to find method {methodName}");
 			var genCall = mi.MakeGenericMethod (argTypes);
 			return (Delegate)genCall.Invoke (SwiftObjectRegistry.Registry, new object [] { blindClosure });
-		}
-
-
-		IntPtr MarshalDelegateToSwift (Type t, Delegate del, IntPtr swiftDestinationMemory)
-		{
-			var mi = t.GetMethod ("Invoke");
-			var argTypes = DelegateParameterTypes (mi);
-			var returnType = mi.ReturnType;
-
-			var rep = BuildClosureRepresentation (del, argTypes, returnType);
-			var blindRep = BuildBlindClosure (rep, argTypes, returnType, swiftDestinationMemory);
-			Marshal.StructureToPtr (blindRep, swiftDestinationMemory, false);
-			return swiftDestinationMemory;
-		}
-
-		public unsafe BlindSwiftClosureRepresentation GetBlindSwiftClosureRepresentation (Type t, Delegate del)
-		{
-			byte* p = stackalloc byte [IntPtr.Size * 2];
-			var mi = t.GetMethod ("Invoke");
-			var argTypes = DelegateParameterTypes (mi);
-			var returnType = mi.ReturnType;
-
-			var rep = BuildClosureRepresentation (del, argTypes, returnType);
-			return BuildBlindClosure (rep, argTypes, returnType, new IntPtr (p));
 		}
 
 		BlindSwiftClosureRepresentation BuildBlindClosure (SwiftClosureRepresentation rep, Type [] argTypes, Type returnType, IntPtr p)
@@ -1078,22 +1071,22 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 		}
 
-		SwiftClosureRepresentation BuildClosureRepresentation (Delegate del, Type [] argTypes, Type returnType)
+		unsafe SwiftClosureRepresentation BuildClosureRepresentation (Delegate del, Type [] argTypes, Type returnType)
 		{
 			if (returnType == null) { // Action
 				if (argTypes.Length == 0) {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.ActionCallbackVoidVoid,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.ActionCallbackVoidVoid,
 												    argTypes);
 				} else {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.ActionCallback,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.ActionCallback,
 												    argTypes);
 				}
 			} else {
 				if (argTypes.Length == 0) {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.FuncCallbackVoid,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.FuncCallbackVoid,
 												    argTypes, returnType);
 				} else {
-					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, SwiftClosureRepresentation.FuncCallback,
+					return SwiftObjectRegistry.Registry.SwiftClosureForDelegate (del, &SwiftClosureRepresentation.FuncCallback,
 												    argTypes, returnType);
 				}
 			}
@@ -1853,7 +1846,8 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		static IntPtr MarshalScalarToSwift (Type fieldType, object value, IntPtr swiftDestinationMemory)
 		{
 			// see https://msdn.microsoft.com/en-us/library/system.type.isprimitive.aspx
-			switch (Type.GetTypeCode (fieldType)) {
+			var typeCode = Type.GetTypeCode (fieldType);
+			switch (typeCode) {
 			case TypeCode.Boolean:
 				Write ((bool)value ? (byte)1 : (byte)0, swiftDestinationMemory);
 				break;
@@ -1893,8 +1887,10 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			default:
 				if (fieldType == typeof (IntPtr) || fieldType == typeof (UIntPtr)) {
 					Marshal.StructureToPtr (value, swiftDestinationMemory, false);
+				} else {
+					throw new SwiftRuntimeException ($"Illegal type code {Enum.GetName (typeof (TypeCode), typeCode)} for {value} (value Type: {value.GetType ().Name}, fieldType {fieldType.Name})");
 				}
-				throw new SwiftRuntimeException ("Illegal type code " + Type.GetTypeCode (fieldType));
+				break;
 			}
 			return swiftDestinationMemory;
 		}
@@ -1968,12 +1964,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			*((ulong*)p) = val;
 		}
 
-		static unsafe void Write (IntPtr val, IntPtr p)
-		{
-			*((void**)p) = (void*)val;
-		}
-
-		static unsafe void Write (UIntPtr val, IntPtr p)
+		static unsafe void Write (void *val, IntPtr p)
 		{
 			*((void**)p) = (void*)val;
 		}

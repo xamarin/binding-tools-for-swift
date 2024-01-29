@@ -27,39 +27,39 @@ namespace SwiftRuntimeLibraryTests {
 		{
 			using (var arr = new SwiftArray<int> ()) {
 				arr.Add (1);
-				Assert.AreEqual (1, arr.Count, "Count");
+				Assert.That (arr.Count, Is.EqualTo (1), "Count");
 			}
 		}
 
 		[Test]
 		public void Constructor_Capacity ()
 		{
-			using (var arr = new SwiftArray<byte> ((nint) 20)) {
-				Assert.AreEqual (0, arr.Count, "Count 1");
-				Assert.GreaterOrEqual (arr.Capacity, 20, "Capacity 1");
+			using (var arr = new SwiftArray<byte> ((nint)20)) {
+				Assert.That (arr.Count, Is.EqualTo (1), "Count 1");
+				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (20), "Capacity 1");
 				arr.Add (10);
-				Assert.AreEqual (1, arr.Count, "Count 2");
-				Assert.GreaterOrEqual (arr.Capacity, 20, "Capacity 2");
+				Assert.That (arr.Count, Is.EqualTo (2), "Count 2");
+				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (20), "Capacity 2");
 			}
 
-			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<int> ((long)-1));
+			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<int> (-1));
 		}
 
 		[Test]
 		public void Constructor_Params ()
 		{
 			using (var arr = new SwiftArray<bool> (true, false, true)) {
-				Assert.AreEqual (3, arr.Count, "Count 1");
-				Assert.IsTrue (arr [0], "1");
-				Assert.IsFalse (arr [1], "2");
-				Assert.IsTrue (arr [2], "3");
+				Assert.That (arr.Count, Is.EqualTo (3), "Count 1");
+				Assert.That (arr [0], Is.EqualTo (true), "1");
+				Assert.That (arr [1], Is.EqualTo (false), "2");
+				Assert.That (arr [2], Is.EqualTo (true), "3");
 			}
 
 			Assert.Throws<ArgumentNullException> (() => new SwiftArray<sbyte> ((sbyte [])null), "Null");
-			using (var arr = new SwiftArray<SwiftString> ((SwiftString) "Hello", (SwiftString) string.Empty)) {
-				Assert.AreEqual (2, arr.Count, "Count 1");
-				Assert.AreEqual ("Hello", arr [0].ToString (), "1");
-				Assert.AreEqual (string.Empty, arr [1].ToString (), "2");
+			using (var arr = new SwiftArray<SwiftString> ((SwiftString)"Hello", (SwiftString)string.Empty)) {
+				Assert.That (arr.Count, Is.EqualTo (2), "Count 1");
+				Assert.That (arr [0].ToString (), Is.EqualTo ("Hello"), "1");
+				Assert.That (arr [1].ToString (), Is.EqualTo (string.Empty), "2");
 			}
 		}
 
@@ -68,10 +68,10 @@ namespace SwiftRuntimeLibraryTests {
 		{
 			var list = (IList<short>)new short [] { 1, 2, 3 };
 			using (var arr = new SwiftArray<short> (list)) {
-				Assert.AreEqual (3, arr.Count, "Count 1");
-				Assert.AreEqual (1, arr [0], "1");
-				Assert.AreEqual (2, arr [1], "2");
-				Assert.AreEqual (3, arr [2], "3");
+				Assert.That (arr.Count, Is.EqualTo (3), "Count 1");
+				Assert.That (arr [0], Is.EqualTo (1), "1");
+				Assert.That (arr [1], Is.EqualTo (2), "2");
+				Assert.That (arr [2], Is.EqualTo (3), "3");
 			}
 			Assert.Throws<ArgumentNullException> (() => new SwiftArray<ushort> ((IList<ushort>)null), "ANE");
 		}
@@ -81,10 +81,10 @@ namespace SwiftRuntimeLibraryTests {
 		{
 			var enumerable = (IEnumerable<ushort>)new ushort [] { 1, 2, 3 };
 			using (var arr = new SwiftArray<ushort> (enumerable)) {
-				Assert.AreEqual (3, arr.Count, "Count 1");
-				Assert.AreEqual (1, arr [0], "1");
-				Assert.AreEqual (2, arr [1], "2");
-				Assert.AreEqual (3, arr [2], "3");
+				Assert.That (arr.Count, Is.EqualTo (3), "Count 1");
+				Assert.That (arr [0], Is.EqualTo (1), "1");
+				Assert.That (arr [1], Is.EqualTo (2), "2");
+				Assert.That (arr [2], Is.EqualTo (3), "3");
 			}
 			Assert.Throws<ArgumentNullException> (() => new SwiftArray<ushort> ((IEnumerable<ushort>)null), "ANE");
 		}
@@ -93,10 +93,10 @@ namespace SwiftRuntimeLibraryTests {
 		public void Indexers ()
 		{
 			using (var arr = new SwiftArray<long> (1, 2, 3)) {
-				Assert.AreEqual (3, arr.Count, "Count 1");
-				Assert.AreEqual (1, arr [0], "1");
-				Assert.AreEqual (2, arr [1], "2");
-				Assert.AreEqual (3, arr [2], "3");
+				Assert.That (arr.Count, Is.EqualTo (3), "Count 1");
+				Assert.That (arr [0], Is.EqualTo (1), "1");
+				Assert.That (arr [1], Is.EqualTo (2), "2");
+				Assert.That (arr [2], Is.EqualTo (3), "3");
 				Assert.Throws<IndexOutOfRangeException> (() => GC.KeepAlive (arr [3]), "IOORE 3");
 				Assert.Throws<IndexOutOfRangeException> (() => GC.KeepAlive (arr [-1]), "IOORE -1");
 				arr [0] = 10;
@@ -115,7 +115,7 @@ namespace SwiftRuntimeLibraryTests {
 		public void Count ()
 		{
 			using (var arr = new SwiftArray<ulong> (1, 2, 3, 4, 5, 6, 7, 8, 9)) {
-				Assert.AreEqual (9, arr.Count, "Count 1");
+				Assert.That (arr.Count, Is.EqualTo (9), "Count 1");
 
 				arr.Dispose ();
 				Assert.Throws<ObjectDisposedException> (() => { var x = arr.Count; }, "Count ODE");
@@ -125,9 +125,9 @@ namespace SwiftRuntimeLibraryTests {
 		[Test]
 		public void Capacity ()
 		{
-			using (var arr = new SwiftArray<byte> ((nint) 10)) {
-				Assert.AreEqual (0, arr.Count, "Count 1");
-				Assert.GreaterOrEqual (arr.Capacity, 10, "Capacity 1");
+			using (var arr = new SwiftArray<byte> ((nint)10)) {
+				Assert.That (arr.Count, Is.EqualTo (0), "Count 1");
+				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (10), "Capacity 1");
 
 				arr.Dispose ();
 				Assert.Throws<ObjectDisposedException> (() => { var x = arr.Capacity; }, "Capacity ODE");
@@ -141,7 +141,7 @@ namespace SwiftRuntimeLibraryTests {
 				var list = new List<sbyte> ();
 				foreach (var item in arr)
 					list.Add (item);
-				CollectionAssert.AreEqual (new sbyte [] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, list, "Enumerator");
+				Assert.That (arr, Is.EquivalentTo (list));
 
 				arr.Dispose ();
 				var enumerator = arr.GetEnumerator (); // No exception
@@ -155,11 +155,11 @@ namespace SwiftRuntimeLibraryTests {
 		public void Add ()
 		{
 			using (var arr = new SwiftArray<uint> ()) {
-				Assert.AreEqual (0, arr.Count, "Count 1");
+				Assert.That (arr.Count, Is.EqualTo (0), "Count 1");
 				arr.Add (20);
-				Assert.GreaterOrEqual (arr.Capacity, 1, "Capacity 1");
-				Assert.AreEqual (1, arr.Count, "Count 2");
-				Assert.AreEqual (20, arr [0], "Item 1");
+				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (1), "Capacity 1");
+				Assert.That (arr.Count, Is.EqualTo (1), "Count 2");
+				Assert.That (arr [0], Is.EqualTo (20), "Item 1");
 
 				arr.Dispose ();
 				Assert.Throws<ObjectDisposedException> (() => arr.Add (3), "Add ODE");
@@ -172,11 +172,11 @@ namespace SwiftRuntimeLibraryTests {
 			var collection = (IList<int>)new int [] { 4, 5, 6 };
 			using (var arr = new SwiftArray<int> ()) {
 				arr.AddRange (collection);
-				Assert.GreaterOrEqual (arr.Capacity, 3, "Capacity 1");
-				Assert.AreEqual (3, arr.Count, "Count 2");
-				Assert.AreEqual (4, arr [0], "Item 1");
-				Assert.AreEqual (5, arr [1], "Item 2");
-				Assert.AreEqual (6, arr [2], "Item 3");
+				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (3), "Capacity 1");
+				Assert.That (arr.Count, Is.EqualTo (3), "Count 2");
+				Assert.That (arr [0], Is.EqualTo (4), "Item 1");
+				Assert.That (arr [1], Is.EqualTo (5), "Item 2");
+				Assert.That (arr [2], Is.EqualTo (6), "Item 3");
 
 				Assert.Throws<ArgumentNullException> (() => arr.AddRange ((IList<int>)null), "ANE");
 
@@ -191,11 +191,11 @@ namespace SwiftRuntimeLibraryTests {
 			var collection = (IEnumerable<int>)new int [] { 4, 5, 6 };
 			using (var arr = new SwiftArray<int> ()) {
 				arr.AddRange (collection);
-				Assert.GreaterOrEqual (arr.Capacity, 3, "Capacity 1");
-				Assert.AreEqual (3, arr.Count, "Count 2");
-				Assert.AreEqual (4, arr [0], "Item 1");
-				Assert.AreEqual (5, arr [1], "Item 2");
-				Assert.AreEqual (6, arr [2], "Item 3");
+				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (3), "Capacity 1");
+				Assert.That (arr.Count, Is.EqualTo (3), "Count 2");
+				Assert.That (arr [0], Is.EqualTo (4), "Item 1");
+				Assert.That (arr [1], Is.EqualTo (5), "Item 2");
+				Assert.That (arr [2], Is.EqualTo (6), "Item 3");
 
 				Assert.Throws<ArgumentNullException> (() => arr.AddRange ((IEnumerable<int>)null), "ANE");
 
@@ -209,11 +209,11 @@ namespace SwiftRuntimeLibraryTests {
 		{
 			using (var arr = new SwiftArray<float> (1, 2, 3, 4, 5, 6, 7, 8, 9)) {
 				arr.Clear ();
-				Assert.AreEqual (0, arr.Count, "Count 1");
+				Assert.That (arr.Count, Is.EqualTo (0), "Count 1");
 				arr.Add (1);
-				Assert.AreEqual (1, arr.Count, "Count 2");
+				Assert.That (arr.Count, Is.EqualTo (1), "Count 2");
 				arr.Clear ();
-				Assert.AreEqual (0, arr.Count, "Count 3");
+				Assert.That (arr.Count, Is.EqualTo (0), "Count 3");
 
 				arr.Dispose ();
 				Assert.Throws<ObjectDisposedException> (() => arr.Clear (), "Clear ODE");
@@ -224,14 +224,14 @@ namespace SwiftRuntimeLibraryTests {
 		public void Contains ()
 		{
 			using (var arr = new SwiftArray<ulong> (1, 2, 3, 4, 5, 6, 7, 8, 9)) {
-				Assert.IsTrue (arr.Contains (8), "Contains 1");
-				Assert.IsFalse (arr.Contains (10), "Contains 2");
+				Assert.That (arr.Contains (8), "Contains 1");
+				Assert.That (!arr.Contains (10), "Contains 2");
 				arr.Clear ();
-				Assert.IsFalse (arr.Contains (8), "Contains 3");
-				Assert.IsFalse (arr.Contains (10), "Contains 4");
+				Assert.That (!arr.Contains (8), "Contains 3");
+				Assert.That (!arr.Contains (10), "Contains 4");
 				arr.Add (10);
-				Assert.IsFalse (arr.Contains (8), "Contains 5");
-				Assert.IsTrue (arr.Contains (10), "Contains 6");
+				Assert.That (!arr.Contains (8), "Contains 5");
+				Assert.That (arr.Contains (10), "Contains 6");
 
 				arr.Dispose ();
 				Assert.Throws<ObjectDisposedException> (() => arr.Contains (3), "Contains ODE");
@@ -244,11 +244,11 @@ namespace SwiftRuntimeLibraryTests {
 			using (var arr = new SwiftArray<double> (1, 2, 3, 4, 5, 6, 7, 8, 9)) {
 				var copy = new double [10];
 				arr.CopyTo (copy, 1);
-				CollectionAssert.AreEqual (new double [] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, copy, "CopyTo 1");
+				Assert.That (copy, Is.EquivalentTo (new double [] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }), "CopyTo 1");
 
 				copy = new double [9];
 				Assert.Throws<ArgumentException> (() => arr.CopyTo (copy, 1), "CopyTo 2");
-				CollectionAssert.AreEqual (new double [9], copy, "CopyTo 1");
+				Assert.That (copy, Is.EquivalentTo (new double [9]), "CopyTo 1");
 
 				Assert.Throws<ArgumentOutOfRangeException> (() => arr.CopyTo (copy, -1), "CopyTo 3");
 				Assert.Throws<ArgumentException> (() => arr.CopyTo (copy, int.MaxValue), "CopyTo 4");
@@ -263,15 +263,15 @@ namespace SwiftRuntimeLibraryTests {
 		public void Remove ()
 		{
 			using (var arr = new SwiftArray<ulong> (1, 2, 3, 4, 5, 6, 7, 8, 9)) {
-				Assert.IsTrue (arr.Contains (8), "Contains 1");
-				Assert.IsFalse (arr.Contains (10), "Contains 2");
-				Assert.IsTrue (arr.Remove (8), "Remove 1");
-				Assert.AreEqual (8, arr.Count, "Count 1");
-				Assert.IsFalse (arr.Contains (8), "Contains 3");
-				Assert.IsFalse (arr.Contains (10), "Contains 4");
+				Assert.That (arr.Contains (8), "Contains 1");
+				Assert.That (!arr.Contains (10), "Contains 2");
+				Assert.That (arr.Remove (8), "Remove 1");
+				Assert.That (arr.Count, Is.EqualTo (8), "Count 1");
+				Assert.That (!arr.Contains (8), "Contains 3");
+				Assert.That (!arr.Contains (10), "Contains 4");
 
-				Assert.IsFalse (arr.Remove (8), "Remove 2");
-				Assert.AreEqual (8, arr.Count, "Count 2");
+				Assert.That (!arr.Remove (8), "Remove 2");
+				Assert.That (arr.Count, Is.EqualTo (8), "Count 2");
 
 				arr.Dispose ();
 				Assert.Throws<ObjectDisposedException> (() => arr.Remove (1), "Remove ODE");
@@ -282,8 +282,8 @@ namespace SwiftRuntimeLibraryTests {
 		public void IndexOf ()
 		{
 			using (var arr = new SwiftArray<ulong> (9, 8, 7, 6, 5, 4, 3, 2, 1)) {
-				Assert.AreEqual (2, arr.IndexOf (7), "IndexOf 1");
-				Assert.AreEqual (-1, arr.IndexOf (10), "IndexOf 2");
+				Assert.That (arr.IndexOf (7), Is.EqualTo (2), "IndexOf 1");
+				Assert.That (arr.IndexOf (10), Is.EqualTo (-1), "IndexOf 2");
 
 				arr.Dispose ();
 				Assert.Throws<ObjectDisposedException> (() => arr.IndexOf (5), "IndexOf 4");
@@ -295,9 +295,9 @@ namespace SwiftRuntimeLibraryTests {
 		{
 			using (var arr = new SwiftArray<ulong> (9, 8, 7, 6, 5, 4, 3, 2, 1)) {
 				arr.Insert (4, 20);
-				Assert.AreEqual (10, arr.Count, "Count 1");
-				CollectionAssert.AreEqual (new ulong [] { 9, 8, 7, 6, 20, 5, 4, 3, 2, 1 }, arr, "Items 1");
-				Assert.AreEqual (20, arr [4], "Item 4");
+				Assert.That (arr.Count, Is.EqualTo (10), "Count 1");
+				Assert.That (arr, Is.EquivalentTo (new ulong [] { 9, 8, 7, 6, 20, 5, 4, 3, 2, 1 }), "Items 1");
+				Assert.That (arr [4], Is.EqualTo (20), "Item 4");
 
 				Assert.Throws<ArgumentOutOfRangeException> (() => arr.Insert (-1, 100), "Insert Ex 1");
 				Assert.Throws<ArgumentOutOfRangeException> (() => arr.Insert (11, 100), "Insert Ex 2");
@@ -311,15 +311,15 @@ namespace SwiftRuntimeLibraryTests {
 		public void RemoveAt ()
 		{
 			using (var arr = new SwiftArray<ulong> (9, 8, 7, 6, 5, 4, 3, 2, 1)) {
-				Assert.IsTrue (arr.Contains (8), "Contains 1");
-				Assert.IsFalse (arr.Contains (10), "Contains 2");
+				Assert.That (arr.Contains (8), "Contains 1");
+				Assert.That (!arr.Contains (10), "Contains 2");
 				arr.RemoveAt (1);
-				Assert.AreEqual (8, arr.Count, "Count 1");
-				Assert.IsFalse (arr.Contains (8), "Contains 3");
-				Assert.IsFalse (arr.Contains (10), "Contains 4");
+				Assert.That (arr.Count, Is.EqualTo (8), "Count 1");
+				Assert.That (!arr.Contains (8), "Contains 3");
+				Assert.That (!arr.Contains (10), "Contains 4");
 
-				Assert.IsFalse (arr.Remove (8), "Remove 2");
-				Assert.AreEqual (8, arr.Count, "Count 2");
+				Assert.That (!arr.Remove (8), "Remove 2");
+				Assert.That (arr.Count, Is.EqualTo (8), "Count 2");
 
 				Assert.Throws<ArgumentOutOfRangeException> (() => arr.RemoveAt (-1), "RemoveAt Ex 1");
 				Assert.Throws<ArgumentOutOfRangeException> (() => arr.RemoveAt (20), "RemoveAt Ex 2");
@@ -334,10 +334,10 @@ namespace SwiftRuntimeLibraryTests {
 		public void ReadOnly ()
 		{
 			using (var arr = new SwiftArray<ulong> (9, 8, 7, 6, 5, 4, 3, 2, 1)) {
-				Assert.IsFalse (arr.IsReadOnly, "IsReadOnly 1");
+				Assert.That (!arr.IsReadOnly, "IsReadOnly 1");
 
 				arr.Dispose ();
-				Assert.IsFalse (arr.IsReadOnly, "IsReadOnly 2"); // No ObjectDisposedException
+				Assert.That (!arr.IsReadOnly, "IsReadOnly 2"); // No ObjectDisposedException
 			}
 		}
 	}

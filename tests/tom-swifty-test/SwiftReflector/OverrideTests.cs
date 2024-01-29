@@ -14,6 +14,7 @@ using Dynamo.SwiftLang;
 using SwiftReflector.Inventory;
 using System.Linq;
 using Dynamo.CSLang;
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -31,7 +32,7 @@ namespace SwiftReflector {
 
 				List<ModuleDeclaration> modules = compiler.ReflectToModules (new string [] { compiler.DirectoryPath },
 					new string [] { compiler.DirectoryPath }, "", "NameNotImportant");
-				Assert.AreEqual (1, modules.Count);
+				ClassicAssert.AreEqual (1, modules.Count);
 				return modules [0].AllClasses;
 			}
 		}
@@ -42,7 +43,7 @@ namespace SwiftReflector {
 		{
 			string code = "open class Foo { public init() { }\nopen func doSomething() { }\n}\n";
 			List<ClassDeclaration> classes = ReflectClassDeclarations (code);
-			Assert.AreEqual (1, classes.Count);
+			ClassicAssert.AreEqual (1, classes.Count);
 			ClassDeclaration theClass = classes [0].MakeUnrooted () as ClassDeclaration;
 
 			TypeMapper typeMapper = new TypeMapper (Compiler.kTypeDatabases, UnicodeMapper.Default);
@@ -50,10 +51,10 @@ namespace SwiftReflector {
 
 			OverrideBuilder overrider = new OverrideBuilder (typeMapper, theClass, null, new ModuleDeclaration ("OverrideModule"));
 
-			Assert.IsNotNull (overrider.OverriddenClass);
-			Assert.AreEqual (1, overrider.ClassImplementations.Count);
-			Assert.IsNotNull (overrider.OverriddenVirtualMethods);
-			Assert.AreEqual (1, overrider.OverriddenVirtualMethods.Count);
+			ClassicAssert.IsNotNull (overrider.OverriddenClass);
+			ClassicAssert.AreEqual (1, overrider.ClassImplementations.Count);
+			ClassicAssert.IsNotNull (overrider.OverriddenVirtualMethods);
+			ClassicAssert.AreEqual (1, overrider.OverriddenVirtualMethods.Count);
 
 			using (TempDirectoryFilenameProvider temp = new TempDirectoryFilenameProvider (null, false)) {
 				string file = temp.ProvideFileFor ("output.swift");

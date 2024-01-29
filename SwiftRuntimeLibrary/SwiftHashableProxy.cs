@@ -4,7 +4,6 @@
 using System;
 using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary.SwiftMarshal;
-using Xamarin.iOS;
 
 namespace SwiftRuntimeLibrary {
 	public class SwiftHashableProxy : BaseProxy, ISwiftHashable {
@@ -24,8 +23,7 @@ namespace SwiftRuntimeLibrary {
 
 		struct Hashable_xam_vtable {
 			public delegate nint Delfunc0 (IntPtr self);
-			[MarshalAs (UnmanagedType.FunctionPtr)]
-			public Delfunc0 func0;
+			public unsafe delegate* unmanaged<IntPtr, nint> func0;
 		}
 
 		static Hashable_xam_vtable vtableIHashable;
@@ -34,9 +32,7 @@ namespace SwiftRuntimeLibrary {
 			XamSetVTable ();
 		}
 
-#if __IOS__
-		[MonoPInvokeCallback(typeof(Hashable_xam_vtable.Delfunc0))]
-#endif
+		[UnmanagedCallersOnly]
 		static nint HashFunc (IntPtr selfPtr)
 		{
 			var one = SwiftObjectRegistry.Registry.ProxyForEveryProtocolHandle<ISwiftHashable> (selfPtr);
@@ -45,8 +41,10 @@ namespace SwiftRuntimeLibrary {
 
 		static void XamSetVTable ()
 		{
-			vtableIHashable.func0 = HashFunc;
-			PISetVtable (ref vtableIHashable);
+			unsafe {
+				vtableIHashable.func0 = &HashFunc;
+				PISetVtable (ref vtableIHashable);
+			}
 		}
 
 		public nint HashValue {

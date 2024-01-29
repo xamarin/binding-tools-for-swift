@@ -5,9 +5,6 @@ using System;
 using System.Runtime.InteropServices;
 using SwiftRuntimeLibrary;
 using SwiftRuntimeLibrary.SwiftMarshal;
-#if __IOS__
-using Xamarin.iOS;
-#endif
 
 namespace SwiftRuntimeLibrary {
 	[SwiftTypeName ("Swift.CustomStringConvertible")]
@@ -41,9 +38,7 @@ namespace SwiftRuntimeLibrary {
 
 		public override ISwiftExistentialContainer ProxyExistentialContainer => container;
 
-#if __IOS__
-		[MonoPInvokeCallback (typeof (CustomStringConvertible_xam_vtable.Delfunc0))]
-#endif
+		[UnmanagedCallersOnly]
 		static void xamVtable_recv_get_Description (IntPtr xam_retval, IntPtr self)
 		{
 			var container = new SwiftExistentialContainer1 (self);
@@ -54,14 +49,11 @@ namespace SwiftRuntimeLibrary {
 
 		static void XamSetVTable ()
 		{
-			xamVtableICustomStringConvertible.func0 = xamVtable_recv_get_Description;
 			unsafe {
-
+				xamVtableICustomStringConvertible.func0 = &xamVtable_recv_get_Description;
 				byte* vtData = stackalloc byte [Marshal.SizeOf (xamVtableICustomStringConvertible)];
-
-				IntPtr vtPtr = new IntPtr (vtData);
-				Marshal.WriteIntPtr (vtPtr, Marshal.GetFunctionPointerForDelegate (xamVtableICustomStringConvertible.func0));
-				NativeMethodsForICustomStringConvertible.SwiftXamSetVtable (vtPtr);
+				Marshal.WriteIntPtr ((IntPtr)vtData, (IntPtr)xamVtableICustomStringConvertible.func0);
+				NativeMethodsForICustomStringConvertible.SwiftXamSetVtable ((IntPtr)vtData);
 			}
 		}
 
@@ -81,9 +73,7 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		struct CustomStringConvertible_xam_vtable {
-			public delegate void Delfunc0 (IntPtr xam_retval, IntPtr self);
-			[MarshalAs (UnmanagedType.FunctionPtr)]
-			public Delfunc0 func0;
+			public unsafe delegate *unmanaged<IntPtr, IntPtr, void> func0;
 		}
 
 		static IntPtr protocolWitnessTable;

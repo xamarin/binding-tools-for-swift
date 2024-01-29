@@ -15,7 +15,7 @@ using SwiftReflector.Inventory;
 using System.Linq;
 using Dynamo.CSLang;
 using System.Text;
-
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -471,7 +471,7 @@ namespace SwiftReflector {
 				var exeOutFilename = provider.UniquePath (null, "CSWrap", "exe");
 				CodeWriter.WriteToFile (csOutFilename, csfile);
 
-				Assert.Throws <Exception> (() => {
+				ClassicAssert.Throws <Exception> (() => {
 					Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename);
 				});
 			}
@@ -523,7 +523,7 @@ namespace SwiftReflector {
 
 				CodeWriter.WriteToFile (csOutFilename, csfile);
 
-				Assert.Throws<Exception> (() => {
+				ClassicAssert.Throws<Exception> (() => {
 					Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename);
 				});
 			}
@@ -620,7 +620,7 @@ namespace SwiftReflector {
 
 				CodeWriter.WriteToFile (csOutFilename, csfile);
 
-				Assert.Throws<Exception> (() => {
+				ClassicAssert.Throws<Exception> (() => {
 					Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), csOutFilename);
 				});
 			}
@@ -703,12 +703,12 @@ namespace SwiftReflector {
 				CodeWriter.WriteToFile (csOutFilename, csfile);
 				Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeFilename, platform: PlatformName.macOS);
 
-				Exception e = Assert.Throws<Exception> (() => {
+				Exception e = ClassicAssert.Throws<Exception> (() => {
 					TestRunning.CopyTestReferencesTo (provider.DirectoryPath);
 					string output = Compiler.RunWithMono (exeFilename, provider.DirectoryPath, platform: PlatformName.macOS);
-					Assert.AreEqual ("1\n", output);
+					ClassicAssert.AreEqual ("1\n", output);
 				});
-				Assert.True (e.Message.Contains ("NotSupportedException"));
+				ClassicAssert.True (e.Message.Contains ("NotSupportedException"));
 			}
 		}
 
@@ -1191,7 +1191,7 @@ namespace SwiftReflector {
 		[Test]
 		public void TestPropBag ()
 		{
-			Assert.AreEqual ("", WrapPropertyBag ("nint", "5"));
+			ClassicAssert.AreEqual ("", WrapPropertyBag ("nint", "5"));
 		}
 
 		[Test]

@@ -12,7 +12,7 @@ using tomwiftytest;
 using SwiftReflector.IOUtils;
 using Dynamo.CSLang;
 using SwiftReflector.Demangling;
-
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -31,7 +31,7 @@ namespace SwiftReflector {
 				ModuleInventory inventory = ModuleInventory.FromFile (montyLib.Filename, errors);
 				Utils.CheckErrors (errors);
 				ClassContents cl = inventory.ClassesForName (new SwiftName ("Xython", false)).FirstOrDefault ();
-				Assert.IsNotNull (cl);
+				ClassicAssert.IsNotNull (cl);
 
 				if (cl.WitnessTable == null || cl.WitnessTable.MangledNames == null ||
 				    cl.WitnessTable.MangledNames.Count () == 0)
@@ -40,9 +40,9 @@ namespace SwiftReflector {
 				foreach (var oi in cl.Methods.Values) {
 					foreach (TLFunction f in oi.Functions) {
 						if (f.MangledName.Contains ("finalmethod")) {
-							Assert.IsTrue (cl.IsFinal (f));
+							ClassicAssert.IsTrue (cl.IsFinal (f));
 						} else if (f.MangledName.Contains ("virtmethod")) {
-							Assert.IsFalse (cl.IsFinal (f));
+							ClassicAssert.IsFalse (cl.IsFinal (f));
 						}
 					}
 				}

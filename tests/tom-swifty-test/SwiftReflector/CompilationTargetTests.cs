@@ -6,6 +6,7 @@ using SwiftReflector.IOUtils;
 using Xamarin;
 using System.Linq;
 using tomwiftytest;
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -15,20 +16,20 @@ namespace SwiftReflector {
 		{
 			var target = new CompilationTarget (PlatformName.macOS, TargetCpu.X86_64,
 				TargetEnvironment.Device, new Version ("14.3"));
-			Assert.AreEqual ("x86_64-apple-macosx14.3", target.ToString ());
+			ClassicAssert.AreEqual ("x86_64-apple-macosx14.3", target.ToString ());
 		}
 
 		[Test]
 		public void CantHaveNullTarget ()
 		{
-			Assert.Throws (typeof (ArgumentNullException), () => new CompilationTarget (PlatformName.iOS, TargetCpu.Arm64,
+			ClassicAssert.Throws (typeof (ArgumentNullException), () => new CompilationTarget (PlatformName.iOS, TargetCpu.Arm64,
 				TargetEnvironment.Simulator, null));
 		}
 
 		[Test]
 		public void CantHaveNonePlatform ()
 		{
-			Assert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget (PlatformName.None, TargetCpu.Arm64,
+			ClassicAssert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget (PlatformName.None, TargetCpu.Arm64,
 					    TargetEnvironment.Simulator, null));
 		}
 
@@ -37,7 +38,7 @@ namespace SwiftReflector {
 		{
 			var target = new CompilationTarget (PlatformName.watchOS, TargetCpu.I386,
 				TargetEnvironment.Simulator, new Version ("3.2"));
-			Assert.AreEqual ("i386-apple-watchos3.2-simulator", target.ToString ());
+			ClassicAssert.AreEqual ("i386-apple-watchos3.2-simulator", target.ToString ());
 		}
 
 		[Test]
@@ -55,14 +56,14 @@ namespace SwiftReflector {
 				var target = UniformTargetRepresentation.FromPath (moduleName,
 					new List<string> () { provider.DirectoryPath }, errors);
 
-				Assert.IsNotNull (target, "Didn't get a target");
-				Assert.IsNotNull (target.Library);
-				Assert.AreEqual (TargetEnvironment.Device, target.Library.Environment, "wrong environment");
-				Assert.AreEqual (1, target.Library.Targets.Count, "more targets than we wanted");
-				Assert.AreEqual (TargetCpu.X86_64, target.Library.Targets [0].Cpu, "cpu mismatch");
-				Assert.AreEqual (PlatformName.macOS, target.Library.OperatingSystem, "operating system mismatch");
-				Assert.AreEqual (new Version ("10.9"), target.Library.Targets [0].MinimumOSVersion, "os version mismatch");
-				Assert.AreEqual (TargetManufacturer.Apple, target.Library.Targets [0].Manufacturer, "wrong manufacturer");
+				ClassicAssert.IsNotNull (target, "Didn't get a target");
+				ClassicAssert.IsNotNull (target.Library);
+				ClassicAssert.AreEqual (TargetEnvironment.Device, target.Library.Environment, "wrong environment");
+				ClassicAssert.AreEqual (1, target.Library.Targets.Count, "more targets than we wanted");
+				ClassicAssert.AreEqual (TargetCpu.X86_64, target.Library.Targets [0].Cpu, "cpu mismatch");
+				ClassicAssert.AreEqual (PlatformName.macOS, target.Library.OperatingSystem, "operating system mismatch");
+				ClassicAssert.AreEqual (new Version ("10.9"), target.Library.Targets [0].MinimumOSVersion, "os version mismatch");
+				ClassicAssert.AreEqual (TargetManufacturer.Apple, target.Library.Targets [0].Manufacturer, "wrong manufacturer");
 			}
 		}
 
@@ -147,11 +148,11 @@ namespace SwiftReflector {
 				new List<TargetCpu> () { TargetCpu.X86_64 }, true)) {
 
 				var outputFile = Path.Combine (output.DirectoryPath, "libNoNameModule.dylib");
-				Assert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
+				ClassicAssert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (1, macho.Count, "wrong contents");
-					Assert.AreEqual (MachO.Architectures.x86_64, macho [0].Architecture, "wrong arch");
+					ClassicAssert.AreEqual (1, macho.Count, "wrong contents");
+					ClassicAssert.AreEqual (MachO.Architectures.x86_64, macho [0].Architecture, "wrong arch");
 				}
 			}
 		}
@@ -166,12 +167,12 @@ namespace SwiftReflector {
 				new List<TargetCpu> () { TargetCpu.Arm64 }, false)) {
 
 				var outputFile = Path.Combine (output.DirectoryPath, "NoNameModule.framework", "NoNameModule");
-				Assert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
+				ClassicAssert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (1, macho.Count, "wrong contents");
+					ClassicAssert.AreEqual (1, macho.Count, "wrong contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
-					Assert.IsNotNull (file, "no arm64");
+					ClassicAssert.IsNotNull (file, "no arm64");
 				}
 			}
 		}
@@ -186,14 +187,14 @@ namespace SwiftReflector {
 				new List<TargetCpu> () { TargetCpu.Arm64, TargetCpu.X86_64 }, null, false)) {
 
 				var outputFile = Path.Combine (output.DirectoryPath, "NoNameModule.framework", "NoNameModule");
-				Assert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
+				ClassicAssert.IsTrue (File.Exists (outputFile), "we didn't get a file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (2, macho.Count, "wrong contents");
+					ClassicAssert.AreEqual (2, macho.Count, "wrong contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
-					Assert.IsNotNull (file, "no arm64");
+					ClassicAssert.IsNotNull (file, "no arm64");
 					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.x86_64);
-					Assert.IsNotNull (file, "no x86_64");
+					ClassicAssert.IsNotNull (file, "no x86_64");
 				}
 			}
 		}
@@ -210,32 +211,32 @@ namespace SwiftReflector {
 				new List<TargetCpu> () { TargetCpu.Arm64 }, false)) {
 
 				var outputDirectory = Path.Combine (output.DirectoryPath, "NoNameModule.xcframework");
-				Assert.IsTrue (Directory.Exists (outputDirectory), "no xcframework");
+				ClassicAssert.IsTrue (Directory.Exists (outputDirectory), "no xcframework");
 
 				var deviceFM = Path.Combine (outputDirectory, "ios-arm64", "NoNameModule.framework");
-				Assert.IsTrue (Directory.Exists (deviceFM), "no device directory");
+				ClassicAssert.IsTrue (Directory.Exists (deviceFM), "no device directory");
 
 				var simFM = Path.Combine (outputDirectory, "ios-arm64_x86_64-simulator", "NoNameModule.framework");
-				Assert.IsTrue (Directory.Exists (simFM), "no simulator directory");
+				ClassicAssert.IsTrue (Directory.Exists (simFM), "no simulator directory");
 
 				var outputFile = Path.Combine (deviceFM, "NoNameModule");
-				Assert.IsTrue (File.Exists (outputFile), "we didn't get a device file!");
+				ClassicAssert.IsTrue (File.Exists (outputFile), "we didn't get a device file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (1, macho.Count, "wrong device contents");
+					ClassicAssert.AreEqual (1, macho.Count, "wrong device contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
-					Assert.IsNotNull (file, "device: no arm64");
+					ClassicAssert.IsNotNull (file, "device: no arm64");
 				}
 
 				outputFile = Path.Combine (simFM, "NoNameModule");
-				Assert.IsTrue (File.Exists (outputFile), "we didn't get a simulator file!");
+				ClassicAssert.IsTrue (File.Exists (outputFile), "we didn't get a simulator file!");
 
 				using (var macho = MachO.Read (outputFile, ReadingMode.Immediate)) {
-					Assert.AreEqual (2, macho.Count, "wrong simulator contents");
+					ClassicAssert.AreEqual (2, macho.Count, "wrong simulator contents");
 					var file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.ARM64);
-					Assert.IsNotNull (file, "simulator: no arm64");
+					ClassicAssert.IsNotNull (file, "simulator: no arm64");
 					file = macho.FirstOrDefault (f => f.Architecture == MachO.Architectures.x86_64);
-					Assert.IsNotNull (file, "simulator: no x86_64");
+					ClassicAssert.IsNotNull (file, "simulator: no x86_64");
 				}
 			}
 		}
@@ -252,18 +253,18 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Library, "wasn't a library");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Library, "wasn't a library");
 				var lib = rep.Library;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "libNoNameModule.dylib"), lib.Path, "wrong lib path");
-				Assert.AreEqual (1, lib.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "libNoNameModule.dylib"), lib.Path, "wrong lib path");
+				ClassicAssert.AreEqual (1, lib.Targets.Count, "wrong number of targets");
 				var target = lib.Targets [0];
-				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, "wrong cpu");
-				Assert.AreEqual (PlatformName.macOS, target.OperatingSystem, "wrong os");
-				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), "wrong version");
-				Assert.AreEqual (TargetEnvironment.Device, target.Environment, "wrong environment");
+				ClassicAssert.AreEqual (TargetCpu.X86_64, target.Cpu, "wrong cpu");
+				ClassicAssert.AreEqual (PlatformName.macOS, target.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), "wrong version");
+				ClassicAssert.AreEqual (TargetEnvironment.Device, target.Environment, "wrong environment");
 			}
 		}
 
@@ -279,18 +280,18 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Framework, "wasn't a framework");
 				var fwk = rep.Framework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.macOS, fwk.OperatingSystem, "wrong os");
-				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				ClassicAssert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.macOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
 				var target = fwk.Targets [0];
-				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, "wrong cpu");
-				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), "wrong version");
+				ClassicAssert.AreEqual (TargetCpu.X86_64, target.Cpu, "wrong cpu");
+				ClassicAssert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), "wrong version");
 			}
 		}
 
@@ -306,19 +307,19 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Framework, "wasn't a framework");
 				var fwk = rep.Framework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
-				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				ClassicAssert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
 
 				foreach (var target in fwk.Targets) {
-					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-					Assert.IsTrue (target.Cpu == TargetCpu.Arm64, $"wrong cpu in {target}");
+					ClassicAssert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+					ClassicAssert.IsTrue (target.Cpu == TargetCpu.Arm64, $"wrong cpu in {target}");
 				}
 			}
 		}
@@ -335,19 +336,19 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Framework, "wasn't a framework");
 				var fwk = rep.Framework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (2, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
-				Assert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				ClassicAssert.AreEqual (2, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
 
 				foreach (var target in fwk.Targets) {
-					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64, $"wrong cpu in {target}");
+					ClassicAssert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+					ClassicAssert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64, $"wrong cpu in {target}");
 				}
 			}
 		}
@@ -365,23 +366,23 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.XCFramework, "wasn't a xcframework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.XCFramework, "wasn't a xcframework");
 				var xcfwk = rep.XCFramework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.xcframework"), xcfwk.Path, "wrong xcfwk path");
-				Assert.AreEqual (2, xcfwk.Frameworks.Count, "wrong number of frameworks");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.xcframework"), xcfwk.Path, "wrong xcfwk path");
+				ClassicAssert.AreEqual (2, xcfwk.Frameworks.Count, "wrong number of frameworks");
 
 				var fwk = xcfwk.Frameworks.FirstOrDefault (fw => fw.Environment == TargetEnvironment.Device);
-				Assert.IsNotNull (fwk, "not a device framwwork");
+				ClassicAssert.IsNotNull (fwk, "not a device framwwork");
 
-				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.iOS, fwk.OperatingSystem, "wrong os");
 
 				foreach (var target in fwk.Targets) {
-					Assert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-					Assert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64, $"wrong cpu in {target}");
+					ClassicAssert.AreEqual ("10.9", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+					ClassicAssert.IsTrue (target.Cpu == TargetCpu.Arm64 || target.Cpu == TargetCpu.X86_64, $"wrong cpu in {target}");
 				}
 			}
 		}
@@ -398,19 +399,19 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Framework, "wasn't a framework");
 				var fwk = rep.Framework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.tvOS, fwk.OperatingSystem, "wrong os");
-				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				ClassicAssert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.tvOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
 
 				var target = fwk.Targets [0];
-				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-				Assert.AreEqual (TargetCpu.Arm64, target.Cpu, $"wrong cpu in {target}");
+				ClassicAssert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				ClassicAssert.AreEqual (TargetCpu.Arm64, target.Cpu, $"wrong cpu in {target}");
 			}
 
 		}
@@ -427,19 +428,19 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Framework, "wasn't a framework");
 				var fwk = rep.Framework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.tvOS, fwk.OperatingSystem, "wrong os");
-				Assert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				ClassicAssert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.tvOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
 
 				var target = fwk.Targets [0];
-				Assert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, $"wrong cpu in {target}");
+				ClassicAssert.AreEqual ("11.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				ClassicAssert.AreEqual (TargetCpu.X86_64, target.Cpu, $"wrong cpu in {target}");
 			}
 
 		}
@@ -457,19 +458,19 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Framework, "wasn't a framework");
 				var fwk = rep.Framework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.watchOS, fwk.OperatingSystem, "wrong os");
-				Assert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				ClassicAssert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.watchOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (TargetEnvironment.Device, fwk.Environment, "wrong environment");
 
 				var target = fwk.Targets [0];
-				Assert.AreEqual ("7.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-				Assert.AreEqual (TargetCpu.Arm64_32, target.Cpu, $"wrong cpu in {target}");
+				ClassicAssert.AreEqual ("7.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				ClassicAssert.AreEqual (TargetCpu.Arm64_32, target.Cpu, $"wrong cpu in {target}");
 			}
 
 		}
@@ -486,19 +487,19 @@ namespace SwiftReflector {
 
 				var errors = new ErrorHandling ();
 				var rep = UniformTargetRepresentation.FromPath ("NoNameModule", new List<string> () { output.DirectoryPath }, errors);
-				Assert.IsNotNull (rep, "no representation");
-				Assert.IsFalse (errors.AnyErrors, "had errors");
-				Assert.IsNotNull (rep.Framework, "wasn't a framework");
+				ClassicAssert.IsNotNull (rep, "no representation");
+				ClassicAssert.IsFalse (errors.AnyErrors, "had errors");
+				ClassicAssert.IsNotNull (rep.Framework, "wasn't a framework");
 				var fwk = rep.Framework;
 
-				Assert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
-				Assert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
-				Assert.AreEqual (PlatformName.watchOS, fwk.OperatingSystem, "wrong os");
-				Assert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
+				ClassicAssert.AreEqual (Path.Combine (output.DirectoryPath, "NoNameModule.framework"), fwk.Path, "wrong fwk path");
+				ClassicAssert.AreEqual (1, fwk.Targets.Count, "wrong number of targets");
+				ClassicAssert.AreEqual (PlatformName.watchOS, fwk.OperatingSystem, "wrong os");
+				ClassicAssert.AreEqual (TargetEnvironment.Simulator, fwk.Environment, "wrong environment");
 
 				var target = fwk.Targets [0];
-				Assert.AreEqual ("7.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
-				Assert.AreEqual (TargetCpu.X86_64, target.Cpu, $"wrong cpu in {target}");
+				ClassicAssert.AreEqual ("7.0", target.MinimumOSVersion.ToString (), $"wrong minimum os in {target}");
+				ClassicAssert.AreEqual (TargetCpu.X86_64, target.Cpu, $"wrong cpu in {target}");
 			}
 
 		}
@@ -511,28 +512,28 @@ namespace SwiftReflector {
 		{
 			var testString = $"i386-apple-{os}10.1";
 			var compilationTarget = new CompilationTarget (testString);
-			Assert.AreEqual (platform, compilationTarget.OperatingSystem, $"wrong os {os}");
-			Assert.AreEqual (new Version ("10.1"), compilationTarget.MinimumOSVersion, $"wrong version");
+			ClassicAssert.AreEqual (platform, compilationTarget.OperatingSystem, $"wrong os {os}");
+			ClassicAssert.AreEqual (new Version ("10.1"), compilationTarget.MinimumOSVersion, $"wrong version");
 		}
 
 		[Test]
 		public void FromStringOSFail ()
 		{
 			var testString = $"i386-apple-steveos3.7";
-			Assert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget (testString));
+			ClassicAssert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget (testString));
 		}
 
 		[Test]
 		public void FromStringManufacturerSuccess ()
 		{
 			var compilationTarget = new CompilationTarget ("i386-apple-ios10.1");
-			Assert.AreEqual (TargetManufacturer.Apple, compilationTarget.Manufacturer);
+			ClassicAssert.AreEqual (TargetManufacturer.Apple, compilationTarget.Manufacturer);
 		}
 
 		[Test]
 		public void FromStringManufacturerFail ()
 		{
-			Assert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget ("i386-banana-ios10.1"));
+			ClassicAssert.Throws (typeof (ArgumentOutOfRangeException), () => new CompilationTarget ("i386-banana-ios10.1"));
 		}
 
 		[TestCase ("arm64", TargetCpu.Arm64)]
@@ -542,14 +543,14 @@ namespace SwiftReflector {
 		{
 			var testString = $"{cpu}-apple-ios10.1";
 			var compilationTarget = new CompilationTarget (testString);
-			Assert.AreEqual (targetCpu, compilationTarget.Cpu);
+			ClassicAssert.AreEqual (targetCpu, compilationTarget.Cpu);
 		}
 
 		[Test]
 		public void FromStringCpuFail ()
 		{
 			var testString = $"blah-apple-ios10.1";
-			Assert.Throws(typeof (ArgumentOutOfRangeException), () => new CompilationTarget (testString));
+			ClassicAssert.Throws(typeof (ArgumentOutOfRangeException), () => new CompilationTarget (testString));
 		}
 	}
 }

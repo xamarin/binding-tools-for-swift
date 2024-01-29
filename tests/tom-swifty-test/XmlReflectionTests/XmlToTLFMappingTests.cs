@@ -15,6 +15,7 @@ using SwiftReflector.Demangling;
 using SwiftReflector.Inventory;
 using SwiftReflector.TypeMapping;
 using SwiftReflector.SwiftInterfaceReflector;
+using NUnit.Framework.Legacy;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -65,14 +66,14 @@ namespace XmlReflectionTests {
 			(var mi, var mod) = ReflectToModules (code, "CanFind");
 
 			FunctionDeclaration funcDecl = mod.Functions.FirstOrDefault (funcFinder);
-			Assert.IsNotNull (funcDecl, "no function found");
+			ClassicAssert.IsNotNull (funcDecl, "no function found");
 
 			// note: if you get an NRE from here then you are testing an argument that includes
 			// an associated type path from a generic. Don't do that. You need much more infrastructure to
 			// do that than you really want here.
 			TLFunction func = XmlToTLFunctionMapper.ToTLFunction (funcDecl, mi, null);
-			Assert.IsNotNull (func, $"failed to find TLFunction for {funcDecl.Name}");
-			Assert.IsTrue (tlVerifier (func), "verifier failed");
+			ClassicAssert.IsNotNull (func, $"failed to find TLFunction for {funcDecl.Name}");
+			ClassicAssert.IsTrue (tlVerifier (func), "verifier failed");
 		}
 
 		[Test]
@@ -220,7 +221,7 @@ namespace XmlReflectionTests {
 		{
 			SwiftTupleType tuple = t as SwiftTupleType;
 			if (tuple != null) {
-				Assert.AreEqual (1, tuple.Contents.Count, $"Item expected to be a single tuple element but as {tuple.Contents.Count}.");
+				ClassicAssert.AreEqual (1, tuple.Contents.Count, $"Item expected to be a single tuple element but as {tuple.Contents.Count}.");
 				return tuple.Contents [0];
 			} else {
 				return t;
@@ -307,15 +308,15 @@ namespace XmlReflectionTests {
 			var mod = inventoryModule.Item2;
 
 			ClassDeclaration classDecl = mod.AllClasses.FirstOrDefault (classFinder);
-			Assert.IsNotNull (classDecl, "nominal type not found");
+			ClassicAssert.IsNotNull (classDecl, "nominal type not found");
 
 			FunctionDeclaration funcDecl = classDecl.AllMethodsNoCDTor ().FirstOrDefault (funcFinder);
-			Assert.IsNotNull (funcDecl, "func decl not found");
+			ClassicAssert.IsNotNull (funcDecl, "func decl not found");
 
 			// see the note in the implementation of CanFindThing above
 			TLFunction func = XmlToTLFunctionMapper.ToTLFunction (funcDecl, mi, null);
-			Assert.IsNotNull (func, "TLFunction not found");
-			Assert.IsTrue (tlVerifier (func), "verifier failed");
+			ClassicAssert.IsNotNull (func, "TLFunction not found");
+			ClassicAssert.IsTrue (tlVerifier (func), "verifier failed");
 		}
 
 		[Test]
@@ -434,16 +435,16 @@ namespace XmlReflectionTests {
 			var mod = inventoryModule.Item2;
 
 			ClassDeclaration classDecl = mod.AllClasses.FirstOrDefault (cl => cl.Name == "Bar");
-			Assert.IsNotNull (classDecl);
+			ClassicAssert.IsNotNull (classDecl);
 
 			PropertyDeclaration propDecl = classDecl.Members.OfType<PropertyDeclaration> ().FirstOrDefault (p => p.Name == "x");
-			Assert.IsNotNull (propDecl);
+			ClassicAssert.IsNotNull (propDecl);
 
 			FunctionDeclaration getter = propDecl.GetGetter ();
-			Assert.IsNotNull (getter);
+			ClassicAssert.IsNotNull (getter);
 
 			FunctionDeclaration setter = propDecl.GetSetter ();
-			Assert.IsNotNull (setter);
+			ClassicAssert.IsNotNull (setter);
 		}
 
 
@@ -455,22 +456,22 @@ namespace XmlReflectionTests {
 			var mod = inventoryModule.Item2;
 
 			ClassDeclaration classDecl = mod.AllClasses.FirstOrDefault (classFinder);
-			Assert.IsNotNull (classDecl, "null class");
+			ClassicAssert.IsNotNull (classDecl, "null class");
 
 			PropertyDeclaration propDecl = classDecl.Members.OfType<PropertyDeclaration> ().FirstOrDefault (propFinder);
-			Assert.IsNotNull (propDecl, "null property");
+			ClassicAssert.IsNotNull (propDecl, "null property");
 
 			FunctionDeclaration getter = propDecl.GetGetter ();
-			Assert.IsNotNull (getter, "null getter");
+			ClassicAssert.IsNotNull (getter, "null getter");
 
 			FunctionDeclaration setter = propDecl.GetSetter ();
-			Assert.IsNotNull (setter, "null setter");
+			ClassicAssert.IsNotNull (setter, "null setter");
 
 			TLFunction tlgetter = XmlToTLFunctionMapper.ToTLFunction (getter, mi, null);
-			Assert.IsNotNull (tlgetter, "null tlgetter");
+			ClassicAssert.IsNotNull (tlgetter, "null tlgetter");
 
 			TLFunction tlsetter = XmlToTLFunctionMapper.ToTLFunction (setter, mi, null);
-			Assert.IsNotNull (tlsetter, "null tlsetter");
+			ClassicAssert.IsNotNull (tlsetter, "null tlsetter");
 		}
 
 		[Test]

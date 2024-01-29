@@ -53,13 +53,18 @@ namespace Dynamo.CSLang {
 	}
 
 	public class CSFieldDeclaration : CSVariableDeclaration {
-		public CSFieldDeclaration (CSType type, IEnumerable<CSBinding> bindings, CSVisibility vis = CSVisibility.None, bool isStatic = false, bool isReadonly = false)
+		public CSFieldDeclaration (CSType type, IEnumerable<CSBinding> bindings, CSVisibility vis = CSVisibility.None, bool isStatic = false, bool isReadonly = false, bool isUnsafe = false)
 			: base (type, bindings)
 		{
 			Visibilty = vis;
 			IsStatic = isStatic;
+			IsUnsafe = isUnsafe;
 			if (isReadonly) {
 				this.Insert (0, new SimpleElement ("readonly"));
+				this.Insert (1, SimpleElement.Spacer);
+			}
+			if (IsUnsafe) {
+				this.Insert (0, new SimpleElement ("unsafe"));
 				this.Insert (1, SimpleElement.Spacer);
 			}
 			if (isStatic) {
@@ -72,19 +77,20 @@ namespace Dynamo.CSLang {
 			}
 		}
 
-		public CSFieldDeclaration (CSType type, string name, ICSExpression value = null, CSVisibility vis = CSVisibility.None, bool isSatic = false, bool isReadonly = false)
-			: this (type, new CSIdentifier (name), value, vis, isSatic, isReadonly)
+		public CSFieldDeclaration (CSType type, string name, ICSExpression value = null, CSVisibility vis = CSVisibility.None, bool isStatic = false, bool isReadonly = false, bool isUnsafe = false)
+			: this (type, new CSIdentifier (name), value, vis, isStatic, isReadonly, isUnsafe)
 		{
 		}
 
-		public CSFieldDeclaration (CSType type, CSIdentifier name, ICSExpression value = null, CSVisibility vis = CSVisibility.None, bool isStatic = false, bool isReadOnly = false)
-			: this (type, new CSBinding [] { new CSBinding (name, value) }, vis, isStatic, isReadOnly)
+		public CSFieldDeclaration (CSType type, CSIdentifier name, ICSExpression value = null, CSVisibility vis = CSVisibility.None, bool isStatic = false, bool isReadOnly = false, bool isUnsafe = false)
+			: this (type, new CSBinding [] { new CSBinding (name, value) }, vis, isStatic, isReadOnly, isUnsafe)
 		{
 		}
 
 
 		public CSVisibility Visibilty { get; private set; }
 		public bool IsStatic { get; private set; }
+		public bool IsUnsafe { get; private set; }
 
 		public static CSLine FieldLine (CSType type, CSIdentifier name, ICSExpression value = null, CSVisibility vis = CSVisibility.None, bool isStatic = false)
 		{

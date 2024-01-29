@@ -1,92 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetFramework>net7.0</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{2BB83AA6-D9DB-432F-8FC1-7AC83E7FE97B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DylibBinder</RootNamespace>
-    <AssemblyName>DylibBinder</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Platforms>x86;AnyCPU</Platforms>
     <ExternalConsole>true</ExternalConsole>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ExternalConsole>true</ExternalConsole>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="Mono.Options">
-      <HintPath>..\packages\Mono.Options.6.6.0.161\lib\net40\Mono.Options.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
-    <Reference Include="mscorlib" />
+    <ProjectReference Include="..\Dynamo\Dynamo.csproj" />
+    <ProjectReference Include="..\SwiftReflector\SwiftReflector.csproj" />
+    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj" />
+    <ProjectReference Include="..\tom-swifty\tom-swifty.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CheckInventory.cs" />
-    <Compile Include="DylibBinderOptions.cs" />
-    <Compile Include="InnerX.cs" />
-    <Compile Include="StringExtensions.cs" />
-    <Compile Include="DBTopLevel.cs" />
-    <Compile Include="DBTypeDeclaration.cs" />
-    <Compile Include="DBFunc.cs" />
-    <Compile Include="DBProperty.cs" />
-    <Compile Include="DBParameter.cs" />
-    <Compile Include="DBGenericParameter.cs" />
-    <Compile Include="DBAssociatedType.cs" />
-    <Compile Include="SwiftTypeToString.cs" />
-    <Compile Include="DBInnerTypes.cs" />
-    <Compile Include="XmlGenerator.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="SortedSetExtensions.cs" />
-    <Compile Include="DylibBinderReflector.cs" />
-    <Compile Include="DBModule.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="README.md" />
-    <None Include="packages.config" />
-    <None Include="Makefile" />
-    <None Include="IgnoreList.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Dynamo\Dynamo.csproj">
-      <Project>{D0E2964B-34C9-4FEE-A638-A10E2E4A0917}</Project>
-      <Name>Dynamo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SwiftReflector\SwiftReflector.csproj">
-      <Project>{65E8BE11-4D82-4EA5-9D14-3CA044D443EF}</Project>
-      <Name>SwiftReflector</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SwiftRuntimeLibrary\SwiftRuntimeLibrary.csproj">
-      <Project>{B7E6CF5A-B836-41CF-988C-A83607AF5445}</Project>
-      <Name>SwiftRuntimeLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\tom-swifty\tom-swifty.csproj">
-      <Project>{8CAC7366-9650-440D-A3C5-36D880285DD5}</Project>
-      <Name>tom-swifty</Name>
-    </ProjectReference>
+    <PackageReference Include="Mono.Options" Version="6.6.0.161" />
   </ItemGroup>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

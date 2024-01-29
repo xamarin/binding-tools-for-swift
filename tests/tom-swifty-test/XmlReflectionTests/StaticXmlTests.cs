@@ -6,6 +6,7 @@ using System.Linq;
 using NUnit.Framework;
 using SwiftReflector.SwiftXmlReflection;
 using System.Collections.Generic;
+using NUnit.Framework.Legacy;
 
 namespace XmlReflectionTests {
 	[TestFixture]
@@ -28,21 +29,21 @@ namespace XmlReflectionTests {
 								"   </modulelist>" +
 								"</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<FunctionDeclaration> functions = modules [0].Functions.ToList ();
-			Assert.AreEqual (1, functions.Count);
-			Assert.AreEqual ("returns5", functions [0].Name);
-			Assert.AreEqual (1, functions [0].ParameterLists.Count);
-			Assert.AreEqual (0, functions [0].ParameterLists [0].Count);
-			Assert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
-			Assert.AreEqual (Accessibility.Public, functions [0].Access);
-			Assert.AreEqual (false, functions [0].IsStatic);
-			Assert.AreEqual (false, functions [0].IsProperty);
-			Assert.AreEqual (false, functions [0].IsFinal);
-			Assert.AreEqual ("None1.returns5", functions [0].ToFullyQualifiedName (true));
-			Assert.AreEqual ("returns5", functions [0].ToFullyQualifiedName (false));
+			ClassicAssert.AreEqual (1, functions.Count);
+			ClassicAssert.AreEqual ("returns5", functions [0].Name);
+			ClassicAssert.AreEqual (1, functions [0].ParameterLists.Count);
+			ClassicAssert.AreEqual (0, functions [0].ParameterLists [0].Count);
+			ClassicAssert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
+			ClassicAssert.AreEqual (Accessibility.Public, functions [0].Access);
+			ClassicAssert.AreEqual (false, functions [0].IsStatic);
+			ClassicAssert.AreEqual (false, functions [0].IsProperty);
+			ClassicAssert.AreEqual (false, functions [0].IsFinal);
+			ClassicAssert.AreEqual ("None1.returns5", functions [0].ToFullyQualifiedName (true));
+			ClassicAssert.AreEqual ("returns5", functions [0].ToFullyQualifiedName (false));
 		}
 
 
@@ -63,22 +64,22 @@ namespace XmlReflectionTests {
 								"   </modulelist>" +
 								"</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<FunctionDeclaration> functions = modules [0].Functions.ToList ();
-			Assert.AreEqual (1, functions.Count);
-			Assert.AreEqual ("returns5", functions [0].Name);
-			Assert.AreEqual (1, functions [0].ParameterLists.Count);
-			Assert.AreEqual (0, functions [0].ParameterLists [0].Count);
-			Assert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
-			Assert.AreEqual (Accessibility.Public, functions [0].Access);
-			Assert.AreEqual (false, functions [0].IsStatic);
-			Assert.AreEqual (false, functions [0].IsProperty);
-			Assert.AreEqual (false, functions [0].IsFinal);
-			Assert.AreEqual ("None1.returns5", functions [0].ToFullyQualifiedName (true));
-			Assert.AreEqual (true, functions [0].HasThrows);
-			Assert.AreEqual ("returns5", functions [0].ToFullyQualifiedName (false));
+			ClassicAssert.AreEqual (1, functions.Count);
+			ClassicAssert.AreEqual ("returns5", functions [0].Name);
+			ClassicAssert.AreEqual (1, functions [0].ParameterLists.Count);
+			ClassicAssert.AreEqual (0, functions [0].ParameterLists [0].Count);
+			ClassicAssert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
+			ClassicAssert.AreEqual (Accessibility.Public, functions [0].Access);
+			ClassicAssert.AreEqual (false, functions [0].IsStatic);
+			ClassicAssert.AreEqual (false, functions [0].IsProperty);
+			ClassicAssert.AreEqual (false, functions [0].IsFinal);
+			ClassicAssert.AreEqual ("None1.returns5", functions [0].ToFullyQualifiedName (true));
+			ClassicAssert.AreEqual (true, functions [0].HasThrows);
+			ClassicAssert.AreEqual ("returns5", functions [0].ToFullyQualifiedName (false));
 		}
 
 
@@ -99,19 +100,19 @@ namespace XmlReflectionTests {
 				"   </modulelist>" +
 				"</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<FunctionDeclaration> functions = modules [0].Functions.ToList ();
-			Assert.AreEqual (1, functions.Count);
-			Assert.AreEqual ("returns5", functions [0].Name);
-			Assert.AreEqual (1, functions [0].ParameterLists.Count);
-			Assert.AreEqual (0, functions [0].ParameterLists [0].Count);
-			Assert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
-			Assert.AreEqual (Accessibility.Private, functions [0].Access);
-			Assert.AreEqual (false, functions [0].IsStatic);
-			Assert.AreEqual (false, functions [0].IsProperty);
-			Assert.AreEqual (false, functions [0].IsFinal);
+			ClassicAssert.AreEqual (1, functions.Count);
+			ClassicAssert.AreEqual ("returns5", functions [0].Name);
+			ClassicAssert.AreEqual (1, functions [0].ParameterLists.Count);
+			ClassicAssert.AreEqual (0, functions [0].ParameterLists [0].Count);
+			ClassicAssert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
+			ClassicAssert.AreEqual (Accessibility.Private, functions [0].Access);
+			ClassicAssert.AreEqual (false, functions [0].IsStatic);
+			ClassicAssert.AreEqual (false, functions [0].IsProperty);
+			ClassicAssert.AreEqual (false, functions [0].IsFinal);
 		}
 
 
@@ -132,19 +133,19 @@ namespace XmlReflectionTests {
 				"   </modulelist>" +
 				"</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<FunctionDeclaration> functions = modules [0].Functions.ToList ();
-			Assert.AreEqual (1, functions.Count);
-			Assert.AreEqual ("returns5", functions [0].Name);
-			Assert.AreEqual (1, functions [0].ParameterLists.Count);
-			Assert.AreEqual (0, functions [0].ParameterLists [0].Count);
-			Assert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
-			Assert.AreEqual (Accessibility.Internal, functions [0].Access);
-			Assert.AreEqual (false, functions [0].IsStatic);
-			Assert.AreEqual (false, functions [0].IsProperty);
-			Assert.AreEqual (false, functions [0].IsFinal);
+			ClassicAssert.AreEqual (1, functions.Count);
+			ClassicAssert.AreEqual ("returns5", functions [0].Name);
+			ClassicAssert.AreEqual (1, functions [0].ParameterLists.Count);
+			ClassicAssert.AreEqual (0, functions [0].ParameterLists [0].Count);
+			ClassicAssert.AreEqual ("Swift.Int", functions [0].ReturnTypeName);
+			ClassicAssert.AreEqual (Accessibility.Internal, functions [0].Access);
+			ClassicAssert.AreEqual (false, functions [0].IsStatic);
+			ClassicAssert.AreEqual (false, functions [0].IsProperty);
+			ClassicAssert.AreEqual (false, functions [0].IsFinal);
 		}
 
 		[Test]
@@ -159,16 +160,16 @@ namespace XmlReflectionTests {
 					 "   </modulelist>" +
 					 "</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<PropertyDeclaration> props = modules [0].Properties.ToList ();
-			Assert.AreEqual (1, props.Count);
-			Assert.AreEqual ("topLevelVar", props [0].Name);
-			Assert.AreEqual ("Swift.Int", props [0].TypeName);
-			Assert.AreEqual (false, props [0].IsStatic);
-			Assert.AreEqual (StorageKind.Stored, props [0].Storage);
-			Assert.AreEqual (Accessibility.Public, props [0].Access);
+			ClassicAssert.AreEqual (1, props.Count);
+			ClassicAssert.AreEqual ("topLevelVar", props [0].Name);
+			ClassicAssert.AreEqual ("Swift.Int", props [0].TypeName);
+			ClassicAssert.AreEqual (false, props [0].IsStatic);
+			ClassicAssert.AreEqual (StorageKind.Stored, props [0].Storage);
+			ClassicAssert.AreEqual (Accessibility.Public, props [0].Access);
 		}
 
 		[Test]
@@ -183,16 +184,16 @@ namespace XmlReflectionTests {
 				"   </modulelist>" +
 				"</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<PropertyDeclaration> props = modules [0].Properties.ToList ();
-			Assert.AreEqual (1, props.Count);
-			Assert.AreEqual ("topLevelVar", props [0].Name);
-			Assert.AreEqual ("Swift.Int", props [0].TypeName);
-			Assert.AreEqual (false, props [0].IsStatic);
-			Assert.AreEqual (StorageKind.Stored, props [0].Storage);
-			Assert.AreEqual (Accessibility.Private, props [0].Access);
+			ClassicAssert.AreEqual (1, props.Count);
+			ClassicAssert.AreEqual ("topLevelVar", props [0].Name);
+			ClassicAssert.AreEqual ("Swift.Int", props [0].TypeName);
+			ClassicAssert.AreEqual (false, props [0].IsStatic);
+			ClassicAssert.AreEqual (StorageKind.Stored, props [0].Storage);
+			ClassicAssert.AreEqual (Accessibility.Private, props [0].Access);
 		}
 		[Test]
 		public void SingleInternalPropertyInModule ()
@@ -206,16 +207,16 @@ namespace XmlReflectionTests {
 				"   </modulelist>" +
 				"</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<PropertyDeclaration> props = modules [0].Properties.ToList ();
-			Assert.AreEqual (1, props.Count);
-			Assert.AreEqual ("topLevelVar", props [0].Name);
-			Assert.AreEqual ("Swift.Int", props [0].TypeName);
-			Assert.AreEqual (false, props [0].IsStatic);
-			Assert.AreEqual (StorageKind.Stored, props [0].Storage);
-			Assert.AreEqual (Accessibility.Internal, props [0].Access);
+			ClassicAssert.AreEqual (1, props.Count);
+			ClassicAssert.AreEqual ("topLevelVar", props [0].Name);
+			ClassicAssert.AreEqual ("Swift.Int", props [0].TypeName);
+			ClassicAssert.AreEqual (false, props [0].IsStatic);
+			ClassicAssert.AreEqual (StorageKind.Stored, props [0].Storage);
+			ClassicAssert.AreEqual (Accessibility.Internal, props [0].Access);
 		}
 
 		[Test]
@@ -249,19 +250,19 @@ namespace XmlReflectionTests {
 				"				</modulelist>" +
 				"				</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<ClassDeclaration> classes = modules [0].Classes.ToList ();
-			Assert.AreEqual (1, classes.Count);
-			Assert.AreEqual ("Foo", classes [0].Name);
-			Assert.AreEqual (2, classes [0].Members.Count);
-			Assert.AreEqual (0, classes [0].InnerClasses.Count);
-			Assert.AreEqual (0, classes [0].InnerStructs.Count);
-			Assert.AreEqual (TypeKind.Class, classes [0].Kind);
-			Assert.AreEqual (Accessibility.Public, classes [0].Access);
-			Assert.AreEqual ("None1.Foo", classes [0].ToFullyQualifiedName (true));
-			Assert.AreEqual ("Foo", classes [0].ToFullyQualifiedName (false));
+			ClassicAssert.AreEqual (1, classes.Count);
+			ClassicAssert.AreEqual ("Foo", classes [0].Name);
+			ClassicAssert.AreEqual (2, classes [0].Members.Count);
+			ClassicAssert.AreEqual (0, classes [0].InnerClasses.Count);
+			ClassicAssert.AreEqual (0, classes [0].InnerStructs.Count);
+			ClassicAssert.AreEqual (TypeKind.Class, classes [0].Kind);
+			ClassicAssert.AreEqual (Accessibility.Public, classes [0].Access);
+			ClassicAssert.AreEqual ("None1.Foo", classes [0].ToFullyQualifiedName (true));
+			ClassicAssert.AreEqual ("Foo", classes [0].ToFullyQualifiedName (false));
 		}
 
 		[Test]
@@ -295,17 +296,17 @@ namespace XmlReflectionTests {
 				"				</modulelist>" +
 				"				</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<ClassDeclaration> classes = modules [0].Classes.ToList ();
-			Assert.AreEqual (1, classes.Count);
-			Assert.AreEqual ("Foo", classes [0].Name);
-			Assert.AreEqual (2, classes [0].Members.Count);
-			Assert.AreEqual (0, classes [0].InnerClasses.Count);
-			Assert.AreEqual (0, classes [0].InnerStructs.Count);
-			Assert.AreEqual (TypeKind.Class, classes [0].Kind);
-			Assert.AreEqual (Accessibility.Private, classes [0].Access);
+			ClassicAssert.AreEqual (1, classes.Count);
+			ClassicAssert.AreEqual ("Foo", classes [0].Name);
+			ClassicAssert.AreEqual (2, classes [0].Members.Count);
+			ClassicAssert.AreEqual (0, classes [0].InnerClasses.Count);
+			ClassicAssert.AreEqual (0, classes [0].InnerStructs.Count);
+			ClassicAssert.AreEqual (TypeKind.Class, classes [0].Kind);
+			ClassicAssert.AreEqual (Accessibility.Private, classes [0].Access);
 		}
 
 		[Test]
@@ -339,17 +340,17 @@ namespace XmlReflectionTests {
 				"				</modulelist>" +
 				"				</xamreflect>";
 			List<ModuleDeclaration> modules = Reflector.FromXml (xmlText, typeDatabase: null);
-			Assert.NotNull (modules);
-			Assert.AreEqual (1, modules.Count);
-			Assert.AreEqual ("None1", modules [0].Name);
+			ClassicAssert.NotNull (modules);
+			ClassicAssert.AreEqual (1, modules.Count);
+			ClassicAssert.AreEqual ("None1", modules [0].Name);
 			List<ClassDeclaration> classes = modules [0].Classes.ToList ();
-			Assert.AreEqual (1, classes.Count);
-			Assert.AreEqual ("Foo", classes [0].Name);
-			Assert.AreEqual (2, classes [0].Members.Count);
-			Assert.AreEqual (0, classes [0].InnerClasses.Count);
-			Assert.AreEqual (0, classes [0].InnerStructs.Count);
-			Assert.AreEqual (TypeKind.Class, classes [0].Kind);
-			Assert.AreEqual (Accessibility.Internal, classes [0].Access);
+			ClassicAssert.AreEqual (1, classes.Count);
+			ClassicAssert.AreEqual ("Foo", classes [0].Name);
+			ClassicAssert.AreEqual (2, classes [0].Members.Count);
+			ClassicAssert.AreEqual (0, classes [0].InnerClasses.Count);
+			ClassicAssert.AreEqual (0, classes [0].InnerStructs.Count);
+			ClassicAssert.AreEqual (TypeKind.Class, classes [0].Kind);
+			ClassicAssert.AreEqual (Accessibility.Internal, classes [0].Access);
 		}
 	}
 }

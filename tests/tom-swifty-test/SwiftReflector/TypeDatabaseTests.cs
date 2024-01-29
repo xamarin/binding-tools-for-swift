@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SwiftReflector.TypeMapping;
 using SwiftReflector;
 using tomwiftytest;
+using NUnit.Framework.Legacy;
 
 namespace SwiftReflector {
 	[TestFixture]
@@ -145,20 +146,20 @@ open class ItsACGFloat {
 		{
 			var td = new TypeDatabase ();
 			var path = GetSwiftCoreDB ();
-			Assert.IsNotNull (path, "couldn't find SwiftCore.xml!");
+			ClassicAssert.IsNotNull (path, "couldn't find SwiftCore.xml!");
 			td.Read (path);
 
 			var operators = td.OperatorsForModule ("Swift");
-			Assert.AreNotEqual (0, operators.Count (), "no operators?!");
+			ClassicAssert.AreNotEqual (0, operators.Count (), "no operators?!");
 
 			var opWithName = operators.Where (op => op.Name == opName);
-			Assert.IsTrue (opWithName.Any (), $"no operators named {opName}");
+			ClassicAssert.IsTrue (opWithName.Any (), $"no operators named {opName}");
 
 			var opWithType = opWithName.Where (op => op.OperatorType == opType);
-			Assert.IsTrue (opWithType.Any (), $"no operator named {opName} with type {opType}");
+			ClassicAssert.IsTrue (opWithType.Any (), $"no operator named {opName} with type {opType}");
 
 			if (precedenceGroup != null) {
-				Assert.IsNotNull (opWithType.FirstOrDefault (op => op.PrecedenceGroup == precedenceGroup), $"precendence mismatch on {opName} of {opType} with {precedenceGroup}");
+				ClassicAssert.IsNotNull (opWithType.FirstOrDefault (op => op.PrecedenceGroup == precedenceGroup), $"precendence mismatch on {opName} of {opType} with {precedenceGroup}");
 			}
 		}
 
