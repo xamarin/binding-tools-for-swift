@@ -689,6 +689,9 @@ public static class Console {
 					var name = Path.GetFileNameWithoutExtension (executable);
 					var appPath = Path.Combine (workingDirectory, name, $"bin/Debug/net{Compiler.kframeWorkVersion}-macos/osx-x64/{name}.app");
 					var appExecutable = Path.Combine (appPath, "Contents", "MacOS", name);
+					var frameworksPath = Path.Combine (appPath, "Contents", "Frameworks");
+					var monobundlePath = Path.Combine (appPath, "Contents", "MonoBundle");
+
 					var install_name_tool = new StringBuilder ();
 					install_name_tool.Append ($"install_name_tool ");
 					install_name_tool.Append ($"-add_rpath @executable_path/../Frameworks ");
@@ -706,11 +709,12 @@ public static class Console {
 					var exec_output = new StringBuilder ();
 					var exec_env = new Dictionary<string, string> ();
 
-					// probably need links to runtime libraries and swift glue
-					exec_env.Add ("DYLD_LIBRARY_PATH", Compiler.AddOrAppendPathTo (exec_env, "DYLD_LIBRARY_PATH", Compiler.kSystemLib));
 					Compiler.RunCommandWithLeaks ("otool", new StringBuilder ($"-L {appExecutable} "), exec_env, exec_output);
 					Console.WriteLine (exec_output);
 					exec_output = new StringBuilder ();
+
+					CopyBuildDylibs (workingDirectory, monobundlePath);
+					CopyXamGlue (frameworksPath);
 
 					var exec_rv = Compiler.RunCommandWithLeaks (appExecutable, new StringBuilder (), exec_env, exec_output);
 					if (exec_rv != 0) {
@@ -727,6 +731,41 @@ public static class Console {
 				}
 			default:
 				throw new NotImplementedException (platform.ToString ());
+			}
+		}
+
+		static void CopyBuildDylibs (string fromDir, string toDir)
+		{
+			if (!Directory.Exists (toDir))
+				Directory.CreateDirectory (toDir);
+			var filesToCopy = Directory.GetFiles (fromDir, "*.dylib");
+			foreach (var file in filesToCopy) {
+				var destFile = Path.Combine (toDir, Path.GetFileName (file));
+				File.Copy (file, destFile);
+			}
+		}
+
+		static void CopyXamGlue (string frameworksPath)
+		{
+			if (!Directory.Exists (frameworksPath)) {
+				Directory.CreateDirectory (frameworksPath);
+			}
+			CopyRecursive (Compiler.kSwiftRuntimeGlueDirectory, Path.Combine (frameworksPath, "XamGlue.framework"));
+		}
+
+		static void CopyRecursive (string fromDir, string toDir)
+		{
+			if (!Directory.Exists (toDir)) {
+				Directory.CreateDirectory (toDir);
+			}
+			foreach (var file in Directory.GetFiles (fromDir)) {
+				var destFile = Path.Combine (toDir, Path.GetFileName (file));
+				File.Copy (file, destFile);
+			}
+			foreach (var directory in Directory.GetDirectories (fromDir)) {
+				var dirName = new DirectoryInfo (directory).Name;
+				var destDirectory = Path.Combine (toDir, dirName);
+				CopyRecursive (directory, destDirectory);
 			}
 		}
 
