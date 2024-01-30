@@ -193,7 +193,7 @@ namespace tomwiftytest {
 
 			result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", $"add reference {projectReference}", projectDirectory);
 			sb.Append (result);
-			result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", "build", projectDirectory);
+			result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", "build --property:LinkMode=SdkOnly --property:AllowUnsafeBlocks=true", projectDirectory);
 			sb.Append (result);
 			result = sb.ToString ();
 
