@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using Xamarin.Utils;
 using NUnit.Framework.Legacy;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace tomwiftytest {
 
@@ -193,6 +194,7 @@ namespace tomwiftytest {
 
 			result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", $"add reference {projectReference}", projectDirectory);
 			sb.Append (result);
+			AddXamGlueReference (projectDirectory, name + ".csproj", platform);
 			result = ExecAndCollect.Run ("/usr/local/share/dotnet/dotnet", "build --property:LinkMode=SdkOnly --property:AllowUnsafeBlocks=true", projectDirectory);
 			sb.Append (result);
 			result = sb.ToString ();
@@ -201,6 +203,50 @@ namespace tomwiftytest {
 			Console.WriteLine (result);
 
 			return result;
+		}
+
+		static void AddXamGlueReference (string projectDirectory, string csprojName, PlatformName platform)
+		{
+			var xamglueFrameworkPath = GetXamGluePath (platform);
+			if (String.IsNullOrEmpty (xamglueFrameworkPath))
+				return;
+			if (!Directory.Exists (xamglueFrameworkPath))
+				throw new Exception ($"Trying to add reference to xamglue but failed to find directory {xamglueFrameworkPath}");
+			var proj = Path.Combine (projectDirectory, csprojName);
+			var xdoc = XDocument.Load (proj);
+			var project = xdoc.Element ("Project");
+			if (project is null)
+				throw new Exception ($"Unable to find Project node in {proj}");
+			project.Add (
+				new XElement ("ItemGroup",
+					new XElement ("NativeReference",
+						new XAttribute ("Include", xamglueFrameworkPath),
+						new XAttribute ("Kind", "Framework"))));
+			xdoc.Save (proj);
+		}
+
+		static string GetXamGluePath (PlatformName platform)
+		{
+			var platformDirectoryPart = "";
+			var framework = "XamGlue.xcframework";
+			switch (platform) {
+			case PlatformName.macOS:
+				return "";
+			case PlatformName.iOS:
+				platformDirectoryPart = "iphone";
+				break;
+			case PlatformName.tvOS:
+				platformDirectoryPart = "appletv";
+				break;
+			case PlatformName.watchOS:
+				platformDirectoryPart = "watch";
+				break;
+			default:
+				throw new NotImplementedException ($"unknown platform getting xamglue path: {platform}");
+			}
+
+			var dir = Path.Combine (kXamGlueSourceDirectory, "bin", "Debug", platformDirectoryPart, "FinalProduct", framework);
+			return dir;
 		}
 
 		static void RemoveExistingCSFiles (string directory)
