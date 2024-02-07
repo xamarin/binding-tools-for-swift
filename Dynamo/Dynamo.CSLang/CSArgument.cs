@@ -22,6 +22,14 @@ namespace Dynamo.CSLang {
 		{
 			Add (new CSArgument (expr));
 		}
+
+		public static CSArgumentList FromExpressions (params ICSExpression [] exprs)
+		{
+			var al = new CSArgumentList ();
+			foreach (var ex in exprs)
+				al.Add (new CSArgument (ex));
+			return al;
+		}
 	}
 }
 

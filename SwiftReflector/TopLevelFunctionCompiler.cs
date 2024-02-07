@@ -256,8 +256,12 @@ namespace SwiftReflector {
 
 			if (isPinvoke) {
 				AddExtraGenericArguments (func, csParams, packs);
-				return CSMethod.InternalPInvoke (csReturnType, funcName, libraryPath,
+				var pinvoke = CSMethod.InternalPInvoke (csReturnType, funcName, libraryPath,
 					mangledName.Substring (1), csParams);
+				if (csReturnType is CSSimpleType simple && simple.Name == "bool") {
+					CSAttribute.ReturnMarshalAsI1.AttachBefore (pinvoke);
+				}
+				return pinvoke;
 			} else {
 				CSMethod retval = null;
 				if (func.IsConstructor) {

@@ -27,6 +27,7 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		[DllImport (SwiftCoreConstants.LibSwiftCore)]
+		[return: MarshalAs (UnmanagedType.I1)]
 		static extern bool swift_isDeallocating (IntPtr p);
 
 		public static bool IsDeallocating (IntPtr p)
@@ -284,6 +285,7 @@ namespace SwiftRuntimeLibrary {
 
 
 		[DllImport (SwiftCoreConstants.LibSwiftCore)]
+		[return: MarshalAs (UnmanagedType.I1)]
 		static extern bool swift_dynamicCast (IntPtr dest, IntPtr src, SwiftMetatype srcType, SwiftMetatype targetType, nint flags);
 
 		unsafe static bool DynamicCast (ref object dest, object src, Type srcType, Type destType, DynamicCastFlags flags)
@@ -383,6 +385,7 @@ namespace SwiftRuntimeLibrary {
 
 #if __IOS__ || __MACOS__ || __WATCHOS__ || __TVOS__
 		[DllImport (kXamGlue, EntryPoint = XamGlueConstants.SwiftCore_GetEnumMetadata)]
+		[return: MarshalAs (UnmanagedType.I1)]
 		internal static extern bool GetEnumMetadataByName (byte [] stringData, out SwiftMetatype swiftMetatype);
 #else
 		// the underlying pinvoke only exists on a specific platform, for no platform default to failure.

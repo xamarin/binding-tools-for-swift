@@ -307,8 +307,8 @@ namespace SwiftRuntimeLibrary {
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftDictionary_DictValues)]
 		public static extern IntPtr DictValues (IntPtr retVal, IntPtr dict, SwiftMetatype keyType, SwiftMetatype valType,
 														   IntPtr protoWitness);
-
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftDictionary_DictContainsKey)]
+		[return: MarshalAs (UnmanagedType.I1)]
 		public static extern bool DictContainsKey (IntPtr dict, IntPtr keyPtr, SwiftMetatype keyType, SwiftMetatype valType,
 													  IntPtr protoWitness);
 
@@ -317,6 +317,7 @@ namespace SwiftRuntimeLibrary {
 					    IntPtr protoWitness);
 
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftDictionary_DictRemove)]
+		[return: MarshalAs (UnmanagedType.I1)]
 		public static extern bool DictRemove (IntPtr dictPtr, IntPtr keyPtr, SwiftMetatype keyType, SwiftMetatype valType,
 							     IntPtr protoWitness);
 

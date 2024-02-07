@@ -26,6 +26,11 @@ namespace Dynamo.CSLang {
 		{
 		}
 
+		public CSAttribute (string name, params ICSExpression [] exprs)
+			: this (new CSIdentifier(name), CSArgumentList.FromExpressions (exprs))
+		{
+		}
+
 		// DllImport("msvcrt.dll", EntryPoint="puts")
 		public static CSAttribute DllImport (string dllName, string entryPoint = null)
 		{
@@ -44,6 +49,10 @@ namespace Dynamo.CSLang {
 				args.Add (new CSAssignment ("EntryPoint", CSAssignmentOperator.Assign, CSConstant.Val (entryPoint)));
 			return new CSAttribute (new CSIdentifier ("DllImport"), args, true);
 		}
+
+		static CSAttribute returnMarshalAsI1 = new CSAttribute ("return: MarshalAs", new CSIdentifier ("UnmanagedType.I1"));
+
+		public static CSAttribute ReturnMarshalAsI1 => returnMarshalAsI1;
 
 		public static CSAttribute FieldOffset (int offset)
 		{
