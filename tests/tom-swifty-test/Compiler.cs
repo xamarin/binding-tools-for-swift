@@ -96,7 +96,7 @@ namespace tomwiftytest {
 		{
 			if (sdkPath == null)
 				sdkPath = ExecAndCollect.Run ("/usr/bin/xcrun", "--show-sdk-path --sdk macosx");
-			return sdkPath;
+			return sdkPath.Trim ();
 		}
 
 		static string BuildArgs (XCodeCompiler compiler, string compilerName, string outfile, string pathToCode, string extraOptions)
