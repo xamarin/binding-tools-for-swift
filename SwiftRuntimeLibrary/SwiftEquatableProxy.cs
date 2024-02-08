@@ -22,7 +22,7 @@ namespace SwiftRuntimeLibrary {
 
 		struct Equatable_xam_vtable {
 			public delegate bool Delfunc0 (IntPtr one, IntPtr two);
-			public unsafe delegate *unmanaged<IntPtr, IntPtr, bool> func0;
+			public unsafe delegate *unmanaged<IntPtr, IntPtr, byte> func0;
 		}
 
 		static Equatable_xam_vtable vtableIEquatable;
@@ -32,15 +32,15 @@ namespace SwiftRuntimeLibrary {
 		}
 
 		[UnmanagedCallersOnly]
-		static bool EqFunc (IntPtr oneptr, IntPtr twoptr)
+		static byte EqFunc (IntPtr oneptr, IntPtr twoptr)
 		{
 			if (oneptr == twoptr)
-				return true;
+				return 1;
 
 			var one = SwiftObjectRegistry.Registry.ProxyForEveryProtocolHandle<ISwiftEquatable> (oneptr);
 			var two = SwiftObjectRegistry.Registry.ProxyForEveryProtocolHandle<ISwiftEquatable> (twoptr);
 
-			return one.OpEquals (two);
+			return one.OpEquals (two) ? (byte)1 : (byte)0;
 		}
 
 		static void XamSetVTable ()

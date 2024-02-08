@@ -134,6 +134,7 @@ namespace SwiftRuntimeLibrary {
 		public static extern nint SetGetCount (IntPtr self, SwiftMetatype t, IntPtr protoWitness);
 
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftSet_SetIsEmpty)]
+		[return: MarshalAs (UnmanagedType.I1)]
 		public static extern bool SetIsEmpty (IntPtr self, SwiftMetatype t, IntPtr protoWitness);
 
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.SwiftSet_SetGetCapacity)]

@@ -124,6 +124,7 @@ namespace SwiftRuntimeLibrary {
 		internal static extern SwiftMetatype PIMetadataAccessor_SwiftOptional (SwiftMetadataRequest request, SwiftMetatype mt);
 
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.NativeMethodsForSwiftOptional_HasValue)]
+		[return: MarshalAs (UnmanagedType.I1)]
 		internal static extern bool HasValue (IntPtr val, SwiftMetatype mt);
 
 		[DllImport (SwiftCore.kXamGlue, EntryPoint = XamGlueConstants.NativeMethodsForSwiftOptional_Case)]
