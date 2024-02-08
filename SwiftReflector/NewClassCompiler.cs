@@ -1983,7 +1983,7 @@ namespace SwiftReflector {
 			};
 
 			if (isObjC)
-				ImplementObjCClassField (cl);
+				ImplementObjCClassField (cl, use);
 
 
 			ImplementMethods (cl, picl, usedPinvokeNames, subclassSwiftClassName, classContents, classDecl, use, wrapper, filter, swiftLibraryPath, errors);
@@ -3087,7 +3087,7 @@ namespace SwiftReflector {
 			cl.Constructors.AddRange (cctor);
 			cl.Constructors.AddRange (ctors);
 			if (isObjC)
-				ImplementObjCClassField (cl);
+				ImplementObjCClassField (cl, use);
 
 			ImplementMethods (cl, picl, usedPinvokeNames, swiftClassName, classContents, classDecl, use, wrapper, tlf => true, swiftLibraryPath, errors);
 			ImplementProperties (cl, picl, usedPinvokeNames, classDecl, classContents, null, use, wrapper, false, false, tlf => true, swiftLibraryPath, errors);
@@ -3498,14 +3498,16 @@ namespace SwiftReflector {
 			proxyClass.Properties.Add (prop);
 		}
 
-		void ImplementObjCClassField (CSClass cl)
+		void ImplementObjCClassField (CSClass cl, CSUsingPackages use)
 		{
 			var fieldID = new CSIdentifier ("class_ptr");
+			use.AddIfNotPresent ("ObjCRuntime");
+			var nativeHandleType = new CSSimpleType ("NativeHandle");
 			var field = new CSFieldDeclaration (CSSimpleType.IntPtr, fieldID, new CSFunctionCall ("GetSwiftMetatype", false).Dot (new CSIdentifier ("Handle")),
 			                                    CSVisibility.None, true, true);
 			cl.Fields.Add (new CSLine (field));
 			var getter = new CSCodeBlock ().And (CSReturn.ReturnLine (fieldID));
-			var prop = new CSProperty (CSSimpleType.IntPtr, CSMethodKind.Override, new CSIdentifier ("ClassHandle"), CSVisibility.Public,
+			var prop = new CSProperty (nativeHandleType, CSMethodKind.Override, new CSIdentifier ("ClassHandle"), CSVisibility.Public,
 						   getter, CSVisibility.Public, null);
 			cl.Properties.Add (prop);
 		}
