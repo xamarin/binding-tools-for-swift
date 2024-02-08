@@ -61,6 +61,8 @@ namespace Dynamo.CSLang {
 		AddressOf,
 		Indirection,
 		Await,
+		PostBang,
+		Question,
 	}
 
 	public enum CSAssignmentOperator {

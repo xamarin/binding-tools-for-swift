@@ -12,8 +12,13 @@ namespace Dynamo.CSLang {
 		}
 		protected override void LLWrite (ICodeWriter writer, object o)
 		{
-			writer.Write (string.Format (Operation == CSUnaryOperator.Ref || Operation == CSUnaryOperator.Out ? "{0} " : "{0}", OperatorToString (Operation)), true);
-			Expr.WriteAll (writer);
+			if (IsPostfix (Operation)) {
+				Expr.WriteAll (writer);
+				writer.Write (string.Format (Operation == CSUnaryOperator.Ref || Operation == CSUnaryOperator.Out ? "{0} " : "{0}", OperatorToString (Operation)), true);
+			} else {
+				writer.Write (string.Format (Operation == CSUnaryOperator.Ref || Operation == CSUnaryOperator.Out ? "{0} " : "{0}", OperatorToString (Operation)), true);
+				Expr.WriteAll (writer);
+			}
 		}
 
 		public CSUnaryOperator Operation { get; private set; }
@@ -42,9 +47,18 @@ namespace Dynamo.CSLang {
 				return "*";
 			case CSUnaryOperator.Await:
 				return "await ";
+			case CSUnaryOperator.PostBang:
+				return "!";
+			case CSUnaryOperator.Question:
+				return "?";
 			default:
 				throw new ArgumentOutOfRangeException (nameof(op));
 			}
+		}
+
+		static bool IsPostfix (CSUnaryOperator op)
+		{
+			return op == CSUnaryOperator.PostBang || op == CSUnaryOperator.Question;
 		}
 
 		public static CSUnaryExpression AddressOf (ICSExpression expr)
@@ -80,6 +94,16 @@ namespace Dynamo.CSLang {
 		public static CSUnaryExpression Await (ICSExpression expr)
 		{
 			return new CSUnaryExpression (CSUnaryOperator.Await, expr);
+		}
+
+		public static CSUnaryExpression PostBang (ICSExpression expr)
+		{
+			return new CSUnaryExpression (CSUnaryOperator.PostBang, expr);
+		}
+
+		public static CSUnaryExpression Question (ICSExpression expr)
+		{
+			return new CSUnaryExpression (CSUnaryOperator.Question, expr);
 		}
 	}
 }
