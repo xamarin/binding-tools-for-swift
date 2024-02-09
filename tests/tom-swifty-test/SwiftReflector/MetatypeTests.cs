@@ -171,7 +171,7 @@ namespace dlopentest
 				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
-				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
+				string output = Compiler.RunWithDotnet (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
 				ClassicAssert.AreEqual (expected, output);
 				var typeBasedClassName = typeName.Replace ('.', '_');
 
@@ -287,7 +287,7 @@ namespace dlopentest
 				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}", PlatformName.macOS);
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
-				var output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
+				var output = Compiler.RunWithDotnet (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath, platform: PlatformName.macOS);
 				ClassicAssert.AreEqual (expected, output);
 				var typeBasedClassName = typeName.Replace('.', '_');
 
@@ -376,7 +376,7 @@ namespace dlopentest
 				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}");
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
 
-				string output = Compiler.RunWithMono (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath);
+				string output = Compiler.RunWithDotnet (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath);
 				ClassicAssert.AreEqual (expected, output);
 			}
 		}

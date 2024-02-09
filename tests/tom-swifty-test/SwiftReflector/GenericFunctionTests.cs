@@ -705,7 +705,7 @@ namespace SwiftReflector {
 
 				Exception e = ClassicAssert.Throws<Exception> (() => {
 					TestRunning.CopyTestReferencesTo (provider.DirectoryPath);
-					string output = Compiler.RunWithMono (exeFilename, provider.DirectoryPath, platform: PlatformName.macOS);
+					string output = Compiler.RunWithDotnet (exeFilename, provider.DirectoryPath, platform: PlatformName.macOS);
 					ClassicAssert.AreEqual ("1\n", output);
 				});
 				ClassicAssert.True (e.Message.Contains ("NotSupportedException"));
@@ -1184,7 +1184,7 @@ namespace SwiftReflector {
 
 				Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename);
 				TestRunning.CopyTestReferencesTo (provider.DirectoryPath);
-				return Compiler.RunWithMono (exeOutFilename, provider.DirectoryPath);
+				return Compiler.RunWithDotnet (exeOutFilename, provider.DirectoryPath);
 			}
 		}
 
