@@ -14,9 +14,9 @@ namespace Dynamo.CSLang {
 		{
 			if (IsPostfix (Operation)) {
 				Expr.WriteAll (writer);
-				writer.Write (string.Format (Operation == CSUnaryOperator.Ref || Operation == CSUnaryOperator.Out ? "{0} " : "{0}", OperatorToString (Operation)), true);
+				writer.Write (OperatorToString (Operation), true);
 			} else {
-				writer.Write (string.Format (Operation == CSUnaryOperator.Ref || Operation == CSUnaryOperator.Out ? "{0} " : "{0}", OperatorToString (Operation)), true);
+				writer.Write (OperatorToString (Operation), true);
 				Expr.WriteAll (writer);
 			}
 		}
@@ -36,11 +36,11 @@ namespace Dynamo.CSLang {
 			case CSUnaryOperator.Not:
 				return "!";
 			case CSUnaryOperator.Out:
-				return "out";
+				return "out ";
 			case CSUnaryOperator.Pos:
 				return "+";
 			case CSUnaryOperator.Ref:
-				return "ref";
+				return "ref ";
 			case CSUnaryOperator.AddressOf:
 				return "&";
 			case CSUnaryOperator.Indirection:
