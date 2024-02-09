@@ -135,7 +135,7 @@ namespace SwiftReflector {
 
 				if (entityType == EntityType.DynamicSelf) {
 					var retrieveCallSite = isObjC ? $"Runtime.GetNSObject<{csProxyName}> " : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{csProxyName}> ";
-					callParams.Add (new CSCastExpression(csParm.CSType, new CSFunctionCall (retrieveCallSite, false, csParm.Name).Dot (NewClassCompiler.kInterfaceImpl)));
+					callParams.Add (new CSCastExpression(csParm.CSType, CSUnaryExpression.PostBang (new CSFunctionCall (retrieveCallSite, false, csParm.Name)).Dot (NewClassCompiler.kInterfaceImpl)));
 
 				} else if (entityType == EntityType.Class || (entity != null && entity.IsObjCProtocol)) {
 					var csParmType = csParm.CSType as CSSimpleType;
@@ -279,7 +279,7 @@ namespace SwiftReflector {
 			if (thisIsInterface && !hasAssociatedTypes) {
 				registryCall = $"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (*self)";
 			} else {
-				registryCall = isObjC ? $"Runtime.GetNSObject<{thisTypeName}> (self)" : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)";
+				registryCall = isObjC ? $"Runtime.GetNSObject<{thisTypeName}> (self)!" : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{thisTypeName}> (self)!";
 			}
 
 
@@ -469,8 +469,8 @@ namespace SwiftReflector {
 				csharpCall = new CSInject ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{thisTypeName}> (*self).{prop.Name.Name}");
 			} else {
 				var call = isObjC ?
-					$"ObjCRuntime.Runtime.GetNSObject<{thisTypeName}> (self).{prop.Name.Name}" :
-					$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisTypeName}> (self).{prop.Name.Name}";
+					$"ObjCRuntime.Runtime.GetNSObject<{thisTypeName}> (self)!.{prop.Name.Name}" :
+					$"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{thisTypeName}> (self)!.{prop.Name.Name}";
 
 				csharpCall = new CSInject (call);
 			}

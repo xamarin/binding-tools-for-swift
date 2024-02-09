@@ -761,7 +761,7 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 			}
 #if !TOM_SWIFTY
 			if (IsNSObject (t)) {
-				var rv = ObjCRuntime.Runtime.GetNSObject (Marshal.ReadIntPtr (swiftSourceMemory));
+				var rv = ObjCRuntime.Runtime.GetNSObject (Marshal.ReadIntPtr (swiftSourceMemory))!;
 				if (owns)
 					rv.DangerousRelease ();
 				return rv;

@@ -4173,7 +4173,7 @@ namespace SwiftReflector {
 				return new CSFunctionCall ($"ObjCRuntime.Runtime.GetINativeObject<{expectedType.ToString ()}>", false, expr, CSConstant.Val (false));
 			} else {
 				var call = entity.Type.IsObjCOrInheritsObjC (typeMapper) ? "ObjCRuntime.Runtime.GetNSObject<{0}>" : "SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{0}>";
-				return new CSFunctionCall (String.Format (call, expectedType.ToString ()), false, expr);
+				return CSUnaryExpression.PostBang (new CSFunctionCall (String.Format (call, expectedType.ToString ()), false, expr));
 			}
 		}
 
