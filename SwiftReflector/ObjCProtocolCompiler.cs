@@ -130,6 +130,7 @@ namespace SwiftReflector {
 					File.Delete (destPath);
 				if (File.Exists (sourcePath))
 					File.Copy (sourcePath, destPath);
+				PostProcessFile (destPath);
 			}
 
 			File.Delete (Path.Combine (outputDirectory, kManifestFile));
@@ -139,6 +140,16 @@ namespace SwiftReflector {
 			var objCRuntimeDir = Path.Combine (outputDirectory, "ObjCRuntime");
 			if (Directory.Exists (objCRuntimeDir))
 				Directory.Delete (objCRuntimeDir, true);
+		}
+
+		static void PostProcessFile(string pathToFile)
+		{
+			var temp = Path.GetTempFileName ();
+
+			var keepLines = File.ReadLines (pathToFile).Where (line => !line.StartsWith ("using QTKit"));
+			File.WriteAllLines (temp, keepLines);
+			File.Delete (pathToFile);
+			File.Move (temp, pathToFile);			
 		}
 
 		void YouCantBtouchThis (string csOutputFileName, bool needsSwiftRuntimeLibrary)
