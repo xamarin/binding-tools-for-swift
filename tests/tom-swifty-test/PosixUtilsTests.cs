@@ -40,11 +40,12 @@ namespace tomwiftytest {
 		public void RelativePathsInSymlinks1 ()
 		{
 			using (var dir = new DisposableTempDirectory ()) {
-				var expectedPath = Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath)));
+				var expectedPath = "/private" + Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath)));
 
 				var link1 = Path.Combine (dir.DirectoryPath, "link1");
 				symlink ("../../..", link1);
 				var finalPath = PosixHelpers.RealPath (link1);
+
 				ClassicAssert.AreEqual (expectedPath, finalPath, "1");
 			}
 		}
@@ -53,7 +54,7 @@ namespace tomwiftytest {
 		public void RelativePathsInSymlinks2 ()
 		{
 			using (var dir = new DisposableTempDirectory ()) {
-				var expectedPath = Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath)));
+				var expectedPath = "/private" + Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath)));
 
 				var link2 = Path.Combine (dir.DirectoryPath, "link2");
 				symlink (Path.Combine (dir.DirectoryPath, "..", "..", ".."), link2);
