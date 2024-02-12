@@ -60,7 +60,7 @@ namespace SwiftReflector {
 				Compiler.CSCompile (provider.DirectoryPath, Directory.GetFiles (provider.DirectoryPath, "*.cs"), exeOutFilename);
 
 				TestRunning.CopyTestReferencesTo (provider.DirectoryPath);
-				string output = Compiler.RunWithMono (exeOutFilename, provider.DirectoryPath);
+				string output = Compiler.RunWithDotnet (exeOutFilename, provider.DirectoryPath);
 				ClassicAssert.AreEqual ("nothing\n", output);
 			}
 		}
@@ -119,7 +119,7 @@ namespace SwiftReflector {
 
 				TestRunning.CopyTestReferencesTo (provider.DirectoryPath);
 
-				string output = Compiler.RunWithMono (exeOutFilename, provider.DirectoryPath);
+				string output = Compiler.RunWithDotnet (exeOutFilename, provider.DirectoryPath);
 				ClassicAssert.AreEqual ("nothing\n", output);
 			}
 		}

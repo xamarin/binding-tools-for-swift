@@ -694,66 +694,6 @@ namespace tomwiftytest {
 			return sb.ToString ();
 		}
 
-		public static string RunWithMono (string filename, string workingDirectory = null, PlatformName platform = PlatformName.None)
-		{
-			// XamGlue is really a framework (XamGlue.framework), and any libraries linked with XamGlue would have a reference to @rpath/XamGlue.framework/XamGlue.
-			// When running the test executable with mono (as opposed to from an actual XM/XI .app), we have no way of specifying rpath (since the executable
-			// is mono itself), so we copy the XamGlue library into the current directory, and fixup any dylibs with references to @rpath/XamGlue.framework/XamGlue
-			// to point to the XamGlue library instead.
-			// If the libraries were compiled properly (linked with the XamGlue library instead of framework), this wouldn't be necessary, but it's simpler to
-			// fixup things here than fix everywhere else.
-			var executablePath = workingDirectory;
-			if (string.IsNullOrEmpty (executablePath)) {
-				executablePath = Path.GetDirectoryName (filename);
-				if (string.IsNullOrEmpty (executablePath))
-					executablePath = Environment.CurrentDirectory;
-			}
-			FixXamGlueReferenceInDylibs (executablePath);
-
-			var args = new StringBuilder ();
-			args.Append (Exceptions.ThrowOnNull (filename, nameof (filename))).Append (' ');
-			var executable = kMono64Path;
-
-			var env = new Dictionary<string, string> ();
-
-			// this will let you see why things might not link
-			// or why libraries might not load (for instance if dependent libraries can't be found)
-			//env.Add ("MONO_LOG_LEVEL", "debug");
-			//env.Add ("MONO_LOG_MASK", "dll");
-			// this will print out every library that was loaded
-			//env.Add ("DYLD_PRINT_LIBRARIES") = "YES";
-			env.Add ("DYLD_LIBRARY_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "DYLD_LIBRARY_PATH", $"/usr/lib/swift:{kSwiftRuntimeGlueDirectory}"));
-			switch (platform) {
-			case PlatformName.macOS:
-				// This is really a hack, any tests needing to use XM, should create a proper .app using mmp instead.
-				env.Add ("MONO_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "MONO_PATH", $"{ConstructorTests.kSwiftRuntimeMacOutputDirectory}"));
-				env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", "/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib");
-				break;
-			case PlatformName.None:
-				env.Add ("MONO_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "MONO_PATH", $"{ConstructorTests.kSwiftRuntimeOutputDirectory}"));
-				env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", ".");
-				if (workingDirectory != null)
-					env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", workingDirectory);
-				break;
-			default:
-				throw new NotImplementedException (platform.ToString ());
-			}
-
-			var sb = new StringBuilder ();
-			// uncomment this to see the DYLD_LIBRARY_PATH in the output.
-			// Do NOT leave this uncommented as it will fail nearly all the tests
-//			sb.AppendLine ("DYLD_LIBRARY_PATH: " + env ["DYLD_LIBRARY_PATH"]);
-
-			var rv = RunCommandWithLeaks (executable, args, env, sb, workingDirectory: workingDirectory ?? string.Empty);
-
-			if (rv != 0) {
-				Console.WriteLine ($"Test failed to execute (exit code: {rv}):\n{sb}");
-				throw new Exception ($"Test failed to execute (exit code: {rv}):\n{sb}");
-			}
-
-			return sb.ToString ();
-		}
-
 		public static string AddOrAppendPathTo (System.Collections.IDictionary sd, string key, string value)
 		{
 			if (sd.Contains (key)) {

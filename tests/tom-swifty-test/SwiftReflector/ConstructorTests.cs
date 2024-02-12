@@ -59,36 +59,6 @@ namespace SwiftReflector {
 			ClassicAssert.IsTrue (Directory.Exists (kSwiftRuntimeMacOutputDirectory));
 			ClassicAssert.IsTrue (File.Exists (Path.Combine (kSwiftRuntimeMacOutputDirectory, kSwiftRuntimeLibraryMac + ".dll")));
 		}
-
-
-		string CompileWithInvokingCode (CSFile cs, CSLine invoker, string nameSpace)
-		{
-			CSNamespace ns = new CSNamespace (nameSpace);
-			CSCodeBlock mainBody = CSCodeBlock.Create (invoker);
-			CSMethod main = new CSMethod (CSVisibility.Public, CSMethodKind.Static, CSSimpleType.Void,
-				new CSIdentifier ("Main"), new CSParameterList (new CSParameter (new CSSimpleType ("string", true), "args")),
-				mainBody);
-			CSClass cl = new CSClass (CSVisibility.Public, "NameNotImportant", new CSMethod [] { main });
-			ns.Block.Add (cl);
-
-			cs.Namespaces.Add (ns);
-
-			using (DisposableTempFile csOut = new DisposableTempFile (null, null, "cs", true)) {
-				CodeWriter.WriteToFile (csOut.Filename, cs);
-
-				using (Stream csExeStm = Compiler.CompileUsing (null, XCodeCompiler.CSharpExe, csOut.Filename,
-				                                                $"-lib:{kSwiftRuntimeMacOutputDirectory} -r:{kSwiftRuntimeLibraryMac}")) {
-					using (DisposableTempFile csExe = new DisposableTempFile (null, null, "exe", true)) {
-						csExeStm.CopyTo (csExe.Stream);
-						csExe.Stream.Close ();
-						string output = Compiler.RunWithMono (csExe.Filename);
-						return output;
-					}
-				}
-			}
-		}
-
-
 	}
 }
 
