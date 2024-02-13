@@ -40,7 +40,8 @@ namespace tomwiftytest {
 		public void RelativePathsInSymlinks1 ()
 		{
 			using (var dir = new DisposableTempDirectory ()) {
-				var expectedPath = "/private" + Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath)));
+				var sourcePath = PathWithoutLeadingSlash (Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath))));
+				var expectedPath = Path.Combine ("/private", sourcePath);
 
 				var link1 = Path.Combine (dir.DirectoryPath, "link1");
 				symlink ("../../..", link1);
@@ -54,7 +55,8 @@ namespace tomwiftytest {
 		public void RelativePathsInSymlinks2 ()
 		{
 			using (var dir = new DisposableTempDirectory ()) {
-				var expectedPath = "/private" + Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath)));
+				var sourcePath = PathWithoutLeadingSlash (Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (dir.DirectoryPath))));
+				var expectedPath = Path.Combine ("/private", sourcePath);
 
 				var link2 = Path.Combine (dir.DirectoryPath, "link2");
 				symlink (Path.Combine (dir.DirectoryPath, "..", "..", ".."), link2);
@@ -66,5 +68,10 @@ namespace tomwiftytest {
 		// Mono.Unix can't create symlinks with relative paths, so P/Invoke instead.
 		[DllImport ("/usr/lib/libSystem.dylib")]
 		static extern int symlink (string path1, string path2);
+
+		static string PathWithoutLeadingSlash (string path)
+		{
+			return path.StartsWith ('/') ? path.Substring (1) : path;
+		}
 	}
 }
