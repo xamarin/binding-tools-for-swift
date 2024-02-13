@@ -49,6 +49,7 @@ namespace SwiftReflector {
 			bool returnIsProtocol = needsReturn && ((entity != null && entity.EntityType == EntityType.Protocol) || entityType == EntityType.ProtocolList);
 			bool returnIsTuple = needsReturn && entityType == EntityType.Tuple;
 			bool returnIsClosure = needsReturn && entityType == EntityType.Closure;
+			bool returnIsBool = needsReturn && entityType == EntityType.Scalar && funcDecl.ReturnTypeName == "Swift.Bool";
 
 			var callParams = new List<CSBaseExpression> ();
 			var preMarshalCode = new List<CSLine> ();
@@ -65,6 +66,7 @@ namespace SwiftReflector {
 				entity = !newValueIsGeneric ? typeMapper.GetEntityForTypeSpec (swiftNewValue.TypeSpec) : null;
 				entityType = !newValueIsGeneric ? typeMapper.GetEntityTypeForTypeSpec (swiftNewValue.TypeSpec) : EntityType.None;
 				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [1]);
+				var newValueIsBool = entityType == EntityType.Scalar && swiftNewValue.TypeName == "Swift.Bool";
 
 				if (entityType == EntityType.Class || entity != null && entity.IsObjCProtocol) {
 					var csParmType = new CSSimpleType (entity.SharpNamespace + "." + entity.SharpTypeName);
@@ -120,6 +122,8 @@ namespace SwiftReflector {
 					                                                                                    valueID, genRef.Typeof ())));
 					preMarshalCode.Add (valDecl);
 					valueExpr = valMarshalId;
+				} else if (newValueIsBool) {
+					valueExpr = NIntToBool (valueExpr);
 				}
 			}
 
@@ -132,6 +136,7 @@ namespace SwiftReflector {
 				entityType = !parmIsGeneric ? typeMapper.GetEntityTypeForTypeSpec (swiftParm.TypeSpec) : EntityType.None;
 				var isUnusualParameter = IsUnusualParameter (entity, delegateParams [i]);
 				var csParm = methodParams [j];
+				var parmIsBool = entityType == EntityType.Scalar && swiftParm.TypeName == "Swift.Bool";
 
 				if (entityType == EntityType.DynamicSelf) {
 					var retrieveCallSite = isObjC ? $"Runtime.GetNSObject<{csProxyName}> " : $"SwiftObjectRegistry.Registry.CSObjectForSwiftObject<{csProxyName}> ";
@@ -260,7 +265,11 @@ namespace SwiftReflector {
 						callParams.Add (new CSIdentifier (String.Format ("{0} {1}",
 							csParm.ParameterKind == CSParameterKind.Out ? "out" : "ref", delegateParams [i].Name.Name)));
 					} else {
-						callParams.Add (delegateParams [i].Name);
+						CSBaseExpression parmExpr = delegateParams [i].Name;
+						if (parmIsBool) {
+							parmExpr = NIntToBool (parmExpr);
+						}
+						callParams.Add (parmExpr);
 					}
 				}
 			}
@@ -405,6 +414,8 @@ namespace SwiftReflector {
 					} else {
 						if (returnIsClosure) {
 							invoker = MarshalEngine.BuildBlindClosureCall (invoker, methodType as CSSimpleType, use);
+						} else if (returnIsBool) {
+							invoker = BoolToNint (invoker);
 						}
 						if (postMarshalCode.Count > 0) {
 							string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
@@ -448,6 +459,7 @@ namespace SwiftReflector {
 			bool returnIsTuple = needsReturn && entityType == EntityType.Tuple;
 			bool returnIsClosure = needsReturn && entityType == EntityType.Closure;
 			bool returnIsDynamicSelf = needsReturn && forProtocol && methodType.ToString () == NewClassCompiler.kGenericSelfName;
+			var returnIsBool = needsReturn && entityType == EntityType.Scalar && funcDecl.ReturnTypeName == "Swift.Bool";
 
 			string returnCsProxyName = returnIsProtocol ?
 				NewClassCompiler.CSProxyNameForProtocol (entity.Type.ToFullyQualifiedName (true), typeMapper) : null;
@@ -544,14 +556,21 @@ namespace SwiftReflector {
 					if (returnIsClosure) {
 						body.Add (CSReturn.ReturnLine (MarshalEngine.BuildBlindClosureCall (csharpCall, methodType as CSSimpleType, use)));
 					} else {
-						body.Add (CSReturn.ReturnLine (csharpCall));
+						if (returnIsBool) {
+							body.Add (CSReturn.ReturnLine (BoolToNint (csharpCall)));
+						} else {
+							body.Add (CSReturn.ReturnLine (csharpCall));
+						}
 					}
 				}
 			} else {
 				CSBaseExpression valueExpr = null;
-				bool valueIsGeneric = funcDecl.IsTypeSpecGeneric (funcDecl.ParameterLists [1] [0].TypeSpec) ;
-				entity = !valueIsGeneric ? typeMapper.GetEntityForTypeSpec (funcDecl.ParameterLists [1] [0].TypeSpec) : null;
+				var valueTypeSpec = funcDecl.ParameterLists [1] [0].TypeSpec;
+				var valueTypeName = funcDecl.ParameterLists [1] [0].TypeName;
+				bool valueIsGeneric = funcDecl.IsTypeSpecGeneric (valueTypeSpec) ;
+				entity = !valueIsGeneric ? typeMapper.GetEntityForTypeSpec (valueTypeSpec) : null;
 				entityType = !valueIsGeneric ? typeMapper.GetEntityTypeForTypeSpec (funcDecl.ParameterLists [1] [0].TypeSpec) : EntityType.None;
+				var isBoolNewValue = entityType == EntityType.Scalar && valueTypeName == "Swift.Bool";
 				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [1]);
 
 				if (entityType == EntityType.Class || (entity != null && entity.IsObjCProtocol)) {
@@ -615,6 +634,9 @@ namespace SwiftReflector {
 						valueExpr = MarshalEngine.BuildWrappedClosureCall (delegateParams [1].Name, methodType as CSSimpleType, flags);
 					} else {
 						valueExpr = delegateParams [1].Name;
+						if (isBoolNewValue) {
+							valueExpr = NIntToBool (valueExpr);
+						}
 					}
 				}
 				body.Add (CSAssignment.Assign (csharpCall, valueExpr));
@@ -626,6 +648,18 @@ namespace SwiftReflector {
 		{
 			// check to see if an entity is either an objc struct or enum 
 			return entity != null && (entity.IsObjCStruct || entity.IsObjCEnum) && parameter.ParameterKind == CSParameterKind.Ref;
+		}
+
+		static CSBaseExpression NIntToBool (CSBaseExpression expr)
+		{
+			// converts expr to
+			// (expr & 1) != 0;
+			return new CSParenthesisExpression (new CSBinaryExpression (CSBinaryOperator.BitAnd, expr, CSConstant.Val (1))) != CSConstant.Val (0);
+		}
+
+		static CSBaseExpression BoolToNint (CSBaseExpression expr)
+		{
+			return new CSTernary (expr, CSConstant.Val (1), CSConstant.Val (0), false);
 		}
 	}
 }
