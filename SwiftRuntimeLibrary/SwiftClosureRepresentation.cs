@@ -80,7 +80,7 @@ namespace SwiftRuntimeLibrary {
 		[UnmanagedCallersOnly]
 		public static void FuncCallbackMaybeThrows (IntPtr retValPtr, IntPtr args, IntPtr refPtr)
 		{
-			FuncCallbackMaybeThrowsImpl (retValPtr, IntPtr.Zero, refPtr);
+			FuncCallbackMaybeThrowsImpl (retValPtr, args, refPtr);
 		}
 
 		static void FuncCallbackMaybeThrowsImpl (IntPtr retValPtr, IntPtr args, IntPtr refPtr)
@@ -114,8 +114,12 @@ namespace SwiftRuntimeLibrary {
 #endif
 			var argumentValues = args != IntPtr.Zero ? StructMarshal.Marshaler.MarshalSwiftTupleMemoryToNet (args, delInfo.Item2) : null;
 #if DEBUG
-			//foreach (var arg in argumentValues) {
-			//	Console.WriteLine ($"arg: {arg} type: {arg.GetType ().Name}");
+			//if (argumentValues is not null) {
+			//	foreach (var arg in argumentValues) {
+			//		Console.WriteLine ($"arg: {arg} type: {arg.GetType ().Name}");
+			//	}
+			//} else {
+			//	Console.WriteLine ("argumentValues is null");
 			//}
 #endif
 
