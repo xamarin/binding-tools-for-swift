@@ -22,6 +22,25 @@ namespace SwiftRuntimeLibraryTests {
 				Assert.Ignore ("These tests are 64-bit only. Run from the command line instead if you're trying from the IDE."); // At least on macOS, because we don't build our swift libraries for 32-bit macOS.
 		}
 
+		[OneTimeSetUp]
+		public void FixtureSetup ()
+		{
+			CopyXamGlueFramework ();
+		}
+
+		static void CopyXamGlueFramework ()
+		{
+			var localFramework = Path.Combine (Compiler.kTestRoot, "XamGlue.framework");
+			if (!Directory.Exists (localFramework)) {
+				Directory.CreateDirectory (localFramework);
+			}
+			var localXamGlue = Path.Combine (localFramework, "XamGlue");
+			if (!File.Exists (localXamGlue)) {
+				var remoteXamGlue = Path.Combine (Compiler.kSwiftRuntimeGlueDirectory, "XamGlue");
+				File.Copy (remoteXamGlue, localXamGlue);
+			}
+		}
+
 		[Test]
 		public void DefaultConstructor ()
 		{
@@ -35,14 +54,15 @@ namespace SwiftRuntimeLibraryTests {
 		public void Constructor_Capacity ()
 		{
 			using (var arr = new SwiftArray<byte> ((nint)20)) {
-				Assert.That (arr.Count, Is.EqualTo (1), "Count 1");
+				Assert.That (arr.Count, Is.EqualTo (0), "Count 1");
 				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (20), "Capacity 1");
 				arr.Add (10);
-				Assert.That (arr.Count, Is.EqualTo (2), "Count 2");
+				Assert.That (arr.Count, Is.EqualTo (1), "Count 2");
 				Assert.That (arr.Capacity, Is.GreaterThanOrEqualTo (20), "Capacity 2");
 			}
 
-			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<int> (-1));
+			nint badCapacity = -1;
+			Assert.Throws<ArgumentOutOfRangeException> (() => new SwiftArray<int> (badCapacity));
 		}
 
 		[Test]
