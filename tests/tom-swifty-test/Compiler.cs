@@ -350,6 +350,7 @@ namespace tomwiftytest {
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Runtime.dll")} ");
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Runtime.InteropServices.dll")} ");
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "mscorlib.dll")} ");
+				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Text.Encoding.Extensions.dll")} ");
 				break;
 			default:
 				throw new NotImplementedException (platform.ToString ());
