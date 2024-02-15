@@ -375,7 +375,7 @@ namespace dlopentest
 
 				Compiler.CSCompile (temp.DirectoryPath, new string [] { csFile }, "TestIt.exe", $"-lib:{Compiler.SystemCompilerLocation.SwiftCompilerLib}");
 				TestRunning.CopyTestReferencesTo (temp.DirectoryPath);
-
+				SwiftRuntimeLibraryTests.SwiftArrayTests.CopyXamGlueFramework (temp.DirectoryPath);
 				string output = Compiler.RunWithDotnet (Path.Combine (temp.DirectoryPath, "TestIt.exe"), temp.DirectoryPath);
 				ClassicAssert.AreEqual (expected, output);
 			}
