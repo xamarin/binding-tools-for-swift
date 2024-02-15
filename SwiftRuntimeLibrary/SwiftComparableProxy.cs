@@ -23,9 +23,9 @@ namespace SwiftRuntimeLibrary {
 
 		struct Comparable_xam_vtable {
 			[MarshalAs (UnmanagedType.FunctionPtr)]
-			public unsafe delegate* unmanaged<IntPtr, IntPtr, bool> opEqualFunc;
+			public unsafe delegate* unmanaged<IntPtr, IntPtr, int> opEqualFunc;
 			[MarshalAs (UnmanagedType.FunctionPtr)]
-			public unsafe delegate* unmanaged<IntPtr, IntPtr, bool> opLessFunc;
+			public unsafe delegate* unmanaged<IntPtr, IntPtr, int> opLessFunc;
 		}
 
 		static Comparable_xam_vtable vtableIComparable;
@@ -34,24 +34,24 @@ namespace SwiftRuntimeLibrary {
 			XamSetVTable ();
 		}
 
-		[UnmanagedCallersOnly]		
-		static bool EqFunc (IntPtr oneptr, IntPtr twoptr)
+		[UnmanagedCallersOnly]
+		static int EqFunc (IntPtr oneptr, IntPtr twoptr)
 		{
 			if (oneptr == twoptr)
-				return true;
+				return 1;
 			var one = SwiftObjectRegistry.Registry.ProxyForEveryProtocolHandle<ISwiftComparable> (oneptr);
 			var two = SwiftObjectRegistry.Registry.ProxyForEveryProtocolHandle<ISwiftComparable> (twoptr);
-			return one.OpEquals (two);
+			return one.OpEquals (two) ? 1 : 0;
 		}
 
 		[UnmanagedCallersOnly]
-		static bool LessFunc (IntPtr oneptr, IntPtr twoptr)
+		static int LessFunc (IntPtr oneptr, IntPtr twoptr)
 		{
 			if (oneptr == twoptr)
-				return false;
+				return 0;
 			var one = SwiftObjectRegistry.Registry.ProxyForEveryProtocolHandle<ISwiftComparable> (oneptr);
 			var two = SwiftObjectRegistry.Registry.ProxyForEveryProtocolHandle<ISwiftComparable> (twoptr);
-			return one.OpLess (two);
+			return one.OpLess (two) ? 1 : 0;
 		}
 
 		static void XamSetVTable ()
