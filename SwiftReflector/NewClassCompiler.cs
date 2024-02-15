@@ -3349,7 +3349,7 @@ namespace SwiftReflector {
 		void ImplementProxyConstructorAndFields (CSClass cl, CSUsingPackages use, bool hasVtable, CSInterface iface, bool hasAssociatedTypes)
 		{
 			if (hasVtable || hasAssociatedTypes)
-				cl.Fields.Add (CSFieldDeclaration.FieldLine (iface.ToCSType (), kInterfaceImpl));
+				cl.Fields.Add (CSFieldDeclaration.FieldLine (iface.ToCSType (), kInterfaceImpl, new CSIdentifier ("null!")));
 			if (!hasAssociatedTypes) {
 				cl.Fields.Add (CSFieldDeclaration.FieldLine (new CSSimpleType (typeof (SwiftExistentialContainer1)), kContainer));
 				var prop = CSProperty.PublicGetBacking (new CSSimpleType (typeof (ISwiftExistentialContainer)), new CSIdentifier ("ProxyExistentialContainer"), kContainer, false, CSMethodKind.Override);
@@ -3862,9 +3862,9 @@ namespace SwiftReflector {
 			//          public static object XamarinFactory(IntPtr p, Type[] genericTypes)
 			//			{
 			//              Type t = typeof(className<,,,>).MakeGenericType(genericTypes);
-			//				ConstructorInfo ci = t.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
+			//				ConstructorInfo? ci = t.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
 			//					null, new Type[] { typeof(IntPtr), typeof(SwiftObjectRegistry), null);
-			//			    return ci.Invoke(new object[] { p, SwiftObjectRegistry.Registry }, null);
+			//			    return ci!.Invoke(new object[] { p, SwiftObjectRegistry.Registry }, null);
 			//          }
 
 			var extraFactoryParam = classDecl.IsObjCOrInheritsObjC (TypeMapper) ? null :
@@ -3885,7 +3885,7 @@ namespace SwiftReflector {
 				                                         new CSFunctionCall (String.Format ("typeof({0}).MakeGenericType", sb.ToString ()),
 																		  false, parms [1].Name));
 				use.AddIfNotPresent (typeof (ConstructorInfo));
-				var ciLine = CSVariableDeclaration.VarLine (new CSSimpleType (typeof (ConstructorInfo)), "ci",
+				var ciLine = CSVariableDeclaration.VarLine (new CSSimpleType (typeof (ConstructorInfo)).Nullable, "ci",
 				                                          new CSFunctionCall ("t.GetConstructor", false,
 				                                                            new CSIdentifier ("BindingFlags.Instance") | new CSIdentifier ("BindingFlags.NonPublic"),
 				                                                            CSConstant.Null,
@@ -3893,7 +3893,7 @@ namespace SwiftReflector {
 				                                                                                      new CSSimpleType (typeof (IntPtr)).Typeof (),
 				                                                                                      new CSSimpleType (typeof (SwiftObjectRegistry)).Typeof ()),
 				                                                            CSConstant.Null));
-				var retLine = CSReturn.ReturnLine (new CSFunctionCall ("ci.Invoke", false,
+				var retLine = CSReturn.ReturnLine (new CSFunctionCall ("ci!.Invoke", false,
 				                                                    new CSArray1DInitialized (CSSimpleType.Object, parms [0].Name,  extraFactoryParam)));
 				var meth = new CSMethod (CSVisibility.Public, CSMethodKind.Static, CSSimpleType.Object,
 				                       new CSIdentifier (SwiftObjectRegistry.kXamarinFactoryMethodName), new CSParameterList (parms), new CSCodeBlock ()
@@ -4170,7 +4170,7 @@ namespace SwiftReflector {
 				throw ErrorHelper.CreateError (ReflectorError.kCompilerReferenceBase + 66, $"Unable to find entity for type {fullClassName} while marshaling from swift.");
 			}
 			if (isObjCProtocol) {
-				return new CSFunctionCall ($"ObjCRuntime.Runtime.GetINativeObject<{expectedType.ToString ()}>", false, expr, CSConstant.Val (false));
+				return CSUnaryExpression.PostBang (new CSFunctionCall ($"ObjCRuntime.Runtime.GetINativeObject<{expectedType.ToString ()}>", false, expr, CSConstant.Val (false)));
 			} else {
 				var call = entity.Type.IsObjCOrInheritsObjC (typeMapper) ? "ObjCRuntime.Runtime.GetNSObject<{0}>" : "SwiftObjectRegistry.Registry.CSObjectForSwiftObject <{0}>";
 				return CSUnaryExpression.PostBang (new CSFunctionCall (String.Format (call, expectedType.ToString ()), false, expr));
