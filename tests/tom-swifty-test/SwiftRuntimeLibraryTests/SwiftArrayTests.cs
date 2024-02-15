@@ -28,9 +28,15 @@ namespace SwiftRuntimeLibraryTests {
 			CopyXamGlueFramework ();
 		}
 
-		static void CopyXamGlueFramework ()
+		public static void CopyXamGlueFramework ()
 		{
 			var localFramework = Path.Combine (Compiler.kTestRoot, "XamGlue.framework");
+			CopyXamGlueFramework (localFramework);
+		}
+
+		public static void CopyXamGlueFramework (string toDir)
+		{
+			var localFramework = Path.Combine (toDir, "XamGlue.framework");
 			if (!Directory.Exists (localFramework)) {
 				Directory.CreateDirectory (localFramework);
 			}
