@@ -327,7 +327,7 @@ namespace SwiftReflector {
 						returnIntPtr = new CSIdentifier (Uniqueify ("retvalIntPtr", identifiersUsed));
 						identifiersUsed.Add (returnIntPtr.Name);
 						if (!returnsIntPtrForReal)
-							preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, CSConstant.Null));
+							preMarshalCode.Add (CSVariableDeclaration.VarLine (returnType, returnIdent, new CSIdentifier ("null!")));
 
 						preMarshalCode.Add (CSVariableDeclaration.VarLine (CSSimpleType.IntPtr, returnIntPtr, new CSIdentifier ("IntPtr.Zero")));
 						use.AddIfNotPresent (typeof (SwiftObjectRegistry));
@@ -1327,7 +1327,7 @@ namespace SwiftReflector {
 			var pNameIsSwiftable = new CSIdentifier (Uniqueify (p.Name.Name + "IsSwiftable", identifiersUsed));
 			identifiersUsed.Add (pNameIsSwiftable.Name);
 			preMarshalCode.Add (CSVariableDeclaration.VarLine (CSSimpleType.IntPtr, pNameIntPtr));
-			preMarshalCode.Add (CSVariableDeclaration.VarLine (new CSSimpleType ("ISwiftObject"), pNameAssocProxy, CSConstant.Null));
+			preMarshalCode.Add (CSVariableDeclaration.VarLine (new CSSimpleType ("ISwiftObject?"), pNameAssocProxy, CSConstant.Null));
 			preMarshalCode.Add (CSVariableDeclaration.VarLine (
 			    CSSimpleType.Bool, pNameIsSwiftable, new CSFunctionCall (
 				"StructMarshal.Marshaler.IsSwiftRepresentable", false, p.CSType.Typeof ())));
@@ -1822,13 +1822,13 @@ namespace SwiftReflector {
 			if (proto.IsInOut || p.ParameterKind == CSParameterKind.Out || p.ParameterKind == CSParameterKind.Ref) {
 				// var localHandle = handleExpr
 				// call ( out localHandle )
-				// p = ObjCRuntime.Runtime.GetINativeObject<p.CSType>(localHandle, false)
+				// p = ObjCRuntime.Runtime.GetINativeObject<p.CSType>(localHandle, false)!
 				var localHandle = new CSIdentifier (Uniqueify (p.Name + "Handle", identifiersUsed));
 				identifiersUsed.Add (localHandle.Name);
 				preMarshalCode.Add (CSVariableDeclaration.VarLine (CSSimpleType.IntPtr, localHandle, handleExpr));
 				var accessCallName = $"ObjCRuntime.Runtime.GetINativeObject<{p.CSType.ToString ()}>";
 				var accessCall = new CSFunctionCall (accessCallName, false, localHandle, CSConstant.Val (false));
-				postMarshalCode.Add (CSAssignment.Assign (p.Name, accessCall));
+				postMarshalCode.Add (CSAssignment.Assign (p.Name, CSUnaryExpression.PostBang (accessCall)));
 				return ParmName (localHandle.Name, p.ParameterKind);
 			} else {
 				return handleExpr;
