@@ -1362,14 +1362,14 @@ namespace SwiftRuntimeLibrary.SwiftMarshal {
 		bool ExceptionReturnContainsSwiftError (IntPtr swiftMeduaTuple, SwiftTupleMap tMap)
 		{
 			//#if DEBUG
-			//			Console.WriteLine("Given pointer " + p.ToString("X8"));
+			//			Console.WriteLine("Given pointer " + swiftMeduaTuple.ToString("X8"));
 			//			Console.WriteLine($"And a tuple map with ${tMap.Offsets.Length} offsets");
 			//			foreach (int i in tMap.Offsets)
 			//			{
 			//				Console.Write($"{i}, ");
 			//			}
 			//			Console.WriteLine();
-			//			Memory.Dump(p, 40);
+			//			Memory.Dump(swiftMeduaTuple, 40);
 			//#endif
 			var boolPtr = swiftMeduaTuple + tMap.Offsets [tMap.Offsets.Length - 1];
 			//#if DEBUG
