@@ -14,6 +14,7 @@ using ObjCRuntime;
 
 namespace SwiftReflector {
 	public class OverrideBuilder {
+		public const string kVtableHandleName = "csVTHandle";
 		TypeMapper typeMapper;
 		string vtableTypeName;
 		string vtableName = null;
@@ -1483,7 +1484,16 @@ namespace SwiftReflector {
 					}
 				}
 			}
+			if (cl.Fields.Count > 0) {
+				cl.Fields.Insert (0, VtableHandleDeclaration ());
+			}
 			return cl;
+		}
+
+		SLLine VtableHandleDeclaration ()
+		{
+			var fieldLine = SLDeclaration.VarLine (kVtableHandleName, new SLOptionalType (SLSimpleType.OpaquePointer), SLConstant.Nil, Visibility.Public);
+			return fieldLine;
 		}
 
 		SLLine ToFieldDeclaration (FunctionDeclaration func, int index, List<string> fieldIdentifiers)
