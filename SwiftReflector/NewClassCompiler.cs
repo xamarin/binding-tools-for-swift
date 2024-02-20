@@ -2053,9 +2053,20 @@ namespace SwiftReflector {
 					                                                                   virtFunctions, virtFunctions [i], vtableEntryIndex, vtableName, vtable, vtableAssignments, use, swiftLibraryPath);
 				}
 			}
+			AddVTHandleIfNeeded (use, vtable, vtableAssignments, vtableName);
 			ImplementVTableInitializer (proxyClass, picl, usedPinvokeNames, protocolDecl, vtableAssignments, wrapper, vtableType, vtableName, swiftLibraryPath);
 
 			return vtable.Fields.Count > 0;
+		}
+
+		void AddVTHandleIfNeeded (CSUsingPackages use, CSStruct vtable, List<CSLine> vtableAssignments, string vtName)
+		{
+			if (vtable.Fields.Count > 0) {
+				use.AddIfNotPresent (typeof (GCHandle));
+				var gcType = new CSSimpleType (typeof (GCHandle));
+				var decl = new CSFieldDeclaration (gcType, OverrideBuilder.kVtableHandleName, value: null, CSVisibility.Public);
+				vtable.Fields.Insert (0, new CSLine (decl));
+			}
 		}
 
 		void CollectAllProtocolMethods (List<FunctionDeclaration> functions, ProtocolDeclaration decl)
@@ -2114,6 +2125,7 @@ namespace SwiftReflector {
 			if (vtable.Fields.Count > 0) {
 				cl.InnerClasses.Add (vtable);
 			}
+			AddVTHandleIfNeeded (use, vtable, vtableAssignments, vtableName);
 			ImplementVTableInitializer (cl, picl, usedPinvokeNames, classDecl, vtableAssignments, wrapper, vtableType, vtableName, swiftLibraryPath);
 			return virtFuncs.Count;
 		}
