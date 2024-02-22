@@ -15,13 +15,13 @@ using ObjCRuntime;
 namespace SwiftReflector {
 	public class OverrideBuilder {
 		public const string kVtableHandleName = "csVTHandle";
+		public const string kVtableHandleArgName = "_vtGCH";
 		TypeMapper typeMapper;
 		string vtableTypeName;
 		string vtableName = null;
 		string vtableSetterName;
 		string vtableGetterName;
 		bool isProtocol, hasAssociatedTypes, hasSelfInProtoArgs, isExistential;
-		const string kCSIntPtr = "csIntPtr";
 		public const string kAssocTypeGeneric = "AU";
 		static SLIdentifier kClassIsInitialized = new SLIdentifier ("_xamarinClassIsInitialized");
 		ModuleDeclaration targetModule;
@@ -936,7 +936,7 @@ namespace SwiftReflector {
 			//     get {
 			//         if _xamarinClassIsInitialized && _vtable.funcIndex != nil {
 			//             ...pre-marshalling code...
-			//             [retval = ]_vtable.funcindex!([returncode,],toIntPtr(self))
+			//             [retval = ]_vtable.funcindex!(_vtable.csVTHandle, [returncode,],toIntPtr(self))
 			//             ...post-marshal code...
 			//             [return retval]
 			//         }
@@ -947,7 +947,7 @@ namespace SwiftReflector {
 			//     set {
 			//          if _xamarinClassIsInitialized && _vtable.funcIndex+1 != nil {
 			//              ...pre-marshalling code...
-			//              _vtable.funindex+1!(toIntPtr(self), newValue)
+			//              _vtable.funindex+1!(_vtable.csVTHandle, toIntPtr(self), newValue)
 			//              ...post-marshalling code...
 			//          }
 			//          else {
@@ -1327,13 +1327,6 @@ namespace SwiftReflector {
 			return fieldLine;
 		}
 
-		SLLine DefineCSIntPtrDeclaration ()
-		{
-			var fieldLine = SLDeclaration.VarLine (kCSIntPtr, new SLSimpleType ("UnsafeRawPointer"),
-				new SLFunctionCall ("UnsafeRawPointer", true), Visibility.Private, false);
-			return fieldLine;
-		}
-
 		SLFunc DefineGenericVtableGetter ()
 		{
 			// fileprivate func _vtableGetterName(t0: Any.Type /* ... */) -> _vtableType?
@@ -1549,6 +1542,8 @@ namespace SwiftReflector {
 					}
 				}
 			}
+			// pointer to the CS vtable
+			arguments.Insert (0, new SLNameTypePair ("_", new SLOptionalType (SLSimpleType.OpaquePointer)));
 			return new SLFuncType (new SLTupleType (arguments), returnType);
 		}
 

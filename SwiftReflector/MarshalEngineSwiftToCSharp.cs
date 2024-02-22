@@ -74,6 +74,7 @@ namespace SwiftReflector {
 			string throwReturnName = null;
 			SLIdentifier throwReturn = null;
 			SLType throwReturnType = null;
+			var csVT = new SLIdentifier ($"{vtableName}.{OverrideBuilder.kVtableHandleName}");
 
 			var returnTypeSpec = TypeSpec.IsNullOrEmptyTuple (func.ReturnTypeSpec) ? func.ReturnTypeSpec : func.ReturnTypeSpec.ReplaceName ("Self", SubstituteForSelf);
 
@@ -99,7 +100,7 @@ namespace SwiftReflector {
 
 
 			if (func.HasThrows) {
-				returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
+				returnLine = new SLLine (new SLNamedClosureCall (callInvocation, AddVTHandleAndMakeArgs (csVT, closureArgs)));
 				string errName = MarshalEngine.Uniqueify ("err", identifiersUsed);
 				identifiersUsed.Add (errName);
 				var errIdent = new SLIdentifier (errName);
@@ -136,13 +137,13 @@ namespace SwiftReflector {
 					// On no return value
 					// _vtable.entry!(args)
 					//
-					returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
+					returnLine = new SLLine (new SLNamedClosureCall (callInvocation, AddVTHandleAndMakeArgs (csVT, closureArgs)));
 				} else {
 					if (TypeSpec.IsBuiltInValueType (returnTypeSpec)) {
 						// on simple return types (Int, UInt, Bool, etc)
 						// return _vtable.entry!(args)
 						//
-						var closureCall = new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs));
+						var closureCall = new SLNamedClosureCall (callInvocation, AddVTHandleAndMakeArgs (csVT, closureArgs));
 						if (postMarshalCode.Count == 0) {
 							returnLine = SLReturn.ReturnLine (closureCall);
 						} else {
@@ -173,7 +174,7 @@ namespace SwiftReflector {
 							SLIdentifier actualReturnIdent = new SLIdentifier (MarshalEngine.Uniqueify ("actualRetval", identifiersUsed));
 							identifiersUsed.Add (actualReturnIdent.Name);
 
-							returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
+							returnLine = new SLLine (new SLNamedClosureCall (callInvocation, AddVTHandleAndMakeArgs (csVT, closureArgs)));
 
 							var actualRetvalDecl = new SLDeclaration (true, actualReturnIdent, null,
 													    new SLFunctionCall (String.Format ("{0}.move", returnIdent.Name), false),
@@ -192,7 +193,7 @@ namespace SwiftReflector {
 							// return retval;
 							imports.AddIfNotPresent ("XamGlue");
 							SLBaseExpr callExpr = new SLFunctionCall ("fromIntPtr", false,
-								new SLArgument (new SLIdentifier ("ptr"), new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)), true));
+								new SLArgument (new SLIdentifier ("ptr"), new SLNamedClosureCall (callInvocation, AddVTHandleAndMakeArgs (csVT, closureArgs)), true));
 							if (postMarshalCode.Count > 0) {
 								string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
 								var retDecl = new SLDeclaration (true, retvalName,
@@ -227,7 +228,7 @@ namespace SwiftReflector {
 								preMarshalCode.Add (new SLLine (ptrDecl));
 								closureArgs.Insert (0, new SLIdentifier (ptrName));
 
-								returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
+								returnLine = new SLLine (new SLNamedClosureCall (callInvocation, AddVTHandleAndMakeArgs (csVT, closureArgs)));
 
 								var actualReturnName = MarshalEngine.Uniqueify ("actualReturn", identifiersUsed);
 								identifiersUsed.Add (actualReturnName);
@@ -263,7 +264,7 @@ namespace SwiftReflector {
 																				 SLConstant.Val (1), true)), Visibility.None);
 								preMarshalCode.Add (new SLLine (retDecl));
 								closureArgs.Insert (0, new SLIdentifier (retvalName));
-								returnLine = new SLLine (new SLNamedClosureCall (callInvocation, new CommaListElementCollection<SLBaseExpr> (closureArgs)));
+								returnLine = new SLLine (new SLNamedClosureCall (callInvocation, AddVTHandleAndMakeArgs (csVT, closureArgs)));
 
 								SLIdentifier actualReturnIdent = new SLIdentifier (MarshalEngine.Uniqueify ("actualRetval", identifiersUsed));
 								identifiersUsed.Add (actualReturnIdent.Name);
@@ -277,7 +278,6 @@ namespace SwiftReflector {
 
 								break;
 							}
-
 						}
 					}
 				}
@@ -288,6 +288,13 @@ namespace SwiftReflector {
 			yield return returnLine;
 			foreach (ICodeElement line in postMarshalCode)
 				yield return line;
+		}
+
+		CommaListElementCollection<SLBaseExpr> AddVTHandleAndMakeArgs (SLBaseExpr csVT, List<SLBaseExpr> exprs)
+		{
+			var args = new CommaListElementCollection<SLBaseExpr> (exprs);
+			args.Insert (0, csVT);
+			return args;
 		}
 
 		SLBaseExpr MarshalTypeSpec (BaseDeclaration declContext, string name, TypeSpec typeSpec)

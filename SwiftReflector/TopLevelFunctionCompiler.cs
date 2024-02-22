@@ -13,6 +13,7 @@ using SwiftRuntimeLibrary;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
 using SwiftRuntimeLibrary.SwiftMarshal;
+using System.Runtime.InteropServices;
 
 namespace SwiftReflector {
 	public class TopLevelFunctionCompiler {
@@ -210,6 +211,9 @@ namespace SwiftReflector {
 					}
 				}
 			}
+
+			packs.AddIfNotPresent (typeof (GCHandle));
+			csParams.Insert (0, new CSParameter (new CSSimpleType (typeof (GCHandle)), OverrideBuilder.kVtableHandleArgName, CSParameterKind.None));
 
 			return new CSDelegateTypeDecl (vis, csReturnType, new CSIdentifier (delegateName), csParams, isUnsafe);
 		}

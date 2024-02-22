@@ -59,13 +59,13 @@ namespace SwiftReflector {
 
 
 			if (isSetter) {
-				var valueID = delegateParams [1].Name;
+				var valueID = delegateParams [2].Name;
 				valueExpr = valueID;
 				var swiftNewValue = funcDecl.ParameterLists [1] [0];
 				bool newValueIsGeneric = funcDecl.IsTypeSpecGeneric (funcDecl.PropertyType);
 				entity = !newValueIsGeneric ? typeMapper.GetEntityForTypeSpec (swiftNewValue.TypeSpec) : null;
 				entityType = !newValueIsGeneric ? typeMapper.GetEntityTypeForTypeSpec (swiftNewValue.TypeSpec) : EntityType.None;
-				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [1]);
+				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [2]);
 				var newValueIsBool = entityType == EntityType.Scalar && swiftNewValue.TypeName == "Swift.Bool";
 
 				if (entityType == EntityType.Class || entity != null && entity.IsObjCProtocol) {
@@ -129,7 +129,7 @@ namespace SwiftReflector {
 
 			int j = 0;
 			int k = isSetter ? 1 : 0;
-			for (int i = (funcDecl.HasThrows || returnIsStruct || returnIsProtocol || isSetter || returnIsGeneric || returnIsSelf) ? 2 : 1; i < delegateParams.Count; i++, j++, k++) {
+			for (int i = (funcDecl.HasThrows || returnIsStruct || returnIsProtocol || isSetter || returnIsGeneric || returnIsSelf) ? 3 : 2; i < delegateParams.Count; i++, j++, k++) {
 				var swiftParm = funcDecl.ParameterLists [1] [k];
 				bool parmIsGeneric = funcDecl.IsTypeSpecGeneric (swiftParm);
 				entity = !parmIsGeneric ? typeMapper.GetEntityForTypeSpec (swiftParm.TypeSpec) : null;
@@ -149,7 +149,7 @@ namespace SwiftReflector {
 					use.AddIfNotPresent (typeof (SwiftObjectRegistry));
 
 					var fullClassName = entity.Type.ToFullyQualifiedName (true);
-					var retrievecall = NewClassCompiler.SafeMarshalClassFromIntPtr (delegateParams [0].Name, csParmType, use, fullClassName, typeMapper, entity.IsObjCProtocol);
+					var retrievecall = NewClassCompiler.SafeMarshalClassFromIntPtr (delegateParams [1].Name, csParmType, use, fullClassName, typeMapper, entity.IsObjCProtocol);
 					if (csParm.ParameterKind == CSParameterKind.Out || csParm.ParameterKind == CSParameterKind.Ref) {
 						string id = MarshalEngine.Uniqueify (delegateParams [i].Name.Name, identifiersUsed);
 						identifiersUsed.Add (id);
@@ -331,9 +331,9 @@ namespace SwiftReflector {
 						postMarshalCode.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
 						                                                    methodType.Typeof (),
 						                                                    retvalId,
-						                                                    delegateParams [0].Name));
+						                                                    delegateParams [1].Name));
 						altBody.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.SetErrorNotThrown", false,
-						                                            delegateParams [0].Name, returnTuple.Typeof ()));
+						                                            delegateParams [1].Name, returnTuple.Typeof ()));
 					} else {
 						if (isSetter) {
 							altBody.Add (CSAssignment.Assign (invoker, CSAssignmentOperator.Assign, valueExpr));
@@ -341,7 +341,7 @@ namespace SwiftReflector {
 							altBody.Add (new CSLine (invoker));
 						}
 						altBody.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.SetErrorNotThrown", false,
-						                                            delegateParams [0].Name, returnTuple.Typeof ()));
+						                                            delegateParams [1].Name, returnTuple.Typeof ()));
 
 					}
 					string swiftError = MarshalEngine.Uniqueify ("err", identifiersUsed);
@@ -349,7 +349,7 @@ namespace SwiftReflector {
 					catchBlock.Add (CSFieldDeclaration.VarLine (new CSSimpleType (typeof (SwiftError)), swiftErrorIdentifier,
 										new CSFunctionCall ("SwiftError.FromException", false, catchID)));
 					catchBlock.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.SetErrorThrown", false,
-					                                               delegateParams [0].Name,
+					                                               delegateParams [1].Name,
 					                                               swiftErrorIdentifier,
 					                                               returnTuple.Typeof ()));
 				} else {
@@ -369,7 +369,7 @@ namespace SwiftReflector {
 						var returnContainerId = new CSIdentifier (returnContainer);
 						var protoGetter = new CSFunctionCall ($"SwiftObjectRegistry.Registry.ExistentialContainerForProtocols", false, retvalId, methodType.Typeof ());
 						var protoDecl = CSVariableDeclaration.VarLine (CSSimpleType.Var, returnContainerId, protoGetter);
-						var marshalBack = CSFunctionCall.FunctionCallLine ($"{returnContainer}.CopyTo", delegateParams [0].Name);
+						var marshalBack = CSFunctionCall.FunctionCallLine ($"{returnContainer}.CopyTo", delegateParams [1].Name);
 						postMarshalCode.Add (protoDecl);
 						postMarshalCode.Add (marshalBack);
 					} else if (returnIsStruct) {
@@ -377,35 +377,35 @@ namespace SwiftReflector {
 						// marshaler to copy into it
 						use.AddIfNotPresent (typeof (StructMarshal));
 						var marshalCall = CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
-												 invoker, delegateParams [0].Name);
+												 invoker, delegateParams [1].Name);
 						altBody.Add (marshalCall);
 					} else if (returnIsTuple) {
 						// non-blitable means that the parameter is an IntPtr and we can call the
 						// marshaler to copy into it
 						use.AddIfNotPresent (typeof (StructMarshal));
 						var marshalCall = CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
-												 invoker, delegateParams [0].Name);
+												 invoker, delegateParams [1].Name);
 						altBody.Add (marshalCall);
 					} else if (returnIsGeneric) {
 						// T retval = invoker();
 						// if (retval is ISwiftObject) {
-						//     Marshal.WriteIntPtr(delegateParams [0].Name, ((ISwiftObject)retval).SwiftObject);
+						//     Marshal.WriteIntPtr(delegateParams [1].Name, ((ISwiftObject)retval).SwiftObject);
 						// }
 						// else {
-						//    StructMarshal.Marshaler.ToSwift(typeof(T), retval, delegateParams[0].Name);
+						//    StructMarshal.Marshaler.ToSwift(typeof(T), retval, delegateParams[1].Name);
 						// }
 						string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
 						var retvalId = new CSIdentifier (retvalName);
 						altBody.Add (CSFieldDeclaration.VarLine (methodType, retvalId, invoker));
 						var ifClause = new CSCodeBlock ();
 						ifClause.Add (CSFunctionCall.FunctionCallLine ("Marshal.WriteIntPtr", false,
-											     delegateParams [0].Name,
+											     delegateParams [1].Name,
 											     new CSParenthesisExpression (new CSCastExpression ("ISwiftObject", retvalId)).Dot (NewClassCompiler.kSwiftObjectGetter)));
 						var elseClause = new CSCodeBlock ();
 						elseClause.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
 											       methodType.Typeof (),
 											       retvalId,
-											       delegateParams [0].Name));
+											       delegateParams [1].Name));
 						CSBaseExpression ifExpr = new CSSimpleType ("ISwiftObject").Typeof ().Dot (new CSFunctionCall ("IsAssignableFrom", false,
 																														  methodType.Typeof ()));
 
@@ -515,10 +515,10 @@ namespace SwiftReflector {
 					body.Add (CSFieldDeclaration.VarLine (methodType, retvalId, csharpCall));
 					if (returnIsGeneric) {
 						body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
-											   methodType.Typeof (), retvalId, delegateParams [0].Name));
+											   methodType.Typeof (), retvalId, delegateParams [1].Name));
 					} else {
 						body.Add (CSFunctionCall.FunctionCallLine ("StructMarshal.Marshaler.ToSwift", false,
-											   retvalId, delegateParams [0].Name));
+											   retvalId, delegateParams [1].Name));
 					}
 				} else if (returnIsProtocol) {
 					string retvalName = MarshalEngine.Uniqueify ("retval", identifiersUsed);
@@ -550,7 +550,7 @@ namespace SwiftReflector {
 					var returnContainerId = new CSIdentifier (returnContainerName);
 					body.Add (CSVariableDeclaration.VarLine (CSSimpleType.Var, returnContainerId, new CSFunctionCall ("SwiftObjectRegistry.Registry.ExistentialContainerForProtocols", false, containerExprs.ToArray ())));
 					body.Add (CSFunctionCall.FunctionCallLine ($"{returnContainerName}.CopyTo", false,
-						new CSFunctionCall ("IntPtr", true, delegateParams [0].Name)));
+						new CSFunctionCall ("IntPtr", true, delegateParams [1].Name)));
 					
 				} else {
 					if (returnIsClosure) {
@@ -571,16 +571,16 @@ namespace SwiftReflector {
 				entity = !valueIsGeneric ? typeMapper.GetEntityForTypeSpec (valueTypeSpec) : null;
 				entityType = !valueIsGeneric ? typeMapper.GetEntityTypeForTypeSpec (funcDecl.ParameterLists [1] [0].TypeSpec) : EntityType.None;
 				var isBoolNewValue = entityType == EntityType.Scalar && valueTypeName == "Swift.Bool";
-				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [1]);
+				var isUnusualNewValue = IsUnusualParameter (entity, delegateParams [2]);
 
 				if (entityType == EntityType.Class || (entity != null && entity.IsObjCProtocol)) {
-					var csParmType = delegateParams [1].CSType as CSSimpleType;
+					var csParmType = delegateParams [2].CSType as CSSimpleType;
 					if (csParmType == null)
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 42, "Inconceivable! The class type for a method was a CSSimpleType!");
 					var valueIsDynamicSelf = forProtocol && methodType.ToString () == NewClassCompiler.kGenericSelfName;
 					if (valueIsDynamicSelf) {
 						// code generated:
-						// var obj = SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisTypeName> (delegateParams [1].Name);
+						// var obj = SwiftObjectRegistry.Registry.CSObjectForSwiftObject<thisTypeName> (delegateParams [2].Name);
 						// callSite = (TSelf)(obj.xamarinImpl ?? obj)
 						var proxObjName = MarshalEngine.Uniqueify ("proxyObj", identifiersUsed);
 						identifiersUsed.Add (proxObjName);
@@ -591,7 +591,7 @@ namespace SwiftReflector {
 					} else {
 						use.AddIfNotPresent (typeof (SwiftObjectRegistry));
 						var fullClassName = entity.Type.ToFullyQualifiedName (true);
-						var retrievecall = NewClassCompiler.SafeMarshalClassFromIntPtr (delegateParams [1].Name, csParmType, use, fullClassName, typeMapper, entity.IsObjCProtocol);
+						var retrievecall = NewClassCompiler.SafeMarshalClassFromIntPtr (delegateParams [2].Name, csParmType, use, fullClassName, typeMapper, entity.IsObjCProtocol);
 						valueExpr = retrievecall;
 					}
 				} else if (entityType == EntityType.Protocol) {
@@ -602,9 +602,9 @@ namespace SwiftReflector {
 					var ntb = typeMapper.MapType (funcDecl, funcDecl.ParameterLists [1] [0].TypeSpec, false);
 					var valType = ntb.ToCSType (use);
 					if (entityType == EntityType.TrivialEnum) {
-						valueExpr = new CSCastExpression (valType, new CSCastExpression (CSSimpleType.Long, delegateParams [1].Name));
+						valueExpr = new CSCastExpression (valType, new CSCastExpression (CSSimpleType.Long, delegateParams [2].Name));
 					} else {
-						var marshalCall = new CSFunctionCall ("StructMarshal.Marshaler.ToNet", false, delegateParams [1].Name, valType.Typeof ());
+						var marshalCall = new CSFunctionCall ("StructMarshal.Marshaler.ToNet", false, delegateParams [2].Name, valType.Typeof ());
 						valueExpr = new CSCastExpression (valType, marshalCall);
 					}
 				} else if (valueIsGeneric) {
@@ -614,12 +614,12 @@ namespace SwiftReflector {
 					var genRef = new CSGenericReferenceType (depthIndex.Item1, depthIndex.Item2);
 					genRef.ReferenceNamer = GenericRenamer;
 					use.AddIfNotPresent (typeof (StructMarshal));
-					string valMarshalName = MarshalEngine.Uniqueify (delegateParams [1].Name + "Temp", identifiersUsed);
+					string valMarshalName = MarshalEngine.Uniqueify (delegateParams [2].Name + "Temp", identifiersUsed);
 					var valMarshalId = new CSIdentifier (valMarshalName);
 
 					var valDecl = CSVariableDeclaration.VarLine (genRef, valMarshalId,
 					                                           new CSCastExpression (genRef, new CSFunctionCall ("StructMarshal.Marshaler.ToNet", false,
-					                                                                                   delegateParams [1].Name,
+					                                                                                   delegateParams [2].Name,
 					                                                                                   genRef.Typeof ())));
 					body.Add (valDecl);
 					valueExpr = valMarshalId;
@@ -631,9 +631,9 @@ namespace SwiftReflector {
 							flags |= ClosureFlags.Throws;
 						if (closureReturn.IsAsync)
 							flags |= ClosureFlags.Async;
-						valueExpr = MarshalEngine.BuildWrappedClosureCall (delegateParams [1].Name, methodType as CSSimpleType, flags);
+						valueExpr = MarshalEngine.BuildWrappedClosureCall (delegateParams [2].Name, methodType as CSSimpleType, flags);
 					} else {
-						valueExpr = delegateParams [1].Name;
+						valueExpr = delegateParams [2].Name;
 						if (isBoolNewValue) {
 							valueExpr = NIntToBool (valueExpr);
 						}
