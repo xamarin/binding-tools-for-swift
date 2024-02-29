@@ -169,8 +169,10 @@ namespace SwiftReflector {
 					csParam = new CSParameter (CSSimpleType.IntPtr, new CSIdentifier (arg.Name), CSParameterKind.None, null);
 				} else {
 					var argType = RecastBoolAsNint (arg.Type.ToCSType (packs));
-					if (argType is CSSimpleType csType && arg.Type.IsReference)
-						argType = csType.Star;					
+					if (argType is CSSimpleType csType && arg.Type.IsReference) {
+						argType = csType.Star;
+						isUnsafe = true;
+					}
 					csParam = new CSParameter (argType, new CSIdentifier (arg.Name), CSParameterKind.None, null);
 				}
 				csParams.Add (csParam);
@@ -212,8 +214,7 @@ namespace SwiftReflector {
 				}
 			}
 
-			packs.AddIfNotPresent (typeof (GCHandle));
-			csParams.Insert (0, new CSParameter (new CSSimpleType (typeof (GCHandle)), OverrideBuilder.kVtableHandleArgName, CSParameterKind.None));
+			csParams.Insert (0, new CSParameter (new CSSimpleType (typeof (IntPtr)), OverrideBuilder.kVtableHandleArgName, CSParameterKind.None));
 
 			return new CSDelegateTypeDecl (vis, csReturnType, new CSIdentifier (delegateName), csParams, isUnsafe);
 		}
