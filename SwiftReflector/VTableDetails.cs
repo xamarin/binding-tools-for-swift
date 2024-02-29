@@ -309,8 +309,7 @@ namespace SwiftReflector
 
 			var pl = delType.Parameters;
 			var plWithoutGCPtr = new CSParameterList (pl.Skip (1));
-			var usedIDs = new List<string> ();
-			usedIDs.AddRange (pl.Select (p => p.Name.Name));
+			var usedIDs = new List<string> (pl.Select (p => p.Name.Name));
 
 			var marshal = new MarshalEngineCSafeSwiftToCSharp (use, usedIDs, typeMapper);
 
@@ -392,9 +391,8 @@ namespace SwiftReflector
 			var returnType = funcDecl.IsGetter ? delType.Type : CSSimpleType.Void;
 
 			var pl = delType.Parameters;
-			var plWithoutGCPtr = new CSParameterList (pl.GetRange (1, pl.Count - 1));
-			var usedIDs = new List<string> ();
-			usedIDs.AddRange (pl.Select (p => p.Name.Name));
+			var plWithoutGCPtr = new CSParameterList (pl.Skip (1));
+			var usedIDs = new List<string> (pl.Select (p => p.Name.Name));
 
 			var body = new CSCodeBlock ();
 
@@ -431,8 +429,7 @@ namespace SwiftReflector
 
 			var pl = delType.Parameters;
 			var plWithoutGCPtr = new CSParameterList (pl.Skip (1));
-			var usedIDs = new List<string> ();
-			usedIDs.AddRange (pl.Select (p => p.Name.Name));
+			var usedIDs = new List<string> (pl.Select (p => p.Name.Name));
 
 			var body = new CSCodeBlock ();
 
