@@ -9,7 +9,7 @@ using Dynamo;
 namespace Dynamo.CSLang {
 	public class CSClass : ICodeElementSet, ICSTopLevelDeclaration {
 		public CSClass (CSVisibility vis, CSIdentifier name, IEnumerable<CSMethod> methods = null,
-			bool isStatic = false, bool isSealed = false)
+			bool isStatic = false, bool isSealed = false, bool isUnsafe = false)
 		{
 			Visibility = vis;
 			IsStatic = isStatic;
@@ -32,8 +32,9 @@ namespace Dynamo.CSLang {
 		}
 
 		public CSClass (CSVisibility vis, string name,
-			IEnumerable<CSMethod> members = null, bool isStatic = false, bool isSealed = false)
-			: this (vis, new CSIdentifier (name), members, isStatic, isSealed)
+			IEnumerable<CSMethod> members = null, bool isStatic = false, bool isSealed = false,
+			bool isUnsafe = false)
+			: this (vis, new CSIdentifier (name), members, isStatic, isSealed, isUnsafe: false)
 		{
 		}
 
@@ -42,6 +43,7 @@ namespace Dynamo.CSLang {
 		public CSVisibility Visibility { get; private set; }
 		public bool IsStatic { get; private set; }
 		public bool IsSealed { get; private set; }
+		public bool IsUnsafe { get; private set; }
 		public CSIdentifier Name { get; private set; }
 		public CSInheritance Inheritance { get; private set; }
 		public List<CSDelegateTypeDecl> Delegates { get; private set; }
@@ -114,6 +116,8 @@ namespace Dynamo.CSLang {
 					decl.Add (new SimpleElement ("static ", true));
 				if (IsSealed)
 					decl.Add (new SimpleElement ("sealed ", true));
+				if (IsUnsafe)
+					decl.Add (new SimpleElement ("unsafe ", true));
 				decl.Add (new CSIdentifier (EntityLabel + " "));
 				decl.Add (Name);
 				decl.Add (GenericParams);
@@ -169,14 +173,15 @@ namespace Dynamo.CSLang {
 
 	public class CSStruct : CSClass {
 		public CSStruct (CSVisibility vis, CSIdentifier name, IEnumerable<CSMethod> methods = null,
-			bool isStatic = false, bool isSealed = false)
-			: base (vis, name, methods, isStatic, isSealed)
+			bool isStatic = false, bool isSealed = false, bool isUnsafe = false)
+			: base (vis, name, methods, isStatic, isSealed, isUnsafe)
 		{
 		}
 
 		public CSStruct (CSVisibility vis, string name,
-			IEnumerable<CSMethod> members = null, bool isStatic = false, bool isSealed = false)
-			: this (vis, new CSIdentifier (name), members, isStatic, isSealed)
+			IEnumerable<CSMethod> members = null, bool isStatic = false, bool isSealed = false,
+			bool isUnsafe = false)
+			: this (vis, new CSIdentifier (name), members, isStatic, isSealed, isUnsafe)
 		{
 		}
 

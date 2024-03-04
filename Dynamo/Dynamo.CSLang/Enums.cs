@@ -23,6 +23,7 @@ namespace Dynamo.CSLang {
 		Interface,
 		Unsafe,
 		StaticUnsafe,
+		StaticExternUnsafe,
 	}
 
 	public enum CSBinaryOperator {

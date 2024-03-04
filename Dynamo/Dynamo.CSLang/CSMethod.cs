@@ -52,7 +52,7 @@ namespace Dynamo.CSLang {
 
 			lc.And (name).And (GenericParameters).And (new SimpleElement ("(")).And (parms).And (new SimpleElement (")")).And (GenericConstraints);
 			if (body == null) {
-				if (!(kind == CSMethodKind.StaticExtern || kind == CSMethodKind.Interface))
+				if (!(kind == CSMethodKind.StaticExtern || kind == CSMethodKind.StaticExternUnsafe || kind == CSMethodKind.Interface))
 					throw new ArgumentException ("Method body is only optional when method kind kind is either StaticExtern or Interface",
 								    nameof (body));
 				lc.Add (new SimpleElement (";"));
@@ -153,6 +153,8 @@ namespace Dynamo.CSLang {
 				return "unsafe";
 			case CSMethodKind.StaticUnsafe:
 				return "static unsafe";
+			case CSMethodKind.StaticExternUnsafe:
+				return "static extern unsafe";
 			default:
 				throw new ArgumentOutOfRangeException (nameof (kind));
 			}
