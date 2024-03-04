@@ -44,6 +44,8 @@ namespace tomwiftytest {
 
 		static string kSystemBin = "/usr/bin/";
 		public const string kSystemLib = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/macosx";
+		public static string kSwiftRuntimeOutputDirectory = Path.Combine (TestContext.CurrentContext.TestDirectory, $"../../../../../SwiftRuntimeLibrary/bin/Debug/net{Compiler.kframeWorkVersion}");
+		public const string kSwiftRuntimeLibrary = "SwiftRuntimeLibrary";
 
 		[ThreadStatic]
 		static SwiftCompilerLocation systemCompilerLocation;
@@ -329,22 +331,10 @@ namespace tomwiftytest {
 			}
 			sb.Append (' ');
 			switch (platform) {
-			case PlatformName.macOS:
-				sb.Append ($"-lib:{ConstructorTests.kSwiftRuntimeMacOutputDirectory} ");
-				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibraryMac}.dll ");
-				sb.Append ($"-lib:{ConstructorTests.kXamarinMacDir} ");
-				sb.Append ($"-r:Xamarin.Mac.dll ");
-				break;
-			case PlatformName.iOS:
-				sb.Append ($"-lib:{ConstructorTests.kSwiftRuntimeiOSOutputDirectory} ");
-				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibraryiOS}.dll ");
-				sb.Append ($"-lib:{ConstructorTests.kXamariniOSDir} ");
-				sb.Append ($"-r:Xamarin.iOS.dll ");
-				break;
 			case PlatformName.None:
 				var referenceAssemblyDir = GetReferenceAssemblyLocation ();
-				sb.Append ($"-lib:{ConstructorTests.kSwiftRuntimeOutputDirectory} ");
-				sb.Append ($"-r:{ConstructorTests.kSwiftRuntimeLibrary}.dll ");
+				sb.Append ($"-lib:{kSwiftRuntimeOutputDirectory} ");
+				sb.Append ($"-r:{kSwiftRuntimeLibrary}.dll ");
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.dll")} ");
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Console.dll")} ");
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Runtime.dll")} ");
@@ -352,6 +342,9 @@ namespace tomwiftytest {
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "mscorlib.dll")} ");
 				sb.Append ($"-r:{Path.Combine (referenceAssemblyDir, "System.Text.Encoding.Extensions.dll")} ");
 				break;
+			case PlatformName.macOS:
+			case PlatformName.iOS:
+				throw new NotImplementedException ($"This code path is obsolete for {platform} - how did you get here?");
 			default:
 				throw new NotImplementedException (platform.ToString ());
 			}
@@ -666,12 +659,8 @@ namespace tomwiftytest {
 			env.Add ("DYLD_LIBRARY_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "DYLD_LIBRARY_PATH", $"/usr/lib/swift:{kSwiftRuntimeGlueDirectory}"));
 			switch (platform) {
 			case PlatformName.macOS:
-				// This is really a hack, any tests needing to use XM, should create a proper .app using mmp instead.
-				env.Add ("MONO_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "MONO_PATH", $"{ConstructorTests.kSwiftRuntimeMacOutputDirectory}"));
-				env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", "/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib");
 				break;
 			case PlatformName.None:
-				env.Add ("MONO_PATH", AddOrAppendPathTo (Environment.GetEnvironmentVariables (), "MONO_PATH", $"{ConstructorTests.kSwiftRuntimeOutputDirectory}"));
 				env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", ".");
 				if (workingDirectory != null)
 					env ["DYLD_LIBRARY_PATH"] = AddOrAppendPathTo (env, "DYLD_LIBRARY_PATH", workingDirectory);
