@@ -776,7 +776,7 @@ public static class Console {
 			
 		};
 		static string [] testnoneRuntimeAssemblies = {
-			Path.Combine (ConstructorTests.kSwiftRuntimeOutputDirectory, $"{ConstructorTests.kSwiftRuntimeLibrary}.dll"),
+			Path.Combine (Compiler.kSwiftRuntimeOutputDirectory, $"{Compiler.kSwiftRuntimeLibrary}.dll"),
 		};
 
 		public static void CopyTestReferencesTo (string targetDirectory, PlatformName platform = PlatformName.None)
