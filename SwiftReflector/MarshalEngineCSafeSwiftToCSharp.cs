@@ -82,7 +82,7 @@ namespace SwiftReflector {
 						throw ErrorHelper.CreateError (ReflectorError.kTypeMapBase + 27, "Inconceivable! The protocol type for a subscript was NOT a CSSimpleType!");
 					use.AddIfNotPresent (typeof (StructMarshal));
 					use.AddIfNotPresent (typeof (SwiftObjectRegistry));
-					valueExpr = new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{csParmType.ToString ()}>", false, valueID);
+					valueExpr = new CSFunctionCall ($"SwiftObjectRegistry.Registry.InterfaceForExistentialContainer<{csParmType.ToString ()}>", false, CSUnaryExpression.Star (valueID));
 				} else if ((entityType == EntityType.Struct || entityType == EntityType.Enum) && !isUnusualNewValue) {
 					var csParmType = new CSSimpleType (entity.SharpNamespace + "." + entity.SharpTypeName);
 					if (csParmType == null)
