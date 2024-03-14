@@ -1115,7 +1115,7 @@ public enum Position {
 				// Now read out the type database XML and verify
 				{
 					List<string> typeDatabasePaths = new List<string> { Path.Combine (libProvider.DirectoryPath, "bindings") };
-					TypeMapper typeMapper = new TypeMapper (typeDatabasePaths, UnicodeMapper.Default);
+					TypeMapper typeMapper = new TypeMapper (typeDatabasePaths);
 					var entity = typeMapper.TypeDatabase.EntityForSwiftName (swiftName);
 					ClassicAssert.AreEqual (ns, entity.SharpNamespace);
 					ClassicAssert.AreEqual (csharpName, entity.SharpTypeName);

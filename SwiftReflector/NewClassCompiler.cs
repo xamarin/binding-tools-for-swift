@@ -25,6 +25,7 @@ using SwiftReflector.Importing;
 using ObjCRuntime;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using SwiftReflector.Naming;
 
 namespace SwiftReflector {
 	public class WrappingResult {
@@ -180,7 +181,8 @@ namespace SwiftReflector {
 			var errors = new ErrorHandling ();
 			CurrentPlatform = targets.OperatingSystem;
 
-			TypeMapper = new TypeMapper (classCompilerLocations.TypeDatabasePaths, UnicodeMapper);
+			CSSafeNaming.UnicodeMapper = UnicodeMapper;
+			TypeMapper = new TypeMapper (classCompilerLocations.TypeDatabasePaths);
 			BindingImporter.ImportAndMerge (CurrentPlatform, TypeMapper.TypeDatabase, errors);
 			if (errors.AnyErrors)
 				return errors;
@@ -373,7 +375,7 @@ namespace SwiftReflector {
 				var setter = prop.GetSetter ();
 				bool hasSetter = setter != null && setter.IsPublicOrOpen;
 
-				string propName = TypeMapper.SanitizeIdentifier (prop.Name);
+				string propName = CSSafeNaming.SafeIdentifier (prop.Name);
 
 				CSCodeBlock getBlock = CSCodeBlock.Create (CSReturn.ReturnLine (CSFunctionCall.Function (methodName)));
 				CSCodeBlock setBlock = null;
@@ -619,7 +621,7 @@ namespace SwiftReflector {
 
 			var wrapperFunction = FindEquivalentTLFunctionForWrapperFunction (wrapperFunc, TypeMapper, wrapper);
 
-			var functionPIBaseName = new SwiftName (TypeMapper.SanitizeIdentifier (wrapperFunc.Name), false);
+			var functionPIBaseName = new SwiftName (CSSafeNaming.SafeIdentifier (wrapperFunc.Name), false);
 			string operatorFunctionName = func.IsOperator ? ToOperatorName (func) : null;
 
 			var homonymSuffix = Homonyms.HomonymSuffix (func, peerFunctions, TypeMapper);
@@ -682,7 +684,7 @@ namespace SwiftReflector {
 			if (tlf.Operator != OperatorType.None)
 				return;
 
-			var baseName = TypeMapper.SanitizeIdentifier (tlf.Name.Name);
+			var baseName = CSSafeNaming.SafeIdentifier (tlf.Name.Name);
 			var pinvokeMethodName = PIFuncName (baseName + homonymSuffix);
 			pinvokeMethodName = MarshalEngine.Uniqueify (pinvokeMethodName, usedPinvokeNames);
 			usedPinvokeNames.Add (pinvokeMethodName);
@@ -1316,7 +1318,7 @@ namespace SwiftReflector {
 		{
 			var csEnum = new CSEnum (CSVisibility.Public, enumCaseName, null);
 			foreach (EnumElement elem in enumDecl.Elements) {
-				string enumCase = TypeMapper.SanitizeIdentifier (elem.Name);
+				string enumCase = CSSafeNaming.SafeIdentifier (elem.Name);
 				var binding = new CSBinding (new CSIdentifier (enumCase));
 				csEnum.Values.Add (binding);
 			}
@@ -1419,7 +1421,7 @@ namespace SwiftReflector {
 
 			long currentRawValue = 0;
 			foreach (EnumElement elem in enumDecl.Elements) {
-				string enumCaseName = TypeMapper.SanitizeIdentifier (elem.Name);
+				string enumCaseName = CSSafeNaming.SafeIdentifier (elem.Name);
 				CSConstant enumValue = null;
 				if (!requiresRawValue) {
 					if (elem.Value != null) {
@@ -1764,7 +1766,7 @@ namespace SwiftReflector {
 				throw new ArgumentOutOfRangeException (nameof (function), $"unknown operator type {function.OperatorType.ToString ()}");
 			}
 
-			var operatorName = TypeMapper.SanitizeIdentifier (MethodWrapping.CleanseOperatorName (TypeMapper, function.Name));
+			var operatorName = CSSafeNaming.SafeIdentifier (CSSafeNaming.SafeOperatorName (function.Name));
 			return prefix + operatorName;
 		}
 
@@ -2157,7 +2159,7 @@ namespace SwiftReflector {
 
 			var superWrapperFunc = FindSuperWrapper (superFunc, wrapper);
 
-			string superMethodName = "Base" + TypeMapper.SanitizeIdentifier (func.Name);
+			string superMethodName = "Base" + CSSafeNaming.SafeIdentifier (func.Name);
 
 			var superFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superFuncWrapper == null) {
@@ -2390,7 +2392,7 @@ namespace SwiftReflector {
 			}
 
 			var superEtterWrapperFunc = FindSuperWrapper (superEtterFunc, wrapper);
-			string superEtterName = "Base" + TypeMapper.SanitizeIdentifier (tlEtter.Name.Name);
+			string superEtterName = "Base" + CSSafeNaming.SafeIdentifier (tlEtter.Name.Name);
 
 			var superEtterFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superEtterWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superEtterFuncWrapper == null) {
@@ -2535,7 +2537,7 @@ namespace SwiftReflector {
 								  PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
 								  etterWrapper.MangledName, piEtterName, true, true, false);
 			vtDetails.PInvokes.Methods.Add (piGetter);
-			string propName = TypeMapper.SanitizeIdentifier (etterFunc.PropertyName);
+			string propName = CSSafeNaming.SafeIdentifier (etterFunc.PropertyName);
 
 			if (wrapperProp == null) {
 				var selfFunc = etterFunc.MacroReplaceType (etterFunc.Parent.ToFullyQualifiedName (), "Self", false);
@@ -2629,7 +2631,7 @@ namespace SwiftReflector {
 			}
 
 			var superEtterWrapperFunc = FindSuperWrapper (superEtterFunc, wrapper);
-			string superEtterName = "Base" + TypeMapper.SanitizeIdentifier (etterFunc.PropertyName);
+			string superEtterName = "Base" + CSSafeNaming.SafeIdentifier (etterFunc.PropertyName);
 
 			var superEtterFuncWrapper = XmlToTLFunctionMapper.ToTLFunction (superEtterWrapperFunc, wrapper.Contents, TypeMapper);
 			if (superEtterFuncWrapper == null) {
@@ -2640,7 +2642,7 @@ namespace SwiftReflector {
 			var returnIsProtocolList = propType is ProtocolListTypeSpec;
 
 			if (wrapperProp == null && !returnIsProtocolList) {
-				var propName = TypeMapper.SanitizeIdentifier (etterFunc.PropertyName);
+				var propName = CSSafeNaming.SafeIdentifier (etterFunc.PropertyName);
 				// can't be null
 				var prop = classDecl.AllProperties ().FirstOrDefault (p => p.Name == etterFunc.PropertyName);
 				var setter = prop.GetSetter (); // may be null
@@ -2663,7 +2665,7 @@ namespace SwiftReflector {
 			CSMethod protoListMethod = null;
 			if (returnIsProtocolList) {
 				var funcPrefix = isSetter ? "Set" : "Get";
-				var funcName = $"{funcPrefix}{TypeMapper.SanitizeIdentifier (etterFunc.PropertyName)}";
+				var funcName = $"{funcPrefix}{CSSafeNaming.SafeIdentifier (etterFunc.PropertyName)}";
 				protoListMethod = new CSMethod (CSVisibility.Public, CSMethodKind.Virtual, propertyImplMethod.Type, new CSIdentifier (funcName),
 					propertyImplMethod.Parameters, new CSCodeBlock ());
 				protoListMethod.GenericParameters.AddRange (propertyImplMethod.GenericParameters);
@@ -2977,7 +2979,7 @@ namespace SwiftReflector {
 
 		string FieldName (string name)
 		{
-			return TypeMapper.SanitizeIdentifier (name);
+			return CSSafeNaming.SafeIdentifier (name);
 		}
 
 		string PIClassName (string fullClassName)
@@ -3040,7 +3042,7 @@ namespace SwiftReflector {
 
 		string PIMethodName (SwiftClassName name, SwiftName functionName)
 		{
-			return String.Format ("PImethod_{0}{1}", StubbedClassName (name, TypeMapper), TypeMapper.SanitizeIdentifier (functionName.Name));
+			return String.Format ("PImethod_{0}{1}", StubbedClassName (name, TypeMapper), CSSafeNaming.SafeIdentifier (functionName.Name));
 		}
 
 		string PIMethodName (string name, SwiftName functionName)
@@ -3048,7 +3050,7 @@ namespace SwiftReflector {
 			var stubName = StubbedClassName (name, TypeMapper);
 			if (stubName == null)
 				return null;
-			return String.Format ("PImethod_{0}{1}", stubName, TypeMapper.SanitizeIdentifier (functionName.Name));
+			return String.Format ("PImethod_{0}{1}", stubName, CSSafeNaming.SafeIdentifier (functionName.Name));
 		}
 
 		string PIMethodReference (string name, SwiftName functionName)
@@ -3061,7 +3063,7 @@ namespace SwiftReflector {
 
 		string PIMethodName (SwiftClassName name, SwiftName functionName, PropertyType propType)
 		{
-			return String.Format ("PIprop{0}_{1}{2}", PropPrefix (propType), name != null ? StubbedClassName (name, TypeMapper) : "", TypeMapper.SanitizeIdentifier (functionName.Name));
+			return String.Format ("PIprop{0}_{1}{2}", PropPrefix (propType), name != null ? StubbedClassName (name, TypeMapper) : "", CSSafeNaming.SafeIdentifier (functionName.Name));
 		}
 
 		string PIMethodReference (SwiftClassName name, SwiftName functionName, PropertyType propType)
@@ -3074,7 +3076,7 @@ namespace SwiftReflector {
 			var stubName = name != null ? StubbedClassName (name, TypeMapper) : "";
 			if (stubName == null && name == null)
 				return null;
-			return String.Format ("PIprop{0}_{1}{2}", PropPrefix (propType), name != null ? stubName : "", TypeMapper.SanitizeIdentifier (functionName.Name));
+			return String.Format ("PIprop{0}_{1}{2}", PropPrefix (propType), name != null ? stubName : "", CSSafeNaming.SafeIdentifier (functionName.Name));
 		}
 
 		string PIMethodReference (string fullclassName, SwiftName functionName, PropertyType propType)
@@ -4481,7 +4483,7 @@ namespace SwiftReflector {
 			}
 
 
-			string propName = TypeMapper.SanitizeIdentifier (propGetter.PropertyName);
+			string propName = CSSafeNaming.SafeIdentifier (propGetter.PropertyName);
 			propName = MarshalEngine.Uniqueify (propName, usedIdentifiers);
 			usedIdentifiers.Add (propName);
 
@@ -4533,7 +4535,7 @@ namespace SwiftReflector {
 
 			TLFunction getterWrapper = null;
 			TLFunction setterWrapper = null;
-			string propName = TypeMapper.SanitizeIdentifier (propGetter.PropertyName);
+			string propName = CSSafeNaming.SafeIdentifier (propGetter.PropertyName);
 			propName = MarshalEngine.Uniqueify (propName, usedIdentifiers);
 			usedIdentifiers.Add (propName);
 			var getterName = $"__Get{propName}";
@@ -4662,9 +4664,9 @@ namespace SwiftReflector {
 
 			string methodName = null;
 			if (methodToWrap.IsExtension && methodToWrap.IsProperty) {
-				methodName = (methodToWrap.IsGetter ? "Get" : "Set") + TypeMapper.SanitizeIdentifier (methodToWrap.PropertyName);
+				methodName = (methodToWrap.IsGetter ? "Get" : "Set") + CSSafeNaming.SafeIdentifier (methodToWrap.PropertyName);
 			} else {
-				methodName = TypeMapper.SanitizeIdentifier (methodToWrap.Name);
+				methodName = CSSafeNaming.SafeIdentifier (methodToWrap.Name);
 			}
 
 			var publicMethod = TLFCompiler.CompileMethod (methodToWrap, use, PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
@@ -4778,7 +4780,7 @@ namespace SwiftReflector {
 				funcToWrap = RecastInstanceMethodAsStatic (funcToWrap);
 
 			var methodName = funcToWrap.IsProperty ? funcToWrap.PropertyName : funcToWrap.Name;
-			alternativeName = alternativeName ?? TypeMapper.SanitizeIdentifier (methodName);
+			alternativeName = alternativeName ?? CSSafeNaming.SafeIdentifier (methodName);
 
 			var publicMethod = TLFCompiler.CompileMethod (funcToWrap, use, PInvokeName (wrapper.ModuleLibPath, swiftLibraryPath),
 									mangledName: "", alternativeName, false, isFinal, methodIsStatic || isTrivialEnum);

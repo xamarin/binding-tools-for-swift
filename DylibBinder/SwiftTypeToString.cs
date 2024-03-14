@@ -19,7 +19,7 @@ namespace DylibBinder {
 
 		public static SLType MapSwiftTypeToSlType (SwiftType swiftType)
 		{
-			var typeMapper = new TypeMapper (TypeDatabasePaths, null);
+			var typeMapper = new TypeMapper (TypeDatabasePaths);
 			var swiftTypeToSLType = new SwiftTypeToSLType (typeMapper, true);
 			var sLImportModules = new SLImportModules ();
 			return swiftTypeToSLType.MapType (sLImportModules, Exceptions.ThrowOnNull (swiftType, nameof (swiftType)));

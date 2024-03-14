@@ -13,19 +13,18 @@ using System.IO;
 using Dynamo.CSLang;
 using ObjCRuntime;
 using SwiftRuntimeLibrary;
+using SwiftReflector.Naming;
 
 namespace SwiftReflector.TypeMapping {
 	public class TypeMapper {
 		public TypeDatabase TypeDatabase { get; private set; }
 		TypeSpecToSLType specMapper, overrideSpecMapper;
 		SwiftTypeToSLType swiftTypeMapper;
-		UnicodeMapper unicodeMapper;
 		HashSet<string> loadedFiles = new HashSet<string> ();
 
-		public TypeMapper (List<string> typeDatabasePaths, UnicodeMapper unicodeMapper)
+		public TypeMapper (List<string> typeDatabasePaths)
 		{
 			TypeDatabase = new TypeDatabase ();
-			this.unicodeMapper = unicodeMapper;
 
 			// We check 'SwiftyOptions' for errors so each 'typeDatabasePath' at this point should be a valid directory.
 			foreach (var typeDatabasePath in typeDatabasePaths) {
@@ -231,7 +230,7 @@ namespace SwiftReflector.TypeMapping {
 					sb.Append ('.');
 				if (isProtocol && i == parts.Length - 1)
 					sb.Append ('I');
-				sb.Append (SanitizeIdentifier (parts [i]));
+				sb.Append (CSSafeNaming.SafeIdentifier (parts [i]));
 			}
 			return new DotNetName (namesp, sb.ToString ());
 		}
@@ -243,7 +242,7 @@ namespace SwiftReflector.TypeMapping {
 			sb.Append (namesp);
 			foreach (SwiftName sn in name.NestingNames) {
 				sb.Append ('.');
-				sb.Append (SanitizeIdentifier (sn.Name));
+				sb.Append (CSSafeNaming.SafeIdentifier (sn.Name));
 			}
 			return sb.ToString ();
 		}
@@ -253,7 +252,7 @@ namespace SwiftReflector.TypeMapping {
 			string finalName = null;
 			finalName = UserModuleMap (name);
 			if (finalName == null) {
-				finalName = SanitizeIdentifier (name.Name);
+				finalName = CSSafeNaming.SafeIdentifier (name.Name);
 			}
 			return finalName;
 		}
@@ -263,7 +262,7 @@ namespace SwiftReflector.TypeMapping {
 			string finalName = null;
 			finalName = UserModuleMap (name);
 			if (finalName == null) {
-				finalName = SanitizeIdentifier (name);
+				finalName = CSSafeNaming.SafeIdentifier (name);
 			}
 			return finalName;
 		}
@@ -277,73 +276,6 @@ namespace SwiftReflector.TypeMapping {
 		string UserModuleMap (string name)
 		{
 			return null;
-		}
-
-		static UnicodeCategory [] validStarts = {
-			UnicodeCategory.UppercaseLetter,
-			UnicodeCategory.LowercaseLetter,
-			UnicodeCategory.TitlecaseLetter,
-			UnicodeCategory.ModifierLetter,
-			UnicodeCategory.OtherLetter,
-			UnicodeCategory.LetterNumber
-		};
-
-		static bool ValidIdentifierStart (UnicodeCategory cat)
-		{
-			return validStarts.Contains (cat);
-		}
-
-		static UnicodeCategory [] validContent = {
-			UnicodeCategory.DecimalDigitNumber,
-			UnicodeCategory.ConnectorPunctuation,
-			UnicodeCategory.Format
-		};
-
-		static bool ValidIdentifierContent (UnicodeCategory cat)
-		{
-			return ValidIdentifierStart (cat) || validContent.Contains (cat);
-		}
-
-		static bool IsValidIdentifier (int position, UnicodeCategory cat)
-		{
-			if (position == 0)
-				return ValidIdentifierStart (cat);
-			else
-				return ValidIdentifierContent (cat);
-		}
-
-		static bool IsHighUnicode (string s)
-		{
-			// Steve says: this is arbitrary, but it solves an issue
-			// with mcs and csc not liking certain Ll and Lu class
-			// unicode characters (for now).
-			// Open issue: https://github.com/dotnet/roslyn/issues/27986
-			var encoding = Encoding.UTF32;
-			var bytes = encoding.GetBytes (s);
-			var utf32Value = BitConverter.ToUInt32 (bytes, 0);
-			return utf32Value > 0xffff;
-		}
-
-		public string SanitizeIdentifier (string name)
-		{
-			var sb = new StringBuilder ();
-
-			var characterEnum = StringInfo.GetTextElementEnumerator (name);
-			while (characterEnum.MoveNext ()) {
-				string c = characterEnum.GetTextElement ();
-				int i = characterEnum.ElementIndex;
-
-				var cat = CharUnicodeInfo.GetUnicodeCategory (name, i);
-
-				if (IsValidIdentifier (i, cat) && !IsHighUnicode(c))
-					sb.Append (i == 0 && cat == UnicodeCategory.LowercaseLetter ? c.ToUpper() : c);
-				else
-					sb.Append (unicodeMapper.MapToUnicodeName (c));
-			}
-
-			if (CSKeywords.IsKeyword (sb.ToString ()))
-				sb.Append ('_');
-			return sb.ToString ();
 		}
 
 		static string ComeUpWithAName (string given, string typeName, int index)

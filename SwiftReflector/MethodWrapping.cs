@@ -15,6 +15,7 @@ using SwiftReflector.SwiftXmlReflection;
 using SwiftReflector.TypeMapping;
 using SwiftReflector.Demangling;
 using ObjCRuntime;
+using SwiftReflector.Naming;
 
 namespace SwiftReflector {
 
@@ -80,7 +81,7 @@ namespace SwiftReflector {
 				throw new ArgumentOutOfRangeException (nameof (type));
 			}
 				
-			operatorName = CleanseOperatorName (typeMapper, operatorName);
+			operatorName = CSSafeNaming.SafeOperatorName (operatorName);
 			var classPrefix = moduleNameOrFullClassName.Replace ('.', 'D');
 			return $"{kXamPrefix}{classPrefix}{operatorType}{operatorName}";
 		}
@@ -2441,44 +2442,6 @@ namespace SwiftReflector {
 			errors.Add (ErrorHelper.CreateWarning (code, $"While {doingSomething} {whoAmI} {postMessage}."));
 		}
 
-		static Dictionary<char, string> operatorMap = new Dictionary<char, string> {
-			{ '/', "Slash" },
-			{ '=', "Equals" },
-			{ '+', "Plus" },
-			{ '-', "Minus" },
-			{ '!', "Bang" },
-			{ '*', "Star" },
-			{ '%', "Percent" },
-			{ '<', "LessThan" },
-			{ '>', "GreaterThan" },
-			{ '&', "Ampersand" },
-			{ '|', "Pipe" },
-			{ '^', "Hat" },
-			{ '~', "Tilde" },
-			{ '?', "QuestionMark"},
-			{ '.', "Dot" },
-		};
-
-		static string OperatorCharToSafeString (char c)
-		{
-			string result = null;
-			operatorMap.TryGetValue (c, out result);
-			return result ?? c.ToString ();
-		}
-
-		public string CleanseOperatorName (string s)
-		{
-			return CleanseOperatorName (typeMapper, s);
-		}
-
-		public static string CleanseOperatorName (TypeMapper typeMapper, string s)
-		{
-			var sb = new StringBuilder ();
-			foreach (var c in s) {
-				sb.Append (OperatorCharToSafeString (c));
-			}
-			return typeMapper.SanitizeIdentifier (sb.ToString ());
-		}
 
 		static DelegatedCommaListElemCollection<SLArgument> StripArgumentLabels (DelegatedCommaListElemCollection<SLArgument> args)
 		{
