@@ -11,9 +11,9 @@ namespace SwiftReflector.Naming
 		string autoSymPrefix;
 		Stack<HashSet<string>> names = new Stack<HashSet<string>> ();
 
-		public ScopedNaming (string? autoSymPrefix = null)
+		public ScopedNaming (string autoSymPrefix = "_symbol")
 		{
-			this.autoSymPrefix = string.IsNullOrEmpty (autoSymPrefix) ? "_symbol" : autoSymPrefix;
+			this.autoSymPrefix = autoSymPrefix;
 			names.Push (new HashSet<string> ());
 		}
 
