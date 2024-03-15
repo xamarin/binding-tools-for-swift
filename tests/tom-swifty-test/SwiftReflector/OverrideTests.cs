@@ -46,7 +46,7 @@ namespace SwiftReflector {
 			ClassicAssert.AreEqual (1, classes.Count);
 			ClassDeclaration theClass = classes [0].MakeUnrooted () as ClassDeclaration;
 
-			TypeMapper typeMapper = new TypeMapper (Compiler.kTypeDatabases, UnicodeMapper.Default);
+			TypeMapper typeMapper = new TypeMapper (Compiler.kTypeDatabases);
 			typeMapper.RegisterClass (theClass);
 
 			OverrideBuilder overrider = new OverrideBuilder (typeMapper, theClass, null, new ModuleDeclaration ("OverrideModule"));

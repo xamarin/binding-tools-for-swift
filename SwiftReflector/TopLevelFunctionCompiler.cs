@@ -14,6 +14,7 @@ using SwiftReflector.Demangling;
 using ObjCRuntime;
 using SwiftRuntimeLibrary.SwiftMarshal;
 using System.Runtime.InteropServices;
+using SwiftReflector.Naming;
 
 namespace SwiftReflector {
 	public class TopLevelFunctionCompiler {
@@ -28,7 +29,7 @@ namespace SwiftReflector {
 		public CSProperty CompileProperty (string propertyName, CSUsingPackages packs, SwiftType swiftPropertyType, bool hasGetter, bool hasSetter,
 						 CSMethodKind methodKind)
 		{
-			propertyName = typeMap.SanitizeIdentifier (propertyName);
+			propertyName = CSSafeNaming.SafeIdentifier (propertyName);
 			NetTypeBundle propertyType = typeMap.MapType (swiftPropertyType, false);
 
 			if (!(swiftPropertyType is SwiftGenericArgReferenceType))
@@ -62,7 +63,7 @@ namespace SwiftReflector {
 			} else {
 				propertyType = typeMap.MapType (getter, swiftPropertyType, false, true);
 			}
-			propertyName = propertyName ?? typeMap.SanitizeIdentifier (getter != null ? getter.PropertyName : setter.PropertyName);
+			propertyName = propertyName ?? CSSafeNaming.SafeIdentifier (getter != null ? getter.PropertyName : setter.PropertyName);
 			bool isSubscript = getter != null ? getter.IsSubscript :
 				setter.IsSubscript;
 
@@ -148,7 +149,7 @@ namespace SwiftReflector {
 			var args = typeMap.MapParameterList (func, func.ParameterLists.Last (), objectsAreIntPtrs, true, null, null, packs);
 			RemapSwiftClosureRepresensation (args);
 			var returnType = returnIsGeneric || returnIsSelf ? null : typeMap.MapType (func, func.ReturnTypeSpec, objectsAreIntPtrs, true);
-			delegateName = delegateName ?? typeMap.SanitizeIdentifier (func.Name);
+			delegateName = delegateName ?? CSSafeNaming.SafeIdentifier (func.Name);
 			var isUnsafe = false;
 
 			args.ForEach (a => AddUsingBlock (packs, a.Type));
@@ -248,7 +249,7 @@ namespace SwiftReflector {
 				returnType = typeMap.MapType (func, func.ReturnTypeSpec, isPinvoke, true);
 			}
 
-			string funcName = functionName ?? typeMap.SanitizeIdentifier (func.Name);
+			string funcName = functionName ?? CSSafeNaming.SafeIdentifier (func.Name);
 
 			if (isPinvoke && !mangledToCSharp.ContainsKey (mangledName))
 				mangledToCSharp.Add (mangledName, funcName);

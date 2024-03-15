@@ -28,6 +28,12 @@
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.1" />
     <PackageReference Include="Mono.Cecil" Version="0.10.3" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="Naming\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Naming\" />
+  </ItemGroup>
   <Target Name="BeforeBuild" Inputs="$(MSBuildProjectFullPath)" Outputs="Downloaded\StringUtils.cs">
     <Exec Command="mkdir -p Downloaded" />
     <Exec Command="curl -L https://raw.githubusercontent.com/xamarin/xamarin-macios/ec62a8dd515d1dab8ee88832e33f8cd8e3a8a40d/tools/common/StringUtils.cs &gt; Downloaded/StringUtils.cs" />
