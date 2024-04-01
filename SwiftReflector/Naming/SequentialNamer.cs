@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using SwiftReflector.Demangling;
 
 #nullable enable
@@ -7,7 +8,6 @@ namespace SwiftReflector.Naming {
 	public class SequentialNamer {
 		int current;
 		string prefix;
-		object nameLock = new object ();
 
 		public SequentialNamer (string prefix, int start = 0)
 		{
@@ -17,9 +17,7 @@ namespace SwiftReflector.Naming {
 
 		public string SafeName (string name)
 		{
-			lock (nameLock) {
-				return CSSafeNaming.SafeIdentifier ($"{prefix}{name}{current++}");
-			}
+			return CSSafeNaming.SafeIdentifier ($"{prefix}{name}{Interlocked.Increment (ref current)}");
 		}
 	}
 
@@ -32,7 +30,7 @@ namespace SwiftReflector.Naming {
 		{
 			var module = tlf.Module.Name ?? "NoModule";
 			var name = tlf.Name.Name ?? "Anonymous";
-			return Name ($"_{module}_{name}");			
+			return SafeName ($"_{module}_{name}");			
 		}
 	}
 }
