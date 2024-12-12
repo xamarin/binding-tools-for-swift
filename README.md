@@ -1,5 +1,5 @@
 # Status
-This repository is no longer being used for active development. The set of tools and libraries are now being adapted into the .NET Runtime (see https://github.com/dotnet/runtime/issues/95636).
+This repository is no longer being used for active development. The set of tools and libraries are now being adapted into the .NET Runtime (see https://github.com/dotnet/runtime/issues/95638).
 
 # Xamarin Binding Tools For Swift
 
